@@ -19,3 +19,8 @@ assignees: ''
 
 - [ ] to do 1
 - [ ] to do 2
+- [ ] to do 3
+
+## 📜ETC
+
+<!-- 기타 -->
