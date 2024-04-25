@@ -13,9 +13,9 @@ const Footer: React.FC = () => {
   return (
     <MainFooter>
       <Container sx={{ marginBottom: '10px' }}>
-        <h3>
-          <FooterLogo href="#">FitOn</FooterLogo>
-        </h3>
+        <FooterLogo>
+          <a href="/">FitOn</a>
+        </FooterLogo>
       </Container>
       <Container
         sx={{
