@@ -7,8 +7,8 @@
     PR 작성 시 Reviewers는 리뷰어 선택
 -->
 ## Part
-- [ ] Front end
-- [ ] back end
+- [ ] Front-End
+- [ ] Back-End
 
 ## 요약
 <!---- 변경 사항 및 관련 이슈에 대해 간략하게 요약해주세요. -->
