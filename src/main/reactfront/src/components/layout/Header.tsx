@@ -1,0 +1,40 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+
+import { MainHeader, Logo, Gnb, Tnb } from '../../styles/layout/Header';
+import { Container } from '@mui/material';
+import TopBtn from '../common/TopBtn';
+
+const Header = () => {
+  return (
+    <MainHeader>
+      <Container
+        maxWidth="lg"
+        sx={{
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          position: 'relative',
+        }}
+      >
+        <Logo>
+          <a href="/">FitOn</a>
+        </Logo>
+        <Gnb>
+          <li>MALL</li>
+          <li>COMMUNITY</li>
+          <li>ROUTINE</li>
+          <Link to="/information">INFORMATION</Link>
+        </Gnb>
+        <Tnb>
+          <li>로그인</li>
+          <li>회원가입</li>
+          <li>장바구니</li>
+        </Tnb>
+      </Container>
+      <TopBtn />
+    </MainHeader>
+  );
+};
+
+export default Header;
