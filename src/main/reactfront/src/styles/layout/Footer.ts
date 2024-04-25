@@ -8,10 +8,12 @@ const MainFooter = styled.footer`
   color: #fff;
 `;
 
-const FooterLogo = styled.a`
-  color: #fff;
-  font-size: 1.875rem;
-  font-weight: bold;
+const FooterLogo = styled.h3`
+  a {
+    color: #fff;
+    font-size: 1.875rem;
+    font-weight: bold;
+  }
 `;
 
 const InfoList = styled.ul`

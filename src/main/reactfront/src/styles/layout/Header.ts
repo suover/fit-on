@@ -42,7 +42,7 @@ const Tnb = styled.ul`
       font-size: 0.825rem;
       padding-left: 8px;
       position: relative;
-      top: -1px;
+      top: -2px;
     }
 
     &:last-of-type {

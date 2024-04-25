@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 import { MainHeader, Logo, Gnb, Tnb } from '../../styles/layout/Header';
 import { Container } from '@mui/material';
@@ -24,7 +23,7 @@ const Header = () => {
           <li>MALL</li>
           <li>COMMUNITY</li>
           <li>ROUTINE</li>
-          <Link to="/information">INFORMATION</Link>
+          <li>INFORMATION</li>
         </Gnb>
         <Tnb>
           <li>로그인</li>
