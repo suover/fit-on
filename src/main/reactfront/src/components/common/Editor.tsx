@@ -1,5 +1,3 @@
-// https://codepen.io/alexkrolick/pen/xgyOXQ/left?editors=0010#0
-// https://github.com/zenoamaro/react-quill?tab=readme-ov-file
 import React from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import styled from 'styled-components';
