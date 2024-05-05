@@ -27,9 +27,11 @@ interface SideNavbarProps {
   drawerWidthOpen: number;
   paddingIconButton: number;
   marginIconButton: number;
-  iconFontSize: number;
+  fontSize?: number;
+  iconSize?: number;
+  iconMargin: number;
   title: string;
-  showProfile: boolean;
+  showProfile?: boolean;
 }
 
 const SideNavbar: React.FC<SideNavbarProps> = ({
@@ -38,9 +40,11 @@ const SideNavbar: React.FC<SideNavbarProps> = ({
   drawerWidthOpen,
   paddingIconButton,
   marginIconButton,
-  iconFontSize,
+  fontSize = 14,
+  iconSize = 20,
+  iconMargin,
   title,
-  showProfile = false,
+  showProfile = true,
 }) => {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -51,7 +55,7 @@ const SideNavbar: React.FC<SideNavbarProps> = ({
   };
 
   const drawerWidthClose =
-    (paddingIconButton + marginIconButton) * 2 + iconFontSize;
+    (paddingIconButton + marginIconButton) * 2 + iconMargin;
 
   const drawerContent = (
     <>
@@ -128,12 +132,15 @@ const SideNavbar: React.FC<SideNavbarProps> = ({
               >
                 <ListItemIcon>
                   <Badge badgeContent={item.badge} color="secondary">
-                    <item.icon sx={{ fontSize: '20px', color: 'black' }} />
+                    <item.icon sx={{ fontSize: iconSize, color: 'black' }} />
                   </Badge>
                 </ListItemIcon>
                 <ListItemText
                   primary={item.menuName}
-                  primaryTypographyProps={{ variant: 'body2' }}
+                  primaryTypographyProps={{
+                    variant: 'body2',
+                    style: { fontSize: fontSize },
+                  }}
                   sx={{
                     display: 'inline',
                     margin: '0px',
