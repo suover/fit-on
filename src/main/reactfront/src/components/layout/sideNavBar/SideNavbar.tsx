@@ -23,6 +23,7 @@ import StyledAvatar from './StyledAvatar';
 
 interface SideNavbarProps {
   menuItems: NavbarItem[];
+  drawerPosition?: 'static' | 'relative' | 'absolute' | 'fixed' | 'sticky';
   drawerWidthOpen: number;
   paddingIconButton: number;
   marginIconButton: number;
@@ -33,6 +34,7 @@ interface SideNavbarProps {
 
 const SideNavbar: React.FC<SideNavbarProps> = ({
   menuItems,
+  drawerPosition = 'static',
   drawerWidthOpen,
   paddingIconButton,
   marginIconButton,
@@ -218,7 +220,7 @@ const SideNavbar: React.FC<SideNavbarProps> = ({
             duration: theme.transitions.duration.enteringScreen,
           }),
           '& .MuiDrawer-paper': {
-            position: 'static',
+            position: drawerPosition,
             height: 'auto',
             justifyContent: 'space-between',
             overflowX: 'hidden',
