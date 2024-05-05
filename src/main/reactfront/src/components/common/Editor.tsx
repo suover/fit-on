@@ -7,18 +7,18 @@ import 'react-quill/dist/quill.snow.css';
 import ImageResize from 'quill-image-resize-module-react';
 Quill.register('modules/imageResize', ImageResize);
 
-interface EditorProps {
-  placeholder: string;
-  value: string;
-  onChange: (value: string) => void;
-}
-
 const StyledReactQuill = styled(ReactQuill)`
   .ql-editor {
     min-height: 500px;
     height: 100%;
   }
 `;
+
+interface EditorProps {
+  placeholder: string;
+  value: string;
+  onChange: (value: string) => void;
+}
 
 const Editor: React.FC<EditorProps> = ({ placeholder, value, onChange }) => {
   const handleChange = (html: string) => {
