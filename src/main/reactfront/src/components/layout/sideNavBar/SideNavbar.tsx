@@ -23,13 +23,13 @@ import StyledAvatar from './StyledAvatar';
 
 interface SideNavbarProps {
   menuItems: NavbarItem[];
-  drawerPosition?: 'static' | 'relative' | 'absolute' | 'fixed' | 'sticky';
+  drawerPosition?: string;
   drawerWidthOpen: number;
-  paddingIconButton: number;
-  marginIconButton: number;
+  paddingIconButton?: number;
+  marginIconButton?: number;
   fontSize?: number;
   iconSize?: number;
-  iconMargin: number;
+  iconMargin?: number;
   title: string;
   showProfile?: boolean;
 }
@@ -38,11 +38,11 @@ const SideNavbar: React.FC<SideNavbarProps> = ({
   menuItems,
   drawerPosition = 'static',
   drawerWidthOpen,
-  paddingIconButton,
-  marginIconButton,
+  paddingIconButton = 10,
+  marginIconButton = 14,
   fontSize = 14,
   iconSize = 20,
-  iconMargin,
+  iconMargin = 20,
   title,
   showProfile = true,
 }) => {

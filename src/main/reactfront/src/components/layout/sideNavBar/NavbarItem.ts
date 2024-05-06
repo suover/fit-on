@@ -1,7 +1,7 @@
-import { SvgIconComponent } from '@mui/icons-material';
+import { ComponentType } from 'react';
 
 export interface NavbarItem {
-  icon: SvgIconComponent;
+  icon: ComponentType<any>;
   menuName: string;
   route: string;
   badge?: number;
