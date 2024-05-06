@@ -25,6 +25,7 @@ interface SideNavbarProps {
   menuItems: NavbarItem[];
   drawerPosition?: string;
   drawerWidthOpen: number;
+  marginTop?: string;
   paddingIconButton?: number;
   marginIconButton?: number;
   fontSize?: number;
@@ -38,6 +39,7 @@ const SideNavbar: React.FC<SideNavbarProps> = ({
   menuItems,
   drawerPosition = 'static',
   drawerWidthOpen,
+  marginTop = 'auto',
   paddingIconButton = 10,
   marginIconButton = 14,
   fontSize = 14,
@@ -228,6 +230,7 @@ const SideNavbar: React.FC<SideNavbarProps> = ({
           }),
           '& .MuiDrawer-paper': {
             position: drawerPosition,
+            marginTop: marginTop,
             height: 'auto',
             justifyContent: 'space-between',
             overflowX: 'hidden',
