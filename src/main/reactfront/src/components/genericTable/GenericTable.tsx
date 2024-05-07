@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Pagination } from '@mui/material';
-import { Container, Table, TableHead } from './styles';
+import { Container, Table, TableHead } from './GenericTable.styles';
 
 interface Column {
   id: string;

@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
-import { Wrapper, SearchContainer, SearchInput, SearchButton } from './styles';
+import {
+  Wrapper,
+  SearchContainer,
+  SearchInput,
+  SearchButton,
+} from './SearchBox.styles';
 import SearchIcon from '@mui/icons-material/Search';
 
 interface SearchBoxProps {
