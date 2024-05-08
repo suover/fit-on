@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { MainHeader, Logo, Gnb, Tnb } from '../../styles/layout/Header';
+import { MainHeader, Logo, Gnb, Tnb } from '../../../styles/layout/Header';
 import { Container } from '@mui/material';
-import TopBtn from '../common/TopBtn';
+import TopBtn from '../../common/TopBtn';
 
 const Header = () => {
   return (
