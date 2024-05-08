@@ -13,6 +13,7 @@ interface TableProps<T> {
   columns: Column[];
   rowsPerPage?: number;
   includeCheckboxes?: boolean;
+  checkboxColumnWidth?: string;
   renderRow: (
     item: T,
     isSelected: boolean,
@@ -25,6 +26,7 @@ const GenericTable = <T extends { id: string }>({
   columns,
   rowsPerPage = 10,
   includeCheckboxes = false,
+  checkboxColumnWidth = '50px',
   renderRow,
 }: TableProps<T>) => {
   const [page, setPage] = useState(1);
@@ -79,16 +81,16 @@ const GenericTable = <T extends { id: string }>({
       <Table>
         <TableHead>
           <tr>
-            <th style={{ width: '50px' }}>
-              {includeCheckboxes && (
+            {includeCheckboxes && (
+              <th style={{ width: checkboxColumnWidth }}>
                 <input
                   ref={checkboxRef}
                   type="checkbox"
                   checked={selectAll}
                   onChange={handleSelectAllClick}
                 />
-              )}
-            </th>
+              </th>
+            )}
             {columns.map((column) => (
               <th key={column.id} style={{ width: column.width }}>
                 {column.label}
