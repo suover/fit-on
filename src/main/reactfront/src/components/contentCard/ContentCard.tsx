@@ -11,19 +11,19 @@ type ContentType = {
   views?: number;
   likes: number;
   imageUrl: string;
-  goal?: string;
+  target?: string;
 };
 
-interface CardListProps<T extends ContentType> {
+interface ContentCardProps<T extends ContentType> {
   content: T;
   Icon?: React.ElementType<SvgIconProps>;
 }
 
-const CardList = <T extends ContentType>({
+const ContentCard = <T extends ContentType>({
   content,
   Icon,
-}: CardListProps<T>) => {
-  const { title, author, views, likes, imageUrl, goal } = content;
+}: ContentCardProps<T>) => {
+  const { title, author, views, likes, imageUrl, target } = content;
 
   return (
     <Card>
@@ -33,7 +33,7 @@ const CardList = <T extends ContentType>({
       <TextBox>
         <h3>{title}</h3>
         <p>
-          <span>{author ? author : goal}</span>
+          <span>{author ? author : target}</span>
           <span>
             <ThumbUpOutlinedIcon /> {likes}
           </span>
@@ -46,4 +46,4 @@ const CardList = <T extends ContentType>({
   );
 };
 
-export default CardList;
+export default ContentCard;
