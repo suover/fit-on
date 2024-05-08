@@ -24,13 +24,13 @@ import StyledAvatar from './StyledAvatar';
 interface SideNavbarProps {
   menuItems: NavbarItem[];
   drawerPosition?: string;
-  drawerWidthOpen: number;
+  drawerWidthOpen: string;
   marginTop?: string;
-  paddingIconButton?: number;
-  marginIconButton?: number;
-  fontSize?: number;
-  iconSize?: number;
-  iconMargin?: number;
+  paddingIconButton?: string;
+  marginIconButton?: string;
+  fontSize?: string;
+  iconSize?: string;
+  iconMargin?: string;
   title: string;
   showProfile?: boolean;
 }
@@ -40,11 +40,11 @@ const SideNavbar: React.FC<SideNavbarProps> = ({
   drawerPosition = 'static',
   drawerWidthOpen,
   marginTop = 'auto',
-  paddingIconButton = 10,
-  marginIconButton = 14,
-  fontSize = 14,
-  iconSize = 20,
-  iconMargin = 20,
+  paddingIconButton = '10px',
+  marginIconButton = '14px',
+  fontSize = '14px',
+  iconSize = '20px',
+  iconMargin = '20px',
   title,
   showProfile = true,
 }) => {
@@ -56,8 +56,7 @@ const SideNavbar: React.FC<SideNavbarProps> = ({
     setOpen(!open);
   };
 
-  const drawerWidthClose =
-    (paddingIconButton + marginIconButton) * 2 + iconMargin;
+  const drawerWidthClose = `calc((${paddingIconButton} + ${marginIconButton}) * 2 + ${iconMargin})`;
 
   const drawerContent = (
     <>
