@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import CardList from '../contentCard/ContentCard';
+import ContentCard from '../contentCard/ContentCard';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { SvgIconProps } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
@@ -14,7 +14,7 @@ type ContentsType = {
   views?: number;
   likes: number;
   imageUrl: string;
-  goal?: string;
+  target?: string;
 };
 
 interface CardListsProps<T> {
@@ -39,7 +39,7 @@ const CardLists = <T extends ContentsType>({
         {contents.map((content) => (
           <Grid2 key={content.id}>
             <Link to={`/${pageURL}/${content.id}`}>
-              <CardList content={content} Icon={Icon} />
+              <ContentCard content={content} Icon={Icon} />
             </Link>
           </Grid2>
         ))}
