@@ -45,7 +45,7 @@ export const TableRow = styled.tr`
   }
 `;
 
-export const TableData = styled.td<{ Width?: number }>`
+export const TableData = styled.td<{ $Width?: number }>`
   padding: 10px 5px;
   cursor: pointer;
   font-size: 14px;
@@ -57,14 +57,14 @@ export const TableData = styled.td<{ Width?: number }>`
   text-align: center;
   border: 1px solid #e4e9ea;
   position: relative;
-  max-width: ${(props) => (props.Width ? `${props.Width}px` : 'none')};
+  max-width: ${(props) => (props.$Width ? `${props.$Width}px` : 'none')};
   &:first-child {
     padding: 12px 5px;
     min-width: 50px;
   }
 `;
 
-export const Image = styled.div<{ backgroundImage: string }>`
+export const Image = styled.div<{ $backgroundImage: string }>`
   position: absolute;
   left: 30px;
   top: 50%;
@@ -72,7 +72,7 @@ export const Image = styled.div<{ backgroundImage: string }>`
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background-image: url(${(props) => props.backgroundImage});
+  background-image: url(${(props) => props.$backgroundImage});
   background-position: center;
   background-size: cover;
 `;
@@ -99,12 +99,12 @@ export const Category = styled.span`
 `;
 
 interface StatusIndicatorProps {
-  color: string;
-  backgroundColor: string;
+  $color: string;
+  $backgroundColor: string;
 }
 
 export const StatusIndicator = styled.span<StatusIndicatorProps>`
-  color: ${(props) => props.color};
+  color: ${(props) => props.$color};
   text-align: left;
   &:before {
     content: '';
@@ -113,6 +113,6 @@ export const StatusIndicator = styled.span<StatusIndicatorProps>`
     display: inline-block;
     margin-right: 7px;
     border-radius: 50%;
-    background-color: ${(props) => props.backgroundColor};
+    background-color: ${(props) => props.$backgroundColor};
   }
 `;
