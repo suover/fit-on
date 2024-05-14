@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, IconButton, Button } from '@mui/material';
-import AuthorInfo from '../AuthorInfo';
+import AuthorInfo from '../authorinfo/AuthorInfo';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import CommentLeave from './CommentLeave';
 import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
@@ -48,15 +48,11 @@ const CommentComponent: React.FC<CommentProps> = ({ comment, isReply }) => {
     <Box
       sx={{
         mb: 1,
-        // bgcolor: '#f0f0f0',
         border: '1px',
         borderRadius: '4px',
-        // minHeight: '60px',
-        // ml: isReply ? 3 : 0, // 답글에만 들여쓰기 적용
       }}
     >
       <Box sx={{ p: 1, display: 'flex', alignItems: 'center' }}>
-        {/* 답글 아이콘 추가 */}
         {isReply && <SubdirectoryArrowRightIcon sx={{ mr: 2, color: 'gray' }} />}
         <AuthorInfo imageUrl="" userName={comment.id} createTimeInfo={comment.writtenTime} />
       </Box>

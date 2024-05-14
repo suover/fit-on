@@ -29,9 +29,9 @@ const CommentTemplate = ({ comments, onInsert }: CommentTemplateProps) => {
   const getTotalCommentsCount = (comments: Comment[]) => {
     return comments.reduce((total, comment) => {
       console.log(`현재 댓글: ${comment.id}, 하위 댓글 수: ${comment.replies ? comment.replies.length : 0}`);
-      total += 1; // 현재 댓글
+      total += 1;
       if (comment.replies && comment.replies.length > 0) {
-        const repliesCount = getTotalCommentsCount(comment.replies); // 하위 답글 재귀적 계산
+        const repliesCount = getTotalCommentsCount(comment.replies);
         console.log(`댓글 ${comment.id}의 총 답글 수: ${repliesCount}`);
         total += repliesCount;
       }
@@ -39,14 +39,13 @@ const CommentTemplate = ({ comments, onInsert }: CommentTemplateProps) => {
     }, 0);
   };
 
-  const totalComments = getTotalCommentsCount(comments); // 전체 댓글 및 답글 수 계산
+  const totalComments = getTotalCommentsCount(comments);
 
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', m: 2 }}>
         <Typography variant="h5" component="h2" sx={{ m: 2 }}>
           댓글 {totalComments}
-          {/* 댓글 {comments.length} */}
         </Typography>
         <Button variant="outlined" onClick={scrollToCommentBox}>
           댓글 작성
