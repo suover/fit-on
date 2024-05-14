@@ -1,4 +1,3 @@
-//// CommentLeave.tsx
 import React, { useCallback, useState, ChangeEvent, FormEvent } from 'react';
 import { Box, TextField, InputAdornment } from '@mui/material';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
@@ -18,12 +17,11 @@ type Comment = {
 
 type CommentLeaveProps = {
   onInsert: (comment: Comment) => void;
-  prePopulatedText?: string; // Optional text to pre-fill the comment box, e.g., "@username"
+  prePopulatedText?: string;
 };
 
-// , prePopulatedText = ''
+
 const CommentLeave = ({ onInsert, prePopulatedText = '' }: CommentLeaveProps) => {
-  // const [value, setValue] = useState(prePopulatedText);
   const [value, setValue] = useState(prePopulatedText);
 
   const onChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -35,7 +33,7 @@ const CommentLeave = ({ onInsert, prePopulatedText = '' }: CommentLeaveProps) =>
       e.preventDefault();
 
       const newComment = {
-        no: Date.now(), // 예시 ID
+        no: Date.now(),
         id: 'currentUser',
         content: value,
         writtenTime: new Date().toISOString(),

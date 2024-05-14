@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, IconButton, Button } from '@mui/material';
-import AuthorInfo from '../authorinfo/AuthorInfo';
+import AuthorInfo from '../authorInfo/AuthorInfo';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import CommentLeave from './CommentLeave';
 import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
