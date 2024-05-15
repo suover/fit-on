@@ -2,20 +2,21 @@ import styled from 'styled-components';
 
 const Card = styled.div`
   width: 250px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 30px;
+  box-shadow: 2px 2px 5px 3px rgba(0, 0, 0, 0.1);
+  transform: scale(1);
+  transition: all 0.4s;
 
-  &:hover img {
-    transform: scale(1.05);
-  }
-
-  img {
-    transform: scale(1);
-    transition: all 0.4s;
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: 2px 2px 5px 6px rgba(0, 0, 0, 0.1);
   }
 
   div:first-of-type {
     width: 250px;
     height: 250px;
-    border-radius: 8px;
     overflow: hidden;
     position: relative;
   }
@@ -27,7 +28,7 @@ const TextBox = styled.div`
 
   h3 {
     width: 100%;
-    max-height: 50px;
+    height: 50px;
     font-weight: bold;
     word-break: break-word;
     overflow: hidden;
