@@ -11,7 +11,7 @@ type ContentType = {
   views?: number;
   likes: number;
   imageUrl: string;
-  target?: string;
+  target?: string|string[]; 
 };
 
 interface ContentCardProps<T extends ContentType> {
