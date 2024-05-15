@@ -23,7 +23,7 @@ const Card = styled.div`
 `;
 
 const TextBox = styled.div`
-  padding: 3px 5px 0 5px;
+  padding: 6px;
   box-sizing: border-box;
 
   h3 {
