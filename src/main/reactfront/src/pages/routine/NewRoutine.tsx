@@ -1,6 +1,15 @@
 import React, { useState, FormEvent } from 'react';
 
-import { Paper, Container, TextField, Typography, Button, Box, Chip, Grid } from '@mui/material';
+import {
+  Paper,
+  Container,
+  TextField,
+  Typography,
+  Button,
+  Box,
+  Chip,
+  Grid,
+} from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
@@ -93,7 +102,12 @@ const NewRoutine = () => {
               helperText="원하는 운동 목적을 선택하세요."
               onChange={setPurpose}
             />
-            <SelectBox label="난이도" options={Level} helperText="난이도를 선택하세요." onChange={setLevel} />
+            <SelectBox
+              label="난이도"
+              options={Level}
+              helperText="난이도를 선택하세요."
+              onChange={setLevel}
+            />
             <SelectBox
               label="운동 부위"
               allowNull
@@ -120,24 +134,26 @@ const NewRoutine = () => {
               />
             </Grid>
             <Grid item xs={1}>
-              <Button onClick={handleAddRoutineItem} variant="contained" color="primary" sx={{ height: '54px' }}>
+              <Button
+                onClick={handleAddRoutineItem}
+                variant="contained"
+                color="primary"
+                sx={{ height: '54px' }}
+              >
                 <PlaylistAddIcon />
               </Button>
             </Grid>
           </Grid>
           <Box
             sx={{
-              // border: 1,
               borderColor: 'primary.main',
               display: 'flex',
-              flexDirection: 'column', // flex 방향을 세로로 설정
+              flexDirection: 'column',
               flexWrap: 'wrap',
               gap: 1,
               mt: 0,
               mb: 1,
-              // borderRadius: '16px', // 테두리를 더 둥글게 설정
-              minHeight: '50px', // 최소 높이 설정
-              // alignItems: 'center', // 항목들을 수직 중앙 정렬
+              minHeight: '50px',
               alignItems: 'flex-start',
               padding: '8px',
             }}
@@ -156,7 +172,11 @@ const NewRoutine = () => {
           </Box>
 
           <Box sx={{ mb: 2, minHeight: 500 }}>
-            <Editor placeholder="루틴 내용을 입력하세요." value={content} onChange={setContent} />
+            <Editor
+              placeholder="루틴 내용을 입력하세요."
+              value={content}
+              onChange={setContent}
+            />
           </Box>
           <Box display="flex" justifyContent="flex-end">
             <Button type="submit" variant="contained" color="primary">

@@ -2,7 +2,11 @@ import React from 'react';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import { useNavigate } from 'react-router-dom';
 import Button, { ButtonPropsColorOverrides } from '@mui/material/Button';
-import { createTheme, PaletteColorOptions, ThemeProvider } from '@mui/material/styles';
+import {
+  createTheme,
+  PaletteColorOptions,
+  ThemeProvider,
+} from '@mui/material/styles';
 
 declare module '@mui/material/styles' {
   interface CustomPalette {
@@ -27,7 +31,8 @@ declare module '@mui/material/Button' {
 }
 const { palette } = createTheme();
 const { augmentColor } = palette;
-const createColor = (mainColor: string) => augmentColor({ color: { main: mainColor } });
+const createColor = (mainColor: string) =>
+  augmentColor({ color: { main: mainColor } });
 
 const theme = createTheme({
   palette: {
@@ -40,10 +45,10 @@ const theme = createTheme({
 });
 
 const ButtonNewRoutine = () => {
-  let navigate = useNavigate(); // navigate 훅 사용
+  let navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/new-routine'); // 여기에 목적지 경로를 적어주세요.
+    navigate('/new-routine');
   };
 
   return (

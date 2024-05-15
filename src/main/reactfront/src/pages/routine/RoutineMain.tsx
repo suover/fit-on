@@ -1,6 +1,6 @@
 import { Container, Paper, Box, Typography } from '@mui/material';
 import RoutineBestList from '../../components/routine/RoutineBestList';
-import ButtonNewRoutine from '../../components/button/ButtonNewRoutine';
+import ButtonNewRoutine from '../../components/common/button/ButtonNewRoutine';
 import RoutineTotalList from '../../components/routine/RoutineTotalList';
 
 const RoutineMain = () => {
@@ -13,7 +13,15 @@ const RoutineMain = () => {
           </Typography>
           <RoutineBestList />
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2, mb: 4, mr: 2 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            mt: 2,
+            mb: 4,
+            mr: 2,
+          }}
+        >
           <ButtonNewRoutine />
         </Box>
         <Box>

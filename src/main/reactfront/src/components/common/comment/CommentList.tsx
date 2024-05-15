@@ -1,16 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import Commentitem from './CommentComponent';
-type Comment = {
-  no: number;
-  id: string;
-  content: string;
-  writtenTime: string;
-  like: number;
-  created_at: Date;
-  updated_at: Date;
-  replies: Comment[];
-};
+import { Comment } from '../../../types/DummyData';
 
 type CommentListProps = {
   comments: Comment[];
@@ -21,7 +12,14 @@ const CommentList: React.FC<CommentListProps> = ({ comments }) => {
   return (
     <Box>
       {comments.map((comment, index) => (
-        <Box key={comment.no} sx={{ bgcolor: colors[index % colors.length], margin: '8px 0', padding: '8px' }}>
+        <Box
+          key={comment.id}
+          sx={{
+            bgcolor: colors[index % colors.length],
+            margin: '8px 0',
+            padding: '8px',
+          }}
+        >
           <Commentitem comment={comment} isReply={false} />
         </Box>
       ))}

@@ -3,25 +3,17 @@ import { Box, TextField, InputAdornment } from '@mui/material';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
-
-type Comment = {
-  no: number;
-  id: string;
-  content: string;
-  writtenTime: string;
-  like: number;
-  created_at: Date;
-  updated_at: Date;
-  replies: Comment[];
-};
+import { Comment } from '../../../types/DummyData';
 
 type CommentLeaveProps = {
   onInsert: (comment: Comment) => void;
   prePopulatedText?: string;
 };
 
-
-const CommentLeave = ({ onInsert, prePopulatedText = '' }: CommentLeaveProps) => {
+const CommentLeave = ({
+  onInsert,
+  prePopulatedText = '',
+}: CommentLeaveProps) => {
   const [value, setValue] = useState(prePopulatedText);
 
   const onChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -33,8 +25,8 @@ const CommentLeave = ({ onInsert, prePopulatedText = '' }: CommentLeaveProps) =>
       e.preventDefault();
 
       const newComment = {
-        no: Date.now(),
-        id: 'currentUser',
+        id: Date.now(),
+        userId: 'currentUser',
         content: value,
         writtenTime: new Date().toISOString(),
         like: 0,

@@ -4,17 +4,8 @@ import AuthorInfo from '../authorInfo/AuthorInfo';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import CommentLeave from './CommentLeave';
 import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
+import { Comment } from '../../../types/DummyData';
 
-type Comment = {
-  no: number;
-  id: string;
-  content: string;
-  writtenTime: string;
-  like: number;
-  created_at: Date;
-  updated_at: Date;
-  replies: Comment[];
-};
 type CommentProps = {
   comment: Comment;
   isReply?: boolean;
@@ -53,11 +44,20 @@ const CommentComponent: React.FC<CommentProps> = ({ comment, isReply }) => {
       }}
     >
       <Box sx={{ p: 1, display: 'flex', alignItems: 'center' }}>
-        {isReply && <SubdirectoryArrowRightIcon sx={{ mr: 2, color: 'gray' }} />}
-        <AuthorInfo imageUrl="" userName={comment.id} createTimeInfo={comment.writtenTime} />
+        {isReply && (
+          <SubdirectoryArrowRightIcon sx={{ mr: 2, color: 'gray' }} />
+        )}
+        <AuthorInfo
+          imageUrl=""
+          userName={comment.userId}
+          createTimeInfo={comment.writtenTime}
+        />
       </Box>
-      
-      <Typography variant="body1" sx={{ flexGrow: 1, mx: 2, mt: 2, mb: 2, wordBreak: 'break-word' }}>
+
+      <Typography
+        variant="body1"
+        sx={{ flexGrow: 1, mx: 2, mt: 2, mb: 2, wordBreak: 'break-word' }}
+      >
         {comment.content}
       </Typography>
       <Box sx={{ display: 'flex' }}>
@@ -70,10 +70,17 @@ const CommentComponent: React.FC<CommentProps> = ({ comment, isReply }) => {
         </IconButton>
       </Box>
 
-      <Box>{showReplyBox && <CommentLeave onInsert={handleReplySubmit} prePopulatedText={`@${comment.id} `} />}</Box>
+      <Box>
+        {showReplyBox && (
+          <CommentLeave
+            onInsert={handleReplySubmit}
+            prePopulatedText={`@${comment.id} `}
+          />
+        )}
+      </Box>
 
       {replies.map((reply, index) => (
-        <Box key={reply.no} sx={{ bgcolor: colors[index % colors.length] }}>
+        <Box key={reply.id} sx={{ bgcolor: colors[index % colors.length] }}>
           <CommentComponent comment={reply} isReply={true} />
         </Box>
       ))}
@@ -82,4 +89,3 @@ const CommentComponent: React.FC<CommentProps> = ({ comment, isReply }) => {
 };
 
 export default CommentComponent;
-

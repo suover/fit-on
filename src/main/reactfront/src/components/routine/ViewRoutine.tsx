@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Container, Box, Typography, Paper } from '@mui/material';
-import AuthorInfo from './../common/AuthorInfo';
+import AuthorInfo from '../common/authorInfo/AuthorInfo';
 
-import ButtonLikePost from '../button/ButtonLikePost';
-import ButtonShare from '../button/ButtonShare';
+import ButtonLikePost from '../common/button/ButtonLikePost';
+import ButtonShare from '../common/button/ButtonShare';
 import CommentTemplate from '../common/comment/CommentsTemplate';
-import { Comment,Routine} from '../../types/DummyData';
-
-
+import { Comment, Routine } from '../../types/DummyData';
 
 const ViewRoutine = () => {
   // useLocation 훅을 사용하여 navigate로 전달된 state에 접근
@@ -39,9 +37,11 @@ const ViewRoutine = () => {
     setRoutine(locationRoutine);
   }, [locationRoutine]);
 
-// 댓글 추가 함수
+  // 댓글 추가 함수
   const handleCommentInsert = (newComment: Comment) => {
-    const updatedComments = routine.comments ? [...routine.comments, newComment] : [newComment];
+    const updatedComments = routine.comments
+      ? [...routine.comments, newComment]
+      : [newComment];
     setRoutine({ ...routine, comments: updatedComments });
   };
 
@@ -53,28 +53,57 @@ const ViewRoutine = () => {
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Box sx={{ ml: 2 }}>
-            <AuthorInfo imageUrl="" userName={routine.userId} createTimeInfo={routine.writtenTime} />
+            <AuthorInfo
+              imageUrl=""
+              userName={routine.userId}
+              createTimeInfo={routine.writtenTime}
+            />
           </Box>
           <Typography variant="body2" color="text.secondary" sx={{ mx: 4 }}>
             {`Views: ${routine.view || 0}`}
           </Typography>
         </Box>
-        <Box sx={{ minHeight: '200px', height: 'auto', overflow: 'auto', my: 4, p: 2, mb: 3 }}>
-          <Typography variant="body1">{routine.content || '내용 없음'}</Typography>
+        <Box
+          sx={{
+            minHeight: '200px',
+            height: 'auto',
+            overflow: 'auto',
+            my: 4,
+            p: 2,
+            mb: 3,
+          }}
+        >
+          <Typography variant="body1">
+            {routine.content || '내용 없음'}
+          </Typography>
         </Box>
 
         {/* 좋아요, 북마크 */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2, ml: 2, alignItems: 'center' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            mb: 2,
+            ml: 2,
+            alignItems: 'center',
+          }}
+        >
           <Box sx={{ mr: 2 }}>
-            <ButtonLikePost isLiked={isLiked} likeNum={routine.like} onClick={handleLikeClick} />
+            <ButtonLikePost
+              isLiked={isLiked}
+              likeNum={routine.like}
+              onClick={handleLikeClick}
+            />
           </Box>
 
-          <ButtonShare Shared={isShared} onClick={handleShareClick} />
+          <ButtonShare isShared={isShared} onClick={handleShareClick} />
         </Box>
       </Paper>
 
-      {/* 댓글 섹션 - CommentTemplate에 routine.comments 전달 */}
-      <CommentTemplate comments={routine.comments} onInsert={handleCommentInsert} />
+      <CommentTemplate
+        comments={routine.comments}
+        onInsert={handleCommentInsert}
+      />
     </Container>
   );
 };
