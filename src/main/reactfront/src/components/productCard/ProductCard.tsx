@@ -6,7 +6,7 @@ import {
   CardInfo,
   CardText,
   CardLike,
-} from './CardComponent.styles';
+} from './ProductCard.styles';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { Pagination, Stack } from '@mui/material';
 
