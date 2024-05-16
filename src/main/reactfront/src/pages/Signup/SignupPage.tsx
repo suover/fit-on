@@ -13,7 +13,10 @@ import KeyIcon from '@mui/icons-material/Key';
 import PersonIcon from '@mui/icons-material/Person';
 import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import { SignupButtons, SignupForm } from './SignupPage.styles';
+import {
+  SignupButtons,
+  SignupForm,
+} from '../../styles/Signup/SignupPage.styles';
 import GenericButton from '../../components/common/genericButton/GenericButton';
 const SignupPage: React.FC = () => {
   const navigate = useNavigate();
