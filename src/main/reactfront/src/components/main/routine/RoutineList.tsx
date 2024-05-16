@@ -2,11 +2,7 @@ import React from 'react';
 
 import { RoutineData } from '../../../models/data';
 
-import {
-  CardWrapper,
-  RoutineImgCard,
-  TextBox,
-} from '../../../styles/main/RoutineList';
+import { CardWrapper, RoutineImgCard, TextBox } from './RoutineList.styles';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
 interface RoutineListProps {

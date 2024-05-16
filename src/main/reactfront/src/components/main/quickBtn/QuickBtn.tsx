@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import QBtn from '../../../styles/main/QuickBtn';
+import QBtn from './QuickBtn.styles';
 
 interface QuickBtnProps {
   btnName: string;

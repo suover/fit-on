@@ -2,7 +2,7 @@ import React from 'react';
 
 import QuickBtn from './QuickBtn';
 
-import Btns from '../../../styles/main/QuickBtns';
+import Btns from './QuickBtns.styles';
 
 import LocalMallIcon from '@mui/icons-material/LocalMall'; // 상품몰
 import MedicalInformationIcon from '@mui/icons-material/MedicalInformation'; // 운동정보

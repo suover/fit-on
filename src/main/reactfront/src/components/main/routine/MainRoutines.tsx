@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { routines } from '../../../DummyData';
-import RoutineLists from '../../../styles/main/MainRoutines';
+import RoutineLists from './MainRoutines.styles';
 import RoutineList from './RoutineList';
 import routineImg1 from '../../../assets/routine1.jpg';
 import routineImg2 from '../../../assets/routine2.jpg';
