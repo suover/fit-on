@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { MainHeader, Logo, Gnb, Tnb } from '../../../styles/layout/Header';
+import { MainHeader, Logo, Gnb, Tnb } from './Header.styles';
 import { Container } from '@mui/material';
 import TopBtn from '../../common/TopBtn';
 

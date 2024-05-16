@@ -6,7 +6,7 @@ import {
   InfoList,
   Address,
   ServiceInfo,
-} from '../../../styles/layout/Footer';
+} from './Footer.styles';
 import { Container } from '@mui/material';
 
 const Footer: React.FC = () => {

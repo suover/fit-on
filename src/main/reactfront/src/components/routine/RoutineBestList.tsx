@@ -1,12 +1,10 @@
 import React from 'react';
-import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+
 import { Box } from '@mui/material';
 
 import RoutineCard from './RoutineCard';
 
-import { Routine ,routines} from '../../types/DummyData';
+import { Routine, routines } from '../../types/DummyData';
 
 const RoutineBestList = () => {
   const settings = {
@@ -18,26 +16,24 @@ const RoutineBestList = () => {
   };
   return (
     <Box sx={{ width: '100%', overflow: 'hidden' }}>
-      <Slider {...settings}>
+      {/* 스와이퍼 적용 부분 */}
+      {/* <Slider {...settings}>
         {routines.map((routine) => (
           <Box
             key={routine.id}
             sx={{
               display: 'flex',
               justifyContent: 'center',
-              alignItems: 'center', 
-              p: 1, 
+              alignItems: 'center',
+              p: 1,
             }}
           >
             <RoutineCard routine={routine} />
           </Box>
         ))}
-      </Slider>
+      </Slider> */}
     </Box>
   );
 };
 
 export default RoutineBestList;
-
-
-
