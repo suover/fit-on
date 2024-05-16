@@ -30,7 +30,7 @@ export const Search = styled.div`
   justify-content: flex-end;
   align-items: center;
   margin-bottom: 30px;
-  margin-right: 355px;
+  margin-right: 295px;
   & input,
   & button {
     box-sizing: border-box;
