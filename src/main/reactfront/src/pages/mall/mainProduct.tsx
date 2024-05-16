@@ -22,13 +22,15 @@ const CenteredContainer = styled.div`
 const MallContainer = styled.div`
   display: flex;
   height: 100%;
+  padding-left: 100px;
+  margin-top: 20px;
 `;
 export const Search = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin-bottom: 10px;
-  margin-right: 280px;
+  margin-bottom: 30px;
+  margin-right: 355px;
   & input,
   & button {
     box-sizing: border-box;
@@ -74,7 +76,7 @@ const MainProduct: React.FC = () => {
           <Search>
             <SearchBox
               onSearch={handleSearch}
-              styleProps={{ width: '200px' }}
+              styleProps={{ width: '220px' }}
             />
           </Search>
           <CardComponent product={filteredProducts} />

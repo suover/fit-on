@@ -35,7 +35,7 @@ const CardComponent: React.FC<CardComponentProps> = ({ product }) => {
         rowSpacing={3}
         columnSpacing={{ xs: 1, sm: 2, md: 3 }}
         justifyContent="center"
-        sx={{ maxWidth: 1200, margin: '0 auto', width: '100%' }}
+        sx={{ maxWidth: 1200, width: '100%' }}
       >
         <Cards>
           {product.map((product) => {
