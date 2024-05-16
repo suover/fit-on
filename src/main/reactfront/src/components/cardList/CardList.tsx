@@ -14,7 +14,7 @@ type ContentsType = {
   views?: number;
   likes: number;
   imageUrl: string;
-  target?: string;
+  target?: string | string[];
 };
 
 interface CardListsProps<T> {
