@@ -70,19 +70,3 @@ const MainInfo: React.FC = () => {
 };
 
 export default MainInfo;
-
-// const swiperSetting = {
-//   spaceBetween: '40px',
-//   slidesPerView: 4,
-//   modules: [Navigation],
-//   className: 'mySwiper',
-//   navigation: {
-//     prevEl: prevBtnRef.current,
-//     nextEl: nextBtnRef.current,
-//   },
-//   onBeforeInit: (swiper: SwiperClass) => {
-//     swiper.params.navigation.prevEl = prevBtnRef.current;
-//     swiper.params.navigation.nextEl = nextBtnRef.current;
-//     swiper.navigation.update();
-//   },
-// };
