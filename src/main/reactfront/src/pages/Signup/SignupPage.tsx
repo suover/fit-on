@@ -77,11 +77,11 @@ const SignupPage: React.FC = () => {
         );
         setIsNickname(false);
       } else {
-        setNicknameMessage(''); // 유효한 입력일 경우 메시지를 지웁니다.
+        setNicknameMessage('');
         setIsNickname(true);
       }
     },
-    [setNickname, setIsNickname, setNicknameMessage], // 의존성 배열에 상태 업데이트 함수들을 포함
+    [setNickname, setIsNickname, setNicknameMessage],
   );
   // 비밀번호 유효성 검사
   const handleChangePassword = useCallback(
@@ -101,7 +101,7 @@ const SignupPage: React.FC = () => {
         setIsPassword(true);
       }
     },
-    [setPassword, setIsPassword, setPasswordMessage], // 의존성 배열에 상태 업데이트 함수들을 포함
+    [setPassword, setIsPassword, setPasswordMessage],
   );
   //비밀번호 재입력 유효성 검사
   const handleChangePasswordConfirm = useCallback(
@@ -122,7 +122,7 @@ const SignupPage: React.FC = () => {
       setPasswordConfirm,
       setIsPasswordConfirm,
       setPasswordConfirmMessage,
-    ], // 의존성 배열에 관련 함수와 상태 포함
+    ],
   );
   // 이름 유효성 검사
   const handleChangeName = useCallback(
@@ -304,14 +304,14 @@ const SignupPage: React.FC = () => {
                 }}
                 sx={{
                   '& label.Mui-focused': {
-                    color: 'black', // 포커스 상태에서 레이블 색상 변경
+                    color: 'black',
                   },
                   '& .MuiOutlinedInput-root': {
                     '& fieldset': {
-                      borderColor: 'black', // 여기에서 테두리 색상을 설정합니다.
+                      borderColor: 'black',
                     },
                     '&.Mui-focused fieldset': {
-                      borderColor: 'black', // 포커스 상태의 테두리 색상을 배경색과 동일하게 설정
+                      borderColor: 'black',
                       borderWidth: 1,
                     },
                   },
@@ -354,14 +354,14 @@ const SignupPage: React.FC = () => {
               }}
               sx={{
                 '& label.Mui-focused': {
-                  color: 'black', // 포커스 상태에서 레이블 색상 변경
+                  color: 'black',
                 },
                 '& .MuiOutlinedInput-root': {
                   '& fieldset': {
-                    borderColor: 'black', // 여기에서 테두리 색상을 설정합니다.
+                    borderColor: 'black',
                   },
                   '&.Mui-focused fieldset': {
-                    borderColor: 'black', // 포커스 상태의 테두리 색상을 배경색과 동일하게 설정
+                    borderColor: 'black',
                     borderWidth: 1,
                   },
                 },
@@ -393,14 +393,14 @@ const SignupPage: React.FC = () => {
               }}
               sx={{
                 '& label.Mui-focused': {
-                  color: 'black', // 포커스 상태에서 레이블 색상 변경
+                  color: 'black',
                 },
                 '& .MuiOutlinedInput-root': {
                   '& fieldset': {
-                    borderColor: 'black', // 여기에서 테두리 색상을 설정합니다.
+                    borderColor: 'black',
                   },
                   '&.Mui-focused fieldset': {
-                    borderColor: 'black', // 포커스 상태의 테두리 색상을 배경색과 동일하게 설정
+                    borderColor: 'black',
                     borderWidth: 1,
                   },
                 },
@@ -430,14 +430,14 @@ const SignupPage: React.FC = () => {
               }}
               sx={{
                 '& label.Mui-focused': {
-                  color: 'black', // 포커스 상태에서 레이블 색상 변경
+                  color: 'black',
                 },
                 '& .MuiOutlinedInput-root': {
                   '& fieldset': {
-                    borderColor: 'black', // 여기에서 테두리 색상을 설정합니다.
+                    borderColor: 'black',
                   },
                   '&.Mui-focused fieldset': {
-                    borderColor: 'black', // 포커스 상태의 테두리 색상을 배경색과 동일하게 설정
+                    borderColor: 'black',
                     borderWidth: 1,
                   },
                 },
@@ -472,14 +472,14 @@ const SignupPage: React.FC = () => {
               }}
               sx={{
                 '& label.Mui-focused': {
-                  color: 'black', // 포커스 상태에서 레이블 색상 변경
+                  color: 'black',
                 },
                 '& .MuiOutlinedInput-root': {
                   '& fieldset': {
-                    borderColor: 'black', // 여기에서 테두리 색상을 설정합니다.
+                    borderColor: 'black',
                   },
                   '&.Mui-focused fieldset': {
-                    borderColor: 'black', // 포커스 상태의 테두리 색상을 배경색과 동일하게 설정
+                    borderColor: 'black',
                     borderWidth: 1,
                   },
                 },
@@ -506,14 +506,14 @@ const SignupPage: React.FC = () => {
               }}
               sx={{
                 '& label.Mui-focused': {
-                  color: 'black', // 포커스 상태에서 레이블 색상 변경
+                  color: 'black',
                 },
                 '& .MuiOutlinedInput-root': {
                   '& fieldset': {
-                    borderColor: 'black', // 여기에서 테두리 색상을 설정합니다.
+                    borderColor: 'black',
                   },
                   '&.Mui-focused fieldset': {
-                    borderColor: 'black', // 포커스 상태의 테두리 색상을 배경색과 동일하게 설정
+                    borderColor: 'black',
                     borderWidth: 1,
                   },
                 },
