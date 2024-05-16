@@ -71,7 +71,7 @@ export const Day = styled.li`
   justify-content: flex-start;
   padding: 0.5rem;
   height: 8rem;
-  max-width: 10rem;
+  max-width: 12rem;
   min-width: 7rem;
   overflow: hidden;
 
@@ -97,7 +97,7 @@ export const Event = styled.div`
   margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
-  overflow: hidden; /* 내용이 넘치면 숨기기 */
+  overflow: hidden;
 
   &::before {
     content: '';

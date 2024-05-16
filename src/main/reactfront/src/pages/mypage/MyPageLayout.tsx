@@ -113,8 +113,9 @@ const MyPageLayout: React.FC = () => {
         sx={{
           marginTop: '100px',
           marginBottom: '100px',
+          marginRight: '285px',
           width: '100%',
-          maxWidth: 1200,
+          maxWidth: '1440px',
           display: 'flex',
           flexDirection: 'row',
         }}
