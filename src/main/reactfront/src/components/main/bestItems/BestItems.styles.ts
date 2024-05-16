@@ -1,0 +1,32 @@
+import styled from 'styled-components';
+
+const Items = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  position: relative;
+`;
+
+const CustomBtn = styled.button`
+  position: absolute;
+  top: 50%;
+  transform: translateY(-100%);
+  z-index: 10;
+  cursor: pointer;
+  background: transparent;
+  color: #555;
+
+  svg {
+    font-size: 2rem;
+  }
+`;
+
+const PrevBtn = styled(CustomBtn)`
+  left: -50px;
+`;
+
+const NextBtn = styled(CustomBtn)`
+  right: -50px;
+`;
+
+export { Items, PrevBtn, NextBtn };
