@@ -28,7 +28,7 @@ const Item = styled(Box)(({ theme }) => ({
 
 const MyHome: React.FC = () => {
   return (
-    <Box padding={2} sx={{ flexGrow: 1 }}>
+    <Box sx={{ marginTop: 3, flexGrow: 1 }}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Item
