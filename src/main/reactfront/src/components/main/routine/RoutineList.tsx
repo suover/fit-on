@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { RoutineData } from '../../../models/data';
+import { RoutineData } from '../../../types/MainDummyData';
 
 import { CardWrapper, RoutineImgCard, TextBox } from './RoutineList.styles';
 import FavoriteIcon from '@mui/icons-material/Favorite';

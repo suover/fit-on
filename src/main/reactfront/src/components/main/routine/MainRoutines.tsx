@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { routines } from '../../../DummyData';
+import { routines } from '../../../types/MainDummyData';
 import RoutineLists from './MainRoutines.styles';
 import RoutineList from './RoutineList';
-import routineImg1 from '../../../assets/routine1.jpg';
-import routineImg2 from '../../../assets/routine2.jpg';
-import routineImg3 from '../../../assets/routine3.jpg';
+import routineImg1 from '../../../assets/img/main/routine1.jpg';
+import routineImg2 from '../../../assets/img/main/routine2.jpg';
+import routineImg3 from '../../../assets/img/main/routine3.jpg';
 
 const MainRoutines: React.FC = () => {
   return (

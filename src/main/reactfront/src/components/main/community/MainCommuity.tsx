@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { posts } from '../../../DummyData';
+import { posts } from '../../../types/MainDummyData';
 
 import ListTable from '../../ListTable/ListTable';
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
-import { InfoPosts } from '../../../DummyData';
+import { InfoPosts } from '../../../types/MainDummyData';
 import ContentCard from '../../contentCard/ContentCard';
 import {
   StyledSwiperWrapper,

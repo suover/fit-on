@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { Product } from '../../../models/data';
-import { products } from '../../../DummyData';
+import { Product } from '../../../types/MainDummyData';
+import { products } from '../../../types/MainDummyData';
 import Item from '../../productItem/ProductItem';
 import { Items, PrevBtn, NextBtn } from './BestItems.styles';
 
