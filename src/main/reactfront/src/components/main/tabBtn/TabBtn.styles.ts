@@ -28,6 +28,3 @@ const Button = styled.button<ButtonProps>`
 `;
 
 export default Button;
-
-// background: ${(props) => (props.$active ? '#1b263b' : '#e0e1dd')};
-// color: ${(props) => (props.$active ? '#fff' : '#333')};
