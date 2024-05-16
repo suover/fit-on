@@ -65,7 +65,7 @@ const ButtonCategoryTag: React.FC<ButtonCategoryTagProps> = ({
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <Typography variant="h5">인기 카테고리</Typography>
+      <Typography variant="h5">카테고리</Typography>
       <Grid
         container
         spacing={{ xs: 2, md: 3 }}
