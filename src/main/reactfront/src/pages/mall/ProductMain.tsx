@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import CardComponent from '../../components/productCard/ProductCard';
+import ProductCard from '../../components/productCard/ProductCard';
 import SideNavbar from '../../components/layout/sideNavBar/SideNavbar';
 import HomeIcon from '@mui/icons-material/Home';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -36,7 +36,7 @@ export const Search = styled.div`
   }
 `;
 
-const MainProduct: React.FC = () => {
+const ProductMain: React.FC = () => {
   const [filteredProducts, setFilteredProducts] =
     useState<Product[]>(productData);
 
@@ -78,11 +78,11 @@ const MainProduct: React.FC = () => {
               styleProps={{ width: '220px' }}
             />
           </Search>
-          <CardComponent product={filteredProducts} />
+          <ProductCard product={filteredProducts} />
         </CenteredContainer>
       </MallContainer>
     </>
   );
 };
 
-export default MainProduct;
+export default ProductMain;

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import { MainHeader, Logo, Gnb, Tnb } from './Header.styles';
 import { Container } from '@mui/material';
@@ -17,12 +18,12 @@ const Header = () => {
         }}
       >
         <Logo>
-          <a href="/">FitOn</a>
+          <Link to="/">FitOn</Link>
         </Logo>
         <Gnb>
-          <li>MALL</li>
-          <li>COMMUNITY</li>
-          <li>ROUTINE</li>
+          <Link to="mall">MALL</Link>
+          <Link to="community">COMMUNITY</Link>
+          <Link to="routine">ROUTINE</Link>
           <li>INFORMATION</li>
         </Gnb>
         <Tnb>

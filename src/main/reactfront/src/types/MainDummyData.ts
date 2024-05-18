@@ -1,7 +1,7 @@
-import thumbnail from './assets/loop.jpg';
-import productImg1 from './assets/product1.jpg'; // 실제 데이터 들어오면 사진 삭제
-import productImg2 from './assets/product2.jpg';
-import productImg3 from './assets/product3.jpg';
+import thumbnail from '../assets/img/main/loop.jpg';
+import productImg1 from '../assets/img/main/product1.jpg'; // 실제 데이터 들어오면 사진 삭제
+import productImg2 from '../assets/img/main/product2.jpg';
+import productImg3 from '../assets/img/main/product3.jpg';
 
 export interface PostData {
   id: number;
