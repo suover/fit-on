@@ -45,6 +45,17 @@ export interface Product {
   imageUrl: string;
 }
 
+export interface Comment {
+  id: number;
+  userId: string;
+  content: string;
+  writtenTime: string;
+  likes: number;
+  createdDate: string;
+  updatedData: string;
+  replies: Comment[];
+}
+
 export interface FaqData {
   faqNum: number;
   question: string;
@@ -622,6 +633,81 @@ export const products: { [key: string]: Product[] } = {
     },
   ],
 };
+
+export const comments: Comment[] = [
+  {
+    id: 1,
+    userId: 'user01',
+    content: 'This is a great post!',
+    writtenTime: '10:00 AM',
+    likes: 5,
+    createdDate: '2024-05-05',
+    updatedData: '2024-05-05',
+    replies: [
+      {
+        id: 2,
+        userId: 'user02',
+        content: 'I totally agree with you!',
+        writtenTime: '10:15 AM',
+        likes: 3,
+        createdDate: '2024-05-05',
+        updatedData: '2024-05-05',
+        replies: [],
+      },
+    ],
+  },
+  {
+    id: 3,
+    userId: 'user03',
+    content: 'Thanks for sharing this!',
+    writtenTime: '11:00 AM',
+    likes: 2,
+    createdDate: '2024-05-05',
+    updatedData: '2024-05-05',
+    replies: [],
+  },
+  {
+    id: 4,
+    userId: 'user04',
+    content: 'Can someone explain this topic more?',
+    writtenTime: '12:00 PM',
+    likes: 1,
+    createdDate: '2024-05-05',
+    updatedData: '2024-05-05',
+    replies: [
+      {
+        id: 5,
+        userId: 'user05',
+        content: 'Sure, what do you need help with?',
+        writtenTime: '12:05 PM',
+        likes: 1,
+        createdDate: '2024-05-05',
+        updatedData: '2024-05-05',
+        replies: [],
+      },
+      {
+        id: 6,
+        userId: 'user06',
+        content: 'I can help too!',
+        writtenTime: '12:10 PM',
+        likes: 0,
+        createdDate: '2024-05-05',
+        updatedData: '2024-05-05',
+        replies: [],
+      },
+    ],
+  },
+  {
+    id: 7,
+    userId: 'user07',
+    content: 'This needs more discussion.',
+    writtenTime: '01:00 PM',
+    likes: 4,
+    createdDate: '2024-05-05',
+    updatedData: '2024-05-05',
+    replies: [],
+  },
+];
 
 export const notices: ServiceData[] = [
   {
