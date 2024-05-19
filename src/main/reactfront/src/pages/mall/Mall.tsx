@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
+import { Outlet } from 'react-router-dom';
+
 import styled from 'styled-components';
+
 import ProductCard from '../../components/productCard/ProductCard';
 import SideNavbar from '../../components/layout/sideNavBar/SideNavbar';
 import HomeIcon from '@mui/icons-material/Home';
@@ -36,24 +39,24 @@ export const Search = styled.div`
   }
 `;
 
-const ProductMain: React.FC = () => {
+const Mall: React.FC = () => {
   const [filteredProducts, setFilteredProducts] =
     useState<Product[]>(productData);
 
   const menuItems = [
-    { route: '/mainProduct', menuName: '쇼핑몰', icon: HomeIcon },
+    { route: '/mall', menuName: '쇼핑몰', icon: HomeIcon },
     {
-      route: '/fitness',
+      route: 'fitness',
       menuName: '운동용품',
       icon: FitnessCenterIcon,
     },
     {
-      route: '/supplement',
+      route: 'supplement',
       menuName: '보충제',
       icon: LocalPharmacyIcon,
     },
-    { route: '/food', menuName: '식품', icon: RestaurantIcon },
-    { route: '/cart', menuName: '장바구니', icon: ShoppingCartIcon, badge: 3 },
+    { route: 'food', menuName: '식품', icon: RestaurantIcon },
+    { route: 'cart', menuName: '장바구니', icon: ShoppingCartIcon, badge: 3 },
   ];
 
   const handleSearch = (query: string) => {
@@ -78,11 +81,11 @@ const ProductMain: React.FC = () => {
               styleProps={{ width: '220px' }}
             />
           </Search>
-          <ProductCard product={filteredProducts} />
+          <Outlet />
         </CenteredContainer>
       </MallContainer>
     </>
   );
 };
 
-export default ProductMain;
+export default Mall;

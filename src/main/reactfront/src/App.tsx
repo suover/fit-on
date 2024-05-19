@@ -7,7 +7,11 @@ import Footer from './components/layout/footer/Footer';
 import MuiFontTheme from './styles/common/MuiFontTheme';
 
 import Main from './pages/main/Main'; // 메인
-import ProductMain from './pages/mall/ProductMain';
+import Mall from './pages/mall/Mall'; // 쇼핑몰
+import Products from './pages/mall/Products';
+import Fittness from './pages/mall/Fittness';
+import Food from './pages/mall/Food';
+import Supplement from './pages/mall/Supplemnet';
 import Community from './pages/community/CommunityMain'; // 커뮤니티
 import ViewPostDetail from './pages/community/ViewPostDetail';
 import NewPost from './pages/community/NewPost';
@@ -42,7 +46,12 @@ const App = () => {
       <Header />
       <Routes>
         <Route path="/" element={<Main />} />
-        <Route path="/mall" element={<ProductMain />} />
+        <Route path="/mall" element={<Mall />}>
+          <Route index element={<Products />} />
+          <Route path="fitness" element={<Fittness />} />
+          <Route path="supplement" element={<Supplement />} />
+          <Route path="food" element={<Food />} />
+        </Route>
         <Route path="community" element={<Community />} />
         <Route path="community/post/:postNo" element={<ViewPostDetail />} />
         <Route path="community/new-post" element={<NewPost />} />
