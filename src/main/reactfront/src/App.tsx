@@ -7,6 +7,8 @@ import Footer from './components/layout/footer/Footer';
 import MuiFontTheme from './styles/common/MuiFontTheme';
 
 import Main from './pages/main/Main'; // 메인
+import SigninPage from './pages/Signin/SigninPage'; // 회원가입
+import SignupPage from './pages/Signup/SignupPage';
 import Mall from './pages/mall/Mall'; // 쇼핑몰
 import Products from './pages/mall/Products';
 import Fittness from './pages/mall/Fittness';
@@ -18,6 +20,8 @@ import NewPost from './pages/community/NewPost';
 import RoutineMain from './pages/routine/RoutineMain'; // 루틴
 import ViewRoutineDetail from './pages/routine/ViewRoutineDetail';
 import NewRoutine from './pages/routine/NewRoutine';
+import Info from './pages/information/Info'; // 정보
+import InfoDetail from './pages/information/InfoDetail';
 import Service from './pages/csCenter/ClientService'; // CS Center
 import Notice from './pages/csCenter/Notice';
 import NoticeDetail from './pages/csCenter/NoticeDetail';
@@ -46,6 +50,8 @@ const App = () => {
       <Header />
       <Routes>
         <Route path="/" element={<Main />} />
+        <Route path="sign-in" element={<SigninPage />} />
+        <Route path="sign-up" element={<SignupPage />} />
         <Route path="/mall" element={<Mall />}>
           <Route index element={<Products />} />
           <Route path="fitness" element={<Fittness />} />
@@ -58,6 +64,8 @@ const App = () => {
         <Route path="routine" element={<RoutineMain />} />
         <Route path="routine/:routineNo" element={<ViewRoutineDetail />} />
         <Route path="new-routine" element={<NewRoutine />} />
+        <Route path="info" element={<Info />} />
+        <Route path="info/:infoNum" element={<InfoDetail />} />
         <Route path="service" element={<Service />}>
           <Route index element={<Notice />} />
           <Route path="notice" element={<Notice />} />
