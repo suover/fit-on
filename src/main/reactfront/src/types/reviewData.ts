@@ -1,3 +1,7 @@
+import image02 from '../assets/img/image02.jpg';
+import image03 from '../assets/img/image03.jpg';
+import image04 from '../assets/img/image04.jpg';
+
 export interface Review {
   id: string;
   title: string;
@@ -14,7 +18,7 @@ export const reviewDataRaw: Review[] = [
     rating: 5,
     text: '이 제품을 정말 좋아합니다. 추천해요! 이 제품을 정말 좋아합니다. 추천해요! 이 제품을 정말 좋아합니다. 추천해요! 이 제품을 정말 좋아합니다. 추천해요! 이 제품을 정말 좋아합니다. 추천해요! 이 제품을 정말 좋아합니다. 추천해요! 이 제품을 정말 좋아합니다. 추천해요! 이 제품을 정말 좋아합니다. 추천해요!',
     date: '2023-02-01',
-    image: ['/img/image02.jpg', '/img/image02.jpg', '/img/image02.jpg'],
+    image: [image04, image02, image03],
   },
   {
     id: 'userId2',
