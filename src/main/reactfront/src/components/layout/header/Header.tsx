@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import { MainHeader, Logo, Gnb, Tnb } from './Header.styles';
 import { Container } from '@mui/material';
@@ -17,17 +18,21 @@ const Header = () => {
         }}
       >
         <Logo>
-          <a href="/">FitOn</a>
+          <Link to="/">FitOn</Link>
         </Logo>
         <Gnb>
-          <li>MALL</li>
-          <li>COMMUNITY</li>
-          <li>ROUTINE</li>
-          <li>INFORMATION</li>
+          <Link to="mall">MALL</Link>
+          <Link to="community">COMMUNITY</Link>
+          <Link to="routine">ROUTINE</Link>
+          <Link to="info">INFORMATION</Link>
         </Gnb>
         <Tnb>
-          <li>로그인</li>
-          <li>회원가입</li>
+          <li>
+            <Link to="sign-in">로그인</Link>
+          </li>
+          <li>
+            <Link to="sign-up">회원가입</Link>
+          </li>
           <li>장바구니</li>
         </Tnb>
       </Container>

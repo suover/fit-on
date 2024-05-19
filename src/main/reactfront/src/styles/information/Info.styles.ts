@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import banner from '../../assets/infobanner1.jpg';
+import banner from '../../assets/img/information/infobanner1.jpg';
 
 const InfoSection = styled.section`
   width: 100%;

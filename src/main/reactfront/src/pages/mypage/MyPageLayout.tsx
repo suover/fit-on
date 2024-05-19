@@ -1,7 +1,7 @@
 import React from 'react';
-import { Box } from '@mui/material';
-import { Routes, Route } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
+import { Box } from '@mui/material';
 import HomeOutlined from '@mui/icons-material/HomeOutlined';
 import AccountBoxOutlined from '@mui/icons-material/AccountBoxOutlined';
 import FitnessCenterOutlined from '@mui/icons-material/FitnessCenterOutlined';
@@ -15,18 +15,6 @@ import QuestionAnswerOutlined from '@mui/icons-material/QuestionAnswerOutlined';
 import ContactSupportOutlined from '@mui/icons-material/ContactSupportOutlined';
 
 import SideNavbar from '../../components/layout/sideNavBar/SideNavbar';
-import MyHome from './MyHome';
-import UserInfoPage from './UserInfoPage';
-import MyRoutinePage from './MyRoutinePage';
-import PostManagementPage from './PostManagementPage';
-import CommentManagementPage from './CommentManagementPage';
-import OrderInfoPage from './OrderHistoryPage';
-import ReturnAndExchangePage from './ReturnAndExchangePage';
-import ShippingAddressPage from './ShippingAddressPage';
-import ProductReviewPage from './ProductReviewPage';
-import ProductInquiryPage from './ProductInquiryPage';
-import OneToOneInquiryPage from './OneToOneInquiryPage';
-import UserInfoLoginPage from './UserInfoLoginPage';
 
 const menuItems = [
   {
@@ -128,26 +116,7 @@ const MyPageLayout: React.FC = () => {
           marginTop="20px"
         />
         <Box component="main" sx={{ flexGrow: 1, pl: 5 }}>
-          <Routes>
-            <Route path="/" element={<MyHome />} />
-            <Route path="user-info-login" element={<UserInfoLoginPage />} />
-            <Route path="user-info" element={<UserInfoPage />} />
-            <Route path="my-routine" element={<MyRoutinePage />} />
-            <Route path="post-management" element={<PostManagementPage />} />
-            <Route
-              path="comment-management"
-              element={<CommentManagementPage />}
-            />
-            <Route path="order-history" element={<OrderInfoPage />} />
-            <Route path="return-exchange" element={<ReturnAndExchangePage />} />
-            <Route path="shipping-address" element={<ShippingAddressPage />} />
-            <Route path="product-review" element={<ProductReviewPage />} />
-            <Route path="product-inquiry" element={<ProductInquiryPage />} />
-            <Route
-              path="one-to-one-inquiry"
-              element={<OneToOneInquiryPage />}
-            />
-          </Routes>
+          <Outlet />
         </Box>
       </Box>
     </Box>

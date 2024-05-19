@@ -16,7 +16,7 @@ const RoutineTotalList = () => {
         width: '100%',
       }}
     >
-      <CardLists contents={routines} pageURL="routines" Icon={ShareIcon} />
+      <CardLists contents={routines} pageURL="routine" Icon={ShareIcon} />
     </Box>
   );
 };
