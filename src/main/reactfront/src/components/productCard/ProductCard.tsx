@@ -36,7 +36,7 @@ interface CardComponentProps {
   product: Product[];
 }
 
-const CardComponent: React.FC<CardComponentProps> = ({ product }) => {
+const ProductCard: React.FC<CardComponentProps> = ({ product }) => {
   return (
     <>
       <div style={containerStyle as React.CSSProperties}>
@@ -95,4 +95,4 @@ const CardComponent: React.FC<CardComponentProps> = ({ product }) => {
   );
 };
 
-export default CardComponent;
+export default ProductCard;

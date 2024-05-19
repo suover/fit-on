@@ -56,6 +56,32 @@ export interface Comment {
   replies: Comment[];
 }
 
+export interface FaqData {
+  faqNum: number;
+  question: string;
+  answer: string;
+}
+
+export interface ServiceData {
+  id: number;
+  title: string;
+  content: string;
+  createDate: string;
+  writer: string;
+  views: number;
+}
+
+export interface Inquiry {
+  id: number;
+  state: string;
+  category: string;
+  title: string;
+  question: string;
+  writer: string;
+  answer: string;
+  createDate: string;
+}
+
 export const posts: PostData[] = [
   // 더미 데이터, 실제 데이터로 교체해야 함
   {
@@ -680,5 +706,496 @@ export const comments: Comment[] = [
     createdDate: '2024-05-05',
     updatedData: '2024-05-05',
     replies: [],
+  },
+];
+
+export const notices: ServiceData[] = [
+  {
+    id: 1,
+    title: '2024년 신년 이벤트 공지',
+    content:
+      '2024년을 맞아 새해 이벤트를 개최합니다. 이벤트에 참여하고 다양한 경품을 받아보세요.',
+    createDate: '2024-01-01',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 2,
+    title: '시스템 점검 안내',
+    content:
+      '시스템 점검으로 인해 5월 15일에 일시적인 서비스 중단이 예정되어 있습니다. 불편을 드려 죄송합니다.',
+    createDate: '2024-05-10',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 3,
+    title: '고객센터 운영시간 변경',
+    content:
+      '고객센터 운영시간이 6월 1일부터 변경됩니다. 월-금 오전 9시부터 오후 6시까지 운영됩니다.',
+    createDate: '2024-06-01',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 4,
+    title: '서비스 이용 약관 개정',
+    content:
+      '서비스 이용 약관이 7월 1일부로 변경됩니다. 변경된 약관을 확인하시고 불편이 없도록 해주시기 바랍니다.',
+    createDate: '2024-07-01',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 5,
+    title: '회원 등급 제도 개편 안내',
+    content:
+      '회원 등급 제도가 개편되었습니다. 변경된 등급에 따른 혜택을 확인하세요.',
+    createDate: '2024-08-15',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 6,
+    title: '여름 휴가철 배송 일정',
+    content:
+      '여름 휴가철을 맞이하여 8월 1일부터 8월 10일까지 배송 일정이 다소 변경될 수 있습니다.',
+    createDate: '2024-08-01',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 7,
+    title: '신제품 출시 안내',
+    content:
+      '새로운 제품 라인업이 곧 출시됩니다. 자세한 내용은 신제품 출시 이벤트에서 확인하세요.',
+    createDate: '2024-09-01',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 8,
+    title: '리워드 프로그램 업데이트',
+    content:
+      '리워드 프로그램이 업데이트되어 더 많은 포인트를 적립할 수 있게 되었습니다.',
+    createDate: '2024-09-15',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 9,
+    title: '할인 프로모션 공지',
+    content:
+      '할인 프로모션을 통해 인기 상품을 할인된 가격에 만나보세요. 기간 한정 이벤트입니다.',
+    createDate: '2024-10-01',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 10,
+    title: '가을 정기점검 안내',
+    content:
+      '가을 정기점검으로 인해 10월 20일에 서비스가 일시 중단됩니다. 양해 부탁드립니다.',
+    createDate: '2024-10-20',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 11,
+    title: '연말 감사 이벤트',
+    content:
+      '올 한해 성원에 감사드리며 연말 감사 이벤트를 진행합니다. 많은 참여 부탁드립니다.',
+    createDate: '2024-12-01',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 12,
+    title: '택배 서비스 지연 안내',
+    content:
+      '연말 물량 증가로 인해 택배 서비스가 지연될 수 있습니다. 너그러운 양해 부탁드립니다.',
+    createDate: '2024-12-20',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 13,
+    title: '봄맞이 할인 이벤트',
+    content:
+      '봄을 맞아 인기 상품에 대한 할인 이벤트를 진행합니다. 기회를 놓치지 마세요!',
+    createDate: '2025-03-01',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 14,
+    title: '개인정보 처리방침 변경',
+    content:
+      '개인정보 처리방침이 4월 1일부로 변경됩니다. 변경된 방침을 꼭 확인해주세요.',
+    createDate: '2025-04-01',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 15,
+    title: '재고 관리 시스템 업그레이드',
+    content:
+      '효율적인 재고 관리를 위해 재고 관리 시스템이 업그레이드됩니다. 이로 인해 일시적으로 서비스에 영향이 있을 수 있습니다.',
+    createDate: '2025-04-15',
+    views: 1000,
+    writer: 'FITON',
+  },
+];
+
+export const events: ServiceData[] = [
+  {
+    id: 1,
+    title: '봄맞이 세일 이벤트',
+    content:
+      '다가오는 봄을 맞이하여 모든 상품에 최대 30% 할인된 가격으로 만나보세요.',
+    createDate: '2024-03-01',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 2,
+    title: '신상품 출시 기념 이벤트',
+    content: '신상품 출시 기념으로 구매 시 사은품을 증정합니다.',
+    createDate: '2024-04-10',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 3,
+    title: '무료 배송 이벤트',
+    content: '특정 금액 이상 구매 시 무료 배송 혜택을 받아보세요.',
+    createDate: '2024-05-01',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 4,
+    title: '여름 맞이 특가 이벤트',
+    content: '여름 시즌을 맞아 다양한 상품을 특가로 제공합니다.',
+    createDate: '2024-06-15',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 5,
+    title: '정기 회원 감사 이벤트',
+    content: '정기 회원을 위한 특별한 할인 혜택과 쿠폰을 제공합니다.',
+    createDate: '2024-07-01',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 6,
+    title: '회원 등급별 리워드 이벤트',
+    content: '회원 등급에 따라 적립금이나 포인트를 증정합니다.',
+    createDate: '2024-08-01',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 7,
+    title: '가을 프로모션 이벤트',
+    content: '가을을 맞이하여 다양한 가을 상품에 할인 혜택을 적용합니다.',
+    createDate: '2024-09-15',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 8,
+    title: '추석 기념 사은품 이벤트',
+    content: '추석을 기념하여 일정 금액 이상 구매 시 사은품을 증정합니다.',
+    createDate: '2024-09-30',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 9,
+    title: '할로윈 이벤트',
+    content: '할로윈을 맞아 재미있는 이벤트와 선물을 준비했습니다.',
+    createDate: '2024-10-31',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 10,
+    title: '블랙프라이데이 할인 이벤트',
+    content: '블랙프라이데이 세일로 인기 상품을 특별한 가격에 구매하세요.',
+    createDate: '2024-11-25',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 11,
+    title: '크리스마스 선물 이벤트',
+    content: '크리스마스 시즌에 맞춰 다양한 선물 아이디어를 만나보세요.',
+    createDate: '2024-12-15',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 12,
+    title: '연말정산 혜택 이벤트',
+    content: '연말정산을 대비한 특별한 혜택을 제공해 드립니다.',
+    createDate: '2024-12-31',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 13,
+    title: '신년 맞이 이벤트',
+    content: '새해를 맞아 다양한 상품과 함께 특별한 혜택을 누리세요.',
+    createDate: '2025-01-10',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 14,
+    title: '설맞이 세일 이벤트',
+    content: '설을 맞아 특별한 할인 이벤트를 진행합니다.',
+    createDate: '2025-02-01',
+    views: 1000,
+    writer: 'FITON',
+  },
+  {
+    id: 15,
+    title: '봄맞이 여행 이벤트',
+    content:
+      '봄을 맞아 여행 상품을 구매하시는 분들에게 특별한 혜택을 드립니다.',
+    createDate: '2025-03-15',
+    views: 1000,
+    writer: 'FITON',
+  },
+];
+
+export const faqs: FaqData[] = [
+  {
+    faqNum: 1,
+    question: '주문한 제품은 언제 배송되나요?',
+    answer:
+      '주문하신 제품은 결제 완료 후 일반적으로 2~3일 내에 배송됩니다. 배송 상황에 따라 다소 차이가 발생할 수 있습니다.',
+  },
+  {
+    faqNum: 2,
+    question: '반품 절차는 어떻게 되나요?',
+    answer:
+      '제품 수령 후 14일 이내에 반품 요청이 가능합니다. 반품 신청을 하시면 자세한 절차와 방법을 안내해드립니다.',
+  },
+  {
+    faqNum: 3,
+    question: '교환하고 싶은데 어떻게 해야 하나요?',
+    answer:
+      '교환을 원하실 경우, 제품을 수령한 후 7일 이내에 고객센터로 연락주세요. 재고 상황에 따라 교환 가능 여부가 결정됩니다.',
+  },
+  {
+    faqNum: 4,
+    question: '결제 방법에는 어떤 것들이 있나요?',
+    answer:
+      '신용카드, 직불카드, 계좌이체, 그리고 페이팔을 포함한 다양한 결제 수단을 제공합니다.',
+  },
+  {
+    faqNum: 5,
+    question: '현금 영수증은 어떻게 발급받나요?',
+    answer:
+      '주문 시 결제 페이지에서 현금 영수증 발급을 요청하실 수 있으며, 주문 완료 후 고객센터를 통해서도 발급 요청이 가능합니다.',
+  },
+  {
+    faqNum: 6,
+    question: '회원가입 없이도 주문할 수 있나요?',
+    answer:
+      "네, 회원가입을 하지 않고도 '손님 주문' 옵션을 통해 구매하실 수 있습니다. 다만, 회원가입을 하시면 더 많은 혜택을 받으실 수 있습니다.",
+  },
+  {
+    faqNum: 7,
+    question: '회원 정보를 변경하고 싶어요.',
+    answer:
+      "로그인 후 '내 정보' 섹션에서 언제든지 회원 정보를 수정할 수 있습니다.",
+  },
+  {
+    faqNum: 8,
+    question: '아이디/비밀번호를 잊어버렸어요. 어떻게 해야 하나요?',
+    answer:
+      "로그인 페이지에서 '아이디/비밀번호 찾기'를 클릭하시고 등록하신 이메일 주소를 입력하시면, 해당 이메일로 재설정 링크를 보내드립니다.",
+  },
+  {
+    faqNum: 9,
+    question: '할인코드는 어떻게 사용하나요?',
+    answer:
+      "결제 시 '할인 코드 입력' 필드에 코드를 입력하시면 할인이 적용됩니다. 각 코드는 사용 조건이 상이하므로 상세 설명을 확인해주세요.",
+  },
+  {
+    faqNum: 10,
+    question: '제품의 재고가 없을 때는 어떻게 하나요?',
+    answer:
+      "재고가 없는 제품의 경우, 제품 페이지에서 '재입고 알림 받기' 옵션을 선택하시면 재입고 시 이메일로 알림을 드립니다.",
+  },
+];
+
+export const inquiries: Inquiry[] = [
+  {
+    id: 1,
+    state: '답변완료',
+    category: '배송',
+    title: '배송 지연 문의',
+    question:
+      '상품 배송이 예상일보다 지연되고 있습니다. 언제 도착할지 알 수 있을까요?',
+    writer: 'someone',
+    createDate: '2024-05-01',
+    answer:
+      '상품의 배송 상태를 확인 후 고객님께 개별적으로 연락 드리겠습니다. 불편을 드려 죄송합니다.',
+  },
+  {
+    id: 2,
+    state: '답변완료',
+    category: '환불',
+    title: '환불 처리 문의',
+    question: '환불 처리 진행 상황을 알고 싶습니다.',
+    writer: 'someone',
+    createDate: '2024-05-03',
+    answer:
+      '고객님의 환불 요청이 접수되었으며, 처리 예정일은 다음 주 월요일입니다.',
+  },
+  {
+    id: 3,
+    state: '답변완료',
+    category: '제품',
+    title: '제품 하자 문의',
+    question: '받은 제품에 결함이 있습니다. 교환이 가능한지 문의드립니다.',
+    writer: 'someone',
+    createDate: '2024-05-05',
+    answer:
+      '제품 결함과 관련하여 교환 절차를 안내해드리겠습니다. 제품을 보내주시면 검토 후 조치를 취해드립니다.',
+  },
+  {
+    id: 4,
+    state: '답변완료',
+    category: '계정',
+    title: '비밀번호 변경 문의',
+    question: '비밀번호를 변경하고 싶습니다. 방법을 알려주세요.',
+    writer: 'someone',
+    createDate: '2024-05-07',
+    answer:
+      '비밀번호 변경은 고객센터 홈페이지의 "계정 설정"에서 가능합니다. 절차에 따라 변경해 주세요.',
+  },
+  {
+    id: 5,
+    state: '답변완료',
+    category: '교환',
+    title: '교환 신청 방법',
+    question: '교환을 신청하는 방법을 알려주세요.',
+    writer: 'someone',
+    createDate: '2024-05-09',
+    answer:
+      '교환 신청은 온라인 포털을 통해 접수 가능합니다. 제품 페이지 또는 고객센터를 이용해 주세요.',
+  },
+  {
+    id: 6,
+    state: '답변완료',
+    category: '배송',
+    title: '배송 추적 오류',
+    question: '배송 추적 정보가 잘못 표시됩니다. 확인 부탁드립니다.',
+    writer: 'someone',
+    createDate: '2024-05-02',
+    answer:
+      '배송 정보가 업데이트되는 데 시간이 걸릴 수 있습니다. 최신 정보를 확인 후 다시 연락드리겠습니다.',
+  },
+  {
+    id: 7,
+    state: '답변완료',
+    category: '환불',
+    title: '환불 소요 기간',
+    question: '환불이 완료되는데 얼마나 걸리나요?',
+    writer: 'someone',
+    createDate: '2024-05-04',
+    answer: '환불 처리는 신청 후 최대 7일 이내에 완료될 예정입니다.',
+  },
+  {
+    id: 8,
+    state: '답변완료',
+    category: '제품',
+    title: '제품 사용 방법',
+    question: '제품 사용 방법을 알고 싶습니다.',
+    writer: 'someone',
+    createDate: '2024-05-06',
+    answer:
+      '제품 사용 설명서를 통해 자세한 내용을 확인할 수 있습니다. 고객센터에서 요청 가능합니다.',
+  },
+  {
+    id: 9,
+    state: '답변완료',
+    category: '교환',
+    title: '교환 시 비용 문의',
+    question: '교환 시 추가 비용이 발생하나요?',
+    writer: 'someone',
+    createDate: '2024-05-10',
+    answer:
+      '교환 시 별도의 비용은 발생하지 않으며, 운송비는 당사에서 부담합니다.',
+  },
+  {
+    id: 10,
+    state: '답변완료',
+    category: '계정',
+    title: '계정 잠금 해제',
+    question: '계정이 잠겨서 접속할 수 없습니다. 해결 방법이 있나요?',
+    writer: 'someone',
+    createDate: '2024-05-12',
+    answer:
+      '고객님의 계정 잠금 해제 요청을 확인했습니다. 확인된 정보로 연락드리겠습니다.',
+  },
+  {
+    id: 11,
+    state: '답변완료',
+    category: '배송',
+    title: '배송 취소 방법',
+    question: '배송 중인 상품을 취소할 수 있나요?',
+    writer: 'someone',
+    createDate: '2024-05-08',
+    answer: '상품 배송이 시작되면 취소가 어렵습니다. 고객센터로 문의해 주세요.',
+  },
+  {
+    id: 12,
+    state: '답변완료',
+    category: '제품',
+    title: '제품 명세서 요청',
+    question: '제품의 자세한 명세서를 받을 수 있을까요?',
+    writer: 'someone',
+    createDate: '2024-05-11',
+    answer: '제품 페이지나 고객센터에서 제품 명세서를 요청하실 수 있습니다.',
+  },
+  {
+    id: 13,
+    state: '답변완료',
+    category: '계정',
+    title: '계정 생성 문제',
+    question: '새 계정을 생성할 수 없습니다. 오류가 발생하는지 확인해 주세요.',
+    writer: 'someone',
+    createDate: '2024-05-13',
+    answer:
+      '계정 생성 문제는 서버 문제일 수 있습니다. 자세한 내용은 고객센터로 문의해 주세요.',
+  },
+  {
+    id: 14,
+    state: '답변완료',
+    category: '환불',
+    title: '환불 요청 취소',
+    question: '환불 요청을 취소할 수 있나요?',
+    writer: 'someone',
+    createDate: '2024-05-14',
+    answer: '환불 요청 취소는 고객센터에 문의하여 처리할 수 있습니다.',
+  },
+  {
+    id: 15,
+    state: '답변완료',
+    category: '교환',
+    title: '교환 후 환불 가능 여부',
+    question: '교환 후에 환불이 가능한지 궁금합니다.',
+    writer: 'someone',
+    createDate: '2024-05-15',
+    answer:
+      '교환 후 환불은 불가능하며, 자세한 내용은 고객센터로 문의해 주세요.',
   },
 ];

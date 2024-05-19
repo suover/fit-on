@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import CardComponent from '../../components/productCard/CardComponent';
+import ProductCard from '../../components/productCard/ProductCard';
 import { productData } from '../../types/productData';
 
 const CenteredContainer = styled.div`
@@ -10,7 +10,6 @@ const CenteredContainer = styled.div`
   width: 100%;
   margin-top: 30px;
   margin-bottom: 30px;
-  }
 `;
 const Food: React.FC = () => {
   const filteredProducts = productData.filter(
@@ -19,7 +18,7 @@ const Food: React.FC = () => {
 
   return (
     <CenteredContainer>
-      <CardComponent product={filteredProducts} />
+      <ProductCard product={filteredProducts} />
     </CenteredContainer>
   );
 };
