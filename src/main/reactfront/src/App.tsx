@@ -14,6 +14,7 @@ import Products from './pages/mall/Products';
 import Fittness from './pages/mall/Fittness';
 import Food from './pages/mall/Food';
 import Supplement from './pages/mall/Supplemnet';
+import ProductDetail from './pages/productDetail/productDetail';
 import Community from './pages/community/CommunityMain'; // 커뮤니티
 import ViewPostDetail from './pages/community/ViewPostDetail';
 import NewPost from './pages/community/NewPost';
@@ -57,7 +58,12 @@ const App = () => {
           <Route path="fitness" element={<Fittness />} />
           <Route path="supplement" element={<Supplement />} />
           <Route path="food" element={<Food />} />
+          <Route
+            path="product-detail/:productNum"
+            element={<ProductDetail />}
+          ></Route>
         </Route>
+        <Route></Route>
         <Route path="community" element={<Community />} />
         <Route path="community/post/:postNo" element={<ViewPostDetail />} />
         <Route path="community/new-post" element={<NewPost />} />
