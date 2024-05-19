@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 import GlobalStyle from './styles/common/GlobalStyle';
 import Header from './components/layout/header/Header';
 import Footer from './components/layout/footer/Footer';
+import { ThemeProvider } from '@mui/material/styles';
 import MuiFontTheme from './styles/common/MuiFontTheme';
 
 import Main from './pages/main/Main'; // 메인
@@ -46,7 +47,7 @@ import UserInfoLoginPage from './pages/mypage/UserInfoLoginPage';
 
 const App = () => {
   return (
-    <>
+    <ThemeProvider theme={MuiFontTheme}>
       <GlobalStyle />
       <Header />
       <Routes>
@@ -100,7 +101,7 @@ const App = () => {
         </Route>
       </Routes>
       <Footer />
-    </>
+    </ThemeProvider>
   );
 };
 
