@@ -51,7 +51,7 @@ const PostListPage: React.FC = () => {
         </Typography>
         <GenericButton
           style={{ marginBottom: '10px' }}
-          onClick={() => navigate('/postregister')}
+          onClick={() => navigate('/post-register')}
         >
           게시글 작성
         </GenericButton>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Unstable_NumberInput as BaseNumberInput,
   NumberInputProps,
@@ -89,10 +89,10 @@ const StyledInputRoot = styled('div')(
   font-weight: 400;
   display: flex;
   align-items: center;
-  border: 1px solid ${theme.palette.mode === 'dark' ? grey[400] : grey[400]};
-  border-radius: 5px;
-  background: ${theme.palette.mode === 'dark' ? grey[800] : '#fff'};
-  box-shadow: 0px 0px 0px ${
+  border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
+  border-radius: 8px;
+  background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
+  box-shadow: 0px 2px 4px ${
     theme.palette.mode === 'dark' ? 'rgba(0,0,0, 0.5)' : 'rgba(0,0,0, 0.05)'
   };
   padding: 1.5px 8px;
