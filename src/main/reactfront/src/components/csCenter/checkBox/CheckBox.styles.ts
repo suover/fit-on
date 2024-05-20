@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import checkboxImg from '../../../assets/checkbox-01.png';
+import checkboxImg from '../../../assets/img/csCenter/checkbox-01.png';
 
 const CheckboxField = styled.div`
   margin-right: 15px;

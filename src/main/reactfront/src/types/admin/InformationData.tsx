@@ -1,0 +1,138 @@
+export interface Information {
+  id: string;
+  title: string;
+  writer: string;
+  date: string;
+  view: number;
+  like: number;
+}
+export const informations: Information[] = [
+  {
+    id: '1',
+    title: '운동전 폼룰러 사용법.',
+    writer: '관리자',
+    date: '2024-05-03',
+    view: 21,
+    like: 22,
+  },
+  {
+    id: '2',
+    title: '분할법의 비밀',
+    writer: '관리자',
+    date: '2024-05-03',
+    view: 21,
+    like: 22,
+  },
+  {
+    id: '3',
+    title: '당신은 하루에 몇시간 운동하나요?',
+    writer: '관리자',
+    date: '2024-05-03',
+    view: 21,
+    like: 22,
+  },
+  {
+    id: '4',
+    title: '옳바른 식단의 중요성',
+    writer: '관리자',
+    date: '2024-05-03',
+    view: 21,
+    like: 22,
+  },
+  {
+    id: '5',
+    title: '충분한 수면의 필요성',
+    writer: '관리자',
+    date: '2024-05-03',
+    view: 21,
+    like: 22,
+  },
+  {
+    id: '6',
+    title: '운동중 주의사항들',
+    writer: '관리자',
+    date: '2024-05-03',
+    view: 21,
+    like: 22,
+  },
+  {
+    id: '7',
+    title: '스트레칭의 중요성',
+    writer: '관리자',
+    date: '2024-05-03',
+    view: 21,
+    like: 22,
+  },
+  {
+    id: '8',
+    title: '정말로 술을 마시고 난 다음날 운동은 위험할까?',
+    writer: '관리자',
+    date: '2024-05-03',
+    view: 21,
+    like: 22,
+  },
+  {
+    id: '9',
+    title: '이건 진짜 상급노하우',
+    writer: '관리자',
+    date: '2024-05-03',
+    view: 21,
+    like: 22,
+  },
+  {
+    id: '10',
+    title: '당신은 무엇을 위하여 운동을 하는가?',
+    writer: '관리자',
+    date: '2024-05-03',
+    view: 21,
+    like: 22,
+  },
+  {
+    id: '11',
+    title: '개인pt가격 얼마가 적당한가요??',
+    writer: '관리자',
+    date: '2024-05-03',
+    view: 21,
+    like: 22,
+  },
+  {
+    id: '12',
+    title: '개인pt가격 얼마가 적당한가요??',
+    writer: '관리자',
+    date: '2024-05-03',
+    view: 21,
+    like: 22,
+  },
+  {
+    id: '13',
+    title: '개인pt가격 얼마가 적당한가요??',
+    writer: '관리자',
+    date: '2024-05-03',
+    view: 21,
+    like: 22,
+  },
+  {
+    id: '14',
+    title: '개인pt가격 얼마가 적당한가요??',
+    writer: '관리자',
+    date: '2024-05-03',
+    view: 21,
+    like: 22,
+  },
+  {
+    id: '15',
+    title: '개인pt가격 얼마가 적당한가요??',
+    writer: '관리자',
+    date: '2024-05-03',
+    view: 21,
+    like: 22,
+  },
+  {
+    id: '16',
+    title: '개인pt가격 얼마가 적당한가요??',
+    writer: '관리자',
+    date: '2024-05-03',
+    view: 21,
+    like: 22,
+  },
+];

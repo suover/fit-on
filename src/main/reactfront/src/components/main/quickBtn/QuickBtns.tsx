@@ -4,9 +4,9 @@ import QuickBtn from './QuickBtn';
 
 import Btns from './QuickBtns.styles';
 
-import LocalMallIcon from '@mui/icons-material/LocalMall'; // 상품몰
-import MedicalInformationIcon from '@mui/icons-material/MedicalInformation'; // 운동정보
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter'; // 루틴
+import LocalMallIcon from '@mui/icons-material/LocalMall';
+import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import PeopleIcon from '@mui/icons-material/People';
 
 const QuickBtns: React.FC = () => {

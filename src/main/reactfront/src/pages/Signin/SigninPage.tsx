@@ -9,9 +9,9 @@ import {
 } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import KeyIcon from '@mui/icons-material/Key';
-import kakao from '../../assets/Login/kakao.png';
-import google from '../../assets/Login/google.png';
-import naver from '../../assets/Login/naver.png';
+import kakao from '../../assets/img/signin/kakao.png';
+import google from '../../assets/img/signin/google.png';
+import naver from '../../assets/img/signin/naver.png';
 import {
   LoginButtons,
   LoginForm,

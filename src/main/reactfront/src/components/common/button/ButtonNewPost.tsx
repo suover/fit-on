@@ -48,7 +48,7 @@ const ButtonNewPost = () => {
   let navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/new-post');
+    navigate('/community/new-post');
   };
 
   return (

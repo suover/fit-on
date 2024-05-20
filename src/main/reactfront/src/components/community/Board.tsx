@@ -65,7 +65,7 @@ const Board: React.FC<BoardProps> = ({ selectedCategory }) => {
 
   const handleRowClick = (id: string, isSelected: boolean) => {
     const post = examplePosts.find((p) => p.id === id);
-    if (post) navigate(`/post/${post.no}`, { state: { post } });
+    if (post) navigate(`/community/post/${post.no}`, { state: { post } });
   };
   const columns = [
     { id: 'title', label: 'Title', width: 200 },
