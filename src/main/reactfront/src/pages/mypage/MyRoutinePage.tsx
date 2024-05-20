@@ -1,16 +1,37 @@
 import React from 'react';
-import { Typography, Box } from '@mui/material';
+import { Box, Paper, Container, Button } from '@mui/material';
+import styled from 'styled-components';
+import { Link, Outlet } from 'react-router-dom';
+
+const ButtonGroup = styled.div`
+  margin-top: 55px;
+  background-color: white;
+  border-bottom: 1px solid black;
+  overflow: hidden;
+`;
 
 function MyRoutinePage() {
   return (
-    <Box padding={3}>
-      <Typography variant="h4" gutterBottom>
-        나의 루틴
-      </Typography>
-      <Typography>
-        이 페이지에서는 사용자의 운동 루틴을 관리할 수 있습니다.
-      </Typography>
-    </Box>
+    <>
+      <ButtonGroup>
+        <Link to="my-routines">
+          <Button sx={{ color: 'black', fontSize: '1rem' }}>나의 루틴</Button>
+        </Link>
+        <Link to="shared-routine">
+          |
+          <Button sx={{ color: 'black', fontSize: '1rem' }}>
+            공유받은 루틴
+          </Button>
+        </Link>
+      </ButtonGroup>
+      <Paper sx={{ mb: 4 }}>
+        <Container>
+          <Box sx={{ mt: 4, mb: 4, backgroundColor: '#f5f5f5' }}>
+            <Outlet />
+          </Box>
+        </Container>
+      </Paper>
+    </>
   );
 }
 

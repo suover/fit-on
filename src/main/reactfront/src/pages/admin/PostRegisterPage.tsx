@@ -145,7 +145,7 @@ const PostRegisterPage: React.FC = () => {
             justifyContent: 'flex-end',
           }}
         >
-          <Link to="/admin/posts">
+          <Link to="/admin/post-list">
             <GenericButton
               style={{
                 width: '120px',
