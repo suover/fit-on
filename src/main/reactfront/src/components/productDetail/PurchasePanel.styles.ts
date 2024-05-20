@@ -69,10 +69,11 @@ export const QuantityContainer = styled.span`
   margin-bottom: 10px;
   margin-top: 5;
 `;
-export const SelectContainer = styled.span`
+export const SelectContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
   margin-bottom: 10px;
   margin-top: 5;
 `;

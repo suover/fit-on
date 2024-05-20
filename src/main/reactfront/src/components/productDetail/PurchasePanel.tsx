@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import QuantityInput from './QuantityInput';
 import UnstyledSelectForm from './UnstyledSelectForm';
+import { SelectChangeEvent } from '@mui/material/Select';
 import BasicRating from './BasicRating';
 import { PurchasePanelBtn } from './PurchasePanelBtn';
 import { productData } from '../../types/productData';
@@ -29,7 +30,7 @@ const PurchasePanel = () => {
     price: 0,
   });
   const [quantity, setQuantity] = useState(1);
-  const [selection, setSelection] = useState('10');
+  const [selection, setSelection] = useState('블랙');
   const [totalPrice, setTotalPrice] = useState(0);
   const navigate = useNavigate();
 
@@ -46,20 +47,27 @@ const PurchasePanel = () => {
     setTotalPrice(product.price * quantity);
   }, [quantity, product.price]);
 
-  // 선택 변경 핸들러
-  const handleSelectionChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    setSelection(event.target.value);
+  const handleSelectionChange = (event: SelectChangeEvent<string>) => {
+    setSelection(event.target.value as string);
   };
 
   //장바구니 이동
   function handleCartClick() {
-    navigate('/cartPage'); //현재 페이지가 만들어지지 않아 임시경로 삽입
+    navigate('/cart-page'); //현재 페이지가 만들어지지 않아 임시경로 삽입
   }
   //주문페이지 이동
   function handlePurchaseClick() {
-    navigate('/orderPage');
+    navigate('/order-page', {
+      state: {
+        selectedProduct: {
+          name: product.name,
+          price: product.price,
+          quantity: quantity,
+          selection: selection,
+          totalPrice: totalPrice,
+        },
+      },
+    });
   }
 
   return (
