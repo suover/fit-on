@@ -10,6 +10,7 @@ import MuiFontTheme from './styles/common/MuiFontTheme';
 import Main from './pages/main/Main'; // 메인
 import SigninPage from './pages/Signin/SigninPage'; // 회원가입
 import SignupPage from './pages/Signup/SignupPage';
+import OrderPage from './pages/Order/orderPage';
 import Mall from './pages/mall/Mall'; // 쇼핑몰
 import Products from './pages/mall/Products';
 import Fittness from './pages/mall/Fittness';
@@ -46,16 +47,16 @@ import OneToOneInquiryPage from './pages/mypage/OneToOneInquiryPage';
 import UserInfoLoginPage from './pages/mypage/UserInfoLoginPage';
 import SharedRoutinePage from './pages/mypage/SharedRoutinePage';
 import MyRoutinesPage from './pages/mypage/MyRoutinesPage';
-import AdminPage from './pages/admin/AdminPage'; // 관리자 페이지
+import AdminPage from './pages/admin/AdminPage'; //관리자 페이지
 import MemberListPage from './pages/admin/MemberListPage';
 import ItemListPage from './pages/admin/ItemListPage';
-import PostListPage from './pages/admin/PostListPage';
 import CommunityListPage from './pages/admin/CommunityListPage';
+import PostListPage from './pages/admin/PostListPage';
 import ReviewListPage from './pages/admin/ReviewListPage';
 import ItemInquiryListPage from './pages/admin/ItemInquiryListPage';
 import EtcInquiryListPage from './pages/admin/EtcInquiryListPage';
-import ItemRegisterPage from './pages/admin/ItemRegisterPage';
 import PostRegisterPage from './pages/admin/PostRegisterPage';
+import ItemRegisterPage from './pages/admin/ItemRegisterPage';
 
 const App = () => {
   return (
@@ -66,6 +67,7 @@ const App = () => {
         <Route path="/" element={<Main />} />
         <Route path="sign-in" element={<SigninPage />} />
         <Route path="sign-up" element={<SignupPage />} />
+        <Route path="order-page" element={<OrderPage />} />
         <Route path="/mall" element={<Mall />}>
           <Route index element={<Products />} />
           <Route path="fitness" element={<Fittness />} />
