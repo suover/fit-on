@@ -44,6 +44,7 @@ import ProductReviewPage from './pages/mypage/ProductReviewPage';
 import ProductInquiryPage from './pages/mypage/ProductInquiryPage';
 import OneToOneInquiryPage from './pages/mypage/OneToOneInquiryPage';
 import UserInfoLoginPage from './pages/mypage/UserInfoLoginPage';
+import OrderPage from './pages/Order/orderPage';
 
 const App = () => {
   return (
@@ -54,6 +55,7 @@ const App = () => {
         <Route path="/" element={<Main />} />
         <Route path="sign-in" element={<SigninPage />} />
         <Route path="sign-up" element={<SignupPage />} />
+        <Route path="order-page" element={<OrderPage />} />
         <Route path="/mall" element={<Mall />}>
           <Route index element={<Products />} />
           <Route path="fitness" element={<Fittness />} />
