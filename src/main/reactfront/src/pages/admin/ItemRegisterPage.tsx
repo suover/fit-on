@@ -203,7 +203,7 @@ const ItemRegisterPage: React.FC = () => {
           />
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Link to="/admin/items">
+          <Link to="/admin/item-list">
             <GenericButton
               style={{
                 width: '120px',

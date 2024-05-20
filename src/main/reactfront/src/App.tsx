@@ -10,6 +10,7 @@ import MuiFontTheme from './styles/common/MuiFontTheme';
 import Main from './pages/main/Main'; // 메인
 import SigninPage from './pages/Signin/SigninPage'; // 회원가입
 import SignupPage from './pages/Signup/SignupPage';
+import OrderPage from './pages/Order/orderPage';
 import Mall from './pages/mall/Mall'; // 쇼핑몰
 import Products from './pages/mall/Products';
 import Fittness from './pages/mall/Fittness';
@@ -44,6 +45,18 @@ import ProductReviewPage from './pages/mypage/ProductReviewPage';
 import ProductInquiryPage from './pages/mypage/ProductInquiryPage';
 import OneToOneInquiryPage from './pages/mypage/OneToOneInquiryPage';
 import UserInfoLoginPage from './pages/mypage/UserInfoLoginPage';
+import SharedRoutinePage from './pages/mypage/SharedRoutinePage';
+import MyRoutinesPage from './pages/mypage/MyRoutinesPage';
+import AdminPage from './pages/admin/AdminPage'; //관리자 페이지
+import MemberListPage from './pages/admin/MemberListPage';
+import ItemListPage from './pages/admin/ItemListPage';
+import CommunityListPage from './pages/admin/CommunityListPage';
+import PostListPage from './pages/admin/PostListPage';
+import ReviewListPage from './pages/admin/ReviewListPage';
+import ItemInquiryListPage from './pages/admin/ItemInquiryListPage';
+import EtcInquiryListPage from './pages/admin/EtcInquiryListPage';
+import PostRegisterPage from './pages/admin/PostRegisterPage';
+import ItemRegisterPage from './pages/admin/ItemRegisterPage';
 
 const App = () => {
   return (
@@ -54,6 +67,7 @@ const App = () => {
         <Route path="/" element={<Main />} />
         <Route path="sign-in" element={<SigninPage />} />
         <Route path="sign-up" element={<SignupPage />} />
+        <Route path="order-page" element={<OrderPage />} />
         <Route path="/mall" element={<Mall />}>
           <Route index element={<Products />} />
           <Route path="fitness" element={<Fittness />} />
@@ -86,7 +100,11 @@ const App = () => {
           <Route index element={<MyHome />} />
           <Route path="user-info-login" element={<UserInfoLoginPage />} />
           <Route path="user-info" element={<UserInfoPage />} />
-          <Route path="my-routine" element={<MyRoutinePage />} />
+          <Route path="my-routine" element={<MyRoutinePage />}>
+            <Route index element={<MyRoutinesPage />} />
+            <Route path="my-routines" element={<MyRoutinesPage />} />
+            <Route path="shared-routine" element={<SharedRoutinePage />} />
+          </Route>
           <Route path="post-management" element={<PostManagementPage />} />
           <Route
             path="comment-management"
@@ -99,6 +117,17 @@ const App = () => {
           <Route path="product-inquiry" element={<ProductInquiryPage />} />
           <Route path="one-to-one-inquiry" element={<OneToOneInquiryPage />} />
         </Route>
+        <Route path="admin" element={<AdminPage />}>
+          <Route path="member-list" element={<MemberListPage />} />
+          <Route path="item-list" element={<ItemListPage />} />
+          <Route path="post-list" element={<PostListPage />} />
+          <Route path="community-list" element={<CommunityListPage />} />
+          <Route path="review-list" element={<ReviewListPage />} />
+          <Route path="item-inquiry-list" element={<ItemInquiryListPage />} />
+          <Route path="etc-inquiry-list" element={<EtcInquiryListPage />} />
+        </Route>
+        <Route path="post-register" element={<PostRegisterPage />} />
+        <Route path="item-register" element={<ItemRegisterPage />} />
       </Routes>
       <Footer />
     </ThemeProvider>

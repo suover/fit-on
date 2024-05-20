@@ -54,7 +54,7 @@ const ItemListPage: React.FC = () => {
         </Typography>
         <GenericButton
           style={{ marginBottom: '10px' }}
-          onClick={() => navigate('/itemregister')}
+          onClick={() => navigate('/item-register')}
         >
           상품 등록
         </GenericButton>
