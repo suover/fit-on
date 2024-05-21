@@ -17,7 +17,7 @@ import {
   ButtonContainer,
   Btn,
 } from '../../styles/order/Order.Styles';
-import { OrderDetails, Product } from '../../types/orderInterface';
+import { OrderDetails, Product } from '../../types/OrderInterface';
 import OrderInformation from '../../components/order/OrderInfoProps';
 import RadioButtonsGroup from '../../components/order/Radio';
 import SelectCard from '../../components/order/SelectCard';

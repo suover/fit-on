@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import FancyButton from './moreViewBtn';
+import FancyButton from './MoreViewBtn';
 import styled from 'styled-components';
 
 const ImageContainer = styled.div<{ isExpanded: boolean }>`
