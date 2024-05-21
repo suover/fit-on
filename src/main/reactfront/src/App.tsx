@@ -76,7 +76,7 @@ const App = () => {
           <Route
             path="product-detail/:productNum"
             element={<ProductDetail />}
-          ></Route>
+          />
         </Route>
         <Route></Route>
         <Route path="community" element={<Community />} />
