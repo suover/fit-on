@@ -12,11 +12,11 @@ import SigninPage from './pages/signin/SigninPage'; // 회원가입
 import SignupPage from './pages/signup/SignupPage';
 import Mall from './pages/mall/Mall'; // 쇼핑몰
 import Products from './pages/mall/Products';
+import ProductDetail from './pages/productDetail/ProductDetail';
 import Fittness from './pages/mall/Fittness';
 import Food from './pages/mall/Food';
 import Supplement from './pages/mall/Supplemnet';
 import OrderPage from './pages/order/OrderPage';
-import ProductDetail from './pages/productDetail/ProductDetail';
 import Community from './pages/community/CommunityMain'; // 커뮤니티
 import ViewPostDetail from './pages/community/ViewPostDetail';
 import NewPost from './pages/community/NewPost';
@@ -57,6 +57,7 @@ import ItemInquiryListPage from './pages/administrator/ItemInquiryListPage';
 import EtcInquiryListPage from './pages/administrator/EtcInquiryListPage';
 import PostRegisterPage from './pages/administrator/PostRegisterPage';
 import ItemRegisterPage from './pages/administrator/ItemRegisterPage';
+import ShoppingBasketPage from './pages/shoppingBasket/ShoppingBasketPage';
 
 const App = () => {
   return (
@@ -67,7 +68,9 @@ const App = () => {
         <Route path="/" element={<Main />} />
         <Route path="sign-in" element={<SigninPage />} />
         <Route path="sign-up" element={<SignupPage />} />
-        <Route path="mall" element={<Mall />}>
+        <Route path="order-page" element={<OrderPage />} />
+        <Route path="/shopping-basket" element={<ShoppingBasketPage />} />
+        <Route path="/mall" element={<Mall />}>
           <Route index element={<Products />} />
           <Route path="fitness" element={<Fittness />} />
           <Route path="supplement" element={<Supplement />} />
@@ -75,9 +78,9 @@ const App = () => {
           <Route
             path="product-detail/:productNum"
             element={<ProductDetail />}
-          />
+          ></Route>
         </Route>
-        <Route path="mall/order" element={<OrderPage />} />
+        <Route></Route>
         <Route path="community" element={<Community />} />
         <Route path="community/post/:postNo" element={<ViewPostDetail />} />
         <Route path="community/new-post" element={<NewPost />} />
