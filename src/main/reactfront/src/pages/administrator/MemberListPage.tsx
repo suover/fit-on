@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { members, Member } from '../../types/administrator/membersData';
 import {
-  Container,
   TableData,
   TableRow,
 } from '../../components/genericTable/GenericTable.styles';
@@ -39,14 +38,7 @@ const MemberListPage: React.FC = () => {
     { id: 'unregister', label: '탈퇴유무', width: 50 },
   ];
   return (
-    <Container
-      style={{
-        marginLeft: '45px',
-        marginRight: '45px',
-        marginTop: '100px',
-        height: '700px',
-      }}
-    >
+    <>
       <Search>
         <Typography
           sx={{
@@ -56,9 +48,8 @@ const MemberListPage: React.FC = () => {
         >
           Fit On 회원목록
         </Typography>
-        <SearchBox onSearch={handleSearch} styleProps={{ width: '200px' }} />
+        <SearchBox onSearch={handleSearch} />
       </Search>
-
       <GenericTable
         columns={columns}
         data={filteredMembers}
@@ -77,7 +68,7 @@ const MemberListPage: React.FC = () => {
         )}
         includeCheckboxes={false}
       />
-    </Container>
+    </>
   );
 };
 

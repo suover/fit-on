@@ -34,44 +34,35 @@ const ReviewListPage = () => {
   ];
   return (
     <>
-      <Container
-        style={{
-          marginLeft: '45px',
-          marginRight: '45px',
-          marginTop: '100px',
-          height: '700px',
-        }}
-      >
-        <Search>
-          <Typography
-            sx={{
-              fontWeight: 'bold',
-              fontSize: '1.5rem',
-            }}
-          >
-            Fit On 리뷰목록
-          </Typography>
-          <SearchBox onSearch={handleSearch} styleProps={{ width: '200px' }} />
-        </Search>
-        <GenericTable
-          columns={columns}
-          data={filteredReviews}
-          renderRow={(review: Review) => (
-            <TableRow key={review.id}>
-              <TableData>{review.id}</TableData>
-              <TableData>
-                <Image $backgroundImage={review.imageUrl} />
-                {review.productName}
-              </TableData>
-              <TableData>{review.category}</TableData>
-              <TableData>{review.review}</TableData>
-              <TableData>{review.reviewer}</TableData>
-              <TableData>{review.rate} / 5</TableData>
-            </TableRow>
-          )}
-          includeCheckboxes={false}
-        />
-      </Container>
+      <Search>
+        <Typography
+          sx={{
+            fontWeight: 'bold',
+            fontSize: '1.5rem',
+          }}
+        >
+          Fit On 리뷰목록
+        </Typography>
+        <SearchBox onSearch={handleSearch} />
+      </Search>
+      <GenericTable
+        columns={columns}
+        data={filteredReviews}
+        renderRow={(review: Review) => (
+          <TableRow key={review.id}>
+            <TableData>{review.id}</TableData>
+            <TableData>
+              <Image $backgroundImage={review.imageUrl} />
+              {review.productName}
+            </TableData>
+            <TableData>{review.category}</TableData>
+            <TableData>{review.review}</TableData>
+            <TableData>{review.reviewer}</TableData>
+            <TableData>{review.rate} / 5</TableData>
+          </TableRow>
+        )}
+        includeCheckboxes={false}
+      />
     </>
   );
 };

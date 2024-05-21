@@ -38,50 +38,41 @@ const EtcInquiryListPage = () => {
   ];
   return (
     <>
-      <Container
-        style={{
-          marginLeft: '45px',
-          marginRight: '45px',
-          marginTop: '100px',
-          height: '700px',
-        }}
-      >
-        <Search>
-          <Typography
-            sx={{
-              fontWeight: 'bold',
-              fontSize: '1.5rem',
-            }}
-          >
-            Fit On 문의목록
-          </Typography>
-          <SearchBox onSearch={handleSearch} styleProps={{ width: '200px' }} />
-        </Search>
-        <GenericTable
-          columns={columns}
-          data={filteredEtcInquiries}
-          renderRow={(etcInquiry: EtcInquiry) => (
-            <TableRow key={etcInquiry.id}>
-              <TableData>{etcInquiry.id}</TableData>
-              <TableData>{etcInquiry.title}</TableData>
-              <TableData>{etcInquiry.category}</TableData>
-              <TableData>{etcInquiry.writer}</TableData>
-              <TableData>
-                <StatusIndicator
-                  $color={etcInquiry.status === '답변완료' ? 'red' : 'gray'}
-                  $backgroundColor={
-                    etcInquiry.status === '답변완료' ? 'red' : 'gray'
-                  }
-                >
-                  {etcInquiry.status}
-                </StatusIndicator>
-              </TableData>
-              <TableData>{etcInquiry.date}</TableData>
-            </TableRow>
-          )}
-          includeCheckboxes={false}
-        />
-      </Container>
+      <Search>
+        <Typography
+          sx={{
+            fontWeight: 'bold',
+            fontSize: '1.5rem',
+          }}
+        >
+          Fit On 문의목록
+        </Typography>
+        <SearchBox onSearch={handleSearch} />
+      </Search>
+      <GenericTable
+        columns={columns}
+        data={filteredEtcInquiries}
+        renderRow={(etcInquiry: EtcInquiry) => (
+          <TableRow key={etcInquiry.id}>
+            <TableData>{etcInquiry.id}</TableData>
+            <TableData>{etcInquiry.title}</TableData>
+            <TableData>{etcInquiry.category}</TableData>
+            <TableData>{etcInquiry.writer}</TableData>
+            <TableData>
+              <StatusIndicator
+                $color={etcInquiry.status === '답변완료' ? 'red' : 'gray'}
+                $backgroundColor={
+                  etcInquiry.status === '답변완료' ? 'red' : 'gray'
+                }
+              >
+                {etcInquiry.status}
+              </StatusIndicator>
+            </TableData>
+            <TableData>{etcInquiry.date}</TableData>
+          </TableRow>
+        )}
+        includeCheckboxes={false}
+      />
     </>
   );
 };

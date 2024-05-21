@@ -10,6 +10,7 @@ import AnnouncementIcon from '@mui/icons-material/Announcement';
 import LocalActivityIcon from '@mui/icons-material/LocalActivity';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
+import SidebarWrapper from '../../components/common/sidebar/SidebarWrapper';
 
 const serviecMenu: NavbarItem[] = [
   { icon: AnnouncementIcon, menuName: '공지사항', route: 'notice' },
@@ -21,15 +22,16 @@ const serviecMenu: NavbarItem[] = [
 const ClientService: React.FC = () => {
   return (
     <ServiceWrapper>
-      <SideNavbar
-        title="고객센터"
-        drawerWidthOpen="200px"
-        drawerPosition="sticky"
-        menuItems={serviecMenu}
-        showProfile={false}
-        marginTop="80px"
-      />
-      <Container sx={{ paddingTop: '80px', marginLeft: 0, marginRight: 0 }}>
+      <SidebarWrapper>
+        <SideNavbar
+          title="고객센터"
+          drawerWidthOpen="200px"
+          drawerPosition="static"
+          menuItems={serviecMenu}
+          showProfile={false}
+        />
+      </SidebarWrapper>
+      <Container sx={{ paddingTop: '80px' }}>
         <Outlet />
       </Container>
     </ServiceWrapper>

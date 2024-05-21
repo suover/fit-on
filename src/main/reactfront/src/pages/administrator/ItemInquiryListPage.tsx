@@ -38,50 +38,41 @@ const ItemInquiryListPage = () => {
   ];
   return (
     <>
-      <Container
-        style={{
-          marginLeft: '45px',
-          marginRight: '45px',
-          marginTop: '100px',
-          height: '700px',
-        }}
-      >
-        <Search>
-          <Typography
-            sx={{
-              fontWeight: 'bold',
-              fontSize: '1.5rem',
-            }}
-          >
-            Fit On 문의목록
-          </Typography>
-          <SearchBox onSearch={handleSearch} styleProps={{ width: '200px' }} />
-        </Search>
-        <GenericTable
-          columns={columns}
-          data={filteredInquiries}
-          renderRow={(inquiry: ItemInquiry) => (
-            <TableRow key={inquiry.id}>
-              <TableData>{inquiry.id}</TableData>
-              <TableData>{inquiry.title}</TableData>
-              <TableData>{inquiry.category}</TableData>
-              <TableData>{inquiry.writer}</TableData>
-              <TableData>
-                <StatusIndicator
-                  $color={inquiry.status === '답변완료' ? 'red' : 'gray'}
-                  $backgroundColor={
-                    inquiry.status === '답변완료' ? 'red' : 'gray'
-                  }
-                >
-                  {inquiry.status}
-                </StatusIndicator>
-              </TableData>
-              <TableData>{inquiry.date}</TableData>
-            </TableRow>
-          )}
-          includeCheckboxes={false}
-        />
-      </Container>
+      <Search>
+        <Typography
+          sx={{
+            fontWeight: 'bold',
+            fontSize: '1.5rem',
+          }}
+        >
+          Fit On 문의목록
+        </Typography>
+        <SearchBox onSearch={handleSearch} />
+      </Search>
+      <GenericTable
+        columns={columns}
+        data={filteredInquiries}
+        renderRow={(inquiry: ItemInquiry) => (
+          <TableRow key={inquiry.id}>
+            <TableData>{inquiry.id}</TableData>
+            <TableData>{inquiry.title}</TableData>
+            <TableData>{inquiry.category}</TableData>
+            <TableData>{inquiry.writer}</TableData>
+            <TableData>
+              <StatusIndicator
+                $color={inquiry.status === '답변완료' ? 'red' : 'gray'}
+                $backgroundColor={
+                  inquiry.status === '답변완료' ? 'red' : 'gray'
+                }
+              >
+                {inquiry.status}
+              </StatusIndicator>
+            </TableData>
+            <TableData>{inquiry.date}</TableData>
+          </TableRow>
+        )}
+        includeCheckboxes={false}
+      />
     </>
   );
 };
