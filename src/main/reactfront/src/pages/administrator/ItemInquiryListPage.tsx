@@ -1,29 +1,32 @@
 import React, { useState } from 'react';
+import { Typography } from '@mui/material';
+import { Search } from '../../styles/administrator/ItemInquiryListPage.styles';
 import {
   Container,
   StatusIndicator,
   TableData,
   TableRow,
 } from '../../components/genericTable/GenericTable.styles';
-import { Search } from '../../styles/admin/EtcInquiryListPage.styles';
-import { Typography } from '@mui/material';
 import SearchBox from '../../components/common/search/SearchBox';
 import GenericTable from '../../components/genericTable/GenericTable';
-import { EtcInquiry, etcInquiries } from '../../types/admin/EtcInquiryDatat';
+import {
+  ItemInquiry,
+  inquiries,
+} from '../../types/administrator/ItemInquiryData';
 
-const EtcInquiryListPage = () => {
-  const [filteredEtcInquiries, setFilteredEtcInquiries] =
-    useState<EtcInquiry[]>(etcInquiries);
+const ItemInquiryListPage = () => {
+  const [filteredInquiries, setFilteredInquiries] =
+    useState<ItemInquiry[]>(inquiries);
 
   const handleSearch = (query: string) => {
-    const filtered = etcInquiries.filter(
-      (etcInquiry) =>
-        etcInquiry.id.includes(query) ||
-        etcInquiry.title.includes(query) ||
-        etcInquiry.writer.includes(query) ||
-        etcInquiry.status.includes(query),
+    const filtered = inquiries.filter(
+      (inquiry) =>
+        inquiry.id.includes(query) ||
+        inquiry.title.includes(query) ||
+        inquiry.writer.includes(query) ||
+        inquiry.status.includes(query),
     );
-    setFilteredEtcInquiries(filtered);
+    setFilteredInquiries(filtered);
   };
   const columns = [
     { id: 'id', label: '번호', width: 30 },
@@ -56,24 +59,24 @@ const EtcInquiryListPage = () => {
         </Search>
         <GenericTable
           columns={columns}
-          data={filteredEtcInquiries}
-          renderRow={(etcInquiry: EtcInquiry) => (
-            <TableRow key={etcInquiry.id}>
-              <TableData>{etcInquiry.id}</TableData>
-              <TableData>{etcInquiry.title}</TableData>
-              <TableData>{etcInquiry.category}</TableData>
-              <TableData>{etcInquiry.writer}</TableData>
+          data={filteredInquiries}
+          renderRow={(inquiry: ItemInquiry) => (
+            <TableRow key={inquiry.id}>
+              <TableData>{inquiry.id}</TableData>
+              <TableData>{inquiry.title}</TableData>
+              <TableData>{inquiry.category}</TableData>
+              <TableData>{inquiry.writer}</TableData>
               <TableData>
                 <StatusIndicator
-                  $color={etcInquiry.status === '답변완료' ? 'red' : 'gray'}
+                  $color={inquiry.status === '답변완료' ? 'red' : 'gray'}
                   $backgroundColor={
-                    etcInquiry.status === '답변완료' ? 'red' : 'gray'
+                    inquiry.status === '답변완료' ? 'red' : 'gray'
                   }
                 >
-                  {etcInquiry.status}
+                  {inquiry.status}
                 </StatusIndicator>
               </TableData>
-              <TableData>{etcInquiry.date}</TableData>
+              <TableData>{inquiry.date}</TableData>
             </TableRow>
           )}
           includeCheckboxes={false}
@@ -83,4 +86,4 @@ const EtcInquiryListPage = () => {
   );
 };
 
-export default EtcInquiryListPage;
+export default ItemInquiryListPage;

@@ -6,8 +6,8 @@ import {
   TableRow,
 } from '../../components/genericTable/GenericTable.styles';
 import GenericTable from '../../components/genericTable/GenericTable';
-import { Review, reviews } from '../../types/admin/ReviewData';
-import { Search } from '../../styles/admin/ReviewListPage.styles';
+import { Review, reviews } from '../../types/administrator/ReviewData';
+import { Search } from '../../styles/administrator/ReviewListPage.styles';
 import { Typography } from '@mui/material';
 import SearchBox from '../../components/common/search/SearchBox';
 
