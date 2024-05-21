@@ -1,5 +1,5 @@
 import React from 'react';
-import { reviewDataRaw } from '../../types/reviewData';
+import { reviewDataRaw } from '../../types/ReviewData';
 import { AccountCircle } from '@mui/icons-material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';

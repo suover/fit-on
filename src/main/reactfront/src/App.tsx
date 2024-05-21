@@ -10,13 +10,13 @@ import MuiFontTheme from './styles/common/MuiFontTheme';
 import Main from './pages/main/Main'; // 메인
 import SigninPage from './pages/signin/SigninPage'; // 회원가입
 import SignupPage from './pages/signup/SignupPage';
-import OrderPage from './pages/Order/orderPage';
 import Mall from './pages/mall/Mall'; // 쇼핑몰
 import Products from './pages/mall/Products';
 import Fittness from './pages/mall/Fittness';
 import Food from './pages/mall/Food';
 import Supplement from './pages/mall/Supplemnet';
-import ProductDetail from './pages/productDetail/productDetail';
+import OrderPage from './pages/order/OrderPage';
+import ProductDetail from './pages/productDetail/ProductDetail';
 import Community from './pages/community/CommunityMain'; // 커뮤니티
 import ViewPostDetail from './pages/community/ViewPostDetail';
 import NewPost from './pages/community/NewPost';
@@ -67,8 +67,7 @@ const App = () => {
         <Route path="/" element={<Main />} />
         <Route path="sign-in" element={<SigninPage />} />
         <Route path="sign-up" element={<SignupPage />} />
-        <Route path="order-page" element={<OrderPage />} />
-        <Route path="/mall" element={<Mall />}>
+        <Route path="mall" element={<Mall />}>
           <Route index element={<Products />} />
           <Route path="fitness" element={<Fittness />} />
           <Route path="supplement" element={<Supplement />} />
@@ -78,7 +77,7 @@ const App = () => {
             element={<ProductDetail />}
           />
         </Route>
-        <Route></Route>
+        <Route path="mall/order" element={<OrderPage />} />
         <Route path="community" element={<Community />} />
         <Route path="community/post/:postNo" element={<ViewPostDetail />} />
         <Route path="community/new-post" element={<NewPost />} />

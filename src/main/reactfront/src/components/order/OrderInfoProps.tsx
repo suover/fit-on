@@ -1,5 +1,5 @@
 import React from 'react';
-import { OrderInfoProps } from '../../types/orderInterface';
+import { OrderInfoProps } from '../../types/OrderInterface';
 
 const OrderInformation: React.FC<OrderInfoProps> = ({ src }) => (
   <div

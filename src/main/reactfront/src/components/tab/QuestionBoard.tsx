@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Question } from '../../types/question';
+import { Question } from '../../types/Question';
 import {
   Container,
   TableData,

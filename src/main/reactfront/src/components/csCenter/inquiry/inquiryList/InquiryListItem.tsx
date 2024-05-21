@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Inquiry } from '../../../../types/MainDummyData';
-import { ListItem, ListItemDetail } from './inquiryListItem.styles';
+import { ListItem, ListItemDetail } from './InquiryListItem.styles';
 
 interface InquiryListItemProps {
   inquiryData: Inquiry;

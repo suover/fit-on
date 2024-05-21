@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { styled } from '@mui/system';
-import { Question } from '../../types/question';
+import { Question } from '../../types/Question';
 import {
   Modal as BaseModal,
   Button,
