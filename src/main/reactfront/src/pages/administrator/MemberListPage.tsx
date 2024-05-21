@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { members, Member } from '../../types/admin/membersData';
+import { members, Member } from '../../types/administrator/membersData';
 import {
   Container,
   TableData,
@@ -8,7 +8,7 @@ import {
 import GenericTable from '../../components/genericTable/GenericTable';
 import { Typography } from '@mui/material';
 import SearchBox from '../../components/common/search/SearchBox';
-import { Search } from '../../styles/admin/MemberListPage.styles';
+import { Search } from '../../styles/administrator/MemberListPage.styles';
 
 const MemberListPage: React.FC = () => {
   const [filteredMembers, setFilteredMembers] = useState<Member[]>(members);

@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { Community, communities } from '../../types/admin/CommunityData';
+import {
+  Community,
+  communities,
+} from '../../types/administrator/CommunityData';
 import {
   Container,
   TableData,
@@ -7,7 +10,7 @@ import {
 } from '../../components/genericTable/GenericTable.styles';
 import GenericTable from '../../components/genericTable/GenericTable';
 import { Typography } from '@mui/material';
-import { Search } from '../../styles/admin/CommunityListPage.styles';
+import { Search } from '../../styles/administrator/CommunityListPage.styles';
 import SearchBox from '../../components/common/search/SearchBox';
 const CommunityListPage: React.FC = () => {
   const [filtereCommunities, setFilteredCommunities] =

@@ -10,49 +10,49 @@ import {
   AdminContainer,
   ContentContainer,
   SidebarContainer,
-} from '../../styles/admin/AdminPage.styles';
+} from '../../styles/administrator/AdminPage.styles';
 import SideNavbar from '../../components/layout/sideNavBar/SideNavbar';
 const AdminPage: React.FC = () => {
   const menuItems = [
     {
       menuName: '회원 관리',
-      route: '/admin/member-list',
+      route: '/administrator/member-list',
       icon: PeopleIcon,
       badge: 0,
     },
     {
       menuName: '상품 관리',
-      route: '/admin/item-list',
+      route: '/administrator/item-list',
       icon: ShoppingCartIcon,
       badge: 0,
     },
     {
       menuName: '정보글 관리',
-      route: '/admin/post-list',
+      route: '/administrator/post-list',
       icon: InfoIcon,
       badge: 0,
     },
     {
       menuName: '커뮤니티 관리',
-      route: '/admin/community-list',
+      route: '/administrator/community-list',
       icon: ForumIcon,
       badge: 0,
     },
     {
       menuName: '리뷰 관리',
-      route: '/admin/review-list',
+      route: '/administrator/review-list',
       icon: RateReviewIcon,
       badge: 0,
     },
     {
       menuName: '상품문의 관리',
-      route: '/admin/item-inquiry-list',
+      route: '/administrator/item-inquiry-list',
       icon: HelpIcon,
       badge: 0,
     },
     {
       menuName: '1:1문의 관리',
-      route: '/admin/etc-inquiry-list',
+      route: '/administrator/etc-inquiry-list',
       icon: HelpIcon,
       badge: 0,
     },

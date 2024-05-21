@@ -12,13 +12,14 @@ import KeyIcon from '@mui/icons-material/Key';
 import kakao from '../../assets/img/signin/kakao.png';
 import google from '../../assets/img/signin/google.png';
 import naver from '../../assets/img/signin/naver.png';
+
+import GenericButton from '../../components/common/genericButton/GenericButton';
 import {
   LoginButtons,
   LoginForm,
   SocialIcon,
   SocialIconsContainer,
-} from '../../styles/Signin/SigninPage.styles';
-import GenericButton from '../../components/common/genericButton/GenericButton';
+} from '../../styles/signin/SigninPage.styles';
 
 const SigninPage: React.FC = () => {
   const navigate = useNavigate();

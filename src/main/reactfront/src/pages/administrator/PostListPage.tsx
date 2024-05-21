@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { Information, informations } from '../../types/admin/InformationData';
+import {
+  Information,
+  informations,
+} from '../../types/administrator/InformationData';
 import {
   Container,
   TableData,
@@ -7,7 +10,7 @@ import {
 } from '../../components/genericTable/GenericTable.styles';
 import GenericTable from '../../components/genericTable/GenericTable';
 import { Typography } from '@mui/material';
-import { Info, Search } from '../../styles/admin/PostListPage.styles';
+import { Info, Search } from '../../styles/administrator/PostListPage.styles';
 import SearchBox from '../../components/common/search/SearchBox';
 import GenericButton from '../../components/common/genericButton/GenericButton';
 import { useNavigate } from 'react-router-dom';
