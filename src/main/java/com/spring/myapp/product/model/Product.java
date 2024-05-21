@@ -1,6 +1,5 @@
 package com.spring.myapp.product.model;
 
-
 import lombok.Data;
 import java.util.Date;
 import java.util.List;
@@ -17,6 +16,5 @@ public class Product {
 	private Boolean isDeleted;
 	private Date createdAt;
 	private Date updatedAt;
-	private ProductCategory category;
-	private List<ProductImage> images;
+	private Long categoryId;
 }

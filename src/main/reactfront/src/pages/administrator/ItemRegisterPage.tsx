@@ -189,7 +189,7 @@ const ItemRegisterPage: React.FC = () => {
             <TextField
               name="stock"
               label="재고"
-              value={formValues.productDescription}
+              value={formValues.stock}
               onChange={handleInputChange}
               fullWidth
             />
