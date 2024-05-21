@@ -5,7 +5,7 @@ import QuantityInput from './QuantityInput';
 import UnstyledSelectForm from './UnstyledSelectForm';
 import BasicRating from './BasicRating';
 import { PurchasePanelBtn } from './PurchasePanelBtn';
-import { productData } from '../../types/productData';
+import { productData } from '../../types/ProductData';
 import {
   StyledProductDetail,
   TopContainer,

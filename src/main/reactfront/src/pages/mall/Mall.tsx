@@ -10,7 +10,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
-import { productData, Product } from '../../types/productData';
+import { productData, Product } from '../../types/ProductData';
 import SearchBox from '../../components/common/search/SearchBox';
 
 const CenteredContainer = styled.div`

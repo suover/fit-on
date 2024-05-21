@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { Inquiry } from '../../../../types/MainDummyData';
-import InquiryTable from './inquiryLists.styles';
+import InquiryTable from './InquiryLists.styles';
 import InquiryListItem from './InquiryListItem';
 
 import { Pagination, Stack } from '@mui/material';

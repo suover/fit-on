@@ -4,7 +4,7 @@ import ProductDescription from './ProductDescription';
 import productImage from '../../assets/img/image011.png';
 import ReviewCombine from './ReviewCombine';
 import QuestionModal from './QuestionModal';
-import { questions as initialQuestions, Question } from '../../types/question';
+import { questions as initialQuestions, Question } from '../../types/Question';
 import QuestionBoard from './QuestionBoard';
 
 export interface TabPanelProps {

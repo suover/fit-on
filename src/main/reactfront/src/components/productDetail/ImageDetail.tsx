@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ProImg, MainImg, DetailImg, ImageModal } from './ImageDetail.styled';
-import { productData } from '../../types/productData';
+import { productData } from '../../types/ProductData';
 
 const ImgDetail = () => {
   const product = productData[2];

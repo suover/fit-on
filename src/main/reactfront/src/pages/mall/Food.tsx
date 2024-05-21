@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import ProductCard from '../../components/productCard/ProductCard';
-import { productData } from '../../types/productData';
+import { productData } from '../../types/ProductData';
 
 const CenteredContainer = styled.div`
   justify-content: center;
