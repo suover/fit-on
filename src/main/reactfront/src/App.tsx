@@ -8,8 +8,8 @@ import { ThemeProvider } from '@mui/material/styles';
 import MuiFontTheme from './styles/common/MuiFontTheme';
 
 import Main from './pages/main/Main'; // 메인
-import SigninPage from './pages/Signin/SigninPage'; // 회원가입
-import SignupPage from './pages/Signup/SignupPage';
+import SigninPage from './pages/signin/SigninPage'; // 회원가입
+import SignupPage from './pages/signup/SignupPage';
 import OrderPage from './pages/Order/orderPage';
 import Mall from './pages/mall/Mall'; // 쇼핑몰
 import Products from './pages/mall/Products';
@@ -47,16 +47,16 @@ import OneToOneInquiryPage from './pages/mypage/OneToOneInquiryPage';
 import UserInfoLoginPage from './pages/mypage/UserInfoLoginPage';
 import SharedRoutinePage from './pages/mypage/SharedRoutinePage';
 import MyRoutinesPage from './pages/mypage/MyRoutinesPage';
-import AdminPage from './pages/admin/AdminPage'; //관리자 페이지
-import MemberListPage from './pages/admin/MemberListPage';
-import ItemListPage from './pages/admin/ItemListPage';
-import CommunityListPage from './pages/admin/CommunityListPage';
-import PostListPage from './pages/admin/PostListPage';
-import ReviewListPage from './pages/admin/ReviewListPage';
-import ItemInquiryListPage from './pages/admin/ItemInquiryListPage';
-import EtcInquiryListPage from './pages/admin/EtcInquiryListPage';
-import PostRegisterPage from './pages/admin/PostRegisterPage';
-import ItemRegisterPage from './pages/admin/ItemRegisterPage';
+import AdminPage from './pages/administrator/AdminPage'; //관리자 페이지
+import MemberListPage from './pages/administrator/MemberListPage';
+import ItemListPage from './pages/administrator/ItemListPage';
+import CommunityListPage from './pages/administrator/CommunityListPage';
+import PostListPage from './pages/administrator/PostListPage';
+import ReviewListPage from './pages/administrator/ReviewListPage';
+import ItemInquiryListPage from './pages/administrator/ItemInquiryListPage';
+import EtcInquiryListPage from './pages/administrator/EtcInquiryListPage';
+import PostRegisterPage from './pages/administrator/PostRegisterPage';
+import ItemRegisterPage from './pages/administrator/ItemRegisterPage';
 
 const App = () => {
   return (
@@ -117,7 +117,7 @@ const App = () => {
           <Route path="product-inquiry" element={<ProductInquiryPage />} />
           <Route path="one-to-one-inquiry" element={<OneToOneInquiryPage />} />
         </Route>
-        <Route path="admin" element={<AdminPage />}>
+        <Route path="administrator" element={<AdminPage />}>
           <Route path="member-list" element={<MemberListPage />} />
           <Route path="item-list" element={<ItemListPage />} />
           <Route path="post-list" element={<PostListPage />} />
