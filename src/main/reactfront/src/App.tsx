@@ -57,6 +57,7 @@ import ItemInquiryListPage from './pages/administrator/ItemInquiryListPage';
 import EtcInquiryListPage from './pages/administrator/EtcInquiryListPage';
 import PostRegisterPage from './pages/administrator/PostRegisterPage';
 import ItemRegisterPage from './pages/administrator/ItemRegisterPage';
+import ShoppingBasketPage from './pages/shoppingBasket/ShoppingBasketPage';
 
 const App = () => {
   return (
@@ -68,6 +69,7 @@ const App = () => {
         <Route path="sign-in" element={<SigninPage />} />
         <Route path="sign-up" element={<SignupPage />} />
         <Route path="order-page" element={<OrderPage />} />
+        <Route path="/shopping-basket" element={<ShoppingBasketPage />} />
         <Route path="/mall" element={<Mall />}>
           <Route index element={<Products />} />
           <Route path="fitness" element={<Fittness />} />
