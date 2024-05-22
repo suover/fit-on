@@ -8,14 +8,15 @@ import { ThemeProvider } from '@mui/material/styles';
 import MuiFontTheme from './styles/common/MuiFontTheme';
 
 import Main from './pages/main/Main'; // 메인
-import SigninPage from './pages/Signin/SigninPage'; // 회원가입
-import SignupPage from './pages/Signup/SignupPage';
+import SigninPage from './pages/signin/SigninPage'; // 회원가입
+import SignupPage from './pages/signup/SignupPage';
 import Mall from './pages/mall/Mall'; // 쇼핑몰
 import Products from './pages/mall/Products';
+import ProductDetail from './pages/productDetail/ProductDetail';
 import Fittness from './pages/mall/Fittness';
 import Food from './pages/mall/Food';
 import Supplement from './pages/mall/Supplemnet';
-import ProductDetail from './pages/productDetail/productDetail';
+import OrderPage from './pages/order/OrderPage';
 import Community from './pages/community/CommunityMain'; // 커뮤니티
 import ViewPostDetail from './pages/community/ViewPostDetail';
 import NewPost from './pages/community/NewPost';
@@ -44,6 +45,19 @@ import ProductReviewPage from './pages/mypage/ProductReviewPage';
 import ProductInquiryPage from './pages/mypage/ProductInquiryPage';
 import OneToOneInquiryPage from './pages/mypage/OneToOneInquiryPage';
 import UserInfoLoginPage from './pages/mypage/UserInfoLoginPage';
+import SharedRoutinePage from './pages/mypage/SharedRoutinePage';
+import MyRoutinesPage from './pages/mypage/MyRoutinesPage';
+import AdminPage from './pages/administrator/AdminPage'; //관리자 페이지
+import MemberListPage from './pages/administrator/MemberListPage';
+import ItemListPage from './pages/administrator/ItemListPage';
+import CommunityListPage from './pages/administrator/CommunityListPage';
+import PostListPage from './pages/administrator/PostListPage';
+import ReviewListPage from './pages/administrator/ReviewListPage';
+import ItemInquiryListPage from './pages/administrator/ItemInquiryListPage';
+import EtcInquiryListPage from './pages/administrator/EtcInquiryListPage';
+import PostRegisterPage from './pages/administrator/PostRegisterPage';
+import ItemRegisterPage from './pages/administrator/ItemRegisterPage';
+import ShoppingBasketPage from './pages/shoppingBasket/ShoppingBasketPage';
 
 const App = () => {
   return (
@@ -54,6 +68,8 @@ const App = () => {
         <Route path="/" element={<Main />} />
         <Route path="sign-in" element={<SigninPage />} />
         <Route path="sign-up" element={<SignupPage />} />
+        <Route path="order-page" element={<OrderPage />} />
+        <Route path="/shopping-basket" element={<ShoppingBasketPage />} />
         <Route path="/mall" element={<Mall />}>
           <Route index element={<Products />} />
           <Route path="fitness" element={<Fittness />} />
@@ -86,7 +102,11 @@ const App = () => {
           <Route index element={<MyHome />} />
           <Route path="user-info-login" element={<UserInfoLoginPage />} />
           <Route path="user-info" element={<UserInfoPage />} />
-          <Route path="my-routine" element={<MyRoutinePage />} />
+          <Route path="my-routine" element={<MyRoutinePage />}>
+            <Route index element={<MyRoutinesPage />} />
+            <Route path="my-routines" element={<MyRoutinesPage />} />
+            <Route path="shared-routine" element={<SharedRoutinePage />} />
+          </Route>
           <Route path="post-management" element={<PostManagementPage />} />
           <Route
             path="comment-management"
@@ -99,6 +119,18 @@ const App = () => {
           <Route path="product-inquiry" element={<ProductInquiryPage />} />
           <Route path="one-to-one-inquiry" element={<OneToOneInquiryPage />} />
         </Route>
+        <Route path="administrator" element={<AdminPage />}>
+          <Route index element={<MemberListPage />} />
+          <Route path="member-list" element={<MemberListPage />} />
+          <Route path="item-list" element={<ItemListPage />} />
+          <Route path="post-list" element={<PostListPage />} />
+          <Route path="community-list" element={<CommunityListPage />} />
+          <Route path="review-list" element={<ReviewListPage />} />
+          <Route path="item-inquiry-list" element={<ItemInquiryListPage />} />
+          <Route path="etc-inquiry-list" element={<EtcInquiryListPage />} />
+        </Route>
+        <Route path="post-register" element={<PostRegisterPage />} />
+        <Route path="item-register" element={<ItemRegisterPage />} />
       </Routes>
       <Footer />
     </ThemeProvider>

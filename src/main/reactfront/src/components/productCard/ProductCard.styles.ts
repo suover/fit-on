@@ -6,8 +6,6 @@ export const Cards = styled.section`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  max-width: 1000px;
-  font-family: 'Noto Sans KR', sans-serif;
 `;
 
 // 각 카드 스타일
@@ -18,8 +16,8 @@ export const Card = styled.article<{ bgImage: string }>`
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 2px 2px 5px 2px rgba(0, 0, 0, 0.1);
-
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0, 1);
+
   &:hover {
     box-shadow: 2px 2px 18px 2px rgba(0, 0, 0, 0.1);
     transform: scale(1.02, 1.02);
@@ -46,7 +44,6 @@ export const Card = styled.article<{ bgImage: string }>`
 
 export const CardInfoHover = styled.div`
   position: absolute;
-  padding: 16px;
   width: 100%;
   opacity: 0;
   top: 0;
@@ -60,7 +57,7 @@ export const CardInfo = styled.div`
   background-color: #ffff;
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
-  padding: 22px 22px 22px 22px;
+  padding: 22px;
   z-index: 2;
 `;
 

@@ -3,36 +3,22 @@ import { Outlet } from 'react-router-dom';
 
 import styled from 'styled-components';
 
-import ProductCard from '../../components/productCard/ProductCard';
 import SideNavbar from '../../components/layout/sideNavBar/SideNavbar';
 import HomeIcon from '@mui/icons-material/Home';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
-import { productData, Product } from '../../types/productData';
+import { productData, Product } from '../../types/ProductData';
 import SearchBox from '../../components/common/search/SearchBox';
+import SidebarWrapper from '../../components/common/sidebar/SidebarWrapper';
+import { Container } from '@mui/material';
 
-const CenteredContainer = styled.div`
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  width: 100%;
-  margin-top: 30px;
-  margin-bottom: 30px;
-`;
-const MallContainer = styled.div`
-  display: flex;
-  height: 100%;
-  padding-left: 100px;
-  margin-top: 20px;
-`;
 export const Search = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
   margin-bottom: 30px;
-  margin-right: 295px;
   & input,
   & button {
     box-sizing: border-box;
@@ -68,22 +54,20 @@ const Mall: React.FC = () => {
   };
   return (
     <>
-      <MallContainer>
-        <SideNavbar
-          menuItems={menuItems}
-          drawerWidthOpen="240px"
-          title="FitOn Mall"
-        />
-        <CenteredContainer>
-          <Search>
-            <SearchBox
-              onSearch={handleSearch}
-              styleProps={{ width: '220px' }}
-            />
-          </Search>
-          <Outlet />
-        </CenteredContainer>
-      </MallContainer>
+      <Container sx={{ paddingTop: '50px', paddingBottom: '100px' }}>
+        <SidebarWrapper>
+          <SideNavbar
+            menuItems={menuItems}
+            drawerWidthOpen="200px"
+            title="FitOn Mall"
+          />
+        </SidebarWrapper>
+
+        <Search>
+          <SearchBox onSearch={handleSearch} />
+        </Search>
+        <Outlet />
+      </Container>
     </>
   );
 };
