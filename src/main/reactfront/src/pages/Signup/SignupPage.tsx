@@ -18,10 +18,12 @@ import {
   SignupForm,
 } from '../../styles/Signup/SignupPage.styles';
 import GenericButton from '../../components/common/genericButton/GenericButton';
+import axios from '../../api/axiosConfig';
+
 const SignupPage: React.FC = () => {
   const navigate = useNavigate();
 
-  //이메일, 아이디, 비밀번호, 비밀번호 재입력, 생년월일, 휴대폰 번호 확인.
+  // 이메일, 아이디, 비밀번호, 비밀번호 재입력, 생년월일, 휴대폰 번호 상태 관리
   const [nickname, setNickname] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [name, setName] = useState<string>('');
@@ -30,7 +32,7 @@ const SignupPage: React.FC = () => {
   const [phonenumber, setPhonenumber] = useState<string>('');
   const [birthday, setBirthday] = useState<string>('');
 
-  //유효성 검사.
+  // 유효성 검사 상태
   const [isNickname, setIsNickname] = useState<boolean>(false);
   const [isPassword, setIsPassword] = useState<boolean>(false);
   const [isPasswordConfirm, setIsPasswordConfirm] = useState<boolean>(false);
@@ -39,7 +41,7 @@ const SignupPage: React.FC = () => {
   const [isPhoneNumber, setIsPhoneNumber] = useState<boolean>(false);
   const [isBirthday, setIsBirthday] = useState<boolean>(false);
 
-  //오류 메세지
+  // 오류 메세지 상태
   const [nicknameMessage, setNicknameMessage] = useState<String>('');
   const [passwordMessage, setPasswordMessage] = useState<String>('');
   const [passwordConfirmMessage, setPasswordConfirmMessage] =
@@ -48,7 +50,13 @@ const SignupPage: React.FC = () => {
   const [nameMessage, setNameMessage] = useState<string>('');
   const [phoneNumberMessage, setPhoneNumberMessage] = useState<string>('');
 
-  //이메일 유효성 검사
+  const [emailValid, setEmailValid] = useState<boolean | null>(null);
+  const [nicknameValid, setNicknameValid] = useState<boolean | null>(null);
+
+  const [isEmailChecked, setIsEmailChecked] = useState<boolean>(false);
+  const [isNicknameChecked, setIsNicknameChecked] = useState<boolean>(false);
+
+  // 이메일 유효성 검사
   const handleChangeEmail = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
@@ -56,17 +64,24 @@ const SignupPage: React.FC = () => {
 
       setEmail(value);
 
-      if (!regex.test(value)) {
+      if (value === '') {
+        setEmailMessage('');
+        setIsEmail(false);
+        setEmailValid(false);
+      } else if (!regex.test(value)) {
         setEmailMessage('@를 포함하여 올바른 이메일 주소를 입력하세요.');
         setIsEmail(false);
+        setEmailValid(false);
       } else {
         setEmailMessage('');
         setIsEmail(true);
+        setEmailValid(null);
       }
     },
     [setEmail, setIsEmail, setEmailMessage],
   );
-  //닉네임 유효성 검사
+
+  // 닉네임 유효성 검사
   const handleChangeId = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
@@ -74,29 +89,39 @@ const SignupPage: React.FC = () => {
 
       setNickname(value);
 
-      if (!regex.test(value)) {
+      if (value === '') {
+        setNicknameMessage('');
+        setIsNickname(false);
+        setNicknameValid(false);
+      } else if (!regex.test(value)) {
         setNicknameMessage(
           '한글, 영어, 숫자를 포함한 2자 이상 10자 미만으로 입력해주세요',
         );
         setIsNickname(false);
+        setNicknameValid(false);
       } else {
         setNicknameMessage('');
         setIsNickname(true);
+        setNicknameValid(null);
       }
     },
     [setNickname, setIsNickname, setNicknameMessage],
   );
+
   // 비밀번호 유효성 검사
   const handleChangePassword = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[a-zA-Z]).{5,}$/;
+      const regex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*\W).{8,}$/;
 
       setPassword(value);
 
-      if (!regex.test(value)) {
+      if (value === '') {
+        setPasswordMessage('');
+        setIsPassword(false);
+      } else if (!regex.test(value)) {
         setPasswordMessage(
-          '비밀번호는 5자 이상이며, 소문자, 숫자, 특수문자를 포함해야 합니다.',
+          '비밀번호는 8자 이상이며, 영문, 숫자, 특수문자를 포함해야 합니다.',
         );
         setIsPassword(false);
       } else {
@@ -106,7 +131,8 @@ const SignupPage: React.FC = () => {
     },
     [setPassword, setIsPassword, setPasswordMessage],
   );
-  //비밀번호 재입력 유효성 검사
+
+  // 비밀번호 재입력 유효성 검사
   const handleChangePasswordConfirm = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
@@ -127,6 +153,7 @@ const SignupPage: React.FC = () => {
       setPasswordConfirmMessage,
     ],
   );
+
   // 이름 유효성 검사
   const handleChangeName = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -150,11 +177,12 @@ const SignupPage: React.FC = () => {
   const handleChangePhoneNumber = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      const regex = /^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/;
+      const regex = /^01[016789][0-9]{7,8}$/;
 
-      setPhonenumber(value);
+      const formattedValue = value.replace(/-/g, '');
+      setPhonenumber(formattedValue);
 
-      if (!regex.test(value)) {
+      if (!regex.test(formattedValue)) {
         setPhoneNumberMessage(
           '올바른 휴대전화 번호 형식이 아닙니다. 예: 01012345678',
         );
@@ -166,7 +194,8 @@ const SignupPage: React.FC = () => {
     },
     [setPhonenumber, setIsPhoneNumber, setPhoneNumberMessage],
   );
-  // 생년월일
+
+  // 생년월일 유효성 검사
   const handleChangeBirthday = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
@@ -180,8 +209,65 @@ const SignupPage: React.FC = () => {
     },
     [],
   );
+
+  // 이메일 중복 검사
+  const handleCheckEmailDuplicate = async () => {
+    if (!isEmail) {
+      setEmailMessage('올바른 이메일 주소를 입력하세요.');
+      setEmailValid(false);
+      return;
+    }
+
+    try {
+      const response = await axios.get('/api/check-email', {
+        params: { email },
+      });
+      if (response.data) {
+        setEmailMessage('이미 사용 중인 이메일입니다.');
+        setIsEmail(false);
+        setEmailValid(false);
+      } else {
+        setEmailMessage('사용 가능한 이메일입니다.');
+        setIsEmail(true);
+        setEmailValid(true);
+      }
+      setIsEmailChecked(true);
+    } catch (error) {
+      console.error('이메일 중복 확인 중 오류 발생:', error);
+    }
+  };
+
+  // 닉네임 중복 검사
+  const handleCheckNicknameDuplicate = async () => {
+    if (!isNickname) {
+      setNicknameMessage('올바른 닉네임을 입력하세요.');
+      setNicknameValid(false);
+      return;
+    }
+
+    try {
+      const response = await axios.get('/api/check-nickname', {
+        params: { nickname },
+      });
+      if (response.data) {
+        setNicknameMessage('이미 사용 중인 닉네임입니다.');
+        setIsNickname(false);
+        setNicknameValid(false);
+      } else {
+        setNicknameMessage('사용 가능한 닉네임입니다.');
+        setIsNickname(true);
+        setNicknameValid(true);
+      }
+      setIsNicknameChecked(true);
+    } catch (error) {
+      console.error('닉네임 중복 확인 중 오류 발생:', error);
+    }
+  };
+
+  // 폼 제출 처리 함수 수정
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     // 각 입력 필드의 누락을 검사
     if (!email) {
       alert('이메일을 입력해주세요.');
@@ -192,8 +278,8 @@ const SignupPage: React.FC = () => {
     } else if (!password) {
       alert('비밀번호를 입력해주세요.');
       return;
-    } else if (password !== passwordConfirm) {
-      alert('비밀번호가 일치하지 않습니다. 다시 입력해주세요.');
+    } else if (!isPassword || !isPasswordConfirm) {
+      alert('비밀번호가 유효하지 않거나 일치하지 않습니다.');
       return;
     } else if (!name) {
       alert('이름을 입력해주세요.');
@@ -201,19 +287,45 @@ const SignupPage: React.FC = () => {
     } else if (!phonenumber) {
       alert('휴대폰 번호를 입력해주세요.');
       return;
+    } else if (!isPhoneNumber) {
+      alert('휴대폰 번호가 유효하지 않습니다.');
+      return;
     } else if (!birthday) {
       alert('생년월일을 입력해주세요.');
       return;
     }
-    console.log('회원가입이 완료 되었습니다', {
-      email,
-      nickname,
-      password,
-      name,
-      phonenumber,
-      birthday,
-    });
-    navigate('/login');
+
+    if (!isEmailChecked || emailValid === false) {
+      alert('이메일 중복 확인을 해주세요.');
+      return;
+    } else if (!isNicknameChecked || nicknameValid === false) {
+      alert('닉네임 중복 확인을 해주세요.');
+      return;
+    }
+
+    try {
+      const response = await axios.post('/api/sign-up', {
+        email,
+        nickname,
+        password,
+        name,
+        phone: phonenumber,
+        birthDate: birthday,
+      });
+
+      if (response.status === 200) {
+        // JWT 토큰을 로컬 스토리지에 저장
+        const token = response.data.token;
+        localStorage.setItem('token', token);
+
+        alert('회원가입이 완료되었습니다.');
+        navigate('/sign-in');
+      } else {
+        alert('회원가입에 실패하였습니다. 다시 시도해주세요.');
+      }
+    } catch (error) {
+      alert('회원가입에 실패하였습니다. 다시 시도해주세요.');
+    }
   };
 
   return (
@@ -243,8 +355,18 @@ const SignupPage: React.FC = () => {
                 name="email"
                 value={email}
                 onChange={handleChangeEmail}
-                error={!isEmail && emailMessage !== ''}
-                helperText={!isEmail ? emailMessage : ''}
+                error={emailValid === false}
+                helperText={emailMessage}
+                FormHelperTextProps={{
+                  style: {
+                    color:
+                      emailValid === false
+                        ? 'red'
+                        : emailValid === true
+                          ? 'blue'
+                          : '',
+                  },
+                }}
                 InputProps={{
                   style: {
                     borderRadius: '12px',
@@ -257,14 +379,14 @@ const SignupPage: React.FC = () => {
                 }}
                 sx={{
                   '& label.Mui-focused': {
-                    color: 'black', // 포커스 상태에서 레이블 색상 변경
+                    color: 'black',
                   },
                   '& .MuiOutlinedInput-root': {
                     '& fieldset': {
-                      borderColor: 'black', // 여기에서 테두리 색상을 설정합니다.
+                      borderColor: 'black',
                     },
                     '&.Mui-focused fieldset': {
-                      borderColor: 'black', // 포커스 상태의 테두리 색상을 배경색과 동일하게 설정
+                      borderColor: 'black',
                       borderWidth: 1,
                     },
                   },
@@ -279,6 +401,7 @@ const SignupPage: React.FC = () => {
                   width: '130px',
                   height: '57px',
                 }}
+                onClick={handleCheckEmailDuplicate}
               >
                 중복 확인
               </GenericButton>
@@ -293,8 +416,18 @@ const SignupPage: React.FC = () => {
                 label="닉네임"
                 value={nickname}
                 onChange={handleChangeId}
-                error={!isNickname && nicknameMessage !== ''}
-                helperText={!isNickname ? nicknameMessage : ''}
+                error={nicknameValid === false}
+                helperText={nicknameMessage}
+                FormHelperTextProps={{
+                  style: {
+                    color:
+                      nicknameValid === false
+                        ? 'red'
+                        : nicknameValid === true
+                          ? 'blue'
+                          : '',
+                  },
+                }}
                 InputProps={{
                   style: {
                     borderRadius: '12px',
@@ -329,13 +462,14 @@ const SignupPage: React.FC = () => {
                   width: '130px',
                   height: '57px',
                 }}
+                onClick={handleCheckNicknameDuplicate}
               >
                 중복 확인
               </GenericButton>
             </Box>
             <TextField
               fullWidth
-              placeholder="숫자, 영문, 특수문자 조합 최소 5자"
+              placeholder="영문, 숫자, 특수문자 조합 최소 8자"
               margin="normal"
               type="password"
               id="password"
