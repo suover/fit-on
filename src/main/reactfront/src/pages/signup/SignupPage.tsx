@@ -213,7 +213,7 @@ const SignupPage: React.FC = () => {
       phonenumber,
       birthday,
     });
-    navigate('/login');
+    navigate('/sign-in');
   };
 
   return (
@@ -524,7 +524,7 @@ const SignupPage: React.FC = () => {
               }}
             />
             <SignupButtons>
-              <Link to="/login" style={{ width: '48%' }}>
+              <Link to="/sign-in" style={{ width: '48%' }}>
                 <GenericButton
                   style={{ fontSize: '1.1rem', width: '100%', height: '40px' }}
                 >
@@ -546,7 +546,7 @@ const SignupPage: React.FC = () => {
           style={{ marginTop: '20px', textAlign: 'center' }}
         >
           <Link
-            to="/privacy-policy"
+            to="/service"
             style={{
               marginRight: '10px',
               textDecoration: 'none',
@@ -557,7 +557,7 @@ const SignupPage: React.FC = () => {
           </Link>
           |
           <Link
-            to="/terms"
+            to="/service"
             style={{
               margin: '0 10px',
               textDecoration: 'none',
@@ -568,7 +568,7 @@ const SignupPage: React.FC = () => {
           </Link>
           |
           <Link
-            to="/support"
+            to="/service"
             style={{
               marginLeft: '10px',
               textDecoration: 'none',
