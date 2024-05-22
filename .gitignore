@@ -44,3 +44,6 @@ logs/
 
 # Ignore built static files
 src/main/resources/static/static/*
+
+# Ignore asset-manifest.json file
+src/main/resources/static/asset-manifest.json
