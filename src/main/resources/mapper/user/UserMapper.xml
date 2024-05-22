@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.myapp.user.repository.UserMapper">
+    <resultMap id="userResultMap" type="com.spring.myapp.user.model.User">
+        <id column="user_id" property="userId"/>
+        <result column="email" property="email"/>
+        <result column="name" property="name"/>
+        <result column="password" property="password"/>
+        <result column="nickname" property="nickname"/>
+        <result column="phone" property="phone"/>
+        <result column="birth_date" property="birthDate"/>
+        <result column="join_date" property="joinDate"/>
+        <result column="is_active" property="isActive"/>
+    </resultMap>
+
+    <select id="findByEmail" resultMap="userResultMap">
+        SELECT * FROM users WHERE email = #{email}
+    </select>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="userId">
+        INSERT INTO users (email, name, password, nickname, phone, birth_date, join_date, is_active)
+        VALUES (#{email}, #{name}, #{password}, #{nickname}, #{phone}, #{birthDate}, #{joinDate}, #{isActive})
+    </insert>
+
+    <insert id="saveUserRole">
+        INSERT INTO user_roles (user_id, role_id)
+        VALUES (#{userId}, (SELECT role_id FROM roles WHERE role_name = #{roleName}))
+    </insert>
+
+    <select id="existsByEmail" resultType="boolean" parameterType="string">
+        SELECT COUNT(*) > 0 FROM users WHERE email = #{email}
+    </select>
+
+    <select id="existsByNickname" resultType="boolean" parameterType="string">
+        SELECT COUNT(*) > 0 FROM users WHERE nickname = #{nickname}
+    </select>
+
+    <select id="getUserRoles" resultType="string">
+        SELECT r.role_name
+        FROM roles r
+        JOIN user_roles ur ON r.role_id = ur.role_id
+        WHERE ur.user_id = #{userId}
+    </select>
+</mapper>
