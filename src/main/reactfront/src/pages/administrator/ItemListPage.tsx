@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Product, products } from '../../types/administrator/ItemsData';
+import React, { useState, useEffect } from 'react';
+import { Product } from '../../types/administrator/ItemsData';
+// import { Product, products } from '../../types/administrator/ItemsData';
 import {
   Container,
   Image,
@@ -12,10 +13,30 @@ import { Info, Search } from '../../styles/administrator/ItemListPage.styles';
 import SearchBox from '../../components/common/search/SearchBox';
 import { useNavigate } from 'react-router-dom';
 import GenericButton from '../../components/common/genericButton/GenericButton';
+import axios from 'axios';
+
 
 const ItemListPage: React.FC = () => {
   const navigate = useNavigate();
-  const [filteredItems, setFilteredItems] = useState<Product[]>(products);
+//   const [filteredItems, setFilteredItems] = useState<Product[]>(products);
+
+  const [filteredItems, setFilteredItems] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+
+  //상품 리스트 가져오기
+  useEffect(() => {
+      const fetchProducts = async () => {
+        try {
+          const response = await axios.get<Product[]>('http://localhost:8080/api/products');
+          setProducts(response.data);
+          setFilteredItems(response.data);
+        } catch (error) {
+          console.error('Failed to fetch products:', error);
+        }
+      };
+
+      fetchProducts();
+    }, []);
 
   const handleSearch = (query: string) => {
     const filtered = products.filter(

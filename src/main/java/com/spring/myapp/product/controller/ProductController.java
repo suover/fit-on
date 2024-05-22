@@ -24,14 +24,16 @@ public class ProductController {
 		return productService.getAllProducts();
 	}
 
+
 	@GetMapping("/{id}")
 	public Product getProductById(@PathVariable Long id) {
 		return productService.getProductById(id);
 	}
-
 	@PostMapping
 	public void createProduct(@RequestBody Product product) {
+		System.out.println("현재 컨트롤러단");
 		productService.saveProduct(product);
+		System.out.println("컨트롤러 단: 서비스 종료");
 	}
 
 	@PutMapping("/{id}")

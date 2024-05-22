@@ -10,15 +10,7 @@
         <result property="isDeleted" column="is_deleted"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
-        <association property="category" column="category_id" javaType="com.spring.myapp.product.model.ProductCategory">
-            <id property="categoryId" column="category_id"/>
-            <result property="name" column="name"/>
-        </association>
-        <collection property="images" ofType="com.spring.myapp.product.model.ProductImage">
-            <id property="imageId" column="image_id"/>
-            <result property="imageUrl" column="image_url"/>
-            <result property="isMainImage" column="is_main_image"/>
-        </collection>
+        <result property="categoryId" column="category_id"/>
     </resultMap>
 
     <select id="findAll" resultMap="ProductResultMap">
@@ -29,9 +21,9 @@
         SELECT * FROM products WHERE product_id = #{productId}
     </select>
 
-    <insert id="save" useGeneratedKeys="true" keyProperty="productId">
-        INSERT INTO products (name, description, price, stock, content, discount_rate, is_deleted, created_at, updated_at, category_id)
-        VALUES (#{name}, #{description}, #{price}, #{stock}, #{content}, #{discountRate}, #{isDeleted}, #{createdAt}, #{updatedAt}, #{category.categoryId})
+    <insert id="save" parameterType="com.spring.myapp.product.model.Product">
+        INSERT INTO products ( name, description, price, stock, content, discount_rate, is_deleted, created_at, updated_at, category_id)
+        VALUES (#{name}, #{description}, #{price}, #{stock}, #{content}, #{discountRate}, #{isDeleted}, #{createdAt}, #{updatedAt}, #{categoryId})
     </insert>
 
     <update id="update">
@@ -45,7 +37,7 @@
         is_deleted = #{isDeleted},
         created_at = #{createdAt},
         updated_at = #{updatedAt},
-        category_id = #{category.categoryId}
+        category_id = #{categoryId}
         WHERE product_id = #{productId}
     </update>
 

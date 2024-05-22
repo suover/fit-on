@@ -3,7 +3,7 @@ import { TextField, MenuItem, Box, Typography, Container } from '@mui/material';
 import GenericButton from '../../components/common/genericButton/GenericButton';
 import 'react-quill/dist/quill.snow.css';
 import noImage from '../../assets/itemRegister/noImage.jpeg';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Editor from '../../components/common/Editor';
 import axios from 'axios';
 
@@ -33,7 +33,22 @@ const ItemRegisterPage: React.FC = () => {
   const [additionalImages, setAdditionalImages] = useState<string[]>(
     Array(3).fill(''),
   );
-  const [description, setDescription] = useState<string>('');
+  const [detailDescription, setDetailDescription] = useState<string>('');
+  const navigate = useNavigate();
+
+//   const [categories, setCategories] = useState<{ category_id: number; name: string }[]>([]);
+//   useEffect(() => {
+//       const fetchCategories = async () => {
+//         try {
+//           const response = await axios.get<{ category_id: number; name: string }[]>('http://localhost:8080/api/categories');
+//           setCategories(response.data);
+//         } catch (error) {
+//           console.error('Failed to fetch categories:', error);
+//         }
+//       };
+//
+//       fetchCategories();
+//     }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -44,9 +59,10 @@ const ItemRegisterPage: React.FC = () => {
     setFormValues({ ...formValues, productCategory: e.target.value });
   };
 
-  const handleDescriptionChange = (value: string) => {
-    setDescription(value);
+  const handleDetailiDescriptionChange = (value: string) => {
+    setDetailDescription(value);
   };
+
   const handleImageClick =
     (index: number | null = null) =>
     () => {
@@ -77,9 +93,41 @@ const ItemRegisterPage: React.FC = () => {
       document.body.removeChild(input);
     };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Form Values:', formValues);
+
+    const productData = {
+      name: formValues.productName,
+      description: formValues.productDescription,
+      price: parseFloat(formValues.productPrice),
+      stock: parseInt(formValues.stock),
+      content: detailDescription,
+      discountRate: parseFloat(formValues.eventRate),
+      isDeleted: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      categoryId: parseInt(formValues.productCategory),
+    };
+    console.log('Form product:', productData);
+    console.log('img:', imagePreview);
+    console.log('additionalImages :', additionalImages);
+
+    try {
+      const response = await axios.post(
+        'http://localhost:8080/api/products',
+        productData,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      console.log('Product registered successfully:', response.data);
+      navigate('/administrator/item-list'); // 등록 성공 시 이동
+    } catch (error) {
+      console.error('There was an error registering the product!', error);
+    }
   };
 
   return (
@@ -161,13 +209,14 @@ const ItemRegisterPage: React.FC = () => {
               onChange={handleSelectChange}
               fullWidth
             >
-              <MenuItem value="피트니스">피트니스</MenuItem>
-              <MenuItem value="보충제">보충제</MenuItem>
-              <MenuItem value="영양제">영양제</MenuItem>
-              <MenuItem value="요가 & 필라테스">요가 & 필라테스</MenuItem>
-              <MenuItem value="구기용품">구기용품</MenuItem>
-              <MenuItem value="런닝 & 자전거용품 ">런닝 & 자전거용품 </MenuItem>
-              <MenuItem value="복싱 & 잡화">복싱 & 잡화</MenuItem>
+              <MenuItem value="1">피트니스</MenuItem>
+              <MenuItem value="2">보충제</MenuItem>
+              <MenuItem value="3">영양제</MenuItem>
+              <MenuItem value="4">식품</MenuItem>
+              <MenuItem value="5">요가 & 필라테스</MenuItem>
+              <MenuItem value="6">구기용품</MenuItem>
+              <MenuItem value="7">런닝 & 자전거용품</MenuItem>
+              <MenuItem value="8">복싱 & 잡화</MenuItem>
             </TextField>
             <TextField
               name="productPrice"
@@ -202,8 +251,8 @@ const ItemRegisterPage: React.FC = () => {
         </Box>
         <Box>
           <Editor
-            value={description}
-            onChange={handleDescriptionChange}
+            value={detailDescription}
+            onChange={handleDetailiDescriptionChange}
             placeholder="상품설명을 기재하시오"
           />
         </Box>

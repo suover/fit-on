@@ -22,7 +22,11 @@ public class ProductService {
 	}
 
 	public void saveProduct(Product product) {
+		System.out.println("서비스단 saveProduct 실행");
+		System.out.println("프로덕트 출력 : " + product);
+		System.out.println("서비스 단 : 매퍼 실행");
 		productMapper.save(product);
+		System.out.println("서비스 단 : 매퍼 실행 종료");
 	}
 
 	public void updateProduct(Product product) {
