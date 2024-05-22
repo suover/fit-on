@@ -18,7 +18,6 @@ import {
   SignupButtons,
   SignupForm,
 } from '../../styles/signup/SignupPage.styles';
-import GenericButton from '../../components/common/genericButton/GenericButton';
 import axios from '../../api/axiosConfig';
 
 const SignupPage: React.FC = () => {
@@ -78,8 +77,9 @@ const SignupPage: React.FC = () => {
         setIsEmail(true);
         setEmailValid(null);
       }
+      setIsEmailChecked(false);
     },
-    [setEmail, setIsEmail, setEmailMessage],
+    [setEmail, setIsEmail, setEmailMessage, setIsEmailChecked],
   );
 
   // 닉네임 유효성 검사
@@ -105,8 +105,9 @@ const SignupPage: React.FC = () => {
         setIsNickname(true);
         setNicknameValid(null);
       }
+      setIsNicknameChecked(false);
     },
-    [setNickname, setIsNickname, setNicknameMessage],
+    [setNickname, setIsNickname, setNicknameMessage, setIsNicknameChecked],
   );
 
   // 비밀번호 유효성 검사
@@ -265,7 +266,7 @@ const SignupPage: React.FC = () => {
     }
   };
 
-  // 폼 제출 처리 함수 수정
+  // 폼 제출 처리 함수
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -296,6 +297,7 @@ const SignupPage: React.FC = () => {
       return;
     }
 
+    // 중복 확인 상태 검증
     if (!isEmailChecked || emailValid === false) {
       alert('이메일 중복 확인을 해주세요.');
       return;
