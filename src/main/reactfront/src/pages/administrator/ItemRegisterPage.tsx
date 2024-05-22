@@ -5,6 +5,7 @@ import 'react-quill/dist/quill.snow.css';
 import noImage from '../../assets/itemRegister/noImage.jpeg';
 import { Link } from 'react-router-dom';
 import Editor from '../../components/common/Editor';
+import axios from 'axios';
 
 interface FormValues {
   productName: string;
