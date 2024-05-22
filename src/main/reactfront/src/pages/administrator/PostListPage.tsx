@@ -40,14 +40,7 @@ const PostListPage: React.FC = () => {
   ];
 
   return (
-    <Container
-      style={{
-        marginLeft: '45px',
-        marginRight: '45px',
-        marginTop: '100px',
-        height: '700px',
-      }}
-    >
+    <>
       <Info>
         <Typography sx={{ fontWeight: 'bold', fontSize: '1.5rem' }}>
           Fit On 정보글목록
@@ -60,7 +53,7 @@ const PostListPage: React.FC = () => {
         </GenericButton>
       </Info>
       <Search>
-        <SearchBox onSearch={handleSearch} styleProps={{ width: '200px' }} />
+        <SearchBox onSearch={handleSearch} />
       </Search>
       <GenericTable
         columns={columns}
@@ -77,7 +70,7 @@ const PostListPage: React.FC = () => {
         )}
         includeCheckboxes={false}
       />
-    </Container>
+    </>
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent } from 'react';
-import { Box, MenuItem, TextField, Typography } from '@mui/material';
+import { Box, Container, MenuItem, TextField, Typography } from '@mui/material';
 import GenericButton from '../../components/common/genericButton/GenericButton';
 import Editor from '../../components/common/Editor';
 import noImage from '../../assets/itemRegister/noImage.jpeg';
@@ -50,14 +50,12 @@ const PostRegisterPage: React.FC = () => {
   };
 
   return (
-    <Box
-      sx={{
-        p: 4,
-        width: '1160px',
-        marginLeft: '290px',
-      }}
-    >
-      <Typography sx={{ fontWeight: 'bold' }} variant="h3" gutterBottom>
+    <Container sx={{ paddingTop: '50px', paddingBottom: '50px' }}>
+      <Typography
+        sx={{ fontWeight: 'bold', fontSize: '1.875rem' }}
+        variant="h3"
+        gutterBottom
+      >
         정보 게시글 작성
       </Typography>
       <Box
@@ -169,7 +167,7 @@ const PostRegisterPage: React.FC = () => {
           </GenericButton>
         </Box>
       </Box>
-    </Box>
+    </Container>
   );
 };
 

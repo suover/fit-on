@@ -120,6 +120,7 @@ const App = () => {
           <Route path="one-to-one-inquiry" element={<OneToOneInquiryPage />} />
         </Route>
         <Route path="administrator" element={<AdminPage />}>
+          <Route index element={<MemberListPage />} />
           <Route path="member-list" element={<MemberListPage />} />
           <Route path="item-list" element={<ItemListPage />} />
           <Route path="post-list" element={<PostListPage />} />

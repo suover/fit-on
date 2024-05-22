@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, MenuItem, Box, Typography } from '@mui/material';
+import { TextField, MenuItem, Box, Typography, Container } from '@mui/material';
 import GenericButton from '../../components/common/genericButton/GenericButton';
 import 'react-quill/dist/quill.snow.css';
 import noImage from '../../assets/itemRegister/noImage.jpeg';
@@ -82,8 +82,12 @@ const ItemRegisterPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ p: 4, width: '1160px', marginLeft: '290px' }}>
-      <Typography sx={{ fontWeight: 'bold' }} variant="h3" gutterBottom>
+    <Container sx={{ paddingTop: '50px', paddingBottom: '50px' }}>
+      <Typography
+        sx={{ fontWeight: 'bold', fontSize: '1.875rem' }}
+        variant="h3"
+        gutterBottom
+      >
         상품 등록
       </Typography>
       <Box
@@ -227,7 +231,7 @@ const ItemRegisterPage: React.FC = () => {
           </GenericButton>
         </Box>
       </Box>
-    </Box>
+    </Container>
   );
 };
 

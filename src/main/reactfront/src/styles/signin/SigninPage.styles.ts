@@ -2,12 +2,14 @@ import styled from 'styled-components';
 
 export const LoginForm = styled.div`
   width: 500px;
-  height: 71vh;
+  height: auto;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 100px 0;
+  box-sizing: border-box;
 `;
 
 export const LoginButtons = styled.div`

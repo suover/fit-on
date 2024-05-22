@@ -10,17 +10,9 @@ import {
   StyledProductDetail,
   TopContainer,
   StyledRating,
-  NameContainer,
-  ButtonContainer,
-  ExplainContainer,
-  Divider,
-  PriceContainer,
-  QuantityContainer,
-  SelectContainer,
+  InfoContainer,
   ShippingContainer,
   Btns,
-  NoticePrice,
-  TotalPrice,
 } from './PurchasePanel.styles';
 
 const PurchasePanel = () => {
@@ -65,47 +57,43 @@ const PurchasePanel = () => {
   return (
     <StyledProductDetail>
       <TopContainer>
-        <NameContainer>{product.name}</NameContainer>
-        <ButtonContainer>
-          <Button variant="outlined" size="small">
-            BEST
-          </Button>
-          <Button variant="outlined" color="error" size="small">
-            SALE
-          </Button>
-        </ButtonContainer>
+        <div className="productHeading">
+          <h2>{product.name}</h2>
+          <div>
+            <Button variant="outlined" size="small">
+              BEST
+            </Button>
+            <Button variant="outlined" color="error" size="small">
+              SALE
+            </Button>
+          </div>
+        </div>
+        <p className="description">강도 조절 무소음 악력기</p>
+        <StyledRating>
+          <BasicRating />
+          <p>&#40;32 reviews&#41;</p>
+        </StyledRating>
+        <p className="price">{product.price.toLocaleString()}원</p>
       </TopContainer>
-      <ExplainContainer>
-        <p>강도 조절 무소음 악력기</p>
-      </ExplainContainer>
-      <StyledRating>
-        <BasicRating />
-        <p>(32 reviews)</p>
-      </StyledRating>
-      <PriceContainer>
-        <p>{product.price.toLocaleString()}원</p>
-      </PriceContainer>
 
-      <Divider />
-
-      <QuantityContainer>
+      <InfoContainer>
         <p>수량</p>
         <QuantityInput quantity={quantity} setQuantity={setQuantity} />
-      </QuantityContainer>
-      <SelectContainer>
-        <p>선택</p>
+      </InfoContainer>
+      <InfoContainer>
+        <p style={{ marginBottom: '8px' }}>선택</p>
         <UnstyledSelectForm
           value={selection} // 선택 상태 전달
           onChange={handleSelectionChange} // 변경 이벤트 핸들러 전달
         />
-      </SelectContainer>
-      <ShippingContainer>
+      </InfoContainer>
+      <InfoContainer>
         <p>배송비</p>
         <p>무료배송</p>
-      </ShippingContainer>
+      </InfoContainer>
       <ShippingContainer>
-        <NoticePrice>구매 예정 금액</NoticePrice>
-        <TotalPrice>{totalPrice.toLocaleString()}원</TotalPrice>
+        <p>구매 예정 금액</p>
+        <p className="totalPrice">{totalPrice.toLocaleString()}원</p>
       </ShippingContainer>
       <Btns>
         <PurchasePanelBtn

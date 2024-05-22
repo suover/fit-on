@@ -6,12 +6,11 @@ import InfoIcon from '@mui/icons-material/Info';
 import RateReviewIcon from '@mui/icons-material/RateReview';
 import HelpIcon from '@mui/icons-material/Help';
 import { Outlet } from 'react-router-dom';
-import {
-  AdminContainer,
-  ContentContainer,
-  SidebarContainer,
-} from '../../styles/administrator/AdminPage.styles';
+import { AdminContainer } from '../../styles/administrator/AdminPage.styles';
 import SideNavbar from '../../components/layout/sideNavBar/SideNavbar';
+import SidebarWrapper from '../../components/common/sidebar/SidebarWrapper';
+import { Container } from '@mui/material';
+
 const AdminPage: React.FC = () => {
   const menuItems = [
     {
@@ -60,7 +59,7 @@ const AdminPage: React.FC = () => {
   return (
     <>
       <AdminContainer>
-        <SidebarContainer>
+        <SidebarWrapper>
           <SideNavbar
             menuItems={menuItems}
             drawerWidthOpen="200px"
@@ -68,10 +67,10 @@ const AdminPage: React.FC = () => {
             showProfile={false}
             drawerPosition="sticky"
           />
-        </SidebarContainer>
-        <ContentContainer>
+        </SidebarWrapper>
+        <Container sx={{ paddingTop: '80px', paddingBottom: '100px' }}>
           <Outlet />
-        </ContentContainer>
+        </Container>
       </AdminContainer>
     </>
   );
