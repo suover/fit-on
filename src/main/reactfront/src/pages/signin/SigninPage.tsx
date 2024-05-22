@@ -6,6 +6,11 @@ import {
   Typography,
   Divider,
   InputAdornment,
+  Button,
+  Dialog,
+  DialogContent,
+  Tab,
+  Tabs,
 } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import KeyIcon from '@mui/icons-material/Key';
@@ -21,14 +26,142 @@ import {
   SocialIconsContainer,
 } from '../../styles/signin/SigninPage.styles';
 
+const FindEmailForm = () => (
+  <Box>
+    <Typography variant="h6">이메일 찾기</Typography>
+    <TextField
+      label="이름"
+      placeholder="이름을 입력해주세요 (예: 홍길동)"
+      variant="outlined"
+      fullWidth
+      margin="normal"
+    />
+    <TextField
+      label="휴대폰 번호"
+      placeholder="휴대폰 번호를 입력해주세요 (예: 01012345678)"
+      variant="outlined"
+      fullWidth
+      margin="normal"
+    />
+    <TextField
+      label="생년월일"
+      type="date"
+      variant="outlined"
+      fullWidth
+      margin="normal"
+      InputLabelProps={{
+        shrink: true,
+      }}
+      sx={{ marginBottom: '35px' }}
+    />
+    <Button variant="contained" color="primary" fullWidth>
+      이메일 찾기
+    </Button>
+  </Box>
+);
+
+const FindPasswordForm = () => (
+  <Box>
+    <Typography variant="h6">비밀번호 찾기</Typography>
+    <TextField
+      label="이메일"
+      placeholder="이메일을 입력해주세요 (예: abc123@naver.com)"
+      variant="outlined"
+      fullWidth
+      margin="normal"
+    />
+    <TextField
+      label="이름"
+      placeholder="이름을 입력해주세요 (예: 홍길동)"
+      variant="outlined"
+      fullWidth
+      margin="normal"
+    />
+    <TextField
+      label="휴대폰 번호"
+      placeholder="휴대폰 번호를 입력해주세요 (예: 01012345678)"
+      variant="outlined"
+      fullWidth
+      margin="normal"
+      sx={{ marginBottom: '35px' }}
+    />
+    <Button variant="contained" color="primary" fullWidth>
+      비밀번호 찾기
+    </Button>
+  </Box>
+);
+
+interface EmailPasswordModalProps {
+  open: boolean;
+  handleClose: () => void;
+}
+
+const EmailPasswordModal: React.FC<EmailPasswordModalProps> = ({
+  open,
+  handleClose,
+}) => {
+  const [tabValue, setTabValue] = useState(0);
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
+
+  return (
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      PaperProps={{
+        style: {
+          minWidth: '500px',
+          minHeight: '300px',
+        },
+      }}
+    >
+      <DialogContent>
+        <Tabs value={tabValue} onChange={handleChange} centered>
+          <Tab label="이메일 찾기" />
+          <Tab label="비밀번호 찾기" />
+        </Tabs>
+        <Box mt={2}>
+          {tabValue === 0 && <FindEmailForm />}
+          {tabValue === 1 && <FindPasswordForm />}
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+        >
+          <Button
+            onClick={handleClose}
+            sx={{
+              marginTop: '30px',
+            }}
+          >
+            나가기
+          </Button>
+        </Box>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 const SigninPage: React.FC = () => {
   const navigate = useNavigate();
-  //이메일, 패스워드 확인
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    //이메일,비밀전호 폼 누락되있으면 로그인 안댐!
     if (!email) {
       alert('이메일을 입력해주세요');
       return;
@@ -37,7 +170,6 @@ const SigninPage: React.FC = () => {
       return;
     }
     console.log({ email, password });
-    //로그인 성공시 메인화면 페이지로 이동.
     navigate('/');
   };
 
@@ -113,16 +245,26 @@ const SigninPage: React.FC = () => {
               },
             }}
           />
+          <Box sx={{ mt: 1, display: 'flex', justifyContent: 'flex-end' }}>
+            <Button
+              sx={{
+                color: 'black',
+              }}
+              onClick={handleClickOpen}
+            >
+              이메일 / 비밀번호 찾기
+            </Button>
+          </Box>
+
           <Box
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
               width: '100%',
-              mt: 2,
             }}
           >
             <LoginButtons>
-              <Link to="/signup" style={{ width: '48%' }}>
+              <Link to="/sign-up" style={{ width: '48%' }}>
                 <GenericButton
                   style={{ fontSize: '1.1rem', width: '100%', height: '40px' }}
                 >
@@ -138,9 +280,9 @@ const SigninPage: React.FC = () => {
             </LoginButtons>
           </Box>
         </Box>
-      </form>
 
-      <Divider sx={{ width: '100%' }}>SNS 계정 로그인</Divider>
+        <Divider sx={{ width: '100%' }}>SNS 계정 로그인</Divider>
+      </form>
 
       <SocialIconsContainer>
         <SocialIcon>
@@ -161,7 +303,7 @@ const SigninPage: React.FC = () => {
         sx={{ marginBottom: '20px', marginTop: '20px', textAlign: 'center' }}
       >
         <Link
-          to="/client-service"
+          to="/service"
           style={{
             marginRight: '10px',
             textDecoration: 'none',
@@ -172,7 +314,7 @@ const SigninPage: React.FC = () => {
         </Link>
         |
         <Link
-          to="/client-service"
+          to="/service"
           style={{
             margin: '0 10px',
             textDecoration: 'none',
@@ -183,7 +325,7 @@ const SigninPage: React.FC = () => {
         </Link>
         |
         <Link
-          to="/client-service"
+          to="/service"
           style={{
             marginLeft: '10px',
             textDecoration: 'none',
@@ -193,6 +335,8 @@ const SigninPage: React.FC = () => {
           회원정보 고객센터
         </Link>
       </Typography>
+
+      <EmailPasswordModal open={open} handleClose={handleClose} />
     </LoginForm>
   );
 };
