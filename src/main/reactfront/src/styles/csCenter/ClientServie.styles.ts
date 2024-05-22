@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 const ServiceWrapper = styled.section`
-  padding-left: 150px;
   padding-bottom: 100px;
   display: flex;
 `;

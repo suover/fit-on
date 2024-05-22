@@ -21,11 +21,11 @@ import { OrderDetails, Product } from '../../types/OrderInterface';
 import OrderInformation from '../../components/order/OrderInfoProps';
 import RadioButtonsGroup from '../../components/order/Radio';
 import SelectCard from '../../components/order/SelectCard';
-import image05 from '../../assets/img/image05.jpg';
 
 const OrderPage: React.FC = () => {
   const location = useLocation();
-  const { selectedProduct } = location.state || {};
+  const { selectedProducts }: { selectedProducts?: Product[] } =
+    location.state || {};
   const [orderDetails, setOrderDetails] = useState<OrderDetails>({
     customerName: '',
     phoneNumber: '',
@@ -34,16 +34,25 @@ const OrderPage: React.FC = () => {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [paymentMethod, setPaymentMethod] = useState<string>('hd');
-  const [totalPrice, setTotalPrice] = useState<number>(0); // 초기 값 0으로 설정
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [totalDeliveryFee, setTotalDeliveryFee] = useState<number>(0);
   const [paymentType, setPaymentType] = useState<string>('card');
 
   useEffect(() => {
-    if (selectedProduct) {
-      setProducts([selectedProduct]);
-      setTotalPrice(selectedProduct.price * selectedProduct.quantity);
-      console.log('선택된 옵션:', selectedProduct?.selection);
+    if (selectedProducts) {
+      setProducts(selectedProducts);
+      const newTotalPrice = selectedProducts.reduce(
+        (sum: number, product: Product) => {
+          return sum + product.price;
+        },
+        0,
+      );
+      setTotalPrice(newTotalPrice);
+
+      const newTotalDeliveryFee = newTotalPrice >= 50000 ? 0 : 2500;
+      setTotalDeliveryFee(newTotalDeliveryFee);
     }
-  }, [selectedProduct]);
+  }, [selectedProducts]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setOrderDetails({
@@ -63,14 +72,6 @@ const OrderPage: React.FC = () => {
     console.log('Payment Method:', paymentMethod);
     alert('주문서가 제출되었습니다.');
   };
-
-  // products 배열이 변경될 때마다 totalPrice를 업데이트
-  useEffect(() => {
-    const newTotal = products.reduce((sum, product) => {
-      return sum + product.price * product.quantity;
-    }, 0);
-    setTotalPrice(newTotal);
-  }, [products]); // products 배열이 변경되면 이 코드가 실행됨
 
   return (
     <PageContainer>
@@ -117,26 +118,25 @@ const OrderPage: React.FC = () => {
             style={{
               display: 'flex',
               justifyContent: 'flex-start',
-              alignItems: 'center', // 세로 중앙 정렬
+              alignItems: 'center',
               marginBottom: '10px',
             }}
           >
-            <OrderInformation src={image05} />
+            <OrderInformation src={product.imageUrl} />
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <OrderInfoRow key={index}>
-                <div>{product.name}</div>
-                <div>{product.quantity}개</div>
-                <div>{selectedProduct.selection}</div>
-                <div>
-                  {(product.price * product.quantity).toLocaleString()}원
-                </div>
+                <div>상품명: {product.name}</div>
+                <div>수량: {product.quantity}개</div>
+                <div>가격: {product.price.toLocaleString()}원</div>
               </OrderInfoRow>
             </div>
           </div>
         ))}
         <PriceRow>
           <StrongText>총 결제 금액</StrongText>
-          <TotalPriceTxt>{totalPrice.toLocaleString()}원</TotalPriceTxt>
+          <TotalPriceTxt>
+            {(totalPrice + totalDeliveryFee).toLocaleString()}원
+          </TotalPriceTxt>
         </PriceRow>
         <LightDivider />
         <h2>결제 수단</h2>
