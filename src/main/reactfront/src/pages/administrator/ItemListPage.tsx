@@ -40,14 +40,7 @@ const ItemListPage: React.FC = () => {
     { id: 'status', label: '상태', width: 10 },
   ];
   return (
-    <Container
-      style={{
-        marginLeft: '45px',
-        marginRight: '45px',
-        marginTop: '100px',
-        height: '700px',
-      }}
-    >
+    <>
       <Info>
         <Typography sx={{ fontWeight: 'bold', fontSize: '1.5rem' }}>
           Fit On 상품목록
@@ -60,7 +53,7 @@ const ItemListPage: React.FC = () => {
         </GenericButton>
       </Info>
       <Search>
-        <SearchBox onSearch={handleSearch} styleProps={{ width: '200px' }} />
+        <SearchBox onSearch={handleSearch} />
       </Search>
       <GenericTable
         columns={columns}
@@ -81,7 +74,7 @@ const ItemListPage: React.FC = () => {
         )}
         includeCheckboxes={false}
       />
-    </Container>
+    </>
   );
 };
 

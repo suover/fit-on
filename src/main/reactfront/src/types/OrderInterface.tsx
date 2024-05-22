@@ -5,9 +5,11 @@ export interface OrderDetails {
 }
 
 export interface Product {
+  imageUrl: string;
   name: string;
   price: number;
   quantity: number;
+  deliveryFee: number;
 }
 
 export interface OrderInfoProps {

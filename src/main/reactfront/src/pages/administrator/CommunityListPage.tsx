@@ -35,14 +35,7 @@ const CommunityListPage: React.FC = () => {
     { id: 'like', label: '좋아요', width: 50 },
   ];
   return (
-    <Container
-      style={{
-        marginLeft: '45px',
-        marginRight: '45px',
-        marginTop: '100px',
-        height: '700px',
-      }}
-    >
+    <>
       <Search>
         <Typography
           sx={{
@@ -52,7 +45,7 @@ const CommunityListPage: React.FC = () => {
         >
           Fit On 커뮤니티목록
         </Typography>
-        <SearchBox onSearch={handleSearch} styleProps={{ width: '200px' }} />
+        <SearchBox onSearch={handleSearch} />
       </Search>
       <GenericTable
         columns={columns}
@@ -69,7 +62,7 @@ const CommunityListPage: React.FC = () => {
         )}
         includeCheckboxes={false}
       />
-    </Container>
+    </>
   );
 };
 
