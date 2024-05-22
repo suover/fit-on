@@ -36,4 +36,14 @@ out/
 ### VS Code ###
 .vscode/
 
+# application.yml
 /src/main/resources/application.yml
+
+# Log files
+logs/
+
+# Ignore built static files
+src/main/resources/static/static/*
+
+# Ignore asset-manifest.json file
+src/main/resources/static/asset-manifest.json
