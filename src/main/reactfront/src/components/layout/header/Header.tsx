@@ -33,7 +33,9 @@ const Header = () => {
           <li>
             <Link to="sign-up">회원가입</Link>
           </li>
-          <li>장바구니</li>
+          <li>
+            <Link to="shopping-basket">장바구니</Link>
+          </li>
         </Tnb>
       </Container>
       <TopBtn />

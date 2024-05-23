@@ -438,7 +438,12 @@ function OrderHistoryPage() {
         marginTop={2}
       >
         <StyledTypography>주문 내역</StyledTypography>
-        <Box sx={{ width: '25ch', marginLeft: 1 }}>
+        <Box
+          sx={{
+            width: '25ch',
+            marginLeft: 1,
+          }}
+        >
           <SearchBox onSearch={handleSearch} styleProps={{ width: '100%' }} />
         </Box>
       </Box>

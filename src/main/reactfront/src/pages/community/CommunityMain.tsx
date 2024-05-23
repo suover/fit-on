@@ -14,14 +14,12 @@ const CommunityMain = () => {
   };
 
   return (
-    <Paper>
-      <Container maxWidth="lg">
-        <Box sx={{ mt: 4 }}>
-          <ButtonCategoryTag onCategorySelect={handleCategorySelect} />
-        </Box>
-        <Board selectedCategory={selectedCategory} />
-      </Container>
-    </Paper>
+    <Container maxWidth="lg">
+      <Box sx={{ mt: 4 }}>
+        <ButtonCategoryTag onCategorySelect={handleCategorySelect} />
+      </Box>
+      <Board selectedCategory={selectedCategory} />
+    </Container>
   );
 };
 

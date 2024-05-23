@@ -47,11 +47,11 @@ const PurchasePanel = () => {
 
   //장바구니 이동
   function handleCartClick() {
-    navigate('/cartPage'); //현재 페이지가 만들어지지 않아 임시경로 삽입
+    navigate('/shopping-basket');
   }
   //주문페이지 이동
   function handlePurchaseClick() {
-    navigate('/orderPage');
+    navigate('/order-page');
   }
 
   return (
