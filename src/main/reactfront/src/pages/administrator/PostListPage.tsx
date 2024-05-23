@@ -4,20 +4,58 @@ import {
   informations,
 } from '../../types/administrator/InformationData';
 import {
-  Container,
   TableData,
   TableRow,
 } from '../../components/genericTable/GenericTable.styles';
 import GenericTable from '../../components/genericTable/GenericTable';
-import { Typography } from '@mui/material';
-import { Info, Search } from '../../styles/administrator/PostListPage.styles';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Typography,
+} from '@mui/material';
+import { Search } from '../../styles/administrator/PostListPage.styles';
 import SearchBox from '../../components/common/search/SearchBox';
 import GenericButton from '../../components/common/genericButton/GenericButton';
 import { useNavigate } from 'react-router-dom';
+import DeleteIcon from '../../components/icons/DeleteIcon';
 
 const PostListPage: React.FC = () => {
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+    useState(false);
+  const [selectedInformationId, setSelectedInformationId] = useState<
+    string | null
+  >(null);
+
   const navigate = useNavigate();
   const [filteredInfo, setFilteredInfo] = useState<Information[]>(informations);
+
+  const handleDeleteClick = (informationId: string) => {
+    setSelectedInformationId(informationId);
+    setIsDeleteConfirmationOpen(true);
+  };
+
+  const handleCancelDelete = () => {
+    setIsDeleteConfirmationOpen(false);
+    setSelectedInformationId(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (selectedInformationId) {
+      setFilteredInfo((prevItems) =>
+        prevItems.filter(
+          (information: Information) =>
+            information.id !== selectedInformationId,
+        ),
+      );
+    }
+    setIsDeleteConfirmationOpen(false);
+    setSelectedInformationId(null);
+  };
 
   const handleSearch = (query: string) => {
     const filtered = informations.filter(
@@ -37,22 +75,15 @@ const PostListPage: React.FC = () => {
     { id: 'date', label: '작성일', width: 50 },
     { id: 'view', label: '조회수', width: 50 },
     { id: 'like', label: '좋아요', width: 50 },
+    { id: 'delete', label: '삭제', width: 30 },
   ];
 
   return (
     <>
-      <Info>
+      <Search>
         <Typography sx={{ fontWeight: 'bold', fontSize: '1.5rem' }}>
           Fit On 정보글목록
         </Typography>
-        <GenericButton
-          style={{ marginBottom: '10px' }}
-          onClick={() => navigate('/post-register')}
-        >
-          게시글 작성
-        </GenericButton>
-      </Info>
-      <Search>
         <SearchBox onSearch={handleSearch} />
       </Search>
       <GenericTable
@@ -66,10 +97,47 @@ const PostListPage: React.FC = () => {
             <TableData>{information.date}</TableData>
             <TableData>{information.view}</TableData>
             <TableData>{information.like}</TableData>
+            <TableData>
+              <div
+                onClick={() => handleDeleteClick(information.id)}
+                style={{ cursor: 'pointer' }}
+              >
+                <DeleteIcon />
+              </div>
+            </TableData>
           </TableRow>
         )}
         includeCheckboxes={false}
       />
+      <Box sx={{ position: 'relative' }}>
+        <GenericButton
+          onClick={() => navigate('/post-register')}
+          style={{ position: 'absolute', right: '0', top: '-35px' }}
+        >
+          게시글 등록
+        </GenericButton>
+      </Box>
+      <Dialog
+        open={isDeleteConfirmationOpen}
+        onClose={handleCancelDelete}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{'메시지'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            정말로 삭제하시겠습니까?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelDelete} color="primary">
+            취소
+          </Button>
+          <Button onClick={handleConfirmDelete} color="primary" autoFocus>
+            삭제
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
