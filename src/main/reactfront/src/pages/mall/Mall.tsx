@@ -42,7 +42,12 @@ const Mall: React.FC = () => {
       icon: LocalPharmacyIcon,
     },
     { route: 'food', menuName: '식품', icon: RestaurantIcon },
-    { route: 'cart', menuName: '장바구니', icon: ShoppingCartIcon, badge: 3 },
+    {
+      route: '/shopping-basket',
+      menuName: '장바구니',
+      icon: ShoppingCartIcon,
+      badge: 3,
+    },
   ];
 
   const handleSearch = (query: string) => {

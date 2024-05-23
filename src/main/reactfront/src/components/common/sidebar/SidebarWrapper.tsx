@@ -1,15 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
-const SideNavbarWrapper = styled.div`
+interface SideNavbarWrapperProps {
+  $leftPos: number; // transient prop
+  $top: number; // transient prop
+}
+
+const SideNavbarWrapper = styled.div<SideNavbarWrapperProps>`
   width: 200px;
   position: absolute;
-  left: 130px;
   transition: all 0.8s;
+  top: ${({ $top }) => $top}px;
+  left: ${({ $leftPos }) => $leftPos}px;
 `;
 
-const SidebarWrapper: React.FC<{ children: React.ReactNode }> = ({
+interface SidebarWrapperProps {
+  children: React.ReactNode;
+  leftPos?: number;
+}
+
+const SidebarWrapper: React.FC<SidebarWrapperProps> = ({
   children,
+  leftPos = 130, // 기본값 설정
 }) => {
   const sideBarRef = useRef<HTMLDivElement>(null);
   const [topPosition, setTopPosition] = useState<number>(160);
@@ -32,10 +44,10 @@ const SidebarWrapper: React.FC<{ children: React.ReactNode }> = ({
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [topPosition]);
+  }, []);
 
   return (
-    <SideNavbarWrapper ref={sideBarRef} style={{ top: `${topPosition}px` }}>
+    <SideNavbarWrapper ref={sideBarRef} $top={topPosition} $leftPos={leftPos}>
       {children}
     </SideNavbarWrapper>
   );

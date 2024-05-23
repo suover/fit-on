@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const LoginForm = styled.div`
   width: 500px;
-  height: auto;
+  height: 800px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;

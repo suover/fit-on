@@ -24,6 +24,7 @@ const AdminPage: React.FC = () => {
       route: '/administrator/item-list',
       icon: ShoppingCartIcon,
       badge: 0,
+      divider: true,
     },
     {
       menuName: '정보글 관리',
@@ -42,6 +43,7 @@ const AdminPage: React.FC = () => {
       route: '/administrator/review-list',
       icon: RateReviewIcon,
       badge: 0,
+      divider: true,
     },
     {
       menuName: '상품문의 관리',
