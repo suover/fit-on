@@ -27,8 +27,11 @@ const ButtonShare: React.FC<ButtonShareProps> = ({ isShared, onClick }) => {
         variant="contained"
         color="primary"
         sx={{
+          width: '70px',
+          height: '40px',
           borderRadius: '20px',
-          padding: 'auto',
+          textAlign: 'center',
+          paddingRight: '5px',
           backgroundColor: isShared ? 'red' : 'primary.main',
           '&:hover': {
             backgroundColor: isShared ? 'darkred' : 'primary.dark',

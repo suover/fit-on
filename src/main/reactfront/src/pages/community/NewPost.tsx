@@ -1,4 +1,5 @@
 import React, { useState, FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Paper,
@@ -31,6 +32,7 @@ const NewPost = () => {
   const [title, setTitle] = useState('');
   const [category, setCategory] = React.useState<string | null>('');
   const [editorContent, setEditorContent] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -40,7 +42,7 @@ const NewPost = () => {
   };
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+    <Container sx={{ mt: 4, mb: 4 }}>
       <Paper sx={{ p: 3, margin: 'auto' }}>
         <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
           새 글 쓰기
@@ -69,9 +71,24 @@ const NewPost = () => {
               onChange={setEditorContent}
             />
           </Box>
-          <Box display="flex" justifyContent="flex-end">
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              gap: 1,
+            }}
+          >
+            <Button
+              type="button"
+              variant="contained"
+              color="primary"
+              onClick={() => navigate('/community')}
+            >
+              취소
+            </Button>
             <Button type="submit" variant="contained" color="primary">
-              등록하기
+              등록
             </Button>
           </Box>
         </form>

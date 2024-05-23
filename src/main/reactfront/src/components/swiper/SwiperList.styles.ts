@@ -9,7 +9,7 @@ const StyledSwiper = styled.div`
 const StyledSwiperWrapper = styled(Swiper)`
   width: 100%;
   height: auto;
-  padding: 3px 10px 0;
+  padding: 10px 10px 0;
   position: relative;
   top: 0;
   left: -10px;

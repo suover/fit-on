@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { InfoPost } from '../../types/MainDummyData';
+import { InfoPost, comments } from '../../types/MainDummyData';
 import {
   InfoWrapper,
   DetailTitle,
   Content,
 } from '../../styles/information/InfoDetail.styles';
-import CommentList from '../../components/information/CommentList';
+import CommentList from '../../components/common/comment/CommentList';
 
 import { Container } from '@mui/material';
 
@@ -59,7 +59,7 @@ const InfoDetail: React.FC = () => {
         <Content>{info.content}</Content>
       </Container>
       <Container sx={{ padding: '20px 0' }}>
-        <CommentList />
+        <CommentList comments={comments} />
       </Container>
     </InfoWrapper>
   );
