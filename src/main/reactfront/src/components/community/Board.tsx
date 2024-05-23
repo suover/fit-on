@@ -1,7 +1,7 @@
 import * as React from 'react';
-
-import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+
+import { Box, Typography } from '@mui/material';
 
 import SearchBox from '../common/search/SearchBox';
 import GenericTable from '../genericTable/GenericTable';
@@ -65,7 +65,7 @@ const Board: React.FC<BoardProps> = ({ selectedCategory }) => {
 
   const handleRowClick = (id: string, isSelected: boolean) => {
     const post = examplePosts.find((p) => p.id === id);
-    if (post) navigate(`/community/post/${post.no}`, { state: { post } });
+    if (post) navigate(`/community/post/${post.no}`);
   };
   const columns = [
     { id: 'title', label: 'Title', width: 200 },
@@ -107,14 +107,27 @@ const Board: React.FC<BoardProps> = ({ selectedCategory }) => {
   );
 
   return (
-    <Box sx={{ padding: 2 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', p: 1 }}>
-        <Box sx={{}}>
-          <ButtonNewPost />
-        </Box>
-        <Box sx={{ width: '40%' }}>
-          <SearchBox onSearch={setSearchTerm} />
-        </Box>
+    <Box sx={{ paddingBottom: '100px', position: 'relative' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+          marginBottom: '15px',
+        }}
+      >
+        <Typography
+          variant="h2"
+          sx={{
+            fontSize: '1.5rem',
+            fontWeight: 'bold',
+            marginBottom: '10px',
+            lineHeight: '0',
+          }}
+        >
+          커뮤니티
+        </Typography>
+        <SearchBox onSearch={setSearchTerm} styleProps={{ width: '300px' }} />
       </Box>
       <GenericTable<Post>
         data={examplePosts}
@@ -124,6 +137,9 @@ const Board: React.FC<BoardProps> = ({ selectedCategory }) => {
           renderRow(item, isSelected, handleRowClick)
         }
       />
+      <Box sx={{ position: 'absolute', right: '0', bottom: '100px' }}>
+        <ButtonNewPost />
+      </Box>
     </Box>
   );
 };

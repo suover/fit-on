@@ -64,12 +64,17 @@ const ButtonCategoryTag: React.FC<ButtonCategoryTagProps> = ({
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <Typography variant="h5">카테고리</Typography>
+    <Box sx={{ flexGrow: 1, marginBottom: '80px' }}>
+      <Typography
+        variant="h2"
+        sx={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '10px' }}
+      >
+        카테고리
+      </Typography>
       <Grid
         container
-        spacing={{ xs: 2, md: 3 }}
-        columns={{ xs: 4, sm: 8, md: 12 }}
+        spacing={{ xs: 1, md: 1 }}
+        columns={{ xs: 4, sm: 8, md: 14 }}
       >
         {exampleCategory.map((category) => (
           <Grid xs={2} sm={2} key={category.no}>

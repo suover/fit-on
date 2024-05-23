@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Comment } from '../../types/MainDummyData';
+import { Comment } from '../../../types/MainDummyData';
 import CommentItem from './StyledCommentItem.styles';
 
 import PersonIcon from '@mui/icons-material/Person';

@@ -15,6 +15,10 @@ const TitleBox = styled.div`
     font-size: 1.25rem;
     font-weight: bold;
   }
+
+  &.info {
+    margin-bottom: 0;
+  }
 `;
 
 const BestItemHeader = styled.div`
