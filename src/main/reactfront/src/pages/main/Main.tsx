@@ -48,7 +48,7 @@ const Main: React.FC = () => {
         <QuickBtns />
       </Container>
       <Container sx={{ marginBottom: '100px' }}>
-        <TitleBox>
+        <TitleBox className="info">
           <h2>INFORMATION</h2>
           <p>더 효과적인 운동을 위한 유익한 정보를 읽어보세요!</p>
         </TitleBox>
