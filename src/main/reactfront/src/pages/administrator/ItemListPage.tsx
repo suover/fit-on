@@ -44,9 +44,9 @@ const ItemListPage: React.FC = () => {
       (product) =>
         product.id.includes(query) ||
         product.name.includes(query) ||
-        product.category.includes(query) ||
-        product.price.includes(query) ||
-        product.sales.toString().includes(query) ||
+//         product.category.includes(query) ||
+//         product.price.includes(query) ||
+//         product.sales.toString().includes(query) ||
         product.stock.toString().includes(query),
     );
     setFilteredItems(filtered);
@@ -77,6 +77,7 @@ const ItemListPage: React.FC = () => {
       <Search>
         <SearchBox onSearch={handleSearch} />
       </Search>
+
       <GenericTable
         columns={columns}
         data={filteredItems}
@@ -84,11 +85,11 @@ const ItemListPage: React.FC = () => {
           <TableRow key={product.productId}>
             <TableData>{product.productId}</TableData>
             <TableData>
-              <Image $backgroundImage={product.imageUrl} />
+
               {product.name}
             </TableData>
             <TableData>{product.price}원</TableData>
-            <TableData>{product.sales}</TableData>
+            <TableData>판매량??</TableData>
             <TableData>{product.stock}</TableData>
             <TableData>{product.categoryId}</TableData>
             <TableData>{product.isDeleted}</TableData>
@@ -101,3 +102,6 @@ const ItemListPage: React.FC = () => {
 };
 
 export default ItemListPage;
+
+
+// <Image $backgroundImage={product.imageUrl} />

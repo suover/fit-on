@@ -36,19 +36,6 @@ const ItemRegisterPage: React.FC = () => {
   const [detailDescription, setDetailDescription] = useState<string>('');
   const navigate = useNavigate();
 
-//   const [categories, setCategories] = useState<{ category_id: number; name: string }[]>([]);
-//   useEffect(() => {
-//       const fetchCategories = async () => {
-//         try {
-//           const response = await axios.get<{ category_id: number; name: string }[]>('http://localhost:8080/api/categories');
-//           setCategories(response.data);
-//         } catch (error) {
-//           console.error('Failed to fetch categories:', error);
-//         }
-//       };
-//
-//       fetchCategories();
-//     }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -59,7 +46,7 @@ const ItemRegisterPage: React.FC = () => {
     setFormValues({ ...formValues, productCategory: e.target.value });
   };
 
-  const handleDetailiDescriptionChange = (value: string) => {
+  const handleDetailDescriptionChange = (value: string) => {
     setDetailDescription(value);
   };
 
@@ -252,7 +239,7 @@ const ItemRegisterPage: React.FC = () => {
         <Box>
           <Editor
             value={detailDescription}
-            onChange={handleDetailiDescriptionChange}
+            onChange={handleDetailDescriptionChange}
             placeholder="상품설명을 기재하시오"
           />
         </Box>
