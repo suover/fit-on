@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ListTable from '../../components/ListTable/ListTable';
+import ListTable from '../../components/listTable/ListTable';
 import { notices } from '../../types/MainDummyData';
 import { Heading } from '../../styles/csCenter/ClientServie.styles';
 

@@ -1,4 +1,5 @@
 import React, { useState, FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Paper,
@@ -40,6 +41,7 @@ const NewRoutine = () => {
   const [level, setLevel] = React.useState<string | null>('');
   const [target, setTarget] = React.useState<string | null>('');
   const [content, setContent] = useState('');
+  const navigate = useNavigate();
 
   const [routineItem, setRoutineItem] = useState(''); // 루틴 목록 입력 상태
   const [lists, setLists] = useState<string[]>([]); // 루틴 리스트 상태
@@ -178,9 +180,24 @@ const NewRoutine = () => {
               onChange={setContent}
             />
           </Box>
-          <Box display="flex" justifyContent="flex-end">
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              gap: 1,
+            }}
+          >
+            <Button
+              type="button"
+              variant="contained"
+              color="primary"
+              onClick={() => navigate('/routine')}
+            >
+              취소
+            </Button>
             <Button type="submit" variant="contained" color="primary">
-              루틴 등록
+              등록
             </Button>
           </Box>
         </form>

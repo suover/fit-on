@@ -1,29 +1,25 @@
 import React from 'react';
-import { Box } from '@mui/material';
-import Commentitem from './CommentComponent';
-import { Comment } from '../../../types/DummyData';
 
-type CommentListProps = {
-  comments: Comment[];
-};
-const colors = ['#f0f0f0', '#f7f7f7'];
+import styled from 'styled-components';
+import CommentListItem from './CommentListItem';
+import { Comment } from '../../../types/MainDummyData';
+import CommentInputField from './CommentInputField';
 
-const CommentList: React.FC<CommentListProps> = ({ comments }) => {
+const CommentHeading = styled.h3`
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+`;
+
+const CommentList: React.FC<{ comments: Comment[] }> = ({ comments }) => {
   return (
-    <Box>
-      {comments.map((comment, index) => (
-        <Box
-          key={comment.id}
-          sx={{
-            bgcolor: colors[index % colors.length],
-            margin: '8px 0',
-            padding: '8px',
-          }}
-        >
-          <Commentitem comment={comment} isReply={false} />
-        </Box>
+    <>
+      <CommentHeading>댓글</CommentHeading>
+      <CommentInputField />
+      {comments.map((comment) => (
+        <CommentListItem key={comment.id} comment={comment} />
       ))}
-    </Box>
+    </>
   );
 };
 

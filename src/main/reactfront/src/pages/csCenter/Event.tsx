@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { events } from '../../types/MainDummyData';
-import ListTable from '../../components/ListTable/ListTable';
+import ListTable from '../../components/listTable/ListTable';
 import { Heading } from '../../styles/csCenter/ClientServie.styles';
 
 const colunmData = [

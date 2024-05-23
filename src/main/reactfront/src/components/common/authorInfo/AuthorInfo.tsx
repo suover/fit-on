@@ -7,7 +7,11 @@ interface AuthorInfoProps {
   createTimeInfo: string;
 }
 
-const AuthorInfo: React.FC<AuthorInfoProps> = ({ imageUrl, userName, createTimeInfo }) => {
+const AuthorInfo: React.FC<AuthorInfoProps> = ({
+  imageUrl,
+  userName,
+  createTimeInfo,
+}) => {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
       <Avatar src={imageUrl} alt={userName} />
