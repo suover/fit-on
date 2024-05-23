@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Product } from '../../types/administrator/ItemsData';
+// import { Product } from '../../types/administrator/ItemsData';
 // import { Product, products } from '../../types/administrator/ItemsData';
+import {Product} from '../../types/DataInterface'
 import {
   Container,
   Image,
@@ -80,8 +81,8 @@ const ItemListPage: React.FC = () => {
         columns={columns}
         data={filteredItems}
         renderRow={(product: Product) => (
-          <TableRow key={product.id}>
-            <TableData>{product.id}</TableData>
+          <TableRow key={product.productId}>
+            <TableData>{product.productId}</TableData>
             <TableData>
               <Image $backgroundImage={product.imageUrl} />
               {product.name}
@@ -89,8 +90,8 @@ const ItemListPage: React.FC = () => {
             <TableData>{product.price}원</TableData>
             <TableData>{product.sales}</TableData>
             <TableData>{product.stock}</TableData>
-            <TableData>{product.category}</TableData>
-            <TableData>{product.status}</TableData>
+            <TableData>{product.categoryId}</TableData>
+            <TableData>{product.isDeleted}</TableData>
           </TableRow>
         )}
         includeCheckboxes={false}

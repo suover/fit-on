@@ -1,4 +1,8 @@
-<mapper namespace="com.spring.myapp.product.dao.ProductMapper">
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.myapp.product.repository.ProductMapper">
     <resultMap id="ProductResultMap" type="com.spring.myapp.product.model.Product">
         <id property="productId" column="product_id"/>
         <result property="name" column="name"/>
