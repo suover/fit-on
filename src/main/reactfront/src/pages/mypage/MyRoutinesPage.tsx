@@ -6,7 +6,11 @@ import RoutineTotalList from '../../components/routine/RoutineTotalList';
 const MyRoutinesPage = () => {
   return (
     <>
-      <Typography variant="h4" component="h2" sx={{ p: 3 }}>
+      <Typography
+        variant="h4"
+        component="h2"
+        sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}
+      >
         나의 루틴
       </Typography>
       <RoutineBestList />
@@ -14,7 +18,6 @@ const MyRoutinesPage = () => {
         sx={{
           display: 'flex',
           mt: 2,
-          mb: 4,
           mr: 2,
         }}
       ></Box>

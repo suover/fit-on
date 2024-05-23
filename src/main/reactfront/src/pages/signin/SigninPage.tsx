@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   Box,
@@ -17,7 +17,7 @@ import KeyIcon from '@mui/icons-material/Key';
 import kakao from '../../assets/img/signin/kakao.png';
 import google from '../../assets/img/signin/google.png';
 import naver from '../../assets/img/signin/naver.png';
-
+import axios from '../../api/axiosConfig';
 import GenericButton from '../../components/common/genericButton/GenericButton';
 import {
   LoginButtons,
@@ -25,6 +25,7 @@ import {
   SocialIcon,
   SocialIconsContainer,
 } from '../../styles/signin/SigninPage.styles';
+import AuthContext from '../../context/AuthContext';
 
 const FindEmailForm = () => (
   <Box>
@@ -148,6 +149,7 @@ const EmailPasswordModal: React.FC<EmailPasswordModalProps> = ({
 
 const SigninPage: React.FC = () => {
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [open, setOpen] = useState(false);
@@ -160,17 +162,32 @@ const SigninPage: React.FC = () => {
     setOpen(false);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!email) {
       alert('이메일을 입력해주세요');
+      return;
+    } else if (!validateEmail(email)) {
+      alert('유효한 이메일 주소를 입력하세요.');
       return;
     } else if (!password) {
       alert('비밀번호를 입력해주세요');
       return;
     }
-    console.log({ email, password });
-    navigate('/');
+    try {
+      const response = await axios.post('api/auth/login', { email, password });
+      const { token, roles, nickname } = response.data;
+      login(token, roles, nickname);
+      navigate('/');
+    } catch (error) {
+      console.error('로그인 실패:', error);
+      alert('로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.');
+    }
   };
 
   return (

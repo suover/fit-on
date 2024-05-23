@@ -22,7 +22,7 @@ const ContentDetail = <T extends DetailType>({
   const { title, writer, content, views, createDate } = detailData;
 
   return (
-    <>
+    <div style={{ height: '54vh' }}>
       <DetailHeading>
         <h3>{title}</h3>
         <div>
@@ -32,7 +32,7 @@ const ContentDetail = <T extends DetailType>({
         </div>
       </DetailHeading>
       <ContentBox>{content}</ContentBox>
-    </>
+    </div>
   );
 };
 

@@ -122,7 +122,12 @@ function CommentManagementPage() {
           <Tab label="커뮤니티 게시판" />
           <Tab label="루틴 게시판" />
         </Tabs>
-        <Box sx={{ width: '25ch', marginLeft: 2 }}>
+        <Box
+          sx={{
+            width: '25ch',
+            marginLeft: 2,
+          }}
+        >
           <SearchBox onSearch={handleSearch} styleProps={{ width: '100%' }} />
         </Box>
       </Box>
