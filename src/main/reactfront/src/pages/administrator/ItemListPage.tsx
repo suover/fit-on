@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { Product, products } from '../../types/administrator/ItemsData';
+import React, { useState, useEffect } from 'react';
+// import { Product } from '../../types/administrator/ItemsData';
+// import { Product, products } from '../../types/administrator/ItemsData';
+import { Product } from '../../types/DataInterface';
 import {
   Image,
   TableData,
@@ -21,6 +23,7 @@ import SearchBox from '../../components/common/search/SearchBox';
 import { useNavigate } from 'react-router-dom';
 import GenericButton from '../../components/common/genericButton/GenericButton';
 import DeleteIcon from '../../components/icons/DeleteIcon';
+import axios from 'axios';
 
 const ItemListPage: React.FC = () => {
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
@@ -29,7 +32,27 @@ const ItemListPage: React.FC = () => {
     null,
   );
   const navigate = useNavigate();
-  const [filteredItems, setFilteredItems] = useState<Product[]>(products);
+  //   const [filteredItems, setFilteredItems] = useState<Product[]>(products);
+
+  const [filteredItems, setFilteredItems] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+
+  //상품 리스트 가져오기
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get<Product[]>(
+          'http://localhost:8080/api/products',
+        );
+        setProducts(response.data);
+        setFilteredItems(response.data);
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const handleDeleteClick = (productId: string) => {
     setSelectedProductId(productId);
@@ -56,9 +79,9 @@ const ItemListPage: React.FC = () => {
       (product) =>
         product.id.includes(query) ||
         product.name.includes(query) ||
-        product.category.includes(query) ||
-        product.price.includes(query) ||
-        product.sales.toString().includes(query) ||
+        //         product.category.includes(query) ||
+        //         product.price.includes(query) ||
+        //         product.sales.toString().includes(query) ||
         product.stock.toString().includes(query),
     );
     setFilteredItems(filtered);
@@ -88,17 +111,14 @@ const ItemListPage: React.FC = () => {
         columns={columns}
         data={filteredItems}
         renderRow={(product: Product) => (
-          <TableRow key={product.id}>
-            <TableData>{product.id}</TableData>
-            <TableData>
-              <Image $backgroundImage={product.imageUrl} />
-              {product.name}
-            </TableData>
+          <TableRow key={product.productId}>
+            <TableData>{product.productId}</TableData>
+            <TableData>{product.name}</TableData>
             <TableData>{product.price}원</TableData>
-            <TableData>{product.sales}</TableData>
+            <TableData>판매량??</TableData>
             <TableData>{product.stock}</TableData>
-            <TableData>{product.category}</TableData>
-            <TableData>{product.status}</TableData>
+            <TableData>{product.categoryId}</TableData>
+            <TableData>{product.isDeleted}</TableData>
             <TableData>
               <div
                 onClick={() => handleDeleteClick(product.id)}
@@ -145,3 +165,5 @@ const ItemListPage: React.FC = () => {
 };
 
 export default ItemListPage;
+
+// <Image $backgroundImage={product.imageUrl} />

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.myapp.product.repository.ProductMapper">
+
+    <!--products table-->
+    <resultMap id="ProductResultMap" type="com.spring.myapp.product.model.Product">
+        <id property="productId" column="product_id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="price" column="price"/>
+        <result property="stock" column="stock"/>
+        <result property="content" column="content"/>
+        <result property="discountRate" column="discount_rate"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="categoryId" column="category_id"/>
+    </resultMap>
+
+    <select id="findMaxProductId" resultType="long">
+        SELECT COALESCE(MAX(product_id), 0) FROM products
+    </select>
+
+    <select id="findAll" resultMap="ProductResultMap">
+        SELECT * FROM products
+    </select>
+
+    <select id="findById" resultMap="ProductResultMap">
+        SELECT * FROM products WHERE product_id = #{productId}
+    </select>
+
+    <insert id="save" parameterType="com.spring.myapp.product.model.Product">
+        INSERT INTO products ( name, description, price, stock, content, discount_rate, is_deleted, created_at, updated_at, category_id)
+        VALUES (#{name}, #{description}, #{price}, #{stock}, #{content}, #{discountRate}, #{isDeleted}, #{createdAt}, #{updatedAt}, #{categoryId})
+    </insert>
+
+    <update id="update">
+        UPDATE products
+        SET name = #{name},
+        description = #{description},
+        price = #{price},
+        stock = #{stock},
+        content = #{content},
+        discount_rate = #{discountRate},
+        is_deleted = #{isDeleted},
+        created_at = #{createdAt},
+        updated_at = #{updatedAt},
+        category_id = #{categoryId}
+        WHERE product_id = #{productId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM products WHERE product_id = #{productId}
+    </delete>
+
+
+
+
+<!--    -->
+
+
+
+
+</mapper>
