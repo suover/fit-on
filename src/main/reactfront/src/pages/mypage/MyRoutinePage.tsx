@@ -44,11 +44,7 @@ const MyRoutinePage: React.FC = () => {
           </Link>
         )}
       </ButtonGroup>
-      <Container>
-        <Box mt={2}>
-          <Outlet />
-        </Box>
-      </Container>
+      <Outlet />
     </>
   );
 };
