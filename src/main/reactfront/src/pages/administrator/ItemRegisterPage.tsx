@@ -22,11 +22,11 @@ const ItemRegisterPage: React.FC = () => {
   const [formValues, setFormValues] = useState<FormValues>({
     productName: '',
     productDescription: '',
-    productCategory: '',
+    productCategory: '1',
     productPrice: '',
-    eventRate: '',
+    eventRate: '0',
     detailDescription: '',
-    deliveryFee: '',
+    deliveryFee: '2500',
     stock: '',
   });
 
@@ -79,7 +79,7 @@ const ItemRegisterPage: React.FC = () => {
       input.click();
     };
 
-  //s3이미지 업로드
+  // S3에 이미지 업로드
   const uploadImageToS3 = async (
     file: File,
     folder: string,
@@ -100,7 +100,7 @@ const ItemRegisterPage: React.FC = () => {
     }
   };
 
-  // ProductImage 객체를 서버로 전송
+  // DB에 이미지 정보 저장
   const uploadProductImage = async (
     productId: number,
     imageUrl: string,
@@ -108,8 +108,8 @@ const ItemRegisterPage: React.FC = () => {
   ) => {
     const productImage = {
       productId: productId,
-              imageUrl: imageUrl,
-              isMainImage: isMainImage,
+      imageUrl: imageUrl,
+      isMainImage: isMainImage,
     };
     try {
       const response = await axios.post(
@@ -121,15 +121,34 @@ const ItemRegisterPage: React.FC = () => {
           },
         },
       );
-      console.log('Imageurl send successfully:', response.data);
+      console.log('Image data saved to DB:', response.data);
     } catch (error) {
-      console.error('Error send imageurl:', error);
+      console.error('Error saving image data to DB:', error);
     }
   };
 
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // 필수 항목 확인
+    if (!imagePreview) {
+      alert('상품 이미지가 필요합니다.');
+      return;
+    }
+    if (!formValues.productName.trim()) {
+      alert('상품명은 필수입니다.');
+      return;
+    }
+    if (
+      !formValues.productPrice.trim() ||
+      isNaN(parseFloat(formValues.productPrice))
+    ) {
+      alert('상품 가격은 필수입니다.');
+      return;
+    }
+    if (!formValues.stock.trim()) {
+          alert('상품 재고를 입력해주세요.');
+          return;
+        }
 
     try {
       // 상품 데이터 생성
@@ -158,37 +177,38 @@ const ItemRegisterPage: React.FC = () => {
         },
       );
       console.log('Product registered successfully:', productResponse.data);
+
       // 이미지테이블에 들어갈 productId
       const imgProductId = productResponse.data.productId;
 
-      //이미지 클라우드 업로드
-      const mainImageUrl = imagePreview
-        ? await uploadImageToS3(imagePreview, 'product-images')
-        : null;
-      console.log('mainImageUrl:', mainImageUrl);
-      if (!mainImageUrl) {
+      // 메인 이미지 업로드 및 DB 저장
+      const mainImageUrl = await uploadImageToS3(
+        imagePreview,
+        `product-images/${imgProductId}`,
+      );
+      if (mainImageUrl) {
+        await uploadProductImage(imgProductId, mainImageUrl, true);
+        console.log('Main image uploaded and saved to DB:', mainImageUrl);
+      } else {
         alert('Main image upload failed.');
         return;
       }
 
-      const additionalImageUrls = await Promise.all(
-        additionalImages.map((file, index) =>
-          file ? uploadImageToS3(file, 'product-images') : null,
-        ),
-      );
-      if (additionalImageUrls.some((url) => url === null)) {
-        alert('Some additional images failed to upload.');
-        return;
-      }
-
-      // product_images 테이블 정보 저장: 메인 이미지
-      await uploadProductImage(imgProductId, mainImageUrl, true);
-
-      // product_images 테이블 정보 저장: 추가 이미지
+      // 추가 이미지 업로드 및 DB 저장
       await Promise.all(
-        additionalImageUrls.map((url, index) => {
-          if (url) {
-            return uploadProductImage(imgProductId, url, false);
+        additionalImages.map(async (file, index) => {
+          if (file) {
+            const additionalImageUrl = await uploadImageToS3(
+              file,
+              `product-images/${imgProductId}`,
+            );
+            if (additionalImageUrl) {
+              await uploadProductImage(imgProductId, additionalImageUrl, false);
+              console.log(
+                `Additional image ${index + 1} uploaded and saved to DB:`,
+                additionalImageUrl,
+              );
+            }
           }
         }),
       );
