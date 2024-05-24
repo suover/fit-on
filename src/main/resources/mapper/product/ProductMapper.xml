@@ -19,6 +19,10 @@
         <result property="categoryId" column="category_id"/>
     </resultMap>
 
+    <select id="findMaxProductId" resultType="long">
+        SELECT COALESCE(MAX(product_id), 0) FROM products
+    </select>
+
     <select id="findAll" resultMap="ProductResultMap">
         SELECT * FROM products
     </select>
@@ -51,22 +55,7 @@
         DELETE FROM products WHERE product_id = #{productId}
     </delete>
 
-    <!-- product_images table -->
-    <resultMap id="ProductImageResultMap" type="com.spring.myapp.product.model.ProductImage">
-        <id property="id" column="id"/>
-        <result property="productId" column="product_id"/>
-        <result property="imageUrl" column="image_url"/>
-        <result property="isMainImage" column="is_main_image"/>
-    </resultMap>
 
-    <insert id="saveImage" parameterType="com.spring.myapp.product.model.ProductImage">
-        INSERT INTO product_images ( product_id, image_url, is_main_image)
-        VALUES (#{productId}, #{imageUrl}, #{isMainImage})
-    </insert>
-
-    <select id="findProductImages" resultMap="ProductImageResultMap">
-        SELECT * FROM product_images where product_id = #{productId}
-    </select>
 
 
 <!--    -->

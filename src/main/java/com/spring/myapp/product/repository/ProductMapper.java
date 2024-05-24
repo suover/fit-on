@@ -1,7 +1,6 @@
 package com.spring.myapp.product.repository;
 
 import com.spring.myapp.product.model.Product;
-import com.spring.myapp.product.model.ProductImage;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -14,8 +13,6 @@ public interface ProductMapper {
 	void save(Product product);
 	void update(Product product);
 	void deleteById(Long productId);
+	Long findMaxProductId();
 
-	// 상품 이미지
-	void saveImage(ProductImage productImage);
-	List<ProductImage> findProductImages(Long productId);
 }

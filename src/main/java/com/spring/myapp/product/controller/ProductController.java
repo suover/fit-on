@@ -1,12 +1,11 @@
 package com.spring.myapp.product.controller;
 
 import com.spring.myapp.product.model.Product;
-import com.spring.myapp.product.model.ProductImage;
 import com.spring.myapp.product.service.ProductService;
 import com.spring.myapp.product.service.S3Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -15,10 +14,10 @@ import java.util.List;
 public class ProductController {
 
 	@Autowired
-	private ProductService productService;
+	private S3Service s3Service;
 
 	@Autowired
-	private S3Service s3Service;
+	private ProductService productService;
 
 	@GetMapping
 	public List<Product> getAllProducts() {
@@ -31,10 +30,10 @@ public class ProductController {
 		return productService.getProductById(id);
 	}
 	@PostMapping
-	public void createProduct(@RequestBody Product product) {
-		System.out.println("현재 컨트롤러단");
-		productService.saveProduct(product);
-		System.out.println("컨트롤러 단: 서비스 종료");
+	public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+		Product savedProduct = productService.saveProduct(product);
+		System.out.println(savedProduct);
+		return ResponseEntity.ok(savedProduct); // 저장한 상품 정보 반환
 	}
 
 	@PutMapping("/{id}")
@@ -46,18 +45,6 @@ public class ProductController {
 	@DeleteMapping("/{id}")
 	public void deleteProduct(@PathVariable Long id) {
 		productService.deleteProduct(id);
-	}
-
-
-	@PostMapping("/{productImage.productId}/images")
-	public void saveProductImage(@RequestBody ProductImage productImage){
-		System.out.println("컨트롤러단 이미지 저장 실행");
-		productService.saveProductImage(productImage);
-		System.out.println("컨트롤러 단 끝: 서비스 이미지 저장 종료");
-	}
-	@GetMapping("/{productImage.productId}/images")
-	public List<ProductImage> getProductImages (@PathVariable Long id){
-		return productService.getAllProductImages(id);
 	}
 
 

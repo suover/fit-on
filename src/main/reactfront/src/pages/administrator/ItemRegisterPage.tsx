@@ -108,12 +108,12 @@ const ItemRegisterPage: React.FC = () => {
   ) => {
     const productImage = {
       productId: productId,
-      imageUrl: imageUrl,
-      isMainImage: isMainImage,
+              imageUrl: imageUrl,
+              isMainImage: isMainImage,
     };
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/products/${productId}/images`,
+        `http://localhost:8080/api/products-image/${productId}/images`,
         productImage,
         {
           headers: {
@@ -121,11 +121,12 @@ const ItemRegisterPage: React.FC = () => {
           },
         },
       );
-      console.log('Image uploaded successfully:', response.data);
+      console.log('Imageurl send successfully:', response.data);
     } catch (error) {
-      console.error('Error uploading image:', error);
+      console.error('Error send imageurl:', error);
     }
   };
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -156,15 +157,14 @@ const ItemRegisterPage: React.FC = () => {
           },
         },
       );
-      // 이미지테이블에 들어갈 productId 받기
-      const productId = productResponse.data.productId;
+      console.log('Product registered successfully:', productResponse.data);
+      // 이미지테이블에 들어갈 productId
+      const imgProductId = productResponse.data.productId;
 
       //이미지 클라우드 업로드
       const mainImageUrl = imagePreview
-        ? await uploadImageToS3(imagePreview, 'products/'+productId)
+        ? await uploadImageToS3(imagePreview, 'product-images')
         : null;
-      //         ? await uploadImageToS3(imagePreview, 'products')
-      // const mainImageUrl = imagePreview ? await uploadImageToS3(imagePreview, `product-images/${productId}`) : null;
       console.log('mainImageUrl:', mainImageUrl);
       if (!mainImageUrl) {
         alert('Main image upload failed.');
@@ -173,7 +173,7 @@ const ItemRegisterPage: React.FC = () => {
 
       const additionalImageUrls = await Promise.all(
         additionalImages.map((file, index) =>
-          file ? uploadImageToS3(file, 'product-images/'+productId) : null,
+          file ? uploadImageToS3(file, 'product-images') : null,
         ),
       );
       if (additionalImageUrls.some((url) => url === null)) {
@@ -182,34 +182,17 @@ const ItemRegisterPage: React.FC = () => {
       }
 
       // product_images 테이블 정보 저장: 메인 이미지
-      await uploadProductImage(productId, mainImageUrl, true);
-      //       await axios.post('http://localhost:8080/api/products/${productId}/images', {
-      //         productId : productId ,
-      //         imageUrl: mainImageUrl,
-      //         isMainImage: true,
-      //       });
+      await uploadProductImage(imgProductId, mainImageUrl, true);
 
       // product_images 테이블 정보 저장: 추가 이미지
       await Promise.all(
         additionalImageUrls.map((url, index) => {
           if (url) {
-            return uploadProductImage(productId, url, false);
+            return uploadProductImage(imgProductId, url, false);
           }
         }),
       );
-      //       await Promise.all(
-      //         additionalImageUrls.map((url, index) => {
-      //           if (url) {
-      //             return axios.post('http://localhost:8080/api/products/${productId}/images', {
-      //               productId,
-      //               imageUrl: url,
-      //               isMainImage: false,
-      //             });
-      //           }
-      //         }),
-      //       );
 
-      console.log('Product registered successfully:', productResponse.data);
       navigate('/administrator/item-list'); // 등록 성공 시 이동
     } catch (error) {
       console.error('There was an error registering the product!', error);
