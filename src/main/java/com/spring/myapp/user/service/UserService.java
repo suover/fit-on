@@ -1,5 +1,7 @@
 package com.spring.myapp.user.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,5 +34,13 @@ public class UserService {
 
 	public boolean isNicknameDuplicate(String nickname) {
 		return userMapper.existsByNickname(nickname);
+	}
+
+	public List<String> getUserRoles(Long userId) {
+		return userMapper.getUserRoles(userId);
+	}
+
+	public User findByEmail(String email) {
+		return userMapper.findByEmail(email);
 	}
 }

@@ -34,7 +34,7 @@ const CardLists = <T extends ContentsType>({
         container
         rowSpacing={3}
         columnSpacing={{ xs: 1, sm: 2, md: 6.3 }}
-        sx={{ marginBottom: '80px' }}
+        sx={{ marginBottom: '30px' }}
       >
         {contents.map((content) => (
           <Grid2 key={content.id}>

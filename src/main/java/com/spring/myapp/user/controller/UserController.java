@@ -1,9 +1,16 @@
 package com.spring.myapp.user.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.myapp.security.JwtTokenProvider;
+import com.spring.myapp.user.model.LoginRequest;
 import com.spring.myapp.user.model.User;
 import com.spring.myapp.user.service.UserService;
 
@@ -27,6 +35,9 @@ public class UserController {
 	private UserService userService;
 
 	@Autowired
+	private AuthenticationManager authenticationManager;
+
+	@Autowired
 	private JwtTokenProvider jwtTokenProvider;
 
 	@PostMapping("/sign-up")
@@ -35,10 +46,40 @@ public class UserController {
 		userService.register(user);
 
 		// JWT 토큰 생성
-		String token = jwtTokenProvider.createToken(user.getEmail());
+		List<String> roles = userService.getUserRoles(user.getUserId());
+		String token = jwtTokenProvider.createToken(user.getEmail(), roles);
 		logger.info("User registered successfully: {}", user.getEmail());
 
-		return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+		return ResponseEntity.ok(new JwtAuthenticationResponse(token, roles, user.getNickname()));
+	}
+
+	@PostMapping("/auth/login")
+	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+		logger.debug("Request to authenticate user: {}", loginRequest);
+
+		try {
+			Authentication authentication = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(
+					loginRequest.getEmail(),
+					loginRequest.getPassword()
+				)
+			);
+
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			List<String> roles = authentication.getAuthorities().stream()
+				.map(authority -> authority.getAuthority())
+				.collect(Collectors.toList());
+			String jwt = jwtTokenProvider.createToken(authentication.getName(), roles);
+
+			User user = userService.findByEmail(loginRequest.getEmail());
+			String nickname = user.getNickname();
+
+			logger.info("User authenticated successfully: {}", loginRequest.getEmail());
+			return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, roles, nickname));
+		} catch (Exception e) {
+			logger.error("User authentication failed: {}", loginRequest.getEmail(), e);
+			return ResponseEntity.status(401).body("Authentication failed");
+		}
 	}
 
 	@GetMapping("/check-email")
@@ -56,17 +97,37 @@ public class UserController {
 	// JWT 인증 응답 클래스
 	public static class JwtAuthenticationResponse {
 		private String token;
+		private List<String> roles;
+		private String nickname;
 
-		public JwtAuthenticationResponse(String token) {
+		public JwtAuthenticationResponse(String token, List<String> roles, String nickname) {
 			this.token = token;
+			this.roles = roles;
+			this.nickname = nickname;
 		}
 
 		public String getToken() {
 			return token;
 		}
 
+		public List<String> getRoles() {
+			return roles;
+		}
+
+		public String getNickname() {
+			return nickname;
+		}
+
 		public void setToken(String token) {
 			this.token = token;
+		}
+
+		public void setRoles(List<String> roles) {
+			this.roles = roles;
+		}
+
+		public void setNickname(String nickname) {
+			this.nickname = nickname;
 		}
 	}
 }

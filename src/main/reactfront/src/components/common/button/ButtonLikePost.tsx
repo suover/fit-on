@@ -20,6 +20,8 @@ const ButtonLikePost: React.FC<ButtonLikePostProps> = ({
       startIcon={<FavoriteIcon />}
       onClick={onClick}
       sx={{
+        width: '70px',
+        height: '40px',
         borderRadius: '20px',
         padding: 'auto',
         backgroundColor: isLiked ? 'blue' : undefined,
