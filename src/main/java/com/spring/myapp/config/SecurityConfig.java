@@ -1,9 +1,9 @@
 package com.spring.myapp.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,17 +23,8 @@ public class SecurityConfig {
 	@Autowired
 	private UserDetailsService userDetailsService;
 
-	@Value("${security.jwt.secret}")
-	private String jwtSecret;
-
-	@Value("${security.jwt.excluded-paths}")
-	private String excludedPaths;
-
-	@Value("${security.jwt.permit-all-paths}")
-	private String permitAllPaths;
-
-	@Value("${security.jwt.authenticated-paths}")
-	private String authenticatedPaths;
+	@Autowired
+	private Environment env;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -42,11 +33,17 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		String[] excludedPaths = env.getProperty("security.jwt.excluded-paths", "").split(",");
+		String[] permitAllPaths = env.getProperty("security.jwt.permit-all-paths", "").split(",");
+		String[] authenticatedPaths = env.getProperty("security.jwt.authenticated-paths", "").split(",");
+		String[] adminPaths = env.getProperty("security.jwt.admin-paths", "").split(",");
+
 		http
 			.csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화
 			.authorizeHttpRequests(authorize -> authorize
-				.requestMatchers(permitAllPaths.split(",")).permitAll()
-				.requestMatchers(authenticatedPaths.split(",")).authenticated()
+				.requestMatchers(permitAllPaths).permitAll()
+				.requestMatchers(authenticatedPaths).authenticated()
+				.requestMatchers(adminPaths).hasRole("ADMIN")
 				.anyRequest().permitAll()
 			)
 			.formLogin(form -> form
@@ -59,7 +56,8 @@ public class SecurityConfig {
 				.logoutSuccessUrl("/")
 				.permitAll()
 			)
-			.addFilterBefore(new JwtAuthenticationFilter(userDetailsService, jwtSecret, excludedPaths),
+			.addFilterBefore(
+				new JwtAuthenticationFilter(userDetailsService, env.getProperty("security.jwt.secret"), excludedPaths),
 				UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();

@@ -60,7 +60,7 @@ const ButtonNewRoutine = () => {
         sx={{ color: 'white' }}
         startIcon={<PostAddIcon />}
       >
-        나의 루틴 공유하기
+        루틴 작성
       </Button>
     </ThemeProvider>
   );

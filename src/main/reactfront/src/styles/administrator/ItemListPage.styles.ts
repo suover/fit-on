@@ -1,13 +1,10 @@
 import styled from 'styled-components';
 
-export const Info = styled.div`
+export const Search = styled.div`
   display: flex;
   justify-content: space-between;
-`;
-export const Search = styled.div`
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 10px;
   & input,
   & button {
     box-sizing: border-box;

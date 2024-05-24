@@ -8,6 +8,7 @@ export interface Member {
   birthday: string;
   joindate: string;
   unregister: boolean;
+  authority: string;
 }
 export const members: Member[] = [
   {
@@ -20,6 +21,7 @@ export const members: Member[] = [
     birthday: '1998-05-23',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '2',
@@ -31,6 +33,7 @@ export const members: Member[] = [
     birthday: '1998-05-23',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '3',
@@ -42,6 +45,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '4',
@@ -53,6 +57,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '5',
@@ -64,6 +69,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '6',
@@ -75,6 +81,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '7',
@@ -86,6 +93,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '8',
@@ -97,6 +105,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: false,
+    authority: '',
   },
   {
     id: '9',
@@ -108,6 +117,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '10',
@@ -119,6 +129,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '11',
@@ -130,6 +141,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: false,
+    authority: '',
   },
   {
     id: '12',
@@ -141,6 +153,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: false,
+    authority: '',
   },
   {
     id: '13',
@@ -152,6 +165,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: false,
+    authority: '',
   },
   {
     id: '14',
@@ -163,6 +177,7 @@ export const members: Member[] = [
     birthday: '1998-05-23',
     joindate: '2024-04-29',
     unregister: false,
+    authority: '',
   },
   {
     id: '15',
@@ -174,6 +189,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '16',
@@ -185,6 +201,7 @@ export const members: Member[] = [
     birthday: '1998-05-23',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '17',
@@ -196,6 +213,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '18',
@@ -207,6 +225,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '19',
@@ -218,6 +237,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '20',
@@ -229,6 +249,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '21',
@@ -240,6 +261,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '22',
@@ -251,6 +273,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: false,
+    authority: '',
   },
   {
     id: '23',
@@ -262,6 +285,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '24',
@@ -273,6 +297,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '25',
@@ -284,6 +309,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '26',
@@ -295,6 +321,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '27',
@@ -306,6 +333,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '28',
@@ -317,6 +345,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '29',
@@ -328,6 +357,7 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
   {
     id: '30',
@@ -339,5 +369,6 @@ export const members: Member[] = [
     birthday: '1919-01-01',
     joindate: '2024-04-29',
     unregister: true,
+    authority: '',
   },
 ];

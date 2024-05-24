@@ -1,7 +1,6 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
-
-import { Box } from '@mui/material';
+import { Box, Container } from '@mui/material';
+import { Outlet, useLocation } from 'react-router-dom';
 import HomeOutlined from '@mui/icons-material/HomeOutlined';
 import AccountBoxOutlined from '@mui/icons-material/AccountBoxOutlined';
 import FitnessCenterOutlined from '@mui/icons-material/FitnessCenterOutlined';
@@ -13,8 +12,8 @@ import LocationOnOutlined from '@mui/icons-material/LocationOnOutlined';
 import RateReviewOutlined from '@mui/icons-material/RateReviewOutlined';
 import QuestionAnswerOutlined from '@mui/icons-material/QuestionAnswerOutlined';
 import ContactSupportOutlined from '@mui/icons-material/ContactSupportOutlined';
-
 import SideNavbar from '../../components/layout/sideNavBar/SideNavbar';
+import SidebarWrapper from '../../components/common/sidebar/SidebarWrapper';
 
 const menuItems = [
   {
@@ -33,7 +32,7 @@ const menuItems = [
   {
     icon: FitnessCenterOutlined,
     menuName: '나의 루틴',
-    route: '/mypage/my-routine',
+    route: '/mypage/my-routine/my-routines',
     badge: 0,
   },
   {
@@ -89,6 +88,9 @@ const menuItems = [
 ];
 
 const MyPageLayout: React.FC = () => {
+  const location = useLocation();
+  const isMyRoutinesPage = location.pathname.includes('/mypage/my-routine');
+
   return (
     <Box
       sx={{
@@ -99,25 +101,26 @@ const MyPageLayout: React.FC = () => {
     >
       <Box
         sx={{
-          marginTop: '100px',
+          marginTop: '77px',
           marginBottom: '100px',
-          marginRight: '285px',
-          width: '100%',
+          width: '1200px',
           maxWidth: '1440px',
           display: 'flex',
           flexDirection: 'row',
         }}
       >
-        <SideNavbar
-          menuItems={menuItems}
-          drawerWidthOpen={'245px'}
-          title="FitOn MyPage"
-          drawerPosition="static"
-          marginTop="20px"
-        />
-        <Box component="main" sx={{ flexGrow: 1, pl: 5 }}>
+        <SidebarWrapper leftPos={80}>
+          <SideNavbar
+            menuItems={menuItems}
+            drawerWidthOpen={'245px'}
+            title="FitOn MyPage"
+            drawerPosition="static"
+            marginTop="20px"
+          />
+        </SidebarWrapper>
+        <Container component="main" sx={{ flexGrow: 1 }}>
           <Outlet />
-        </Box>
+        </Container>
       </Box>
     </Box>
   );

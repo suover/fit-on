@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import { Comment } from '../../types/MainDummyData';
+import { Comment } from '../../../types/MainDummyData';
 import StyledCommentItem from './StyledCommentItem';
 import CommentInputField from './CommentInputField';
 
@@ -34,6 +34,7 @@ const CommentListItem: React.FC<{ comment: Comment }> = ({ comment }) => {
           {replies
             ? replies.map((reply) => (
                 <StyledCommentItem
+                  key={reply.id}
                   comment={reply}
                   isReply={true}
                   clickReply={handleShowReply}

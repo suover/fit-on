@@ -50,7 +50,7 @@ const ListTable = <T extends DataType>({
           ))}
         </li>
         {data.map((eachData, idx) => (
-          <Link to={`/service/${pageUrl}/${eachData.id}`} key={idx}>
+          <Link to={`/${pageUrl}/${eachData.id}`} key={idx}>
             <li>
               {columnData.map((column, idx) => (
                 <StyledColumn

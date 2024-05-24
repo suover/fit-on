@@ -2,7 +2,7 @@ import React from 'react';
 
 import { posts } from '../../../types/MainDummyData';
 
-import ListTable from '../../ListTable/ListTable';
+import ListTable from '../../listTable/ListTable';
 
 const colunmData = [
   { columnId: 'id', title: '번호', width: 30, marginRight: 50 },

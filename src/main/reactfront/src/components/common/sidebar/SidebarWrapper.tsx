@@ -1,15 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
-const SideNavbarWrapper = styled.div`
+interface SideNavbarWrapperProps {
+  $leftPos: number; // transient prop
+  $topPos: number; // transient prop
+}
+
+const SideNavbarWrapper = styled.div<SideNavbarWrapperProps>`
   width: 200px;
   position: absolute;
-  left: 130px;
   transition: all 0.8s;
+  top: ${({ $topPos }) => $topPos}px;
+  left: ${({ $leftPos }) => $leftPos}px;
 `;
 
-const SidebarWrapper: React.FC<{ children: React.ReactNode }> = ({
+interface SidebarWrapperProps {
+  children: React.ReactNode;
+  leftPos?: number;
+}
+
+const SidebarWrapper: React.FC<SidebarWrapperProps> = ({
   children,
+  leftPos = 130, // 기본값 설정
 }) => {
   const sideBarRef = useRef<HTMLDivElement>(null);
   const [topPosition, setTopPosition] = useState<number>(160);
@@ -17,12 +29,18 @@ const SidebarWrapper: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const handleScroll = () => {
       if (sideBarRef.current) {
-        const positionY = window.scrollY;
-        if (positionY > 150) {
-          const targetPosition = positionY + 50;
-          setTopPosition(targetPosition);
-        } else {
+        let positionY = window.scrollY;
+        let maxHeight = document.documentElement.scrollHeight - 360; // 초기값 + 임의 footer 높이
+        let sideBarHeight = sideBarRef.current.offsetHeight;
+        let maxScroll = maxHeight - sideBarHeight;
+
+        if (positionY < 150) {
           setTopPosition(160);
+        } else if (positionY > 150 && positionY < maxScroll) {
+          let targetPos = positionY + 50;
+          setTopPosition(targetPos);
+        } else {
+          setTopPosition(maxScroll + 50);
         }
       }
     };
@@ -32,10 +50,14 @@ const SidebarWrapper: React.FC<{ children: React.ReactNode }> = ({
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [topPosition]);
+  }, []);
 
   return (
-    <SideNavbarWrapper ref={sideBarRef} style={{ top: `${topPosition}px` }}>
+    <SideNavbarWrapper
+      ref={sideBarRef}
+      $topPos={topPosition}
+      $leftPos={leftPos}
+    >
       {children}
     </SideNavbarWrapper>
   );

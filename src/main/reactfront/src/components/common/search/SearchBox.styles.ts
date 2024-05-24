@@ -29,6 +29,7 @@ export const SearchInput = styled.input<SearchBoxStyleProps>`
   border-radius: 5px 0 0 5px;
   outline: none;
   color: ${(props) => props.textColor || '#9dbfaf'};
+  box-sizing: border-box;
 
   &::placeholder {
     color: ${(props) => props.placeholderColor || '#cccccc'};

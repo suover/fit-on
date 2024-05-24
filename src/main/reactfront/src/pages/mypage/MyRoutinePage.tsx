@@ -1,16 +1,32 @@
 import React from 'react';
-import { Box, Paper, Container, Button } from '@mui/material';
+import { Box, Container, Button } from '@mui/material';
 import styled from 'styled-components';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
+import GenericButton from '../../components/common/genericButton/GenericButton';
 
 const ButtonGroup = styled.div`
-  margin-top: 55px;
+  margin-top: 35px;
   background-color: white;
   border-bottom: 1px solid black;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+
+  a {
+    text-decoration: none;
+  }
+
+  & > *:not(:last-child) {
+    margin-right: 10px;
+  }
 `;
 
-function MyRoutinePage() {
+const MyRoutinePage: React.FC = () => {
+  const location = useLocation();
+  const isMyRoutinesPage =
+    location.pathname === '/mypage/my-routine/my-routines';
+
   return (
     <>
       <ButtonGroup>
@@ -18,21 +34,19 @@ function MyRoutinePage() {
           <Button sx={{ color: 'black', fontSize: '1rem' }}>나의 루틴</Button>
         </Link>
         <Link to="shared-routine">
-          |
           <Button sx={{ color: 'black', fontSize: '1rem' }}>
             공유받은 루틴
           </Button>
         </Link>
+        {isMyRoutinesPage && (
+          <Link to="/new-routine" style={{ marginLeft: 'auto' }}>
+            <GenericButton>루틴 작성</GenericButton>
+          </Link>
+        )}
       </ButtonGroup>
-      <Paper sx={{ mb: 4 }}>
-        <Container>
-          <Box sx={{ mt: 4, mb: 4, backgroundColor: '#f5f5f5' }}>
-            <Outlet />
-          </Box>
-        </Container>
-      </Paper>
+      <Outlet />
     </>
   );
-}
+};
 
 export default MyRoutinePage;

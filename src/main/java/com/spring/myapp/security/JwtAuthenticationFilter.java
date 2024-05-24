@@ -28,11 +28,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	public JwtAuthenticationFilter(UserDetailsService userDetailsService,
 		@Value("${security.jwt.secret}") String base64Secret,
-		@Value("${security.jwt.excluded-paths}") String excludedPaths) {
+		String[] excludedPaths) {
 		this.userDetailsService = userDetailsService;
 		byte[] decodedKey = Base64.getDecoder().decode(base64Secret);
 		this.secretKey = Keys.hmacShaKeyFor(decodedKey);
-		this.excludedPaths = Arrays.asList(excludedPaths.split(","));
+		this.excludedPaths = Arrays.asList(excludedPaths);
 	}
 
 	@Override
