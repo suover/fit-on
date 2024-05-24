@@ -20,10 +20,8 @@ public class ProductService {
 	public Product getProductById(Long id) {
 		return productMapper.findById(id);
 	}
-
-
+	
 	public Product saveProduct(Product product) {
-
 		Long maxProductId = productMapper.findMaxProductId();
 		product.setProductId(maxProductId + 1);
 		productMapper.save(product);

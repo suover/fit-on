@@ -146,9 +146,9 @@ const ItemRegisterPage: React.FC = () => {
       return;
     }
     if (!formValues.stock.trim()) {
-          alert('상품 재고를 입력해주세요.');
-          return;
-        }
+      alert('상품 재고를 입력해주세요.');
+      return;
+    }
 
     try {
       // 상품 데이터 생성
