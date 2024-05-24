@@ -30,7 +30,6 @@ const ItemRegisterPage: React.FC = () => {
     stock: '',
   });
 
-  // 상품 타입 string > file 변경
   const [imagePreview, setImagePreview] = useState<File | null>(null);
   const [additionalImages, setAdditionalImages] = useState<(File | null)[]>(
     Array(3).fill(null),
@@ -52,7 +51,6 @@ const ItemRegisterPage: React.FC = () => {
     setDetailDescription(value);
   };
 
-  // 프론트 상품이미지 추가
   const handleImageClick =
     (index: number | null = null) =>
     () => {
@@ -201,7 +199,7 @@ const ItemRegisterPage: React.FC = () => {
           }
         }),
       );
-      navigate('/administrator/item-list'); // 등록 성공 시 이동
+      navigate('/administrator/item-list');
     } catch (error) {
       alert('There was an error registering the product!', error);
     }
