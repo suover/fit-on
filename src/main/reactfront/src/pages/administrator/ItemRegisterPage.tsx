@@ -29,13 +29,15 @@ const ItemRegisterPage: React.FC = () => {
     deliveryFee: '',
     stock: '',
   });
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [additionalImages, setAdditionalImages] = useState<string[]>(
-    Array(3).fill(''),
+
+  // 상품 타입 string > file 변경
+  const [imagePreview, setImagePreview] = useState<File | null>(null);
+  const [additionalImages, setAdditionalImages] = useState<(File | null)[]>(
+    Array(3).fill(null),
   );
+
   const [detailDescription, setDetailDescription] = useState<string>('');
   const navigate = useNavigate();
-
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -50,6 +52,7 @@ const ItemRegisterPage: React.FC = () => {
     setDetailDescription(value);
   };
 
+  // 프론트 상품이미지 추가
   const handleImageClick =
     (index: number | null = null) =>
     () => {
@@ -62,45 +65,89 @@ const ItemRegisterPage: React.FC = () => {
       input.onchange = (e) => {
         const file = (e.target as HTMLInputElement).files?.[0];
         if (file) {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            if (index === null) {
-              setImagePreview(reader.result as string);
-            } else {
-              const newAdditionalImages = [...additionalImages];
-              newAdditionalImages[index] = reader.result as string;
-              setAdditionalImages(newAdditionalImages);
-            }
-          };
-          reader.readAsDataURL(file);
+          if (index === null) {
+            setImagePreview(file);
+          } else {
+            const newAdditionalImages = [...additionalImages];
+            newAdditionalImages[index] = file;
+            setAdditionalImages(newAdditionalImages);
+          }
         }
+        document.body.removeChild(input);
       };
 
       input.click();
-      document.body.removeChild(input);
     };
+
+  //s3이미지 업로드
+  const uploadImageToS3 = async (
+    file: File,
+    folder: string,
+  ): Promise<string | null> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', folder);
+
+    try {
+      const response = await axios.post(
+        'http://localhost:8080/upload',
+        formData,
+      );
+      return response.data.imageUrl;
+    } catch (error) {
+      console.error('Error uploading image to S3:', error);
+      return null;
+    }
+  };
+
+  // ProductImage 객체를 서버로 전송
+  const uploadProductImage = async (
+    productId: number,
+    imageUrl: string,
+    isMainImage: boolean,
+  ) => {
+    const productImage = {
+      productId: productId,
+      imageUrl: imageUrl,
+      isMainImage: isMainImage,
+    };
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/api/products/${productId}/images`,
+        productImage,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      console.log('Image uploaded successfully:', response.data);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const productData = {
-      name: formValues.productName,
-      description: formValues.productDescription,
-      price: parseFloat(formValues.productPrice),
-      stock: parseInt(formValues.stock),
-      content: detailDescription,
-      discountRate: parseFloat(formValues.eventRate),
-      isDeleted: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      categoryId: parseInt(formValues.productCategory),
-    };
-    console.log('Form product:', productData);
-    console.log('img:', imagePreview);
-    console.log('additionalImages :', additionalImages);
-
     try {
-      const response = await axios.post(
+      // 상품 데이터 생성
+      const productData = {
+        name: formValues.productName,
+        description: formValues.productDescription,
+        price: parseFloat(formValues.productPrice),
+        stock: parseInt(formValues.stock),
+        content: detailDescription,
+        discountRate: parseFloat(formValues.eventRate),
+        isDeleted: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        categoryId: parseInt(formValues.productCategory),
+      };
+      console.log('Form product:', productData);
+
+      // products 테이블 : 상품 정보 저장
+      const productResponse = await axios.post(
         'http://localhost:8080/api/products',
         productData,
         {
@@ -109,8 +156,60 @@ const ItemRegisterPage: React.FC = () => {
           },
         },
       );
+      // 이미지테이블에 들어갈 productId 받기
+      const productId = productResponse.data.productId;
 
-      console.log('Product registered successfully:', response.data);
+      //이미지 클라우드 업로드
+      const mainImageUrl = imagePreview
+        ? await uploadImageToS3(imagePreview, 'products/'+productId)
+        : null;
+      //         ? await uploadImageToS3(imagePreview, 'products')
+      // const mainImageUrl = imagePreview ? await uploadImageToS3(imagePreview, `product-images/${productId}`) : null;
+      console.log('mainImageUrl:', mainImageUrl);
+      if (!mainImageUrl) {
+        alert('Main image upload failed.');
+        return;
+      }
+
+      const additionalImageUrls = await Promise.all(
+        additionalImages.map((file, index) =>
+          file ? uploadImageToS3(file, 'product-images/'+productId) : null,
+        ),
+      );
+      if (additionalImageUrls.some((url) => url === null)) {
+        alert('Some additional images failed to upload.');
+        return;
+      }
+
+      // product_images 테이블 정보 저장: 메인 이미지
+      await uploadProductImage(productId, mainImageUrl, true);
+      //       await axios.post('http://localhost:8080/api/products/${productId}/images', {
+      //         productId : productId ,
+      //         imageUrl: mainImageUrl,
+      //         isMainImage: true,
+      //       });
+
+      // product_images 테이블 정보 저장: 추가 이미지
+      await Promise.all(
+        additionalImageUrls.map((url, index) => {
+          if (url) {
+            return uploadProductImage(productId, url, false);
+          }
+        }),
+      );
+      //       await Promise.all(
+      //         additionalImageUrls.map((url, index) => {
+      //           if (url) {
+      //             return axios.post('http://localhost:8080/api/products/${productId}/images', {
+      //               productId,
+      //               imageUrl: url,
+      //               isMainImage: false,
+      //             });
+      //           }
+      //         }),
+      //       );
+
+      console.log('Product registered successfully:', productResponse.data);
       navigate('/administrator/item-list'); // 등록 성공 시 이동
     } catch (error) {
       console.error('There was an error registering the product!', error);
@@ -134,7 +233,7 @@ const ItemRegisterPage: React.FC = () => {
         <Box sx={{ display: 'flex', gap: 3 }}>
           <Box sx={{ flex: 1, maxWidth: '400px' }}>
             <img
-              src={imagePreview || noImage}
+              src={imagePreview ? URL.createObjectURL(imagePreview) : noImage}
               alt="Preview"
               style={{
                 borderRadius: '5px',
@@ -150,7 +249,7 @@ const ItemRegisterPage: React.FC = () => {
               {additionalImages.map((image, index) => (
                 <Box key={index} sx={{ flex: 1, maxWidth: '200px' }}>
                   <img
-                    src={image || noImage}
+                    src={image ? URL.createObjectURL(image) : noImage}
                     alt={`Additional Preview ${index + 1}`}
                     style={{
                       borderRadius: '5px',

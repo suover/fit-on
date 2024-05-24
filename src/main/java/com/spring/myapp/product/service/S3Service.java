@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 @Service
@@ -19,15 +22,25 @@ public class S3Service {
 
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucket;
+	@Autowired
+	public S3Service(AmazonS3 amazonS3) {
+		this.amazonS3 = amazonS3;
+	}
 
-	public String uploadFile(MultipartFile file) {
-		String key = UUID.randomUUID() + "_" + file.getOriginalFilename();
-		try {
-			amazonS3.putObject(new PutObjectRequest(bucket, key, file.getInputStream(), null)
-				.withCannedAcl(CannedAccessControlList.PublicRead));
-		} catch (IOException e) {
-			throw new RuntimeException("Failed to upload file", e);
-		}
-		return amazonS3.getUrl(bucket, key).toString();
+	public String uploadFile(MultipartFile file, String folder) throws IOException{
+		String fileName = UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
+		String filePath = folder + "/" + fileName;
+
+		// 파일을 임시 디렉토리에 저장
+		File tempFile = Files.createTempFile("temp-", file.getOriginalFilename()).toFile();
+		file.transferTo(tempFile);
+
+		// S3 버킷에 업로드
+		amazonS3.putObject(new PutObjectRequest(bucket, filePath, tempFile));
+
+		// 업로드 후 임시 파일 삭제
+		tempFile.delete();
+
+		return amazonS3.getUrl(bucket, filePath).toString();
 	}
 }

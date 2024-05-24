@@ -1,6 +1,7 @@
 package com.spring.myapp.product.controller;
 
 import com.spring.myapp.product.model.Product;
+import com.spring.myapp.product.model.ProductImage;
 import com.spring.myapp.product.service.ProductService;
 import com.spring.myapp.product.service.S3Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +48,17 @@ public class ProductController {
 		productService.deleteProduct(id);
 	}
 
-	@PostMapping("/upload")
-	public String uploadImage(@RequestParam("file") MultipartFile file) {
-		return s3Service.uploadFile(file);
+
+	@PostMapping("/{productImage.productId}/images")
+	public void saveProductImage(@RequestBody ProductImage productImage){
+		System.out.println("컨트롤러단 이미지 저장 실행");
+		productService.saveProductImage(productImage);
+		System.out.println("컨트롤러 단 끝: 서비스 이미지 저장 종료");
 	}
+	@GetMapping("/{productImage.productId}/images")
+	public List<ProductImage> getProductImages (@PathVariable Long id){
+		return productService.getAllProductImages(id);
+	}
+
+
 }
