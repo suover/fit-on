@@ -95,7 +95,6 @@ const ItemRegisterPage: React.FC = () => {
       );
       return response.data.imageUrl;
     } catch (error) {
-      console.error('Error uploading image to S3:', error);
       return null;
     }
   };
@@ -121,10 +120,7 @@ const ItemRegisterPage: React.FC = () => {
           },
         },
       );
-      console.log('Image data saved to DB:', response.data);
-    } catch (error) {
-      console.error('Error saving image data to DB:', error);
-    }
+    } catch (error) { }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -164,7 +160,6 @@ const ItemRegisterPage: React.FC = () => {
         updatedAt: new Date(),
         categoryId: parseInt(formValues.productCategory),
       };
-      console.log('Form product:', productData);
 
       // products 테이블 : 상품 정보 저장
       const productResponse = await axios.post(
@@ -176,7 +171,6 @@ const ItemRegisterPage: React.FC = () => {
           },
         },
       );
-      console.log('Product registered successfully:', productResponse.data);
 
       // 이미지테이블에 들어갈 productId
       const imgProductId = productResponse.data.productId;
@@ -188,12 +182,10 @@ const ItemRegisterPage: React.FC = () => {
       );
       if (mainImageUrl) {
         await uploadProductImage(imgProductId, mainImageUrl, true);
-        console.log('Main image uploaded and saved to DB:', mainImageUrl);
       } else {
         alert('Main image upload failed.');
         return;
       }
-
       // 추가 이미지 업로드 및 DB 저장
       await Promise.all(
         additionalImages.map(async (file, index) => {
@@ -204,18 +196,14 @@ const ItemRegisterPage: React.FC = () => {
             );
             if (additionalImageUrl) {
               await uploadProductImage(imgProductId, additionalImageUrl, false);
-              console.log(
-                `Additional image ${index + 1} uploaded and saved to DB:`,
-                additionalImageUrl,
-              );
+
             }
           }
         }),
       );
-
       navigate('/administrator/item-list'); // 등록 성공 시 이동
     } catch (error) {
-      console.error('There was an error registering the product!', error);
+      alert('There was an error registering the product!', error);
     }
   };
 

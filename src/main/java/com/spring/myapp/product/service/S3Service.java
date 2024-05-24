@@ -31,14 +31,12 @@ public class S3Service {
 		String fileName = UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
 		String filePath = folder + "/" + fileName;
 
-		// 파일을 임시 디렉토리에 저장
 		File tempFile = Files.createTempFile("temp-", file.getOriginalFilename()).toFile();
 		file.transferTo(tempFile);
 
 		// S3 버킷에 업로드
 		amazonS3.putObject(new PutObjectRequest(bucket, filePath, tempFile));
 
-		// 업로드 후 임시 파일 삭제
 		tempFile.delete();
 
 		return amazonS3.getUrl(bucket, filePath).toString();
