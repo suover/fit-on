@@ -19,7 +19,7 @@ const Event = () => {
       <ListTable
         data={events}
         columnData={colunmData}
-        pageUrl="event"
+        pageUrl="service/event"
         paging={true}
       />
     </>

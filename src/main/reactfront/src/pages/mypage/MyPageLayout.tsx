@@ -103,7 +103,6 @@ const MyPageLayout: React.FC = () => {
         sx={{
           marginTop: '77px',
           marginBottom: '100px',
-          marginLeft: '20px',
           width: '1200px',
           maxWidth: '1440px',
           display: 'flex',
@@ -119,7 +118,7 @@ const MyPageLayout: React.FC = () => {
             marginTop="20px"
           />
         </SidebarWrapper>
-        <Container component="main" sx={{ flexGrow: 1, pl: 5 }}>
+        <Container component="main" sx={{ flexGrow: 1 }}>
           <Outlet />
         </Container>
       </Box>
