@@ -21,8 +21,8 @@ public class JwtTokenProvider {
 	private final SecretKey secretKey;
 	private final long expiration;
 
-	public JwtTokenProvider(@Value("${security.jwt.secret}") String base64Secret,
-		@Value("${security.jwt.expiration}") long expiration) {
+	public JwtTokenProvider(@Value("${spring.security.jwt.secret}") String base64Secret,
+		@Value("${spring.security.jwt.expiration}") long expiration) {
 		byte[] decodedKey = Base64.getDecoder().decode(base64Secret);
 		this.secretKey = Keys.hmacShaKeyFor(decodedKey);
 		this.expiration = expiration;
