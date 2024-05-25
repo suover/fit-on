@@ -51,7 +51,7 @@ public class UserController {
 
 		// JWT 토큰 생성
 		List<String> roles = userService.getUserRoles(user.getUserId());
-		String token = jwtTokenProvider.createToken(user.getEmail(), roles);
+		String token = jwtTokenProvider.createToken(user.getEmail(), roles, user.getNickname());
 
 		return ResponseEntity.ok(new JwtAuthenticationResponse(token, roles, user.getNickname()));
 	}
@@ -71,12 +71,10 @@ public class UserController {
 			List<String> roles = authentication.getAuthorities().stream()
 				.map(authority -> authority.getAuthority())
 				.collect(Collectors.toList());
-			String jwt = jwtTokenProvider.createToken(authentication.getName(), roles);
-
 			User user = userService.findByEmail(loginRequest.getEmail());
-			String nickname = user.getNickname();
+			String jwt = jwtTokenProvider.createToken(authentication.getName(), roles, user.getNickname());
 
-			return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, roles, nickname));
+			return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, roles, user.getNickname()));
 		} catch (Exception e) {
 			logger.error("User authentication failed: {}", loginRequest.getEmail(), e);
 			return ResponseEntity.status(401).body("Authentication failed");
@@ -91,7 +89,7 @@ public class UserController {
 		try {
 			User user = customOAuth2UserService.processOAuth2Login(provider, token);
 			List<String> roles = userService.getUserRoles(user.getUserId());
-			String jwt = jwtTokenProvider.createToken(user.getEmail(), roles);
+			String jwt = jwtTokenProvider.createToken(user.getEmail(), roles, user.getNickname());
 
 			return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, roles, user.getNickname()));
 		} catch (Exception e) {
