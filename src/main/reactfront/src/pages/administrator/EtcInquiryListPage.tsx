@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import {
-  Container,
   StatusIndicator,
   TableData,
   TableRow,
 } from '../../components/genericTable/GenericTable.styles';
 import { Search } from '../../styles/administrator/EtcInquiryListPage.styles';
-import { Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import SearchBox from '../../components/common/search/SearchBox';
 import GenericTable from '../../components/genericTable/GenericTable';
 import {
@@ -37,7 +36,7 @@ const EtcInquiryListPage = () => {
     { id: 'date', label: '작성일자', width: 30 },
   ];
   return (
-    <>
+    <Box sx={{ minHeight: '600px' }}>
       <Search>
         <Typography
           sx={{
@@ -73,7 +72,7 @@ const EtcInquiryListPage = () => {
         )}
         includeCheckboxes={false}
       />
-    </>
+    </Box>
   );
 };
 

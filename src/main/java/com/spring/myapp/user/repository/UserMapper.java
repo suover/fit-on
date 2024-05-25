@@ -20,4 +20,6 @@ public interface UserMapper {
 	boolean existsByEmail(@Param("email") String email);
 
 	boolean existsByNickname(@Param("nickname") String nickname);
+
+	User findById(@Param("userId") Long userId);
 }

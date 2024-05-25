@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Typography } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import { Search } from '../../styles/administrator/ItemInquiryListPage.styles';
 import {
-  Container,
   StatusIndicator,
   TableData,
   TableRow,
@@ -37,7 +36,7 @@ const ItemInquiryListPage = () => {
     { id: 'date', label: '작성일자', width: 30 },
   ];
   return (
-    <>
+    <Box sx={{ minHeight: '600px' }}>
       <Search>
         <Typography
           sx={{
@@ -73,7 +72,7 @@ const ItemInquiryListPage = () => {
         )}
         includeCheckboxes={false}
       />
-    </>
+    </Box>
   );
 };
 

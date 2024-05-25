@@ -81,7 +81,7 @@ const App = () => {
             <Route
               path="product-detail/:productNum"
               element={<ProductDetail />}
-            ></Route>
+            />
           </Route>
           <Route path="community" element={<Community />} />
           <Route path="community/:postNo" element={<ViewPostDetail />} />
@@ -134,8 +134,14 @@ const App = () => {
             <Route path="item-inquiry-list" element={<ItemInquiryListPage />} />
             <Route path="etc-inquiry-list" element={<EtcInquiryListPage />} />
           </Route>
-          <Route path="post-register" element={<PostRegisterPage />} />
-          <Route path="item-register" element={<ItemRegisterPage />} />
+          <Route
+            path="administrator/post-register"
+            element={<PostRegisterPage />}
+          />
+          <Route
+            path="administrator/item-register"
+            element={<ItemRegisterPage />}
+          />
         </Routes>
         <Footer />
       </ThemeProvider>

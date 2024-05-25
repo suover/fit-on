@@ -118,7 +118,7 @@ const ItemRegisterPage: React.FC = () => {
           },
         },
       );
-    } catch (error) { }
+    } catch (error) {}
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -194,7 +194,6 @@ const ItemRegisterPage: React.FC = () => {
             );
             if (additionalImageUrl) {
               await uploadProductImage(imgProductId, additionalImageUrl, false);
-
             }
           }
         }),
