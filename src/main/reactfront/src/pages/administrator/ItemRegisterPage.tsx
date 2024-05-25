@@ -118,7 +118,7 @@ const ItemRegisterPage: React.FC = () => {
           },
         },
       );
-    } catch (error) { }
+    } catch (error) {}
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -194,14 +194,13 @@ const ItemRegisterPage: React.FC = () => {
             );
             if (additionalImageUrl) {
               await uploadProductImage(imgProductId, additionalImageUrl, false);
-
             }
           }
         }),
       );
       navigate('/administrator/item-list');
     } catch (error) {
-      alert('There was an error registering the product!', error);
+      alert('There was an error registering the product!');
     }
   };
 

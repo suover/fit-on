@@ -53,7 +53,7 @@ const MemberListPage: React.FC = () => {
   ];
 
   return (
-    <>
+    <Box sx={{ minHeight: '600px' }}>
       <Search>
         <Typography
           sx={{
@@ -102,7 +102,7 @@ const MemberListPage: React.FC = () => {
           수정
         </GenericButton>
       </Box>
-    </>
+    </Box>
   );
 };
 

@@ -99,7 +99,7 @@ const ItemListPage: React.FC = () => {
   ];
 
   return (
-    <>
+    <Box sx={{ minHeight: '600px' }}>
       <Search>
         <Typography sx={{ fontWeight: 'bold', fontSize: '1.5rem' }}>
           Fit On 상품목록
@@ -133,7 +133,7 @@ const ItemListPage: React.FC = () => {
       />
       <Box sx={{ position: 'relative' }}>
         <GenericButton
-          onClick={() => navigate('/item-register')}
+          onClick={() => navigate('/administrator/item-register')}
           style={{ position: 'absolute', right: '0', top: '-35px' }}
         >
           아이템 등록
@@ -160,7 +160,7 @@ const ItemListPage: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </Box>
   );
 };
 
