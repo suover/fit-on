@@ -79,7 +79,7 @@ const PostListPage: React.FC = () => {
   ];
 
   return (
-    <>
+    <Box sx={{ minHeight: '600px' }}>
       <Search>
         <Typography sx={{ fontWeight: 'bold', fontSize: '1.5rem' }}>
           Fit On 정보글목록
@@ -111,7 +111,7 @@ const PostListPage: React.FC = () => {
       />
       <Box sx={{ position: 'relative' }}>
         <GenericButton
-          onClick={() => navigate('/post-register')}
+          onClick={() => navigate('/administrator/post-register')}
           style={{ position: 'absolute', right: '0', top: '-35px' }}
         >
           게시글 등록
@@ -138,7 +138,7 @@ const PostListPage: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </Box>
   );
 };
 

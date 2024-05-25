@@ -4,14 +4,14 @@ import {
   communities,
 } from '../../types/administrator/CommunityData';
 import {
-  Container,
   TableData,
   TableRow,
 } from '../../components/genericTable/GenericTable.styles';
 import GenericTable from '../../components/genericTable/GenericTable';
-import { Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { Search } from '../../styles/administrator/CommunityListPage.styles';
 import SearchBox from '../../components/common/search/SearchBox';
+
 const CommunityListPage: React.FC = () => {
   const [filtereCommunities, setFilteredCommunities] =
     useState<Community[]>(communities);
@@ -35,7 +35,7 @@ const CommunityListPage: React.FC = () => {
     { id: 'like', label: '좋아요', width: 50 },
   ];
   return (
-    <>
+    <Box sx={{ minHeight: '600px' }}>
       <Search>
         <Typography
           sx={{
@@ -62,7 +62,7 @@ const CommunityListPage: React.FC = () => {
         )}
         includeCheckboxes={false}
       />
-    </>
+    </Box>
   );
 };
 
