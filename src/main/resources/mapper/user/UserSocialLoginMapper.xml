@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.myapp.user.repository.UserSocialLoginMapper">
+
+    <resultMap id="userSocialLoginResultMap" type="com.spring.myapp.user.model.UserSocialLogin">
+        <id column="user_id" property="userId"/>
+        <result column="provider" property="provider"/>
+        <result column="provider_id" property="providerId"/>
+    </resultMap>
+
+    <select id="findByProviderAndProviderId" resultMap="userSocialLoginResultMap">
+        SELECT * FROM user_social_login WHERE provider = #{provider} AND provider_id = #{providerId}
+    </select>
+
+    <insert id="save">
+        INSERT INTO user_social_login (user_id, provider, provider_id)
+        VALUES (#{userId}, #{provider}, #{providerId})
+    </insert>
+</mapper>

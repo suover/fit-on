@@ -7,7 +7,7 @@ import {
 import GenericTable from '../../components/genericTable/GenericTable';
 import { Review, reviews } from '../../types/administrator/ReviewData';
 import { Search } from '../../styles/administrator/ReviewListPage.styles';
-import { Typography } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import SearchBox from '../../components/common/search/SearchBox';
 
 const ReviewListPage = () => {
@@ -32,7 +32,7 @@ const ReviewListPage = () => {
     { id: 'rate', label: '평점', width: 30 },
   ];
   return (
-    <>
+    <Box sx={{ minHeight: '600px' }}>
       <Search>
         <Typography
           sx={{
@@ -62,7 +62,7 @@ const ReviewListPage = () => {
         )}
         includeCheckboxes={false}
       />
-    </>
+    </Box>
   );
 };
 

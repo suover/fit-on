@@ -2,21 +2,26 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.spring.myapp.user.repository.UserMapper">
-    <resultMap id="userResultMap" type="com.spring.myapp.user.model.User">
-        <id column="user_id" property="userId"/>
-        <result column="email" property="email"/>
-        <result column="name" property="name"/>
-        <result column="password" property="password"/>
-        <result column="nickname" property="nickname"/>
-        <result column="phone" property="phone"/>
-        <result column="birth_date" property="birthDate"/>
-        <result column="join_date" property="joinDate"/>
-        <result column="is_active" property="isActive"/>
+    <resultMap id="UserResultMap" type="com.spring.myapp.user.model.User">
+        <id property="userId" column="user_id"/>
+        <result property="email" column="email"/>
+        <result property="name" column="name"/>
+        <result property="password" column="password"/>
+        <result property="nickname" column="nickname"/>
+        <result property="phone" column="phone"/>
+        <result property="birthDate" column="birth_date"/>
+        <result property="joinDate" column="join_date"/>
+        <result property="isActive" column="is_active"/>
     </resultMap>
 
-    <select id="findByEmail" resultMap="userResultMap">
+    <select id="findByEmail" resultMap="UserResultMap">
         SELECT * FROM users WHERE email = #{email}
+    </select>
+
+    <select id="findById" resultMap="UserResultMap">
+        SELECT * FROM users WHERE user_id = #{userId}
     </select>
 
     <insert id="save" useGeneratedKeys="true" keyProperty="userId">
@@ -29,18 +34,17 @@
         VALUES (#{userId}, (SELECT role_id FROM roles WHERE role_name = #{roleName}))
     </insert>
 
-    <select id="existsByEmail" resultType="boolean" parameterType="string">
+    <select id="getUserRoles" resultType="java.lang.String">
+        SELECT role_name FROM user_roles ur
+        JOIN roles r ON ur.role_id = r.role_id
+        WHERE ur.user_id = #{userId}
+    </select>
+
+    <select id="existsByEmail" resultType="boolean">
         SELECT COUNT(*) > 0 FROM users WHERE email = #{email}
     </select>
 
-    <select id="existsByNickname" resultType="boolean" parameterType="string">
+    <select id="existsByNickname" resultType="boolean">
         SELECT COUNT(*) > 0 FROM users WHERE nickname = #{nickname}
-    </select>
-
-    <select id="getUserRoles" resultType="string">
-        SELECT r.role_name
-        FROM roles r
-        JOIN user_roles ur ON r.role_id = ur.role_id
-        WHERE ur.user_id = #{userId}
     </select>
 </mapper>
