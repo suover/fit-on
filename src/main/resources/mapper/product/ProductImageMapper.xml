@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.myapp.product.repository.ProductImageMapper">
+    <resultMap id="ProductImageResultMap" type="com.spring.myapp.product.model.ProductImage">
+        <id property="id" column="id"/>
+        <result property="productId" column="product_id"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="isMainImage" column="is_main_image"/>
+    </resultMap>
+
+    <insert id="saveImage" parameterType="com.spring.myapp.product.model.ProductImage">
+        INSERT INTO product_images (product_id, image_url, is_main_image)
+        VALUES (#{productId}, #{imageUrl}, #{isMainImage})
+    </insert>
+
+    <select id="findProductImages" resultMap="ProductImageResultMap">
+        SELECT * FROM product_images WHERE product_id = #{productId}
+    </select>
+</mapper>

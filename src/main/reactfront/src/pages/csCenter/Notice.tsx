@@ -19,7 +19,7 @@ const Notice = () => {
       <ListTable
         data={notices}
         columnData={colunmData}
-        pageUrl="notice"
+        pageUrl="service/notice"
         paging={true}
       />
     </>

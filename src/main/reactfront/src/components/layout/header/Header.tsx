@@ -57,7 +57,9 @@ const Header = () => {
               </li>
             </>
           )}
-          <li>장바구니</li>
+          <li>
+            <Link to="/shopping-basket">장바구니</Link>
+          </li>
         </Tnb>
       </Container>
       <TopBtn />

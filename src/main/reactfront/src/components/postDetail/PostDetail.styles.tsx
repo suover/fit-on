@@ -60,4 +60,20 @@ const PostWrapper = styled.div`
   }
 `;
 
-export default PostWrapper;
+const BackBtn = styled.button`
+  width: 80px;
+  height: 40px;
+  background: transparent;
+  border: 1px solid #777;
+  border-radius: 3px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+
+  &:hover {
+    background: #333;
+    color: #fff;
+  }
+`;
+
+export { PostWrapper, BackBtn };

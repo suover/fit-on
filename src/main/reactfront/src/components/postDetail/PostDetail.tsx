@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import ButtonLikePost from '../common/button/ButtonLikePost';
 import ButtonShare from '../common/button/ButtonShare';
-import PostWrapper from './PostDetail.styles';
+import { PostWrapper, BackBtn } from './PostDetail.styles';
 
 import { Box } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -11,23 +11,6 @@ import PersonIcon from '@mui/icons-material/Person';
 
 import CommentList from '../common/comment/CommentList';
 import { Comment } from '../../types/MainDummyData';
-import styled from 'styled-components';
-
-const BackBtn = styled.button`
-  width: 80px;
-  height: 40px;
-  background: transparent;
-  border: 1px solid #777;
-  border-radius: 3px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s;
-
-  &:hover {
-    background: #333;
-    color: #fff;
-  }
-`;
 
 type DataType = {
   postId: number | string;
