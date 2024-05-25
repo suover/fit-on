@@ -201,7 +201,7 @@ const ItemRegisterPage: React.FC = () => {
       );
       navigate('/administrator/item-list');
     } catch (error) {
-      alert('There was an error registering the product!', error);
+      alert('There was an error registering the product!');
     }
   };
 

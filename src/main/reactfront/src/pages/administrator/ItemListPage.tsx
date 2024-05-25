@@ -64,11 +64,44 @@ const ItemListPage: React.FC = () => {
     setSelectedProductId(null);
   };
 
-  const handleConfirmDelete = () => {
+  //   const handleConfirmDelete = () => {
+  //     if (selectedProductId) {
+  //       setFilteredItems((prevItems) =>
+  //         prevItems.filter((product) => product.id !== selectedProductId),
+  //       );
+  //     }
+  //     setIsDeleteConfirmationOpen(false);
+  //     setSelectedProductId(null);
+  //   };
+  const handleConfirmDelete = async () => {
     if (selectedProductId) {
-      setFilteredItems((prevItems) =>
-        prevItems.filter((product) => product.id !== selectedProductId),
-      );
+      try {
+        // 백엔드에서 isDeleted 속성을 true로 설정
+        await axios.put(
+          `http://localhost:8080/api/products/${selectedProductId}`,
+          {
+            isDeleted: true,
+          },
+        );
+
+        // 로컬 상태 업데이트
+        setFilteredItems((prevItems) =>
+          prevItems.map((product) =>
+            product.productId === selectedProductId
+              ? { ...product, isDeleted: true }
+              : product,
+          ),
+        );
+        setProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product.productId === selectedProductId
+              ? { ...product, isDeleted: true }
+              : product,
+          ),
+        );
+      } catch (error) {
+        console.error('Failed to update product:', error);
+      }
     }
     setIsDeleteConfirmationOpen(false);
     setSelectedProductId(null);
@@ -118,7 +151,7 @@ const ItemListPage: React.FC = () => {
             <TableData>판매량??</TableData>
             <TableData>{product.stock}</TableData>
             <TableData>{product.categoryId}</TableData>
-            <TableData>{product.isDeleted}</TableData>
+            <TableData>{product.isDeleted ? '비 활성화' : '활성화'}</TableData>
             <TableData>
               <div
                 onClick={() => handleDeleteClick(product.id)}
@@ -166,4 +199,4 @@ const ItemListPage: React.FC = () => {
 
 export default ItemListPage;
 
-// <Image $backgroundImage={product.imageUrl} />
+//<Image $backgroundImage={product.imageUrl} />
