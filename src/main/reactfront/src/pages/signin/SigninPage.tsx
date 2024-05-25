@@ -15,7 +15,6 @@ import {
 import EmailIcon from '@mui/icons-material/Email';
 import KeyIcon from '@mui/icons-material/Key';
 import kakao from '../../assets/img/signin/kakao.png';
-import google from '../../assets/img/signin/google.png';
 import naver from '../../assets/img/signin/naver.png';
 import axios from '../../api/axiosConfig';
 import GenericButton from '../../components/common/genericButton/GenericButton';
@@ -26,6 +25,11 @@ import {
   SocialIconsContainer,
 } from '../../styles/signin/SigninPage.styles';
 import AuthContext from '../../context/AuthContext';
+import {
+  GoogleOAuthProvider,
+  GoogleLogin,
+  CredentialResponse,
+} from '@react-oauth/google';
 
 const FindEmailForm = () => (
   <Box>
@@ -190,171 +194,209 @@ const SigninPage: React.FC = () => {
     }
   };
 
+  const handleOAuth2LoginSuccess = async (
+    provider: string,
+    response: CredentialResponse,
+  ) => {
+    const token = response.credential;
+    try {
+      const res = await axios.post('/api/auth/oauth2', { token, provider });
+      const { token: jwtToken, roles, nickname } = res.data;
+      login(jwtToken, roles, nickname);
+      navigate('/');
+    } catch (error) {
+      console.error(`${provider} 로그인 실패:`, error);
+      alert(`${provider} 로그인에 실패했습니다.`);
+    }
+  };
+
+  const handleLoginSuccess = async (
+    provider: string,
+    response: CredentialResponse,
+  ) => {
+    await handleOAuth2LoginSuccess(provider, response);
+  };
+
+  const handleLoginFailure = (provider: string) => {
+    console.error(`${provider} 로그인 실패`);
+    alert(`${provider} 로그인에 실패했습니다.`);
+  };
+
   return (
-    <LoginForm>
-      <Typography sx={{ fontWeight: 'bold' }} variant="h4" textAlign="center">
-        로그인
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        <Box sx={{ width: '100%' }}>
-          <TextField
-            margin="normal"
-            label="이메일"
-            name="email"
-            placeholder="Email address"
-            fullWidth
-            onChange={(event) => setEmail(event.target.value)}
-            InputProps={{
-              style: {
-                borderRadius: '12px',
-              },
-              startAdornment: (
-                <InputAdornment position="start">
-                  <EmailIcon />
-                </InputAdornment>
-              ),
-            }}
-            sx={{
-              '& label.Mui-focused': {
-                color: 'black',
-              },
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: 'black',
+    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}>
+      <LoginForm>
+        <Typography sx={{ fontWeight: 'bold' }} variant="h4" textAlign="center">
+          로그인
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <Box sx={{ width: '100%' }}>
+            <TextField
+              margin="normal"
+              label="이메일"
+              name="email"
+              placeholder="Email address"
+              fullWidth
+              onChange={(event) => setEmail(event.target.value)}
+              InputProps={{
+                style: {
+                  borderRadius: '12px',
                 },
-                '&.Mui-focused fieldset': {
-                  borderColor: 'black',
-                  borderWidth: 1,
-                },
-              },
-            }}
-          />
-          <TextField
-            placeholder="Password"
-            margin="normal"
-            label="비밀번호"
-            name="password"
-            type="password"
-            fullWidth
-            onChange={(event) => setPassword(event.target.value)}
-            InputProps={{
-              style: {
-                borderRadius: '12px',
-              },
-              startAdornment: (
-                <InputAdornment position="start">
-                  <KeyIcon />
-                </InputAdornment>
-              ),
-            }}
-            sx={{
-              '& label.Mui-focused': {
-                color: 'black',
-              },
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: 'black',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: 'black',
-                  borderWidth: 1,
-                },
-              },
-            }}
-          />
-          <Box sx={{ mt: 1, display: 'flex', justifyContent: 'flex-end' }}>
-            <Button
-              sx={{
-                color: 'black',
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <EmailIcon />
+                  </InputAdornment>
+                ),
               }}
-              onClick={handleClickOpen}
+              sx={{
+                '& label.Mui-focused': {
+                  color: 'black',
+                },
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'black',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'black',
+                    borderWidth: 1,
+                  },
+                },
+              }}
+            />
+            <TextField
+              placeholder="Password"
+              margin="normal"
+              label="비밀번호"
+              name="password"
+              type="password"
+              fullWidth
+              onChange={(event) => setPassword(event.target.value)}
+              InputProps={{
+                style: {
+                  borderRadius: '12px',
+                },
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <KeyIcon />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                '& label.Mui-focused': {
+                  color: 'black',
+                },
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'black',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'black',
+                    borderWidth: 1,
+                  },
+                },
+              }}
+            />
+            <Box sx={{ mt: 1, display: 'flex', justifyContent: 'flex-end' }}>
+              <Button
+                sx={{
+                  color: 'black',
+                }}
+                onClick={handleClickOpen}
+              >
+                이메일 / 비밀번호 찾기
+              </Button>
+            </Box>
+
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                width: '100%',
+              }}
             >
-              이메일 / 비밀번호 찾기
-            </Button>
+              <LoginButtons>
+                <Link to="/sign-up" style={{ width: '48%' }}>
+                  <GenericButton
+                    style={{
+                      fontSize: '1.1rem',
+                      width: '100%',
+                      height: '40px',
+                    }}
+                  >
+                    회원 가입
+                  </GenericButton>
+                </Link>
+                <GenericButton
+                  style={{ fontSize: '1.1rem', width: '48%', height: '40px' }}
+                  type="submit"
+                >
+                  로그인
+                </GenericButton>
+              </LoginButtons>
+            </Box>
           </Box>
 
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              width: '100%',
+          <Divider sx={{ width: '100%' }}>SNS 계정 로그인</Divider>
+        </form>
+
+        <SocialIconsContainer>
+          <SocialIcon>
+            <a href="#" />
+            <img alt="KakaoTalk" width={40} src={kakao} />
+          </SocialIcon>
+          <SocialIcon>
+            <a href="#" />
+            <img alt="Naver" width={40} src={naver} />
+          </SocialIcon>
+          <SocialIcon>
+            <GoogleLogin
+              onSuccess={(response) => handleLoginSuccess('google', response)}
+              onError={() => handleLoginFailure('google')}
+              type="icon"
+              size="large"
+            />
+          </SocialIcon>
+        </SocialIconsContainer>
+        <Typography
+          variant="body2"
+          sx={{ marginBottom: '20px', marginTop: '20px', textAlign: 'center' }}
+        >
+          <Link
+            to="/service"
+            style={{
+              marginRight: '10px',
+              textDecoration: 'none',
+              color: 'inherit',
             }}
           >
-            <LoginButtons>
-              <Link to="/sign-up" style={{ width: '48%' }}>
-                <GenericButton
-                  style={{ fontSize: '1.1rem', width: '100%', height: '40px' }}
-                >
-                  회원 가입
-                </GenericButton>
-              </Link>
-              <GenericButton
-                style={{ fontSize: '1.1rem', width: '48%', height: '40px' }}
-                type="submit"
-              >
-                로그인
-              </GenericButton>
-            </LoginButtons>
-          </Box>
-        </Box>
+            개인정보 처리방침
+          </Link>
+          |
+          <Link
+            to="/service"
+            style={{
+              margin: '0 10px',
+              textDecoration: 'none',
+              color: 'inherit',
+            }}
+          >
+            이용약관
+          </Link>
+          |
+          <Link
+            to="/service"
+            style={{
+              marginLeft: '10px',
+              textDecoration: 'none',
+              color: 'inherit',
+            }}
+          >
+            회원정보 고객센터
+          </Link>
+        </Typography>
 
-        <Divider sx={{ width: '100%' }}>SNS 계정 로그인</Divider>
-      </form>
-
-      <SocialIconsContainer>
-        <SocialIcon>
-          <a href="#" />
-          <img alt="KakaoTalk" width={40} src={kakao} />
-        </SocialIcon>
-        <SocialIcon>
-          <a href="#" />
-          <img alt="Naver" width={40} src={naver} />
-        </SocialIcon>
-        <SocialIcon>
-          <a href="#" />
-          <img alt="Google" width={40} src={google} />
-        </SocialIcon>
-      </SocialIconsContainer>
-      <Typography
-        variant="body2"
-        sx={{ marginBottom: '20px', marginTop: '20px', textAlign: 'center' }}
-      >
-        <Link
-          to="/service"
-          style={{
-            marginRight: '10px',
-            textDecoration: 'none',
-            color: 'inherit',
-          }}
-        >
-          개인정보 처리방침
-        </Link>
-        |
-        <Link
-          to="/service"
-          style={{
-            margin: '0 10px',
-            textDecoration: 'none',
-            color: 'inherit',
-          }}
-        >
-          이용약관
-        </Link>
-        |
-        <Link
-          to="/service"
-          style={{
-            marginLeft: '10px',
-            textDecoration: 'none',
-            color: 'inherit',
-          }}
-        >
-          회원정보 고객센터
-        </Link>
-      </Typography>
-
-      <EmailPasswordModal open={open} handleClose={handleClose} />
-    </LoginForm>
+        <EmailPasswordModal open={open} handleClose={handleClose} />
+      </LoginForm>
+    </GoogleOAuthProvider>
   );
 };
 

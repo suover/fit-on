@@ -1,6 +1,7 @@
 package com.spring.myapp.user.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.spring.myapp.security.JwtTokenProvider;
 import com.spring.myapp.user.model.LoginRequest;
 import com.spring.myapp.user.model.User;
+import com.spring.myapp.user.service.CustomOAuth2UserService;
 import com.spring.myapp.user.service.UserService;
 
 import jakarta.validation.Valid;
@@ -40,22 +42,22 @@ public class UserController {
 	@Autowired
 	private JwtTokenProvider jwtTokenProvider;
 
+	@Autowired
+	private CustomOAuth2UserService customOAuth2UserService;
+
 	@PostMapping("/sign-up")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody User user) {
-		logger.debug("Request to register user: {}", user);
 		userService.register(user);
 
 		// JWT 토큰 생성
 		List<String> roles = userService.getUserRoles(user.getUserId());
 		String token = jwtTokenProvider.createToken(user.getEmail(), roles);
-		logger.info("User registered successfully: {}", user.getEmail());
 
 		return ResponseEntity.ok(new JwtAuthenticationResponse(token, roles, user.getNickname()));
 	}
 
 	@PostMapping("/auth/login")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-		logger.debug("Request to authenticate user: {}", loginRequest);
 
 		try {
 			Authentication authentication = authenticationManager.authenticate(
@@ -74,11 +76,27 @@ public class UserController {
 			User user = userService.findByEmail(loginRequest.getEmail());
 			String nickname = user.getNickname();
 
-			logger.info("User authenticated successfully: {}", loginRequest.getEmail());
 			return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, roles, nickname));
 		} catch (Exception e) {
 			logger.error("User authentication failed: {}", loginRequest.getEmail(), e);
 			return ResponseEntity.status(401).body("Authentication failed");
+		}
+	}
+
+	@PostMapping("/auth/oauth2")
+	public ResponseEntity<?> authenticateOAuth2User(@RequestBody Map<String, String> body) {
+		String token = body.get("token");
+		String provider = body.get("provider");
+
+		try {
+			User user = customOAuth2UserService.processOAuth2Login(provider, token);
+			List<String> roles = userService.getUserRoles(user.getUserId());
+			String jwt = jwtTokenProvider.createToken(user.getEmail(), roles);
+
+			return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, roles, user.getNickname()));
+		} catch (Exception e) {
+			logger.error("{} user authentication failed", provider, e);
+			return ResponseEntity.status(401).body(provider + " authentication failed");
 		}
 	}
 

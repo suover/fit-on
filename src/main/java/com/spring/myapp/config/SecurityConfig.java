@@ -15,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.spring.myapp.security.JwtAuthenticationFilter;
+import com.spring.myapp.user.service.CustomOAuth2UserService;
 
 @Configuration
 @EnableWebSecurity
@@ -26,6 +27,9 @@ public class SecurityConfig {
 	@Autowired
 	private Environment env;
 
+	@Autowired
+	private CustomOAuth2UserService customOAuth2UserService;
+
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -33,10 +37,10 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		String[] excludedPaths = env.getProperty("security.jwt.excluded-paths", "").split(",");
-		String[] permitAllPaths = env.getProperty("security.jwt.permit-all-paths", "").split(",");
-		String[] authenticatedPaths = env.getProperty("security.jwt.authenticated-paths", "").split(",");
-		String[] adminPaths = env.getProperty("security.jwt.admin-paths", "").split(",");
+		String[] excludedPaths = env.getProperty("spring.security.jwt.excluded-paths", "").split(",");
+		String[] permitAllPaths = env.getProperty("spring.security.jwt.permit-all-paths", "").split(",");
+		String[] authenticatedPaths = env.getProperty("spring.security.jwt.authenticated-paths", "").split(",");
+		String[] adminPaths = env.getProperty("spring.security.jwt.admin-paths", "").split(",");
 
 		http
 			.csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화
@@ -56,8 +60,16 @@ public class SecurityConfig {
 				.logoutSuccessUrl("/")
 				.permitAll()
 			)
+			.oauth2Login(oauth2 -> oauth2
+				.loginPage("/sign-in")
+				.defaultSuccessUrl("/", true)
+				.userInfoEndpoint(userInfo -> userInfo
+					.userService(customOAuth2UserService)
+				)
+			)
 			.addFilterBefore(
-				new JwtAuthenticationFilter(userDetailsService, env.getProperty("security.jwt.secret"), excludedPaths),
+				new JwtAuthenticationFilter(userDetailsService, env.getProperty("spring.security.jwt.secret"),
+					excludedPaths),
 				UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
