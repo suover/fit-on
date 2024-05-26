@@ -3,6 +3,8 @@ package com.spring.myapp.product.controller;
 import com.spring.myapp.product.model.Product;
 import com.spring.myapp.product.service.ProductService;
 import com.spring.myapp.product.service.S3Service;
+
+import org.apache.ibatis.annotations.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,23 +48,30 @@ public class ProductController {
 		System.out.println(savedProduct);
 		return ResponseEntity.ok(savedProduct); // 저장한 상품 정보 반환
 	}
+	@GetMapping("/with-images")
+	public ResponseEntity<List<Product>> getAllProductsWithMainImage() {
+		List<Product> products = productService.getAllProductsWithMainImage();
+		System.out.println(products);
 
-	@PutMapping("/{id}")
-	public void updateProduct(@PathVariable Long id, @RequestBody Product product) {
-		product.setProductId(id);
-		productService.updateProduct(product);
+		return ResponseEntity.ok(products);
 	}
 
-	@PatchMapping("/{deleteId}/deactive")
-	public ResponseEntity<Product> updateProductStatus(@PathVariable Long deleteId, @RequestBody Map<String, Object> updates) {
+
+	@PatchMapping("/{deleteId}/deactivate")
+	public ResponseEntity<Void> deactivateProduct(@PathVariable("deleteId") Long deleteId) {
 		try {
-			Boolean isDeleted = (Boolean) updates.get("isDeleted");
-			Product updatedProduct = productService.updateProductStatus(deleteId, isDeleted);
-			return ResponseEntity.ok(updatedProduct);
+			System.out.println("/{deleteId}/deactivate 컨트롤러단 시작");
+			System.out.println("Product deactivated: " + deleteId);
+			productService.deactivate(deleteId, true);
+			return ResponseEntity.ok().build();
 		} catch (Exception e) {
+			System.out.println("/{deleteId}/deactivate 컨트롤러단 오류다.");
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
+
+
 
 
 }

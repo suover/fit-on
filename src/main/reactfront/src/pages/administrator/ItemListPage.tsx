@@ -47,18 +47,16 @@ const ItemListPage: React.FC = () => {
 
   const navigate = useNavigate();
 
-  //상품 정보들 가져오기
+  //상품 정보 세팅
   useEffect(() => {
-    const fetchData = async () => {
-      await fetchProducts();
-      //       await fetchProductImages();
-    };
+    fetchProducts();
   }, []);
 
+  //상품 정보 가져오기
   const fetchProducts = async () => {
     try {
       const response = await axios.get<Product[]>(
-        'http://localhost:8080/api/products',
+        'http://localhost:8080/api/products/with-images',
       );
       setProducts(response.data);
       setFilteredItems(response.data);
@@ -66,16 +64,6 @@ const ItemListPage: React.FC = () => {
       console.error('Failed to fetch products:', error);
     }
   };
-  // const fetchProductImages = async () => {
-  //   try {
-  //     const imageResponse = await axios.get<ProductImage[]>(
-  //       'http://localhost:8080/api/products-images',
-  //     );
-  //     setProductImgs(imageResponse.data);
-  //   } catch (error) {
-  //     console.error('Failed to fetch product images:', error);
-  //   }
-  // };
 
   const handleDeleteClick = (productId: number) => {
     setSelectedProductId(productId);
@@ -90,20 +78,22 @@ const ItemListPage: React.FC = () => {
   const handleConfirmDelete = async () => {
     if (selectedProductId) {
       try {
+        // 백엔드에서 isDeleted 속성을 true로 설정
         await axios.patch(
-          `http://localhost:8080/api/products/${selectedProductId}/deactive`,
-          {
-            isDeleted: true,
-          },
+          `http://localhost:8080/api/products/${selectedProductId}/deactivate`,
+          { isDeleted: true },
         );
 
-        await fetchProducts();
+        alert('상품이 정상적으로 비활성화 되었습니다.');
+//             setIsDeleteConfirmationOpen(false);
+//             setSelectedProductId(null);
+        navigate('/administrator/item-list');
       } catch (error) {
-        console.error('Failed to deactivate product:', error);
+        console.error('Failed to update product:', error);
       }
     }
-    setIsDeleteConfirmationOpen(false);
-    setSelectedProductId(null);
+
+
   };
 
   const handleSearch = (query: string) => {
@@ -145,11 +135,13 @@ const ItemListPage: React.FC = () => {
         renderRow={(product: Product) => (
           <TableRow key={product.productId}>
             <TableData>{product.productId}</TableData>
-            <TableData>{product.name}</TableData>
+            <TableData>
+              <Image $backgroundImage={product.imageUrl} />
+              {product.name}
+            </TableData>
             <TableData>{product.price}원</TableData>
             <TableData>판매량??</TableData>
             <TableData>{product.stock}</TableData>
-            {/* <TableData>{product.categoryId}</TableData> */}
             <TableData>
               {categoryMap[product.categoryId] || '알 수 없음'}
             </TableData>
@@ -200,3 +192,4 @@ const ItemListPage: React.FC = () => {
 };
 
 export default ItemListPage;
+// <Image $backgroundImage={product.imgURL} />

@@ -40,23 +40,16 @@
         VALUES (#{name}, #{description}, #{price}, #{stock}, #{content}, #{discountRate}, #{isDeleted}, #{createdAt}, #{updatedAt}, #{categoryId})
     </insert>
 
-    <update id="update">
+    <update id="updateIsDeleted">
         UPDATE products
-        SET name = #{name},
-        description = #{description},
-        price = #{price},
-        stock = #{stock},
-        content = #{content},
-        discount_rate = #{discountRate},
-        is_deleted = #{isDeleted},
-        created_at = #{createdAt},
-        updated_at = #{updatedAt},
-        category_id = #{categoryId}
+        SET  is_deleted = #{isDeleted}
         WHERE product_id = #{productId}
     </update>
 
-    <delete id="deleteById">
-        DELETE FROM products WHERE product_id = #{productId}
-    </delete>
+    <select id="findAllWithMainImage" resultMap="ProductResultMap">
+        SELECT p.*, pi.image_url
+        FROM products p
+        LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.is_main_image = 1
+    </select>
 
 </mapper>

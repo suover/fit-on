@@ -22,4 +22,5 @@ public class Product {
 	private Date createdAt;
 	private Date updatedAt;
 	private Long categoryId;
+	private String imageUrl;
 }

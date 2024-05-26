@@ -33,22 +33,16 @@ public class ProductService {
 		return product;
 	}
 
-	public void updateProduct(Product product) {
-		productMapper.update(product);
+
+	public void  deactivate(Long id, Boolean isDeleted) {
+		System.out.println("서비스단 시작");
+		System.out.println("서비스단 파라미터 확인 id:"+id+" isDeleted:"+isDeleted);
+		productMapper.updateIsDeleted(id, isDeleted);
+		System.out.println("서비스단 종료");
 	}
 
-	// public void deleteProduct(Long id) {
-	// 	productMapper.deleteById(id);
-	// }
-
-
-	public Product updateProductStatus(Long id, Boolean isDeleted) {
-		Product product = productMapper.findById(id);
-		if (product == null) {
-			// throw new ResourceNotFoundException("Product not found");
-		}
-		productMapper.updateIsDeleted(id, isDeleted);
-		return product;
+	public List<Product> getAllProductsWithMainImage() {
+		return productMapper.findAllWithMainImage();
 	}
 
 }

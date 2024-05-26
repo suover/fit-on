@@ -11,6 +11,7 @@ export interface Product {
   createdAt: Date;
   updatedAt: Date;
   isDeleted: boolean;
+  imageUrl:string
 }
 
 export interface ProductImage {
