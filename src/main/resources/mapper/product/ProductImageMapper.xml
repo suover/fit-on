@@ -18,4 +18,8 @@
     <select id="findProductImages" resultMap="ProductImageResultMap">
         SELECT * FROM product_images WHERE product_id = #{productId}
     </select>
+
+    <select id="getMainImgURL" resultMap="ProductImageResultMap">
+        SELECT image_url FROM product_images WHERE product_id = #{productId} AND is_main_image = true
+    </select>
 </mapper>

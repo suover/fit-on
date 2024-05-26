@@ -10,8 +10,13 @@ import java.util.List;
 public class ProductImageService {
 	@Autowired
 	private ProductImageMapper productImageMapper;
-	public void saveProductImage(ProductImage productImage) {productImageMapper.saveImage(productImage);}
+
+	public void saveProductImage(ProductImage productImage) {productImageMapper.saveImage(productImage);}//상품 저장
 	public List<ProductImage> getAllProductImages(Long id) {
 		return productImageMapper.findProductImages(id);
 	}
+
+	public String getMainImgURLByProductId(Long productId) {
+		return productImageMapper.getMainImgURL(productId);
+	}// 메인이미지 경로
 }

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -15,6 +17,9 @@ public class ProductService {
 
 	public List<Product> getAllProducts() {
 		return productMapper.findAll();
+	}
+	public List<Product> getProducts() {
+		return productMapper.findAvailable();
 	}
 
 	public Product getProductById(Long id) {
@@ -32,8 +37,18 @@ public class ProductService {
 		productMapper.update(product);
 	}
 
-	public void deleteProduct(Long id) {
-		productMapper.deleteById(id);
+	// public void deleteProduct(Long id) {
+	// 	productMapper.deleteById(id);
+	// }
+
+
+	public Product updateProductStatus(Long id, Boolean isDeleted) {
+		Product product = productMapper.findById(id);
+		if (product == null) {
+			// throw new ResourceNotFoundException("Product not found");
+		}
+		productMapper.updateIsDeleted(id, isDeleted);
+		return product;
 	}
 
 }

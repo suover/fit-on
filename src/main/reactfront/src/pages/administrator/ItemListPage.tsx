@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-// import { Product } from '../../types/administrator/ItemsData';
-// import { Product, products } from '../../types/administrator/ItemsData';
-import { Product } from '../../types/DataInterface';
+import { Product, ProductImage } from '../../types/DataInterface';
 import {
   Image,
   TableData,
@@ -25,36 +23,61 @@ import GenericButton from '../../components/common/genericButton/GenericButton';
 import DeleteIcon from '../../components/icons/DeleteIcon';
 import axios from 'axios';
 
+const categoryMap: { [key: number]: string } = {
+  1: '피트니스',
+  2: '보충제',
+  3: '영양제',
+  4: '식품',
+  5: '요가 & 필라테스',
+  6: '구기용품',
+  7: '러닝 & 자전거용품',
+  8: '복싱 & 잡화',
+};
+
 const ItemListPage: React.FC = () => {
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(
     null,
   );
-  const navigate = useNavigate();
-  //   const [filteredItems, setFilteredItems] = useState<Product[]>(products);
 
   const [filteredItems, setFilteredItems] = useState<Product[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  // const [productImgs, setProductImgs] = useState<ProductImage[]>([]);
 
-  //상품 리스트 가져오기
+  const navigate = useNavigate();
+
+  //상품 정보들 가져오기
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get<Product[]>(
-          'http://localhost:8080/api/products',
-        );
-        setProducts(response.data);
-        setFilteredItems(response.data);
-      } catch (error) {
-        console.error('Failed to fetch products:', error);
-      }
+    const fetchData = async () => {
+      await fetchProducts();
+      //       await fetchProductImages();
     };
-
-    fetchProducts();
   }, []);
 
-  const handleDeleteClick = (productId: string) => {
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get<Product[]>(
+        'http://localhost:8080/api/products',
+      );
+      setProducts(response.data);
+      setFilteredItems(response.data);
+    } catch (error) {
+      console.error('Failed to fetch products:', error);
+    }
+  };
+  // const fetchProductImages = async () => {
+  //   try {
+  //     const imageResponse = await axios.get<ProductImage[]>(
+  //       'http://localhost:8080/api/products-images',
+  //     );
+  //     setProductImgs(imageResponse.data);
+  //   } catch (error) {
+  //     console.error('Failed to fetch product images:', error);
+  //   }
+  // };
+
+  const handleDeleteClick = (productId: number) => {
     setSelectedProductId(productId);
     setIsDeleteConfirmationOpen(true);
   };
@@ -64,43 +87,19 @@ const ItemListPage: React.FC = () => {
     setSelectedProductId(null);
   };
 
-  //   const handleConfirmDelete = () => {
-  //     if (selectedProductId) {
-  //       setFilteredItems((prevItems) =>
-  //         prevItems.filter((product) => product.id !== selectedProductId),
-  //       );
-  //     }
-  //     setIsDeleteConfirmationOpen(false);
-  //     setSelectedProductId(null);
-  //   };
   const handleConfirmDelete = async () => {
     if (selectedProductId) {
       try {
-        // 백엔드에서 isDeleted 속성을 true로 설정
-        await axios.put(
-          `http://localhost:8080/api/products/${selectedProductId}`,
+        await axios.patch(
+          `http://localhost:8080/api/products/${selectedProductId}/deactive`,
           {
             isDeleted: true,
           },
         );
 
-        // 로컬 상태 업데이트
-        setFilteredItems((prevItems) =>
-          prevItems.map((product) =>
-            product.productId === selectedProductId
-              ? { ...product, isDeleted: true }
-              : product,
-          ),
-        );
-        setProducts((prevProducts) =>
-          prevProducts.map((product) =>
-            product.productId === selectedProductId
-              ? { ...product, isDeleted: true }
-              : product,
-          ),
-        );
+        await fetchProducts();
       } catch (error) {
-        console.error('Failed to update product:', error);
+        console.error('Failed to deactivate product:', error);
       }
     }
     setIsDeleteConfirmationOpen(false);
@@ -150,11 +149,14 @@ const ItemListPage: React.FC = () => {
             <TableData>{product.price}원</TableData>
             <TableData>판매량??</TableData>
             <TableData>{product.stock}</TableData>
-            <TableData>{product.categoryId}</TableData>
+            {/* <TableData>{product.categoryId}</TableData> */}
+            <TableData>
+              {categoryMap[product.categoryId] || '알 수 없음'}
+            </TableData>
             <TableData>{product.isDeleted ? '비 활성화' : '활성화'}</TableData>
             <TableData>
               <div
-                onClick={() => handleDeleteClick(product.id)}
+                onClick={() => handleDeleteClick(product.productId)}
                 style={{ cursor: 'pointer' }}
               >
                 <DeleteIcon />
@@ -198,5 +200,3 @@ const ItemListPage: React.FC = () => {
 };
 
 export default ItemListPage;
-
-//<Image $backgroundImage={product.imageUrl} />

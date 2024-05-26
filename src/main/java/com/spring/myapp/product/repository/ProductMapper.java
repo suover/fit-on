@@ -8,10 +8,14 @@ import java.util.List;
 public interface ProductMapper {
 
 	List<Product> findAll();
+	List<Product> findAvailable();
 	Product findById(Long productId);
 	void save(Product product);
 	void update(Product product);
 	void deleteById(Long productId);
 	Long findMaxProductId();
+
+	@Update("UPDATE products SET is_deleted = #{isDeleted} WHERE product_id = #{productId}")
+	void updateIsDeleted(@Param("productId") Long productId, @Param("isDeleted") Boolean isDeleted);
 
 }

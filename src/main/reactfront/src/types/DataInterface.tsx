@@ -1,5 +1,5 @@
 export interface Product {
-  id : string;
+  id: string;
   productId: number;
   name: string;
   description: string;
@@ -11,4 +11,10 @@ export interface Product {
   createdAt: Date;
   updatedAt: Date;
   isDeleted: boolean;
+}
+
+export interface ProductImage {
+  productId: number;
+  imgURL: string;
+  isMainImg: boolean;
 }

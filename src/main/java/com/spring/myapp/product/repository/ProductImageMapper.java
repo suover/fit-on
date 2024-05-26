@@ -9,4 +9,5 @@ import java.util.List;
 public interface ProductImageMapper {
 	void saveImage(ProductImage productImage);
 	List<ProductImage> findProductImages(Long productId);
+	String getMainImgURL(Long productId);
 }

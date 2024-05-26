@@ -22,7 +22,20 @@ public class ProductImageController {
 		productImageService.saveProductImage(productImage);
 	}
 	@GetMapping("/{id}")
-	public List<ProductImage> getProductImages (@PathVariable Long id){
+	public List<ProductImage> getProductImages (@PathVariable("id") Long id){
 		return productImageService.getAllProductImages(id);
 	}
+
+	@GetMapping("/{id}/MainImgURL")
+	public String getMainImgURL (@PathVariable("id") Long id){
+		return productImageService.getMainImgURLByProductId(id);
+	}
+
+
+
+	// @GetMapping("/{productId}/main-image")
+	// public ResponseEntity<ProductImage> getMainImageURL(@PathVariable("productId") Long id) {
+	// 	ProductImage returnImg = productImageService.getMainImageByProductId(id);
+	// 	return ResponseEntity.ok(returnImg); // 저장한 상품 정보 반환
+	// }
 }

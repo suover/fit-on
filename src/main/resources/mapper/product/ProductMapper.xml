@@ -27,6 +27,10 @@
         SELECT * FROM products
     </select>
 
+    <select id="findAvailable" resultMap="ProductResultMap">
+        SELECT * FROM products where is_deleted = false
+    </select>
+
     <select id="findById" resultMap="ProductResultMap">
         SELECT * FROM products WHERE product_id = #{productId}
     </select>
@@ -54,13 +58,5 @@
     <delete id="deleteById">
         DELETE FROM products WHERE product_id = #{productId}
     </delete>
-
-
-
-
-<!--    -->
-
-
-
 
 </mapper>

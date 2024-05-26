@@ -4,11 +4,13 @@ import com.spring.myapp.product.model.Product;
 import com.spring.myapp.product.service.ProductService;
 import com.spring.myapp.product.service.S3Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/products")
@@ -20,12 +22,19 @@ public class ProductController {
 
 	@Autowired
 	private ProductService productService;
-
+	
+	
+	//전체 상품
 	@GetMapping
 	public List<Product> getAllProducts() {
 		return productService.getAllProducts();
 	}
 
+	// 삭제처리 되지 않은 상품
+	@GetMapping("/available")
+	public List<Product> getProducts() {
+		return productService.getProducts();
+	}
 
 	@GetMapping("/{id}")
 	public Product getProductById(@PathVariable Long id) {
@@ -44,9 +53,15 @@ public class ProductController {
 		productService.updateProduct(product);
 	}
 
-	@DeleteMapping("/{id}")
-	public void deleteProduct(@PathVariable Long id) {
-		productService.deleteProduct(id);
+	@PatchMapping("/{deleteId}/deactive")
+	public ResponseEntity<Product> updateProductStatus(@PathVariable Long deleteId, @RequestBody Map<String, Object> updates) {
+		try {
+			Boolean isDeleted = (Boolean) updates.get("isDeleted");
+			Product updatedProduct = productService.updateProductStatus(deleteId, isDeleted);
+			return ResponseEntity.ok(updatedProduct);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 
 
