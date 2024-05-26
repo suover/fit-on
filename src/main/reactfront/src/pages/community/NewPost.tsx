@@ -65,11 +65,11 @@ const NewPost = () => {
             style={{ width: '100%' }}
           />
           <Box sx={{ mb: 2, minHeight: 500 }}>
-            <Editor
+            {/* <Editor
               placeholder="글을 입력하세요."
               value={editorContent}
               onChange={setEditorContent}
-            />
+            /> */}
           </Box>
           <Box
             sx={{

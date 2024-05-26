@@ -1,25 +1,23 @@
-package com.spring.myapp.routineBoard.dto;
+package com.spring.myapp.routineBoard.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-//테이블 필드 정의.
-
 @Getter
 @Setter
 @ToString
-public class BoardDto {
+public class RoutineBoard {
 
 	private Long routineId;
 	private Long userId;
 	private String title;
 	private String content;
-	private Date createdAt;
-	private Date updatedAt;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 	private int viewCount;
 	private int shareCount;
 	private boolean isDeleted;

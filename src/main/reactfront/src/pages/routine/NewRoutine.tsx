@@ -1,5 +1,6 @@
 import React, { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import {
   Paper,
@@ -19,27 +20,27 @@ import SelectBox from '../../components/common/SelectBox';
 import Editor from '../../components/common/Editor';
 
 const Purpose = [
-  { value: '근력', label: '근력 증가' },
-  { value: '다이어트', label: '다이어트' },
-  { value: '유연성', label: '유연성 개선' },
-  { value: '체력', label: '체력 개선' },
+  { value: '1', label: '근력 증가' },
+  { value: '2', label: '다이어트' },
+  { value: '3', label: '유연성 개선' },
+  { value: '4', label: '체력 개선' },
 ];
 const Level = [
-  { value: '상', label: '상' },
-  { value: '중', label: '중' },
-  { value: '하', label: '하' },
+  { value: '1', label: '상' },
+  { value: '2', label: '중' },
+  { value: '3', label: '하' },
 ];
 const Target = [
-  { value: '전신', label: '전신' },
-  { value: '상체', label: '상체' },
-  { value: '하체', label: '하체' },
+  { value: '1', label: '전신' },
+  { value: '2', label: '상체' },
+  { value: '3', label: '하체' },
 ];
 
 const NewRoutine = () => {
   const [title, setTitle] = useState('');
-  const [purpose, setPurpose] = React.useState<string | null>('');
-  const [level, setLevel] = React.useState<string | null>('');
-  const [target, setTarget] = React.useState<string | null>('');
+  const [purpose, setPurpose] = useState<string | null>('');
+  const [level, setLevel] = useState<string | null>('');
+  const [target, setTarget] = useState<string | null>('');
   const [content, setContent] = useState('');
   const navigate = useNavigate();
 
@@ -52,7 +53,6 @@ const NewRoutine = () => {
   // 스위치 토글 이벤트 핸들러
   const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsPublic(event.target.checked);
-    // 여기에서 추가 로직을 구현할 수 있습니다. 예: 서버에 상태 업데이트
   };
 
   // 루틴 목록을 추가하는 함수
@@ -63,16 +63,32 @@ const NewRoutine = () => {
     }
   };
 
-  // 폼 제출 핸들러
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log('공개여부:', isPublic);
-    console.log('제목:', title);
-    console.log('목적:', purpose);
-    console.log('난이도:', level);
-    console.log('부위:', target);
-    console.log('루틴 목록:', lists);
-    console.log('내용:', content);
+
+    const routineData = {
+      userId: 1, // 로그인된 사용자 ID로 교체 필요
+      title,
+      content,
+      goalId: purpose,
+      levelId: level,
+      partId: target,
+      isPublic,
+      routineItems: lists,
+    };
+
+    console.log('Submitting routine data:', routineData);
+
+    try {
+      const response = await axios.post(
+        'http://localhost:8080/api/routine/new-routine',
+        routineData,
+      );
+      console.log('Routine created:', response.data);
+      navigate('/routine'); // 페이지 이동
+    } catch (error) {
+      console.error('There was an error creating the routine!', error);
+    }
   };
 
   return (
@@ -86,7 +102,6 @@ const NewRoutine = () => {
             <FormControlLabel
               control={<Switch checked={isPublic} onChange={handleToggle} />}
               label={isPublic ? 'Public' : 'Private'}
-              required
             />
           </Box>
           <TextField

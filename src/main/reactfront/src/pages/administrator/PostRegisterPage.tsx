@@ -130,11 +130,11 @@ const PostRegisterPage: React.FC = () => {
         </Box>
 
         <Box sx={{ marginTop: '20px' }}>
-          <Editor
+          {/* <Editor
             value={formValues.description}
             onChange={handleDescriptionChange}
             placeholder="게시글 내용을 작성하세요"
-          />
+          /> */}
         </Box>
 
         <Box

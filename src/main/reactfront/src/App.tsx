@@ -88,7 +88,7 @@ const App = () => {
           <Route path="community/new-post" element={<NewPost />} />
           <Route path="routine" element={<RoutineMain />} />
           <Route path="routine/:routineNo" element={<ViewRoutineDetail />} />
-          <Route path="new-routine" element={<NewRoutine />} />
+          <Route path="routine/new-routine" element={<NewRoutine />} />
           <Route path="info" element={<Info />} />
           <Route path="info/:infoNum" element={<InfoDetail />} />
           <Route path="service" element={<Service />}>

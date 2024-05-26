@@ -1,0 +1,29 @@
+<mapper namespace="com.spring.myapp.routineBoard.repository.RoutineBoardMapper">
+    <resultMap id="RoutineBoardResultMap" type="com.spring.myapp.routineBoard.model.RoutineBoard">
+        <id column="routine_id" property="routineId"/>
+        <result column="user_id" property="userId"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="view_count" property="viewCount"/>
+        <result column="share_count" property="shareCount"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="is_public" property="isPublic"/>
+        <result column="goal_id" property="goalId"/>
+        <result column="level_id" property="levelId"/>
+        <result column="part_id" property="partId"/>
+    </resultMap>
+
+    <insert id="insertRoutineBoard" useGeneratedKeys="true" keyProperty="routineId">
+        INSERT INTO routines (user_id, title, content, created_at, is_public, goal_id, level_id, part_id)
+        VALUES (#{userId}, #{title}, #{content}, NOW(), #{isPublic}, #{goalId}, #{levelId}, #{partId})
+    </insert>
+
+    <insert id="insertRoutineItems">
+        <foreach collection="routineItems" item="item" separator=";">
+            INSERT INTO routine_items (routine_id, item_name)
+            VALUES (#{routineId}, #{item})
+        </foreach>
+    </insert>
+</mapper>

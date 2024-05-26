@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import styled from 'styled-components';
 import 'react-quill/dist/quill.snow.css';
 import ImageResize from 'quill-image-resize-module-react';
+
 Quill.register('modules/imageResize', ImageResize);
 
 const StyledReactQuill = styled(ReactQuill)`
@@ -19,6 +20,8 @@ interface EditorProps {
 }
 
 const Editor: React.FC<EditorProps> = ({ placeholder, value, onChange }) => {
+  const quillRef = useRef<ReactQuill>(null);
+
   const handleChange = (html: string) => {
     onChange(html);
   };
@@ -59,6 +62,7 @@ const Editor: React.FC<EditorProps> = ({ placeholder, value, onChange }) => {
   return (
     <div>
       <StyledReactQuill
+        ref={quillRef}
         theme="snow"
         onChange={handleChange}
         value={value}
