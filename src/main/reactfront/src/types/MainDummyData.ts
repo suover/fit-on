@@ -16,7 +16,7 @@ export interface PostData {
 export interface InfoPost {
   id: number;
   title: string;
-  author: string;
+  nickname: string;
   content: string;
   views: number;
   likes: number;
@@ -191,7 +191,7 @@ export const InfoPosts: InfoPost[] = [
   {
     id: 1,
     title: '초보자를 위한 전신 운동 가이드',
-    author: '김진수',
+    nickname: '김진수',
     content:
       '이 전신 운동 프로그램은 초보자를 위해 설계되었으며, 모든 주요 근육 그룹을 대상으로 하는 기본 운동들을 포함하고 있습니다. 자세한 가이드를 따라 시작해 보세요!',
     views: 150,
@@ -201,7 +201,7 @@ export const InfoPosts: InfoPost[] = [
   {
     id: 2,
     title: '매일 10분 요가 루틴',
-    author: '박소연',
+    nickname: '박소연',
     content:
       '유연성을 향상시키고 스트레스를 줄이기 위해 매일 짧은 요가 루틴을 생활에 통합해보세요. 바쁜 일정에도 완벽한 10분 세션입니다.',
     views: 235,
@@ -211,7 +211,7 @@ export const InfoPosts: InfoPost[] = [
   {
     id: 3,
     title: '건강한 척추를 위한 스트레칭',
-    author: '이민호',
+    nickname: '이민호',
     content:
       '척추 건강을 위한 스트레칭 방법을 소개합니다. 규칙적으로 실행하여 등 건강을 유지하고 통증을 예방하세요.',
     views: 300,
@@ -221,7 +221,7 @@ export const InfoPosts: InfoPost[] = [
   {
     id: 4,
     title: '심장 강화를 위한 유산소 운동',
-    author: '정하나',
+    nickname: '정하나',
     content:
       '심장 건강을 향상시킬 수 있는 유산소 운동을 소개합니다. 간단한 단계를 따라하면서 건강을 관리하세요.',
     views: 410,
@@ -231,7 +231,7 @@ export const InfoPosts: InfoPost[] = [
   {
     id: 5,
     title: '집에서 할 수 있는 팔 근력 강화 운동',
-    author: '최영철',
+    nickname: '최영철',
     content:
       '집에서 간단한 도구를 사용하여 팔 근력을 강화할 수 있는 운동 방법을 배워보세요. 몇 가지 운동만으로도 효과를 볼 수 있습니다.',
     views: 120,
@@ -241,7 +241,7 @@ export const InfoPosts: InfoPost[] = [
   {
     id: 6,
     title: '다리와 엉덩이를 위한 최고의 운동',
-    author: '한지민',
+    nickname: '한지민',
     content:
       '다리와 엉덩이 근육을 강화하는 최고의 운동을 소개합니다. 이 운동들로 더욱 단단하고 건강한 하체를 만드세요.',
     views: 500,
@@ -251,7 +251,7 @@ export const InfoPosts: InfoPost[] = [
   {
     id: 7,
     title: '전문가와 함께하는 중급자를 위한 피트니스 루틴',
-    author: '박지성',
+    nickname: '박지성',
     content:
       '중급자를 위한 좀 더 도전적인 피트니스 루틴을 전문가의 도움으로 진행해보세요. 각 운동의 효과를 극대화하는 팁도 배울 수 있습니다.',
     views: 620,
@@ -261,7 +261,7 @@ export const InfoPosts: InfoPost[] = [
   {
     id: 8,
     title: '어린이를 위한 즐거운 체육 활동',
-    author: '김태희',
+    nickname: '김태희',
     content:
       '어린이의 체력을 증진시킬 수 있는 즐거운 체육 활동을 소개합니다. 안전하면서도 재미있는 운동으로 아이들의 건강을 지켜주세요.',
     views: 280,
@@ -271,7 +271,7 @@ export const InfoPosts: InfoPost[] = [
   {
     id: 9,
     title: '노인을 위한 건강 운동',
-    author: '서현진',
+    nickname: '서현진',
     content:
       '노년기의 건강을 유지하고 증진시킬 수 있는 운동을 소개합니다. 부담 없이 할 수 있는 운동으로 활력을 느껴보세요.',
     views: 350,
@@ -281,7 +281,7 @@ export const InfoPosts: InfoPost[] = [
   {
     id: 10,
     title: '평화로운 명상과 마인드풀니스',
-    author: '조미경',
+    nickname: '조미경',
     content:
       '마음의 평화를 찾기 위한 명상과 마인드풀니스 기법을 배워보세요. 일상의 스트레스에서 벗어나 집중력과 평온함을 높일 수 있습니다.',
     views: 410,

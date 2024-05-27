@@ -14,7 +14,7 @@ import { Container } from '@mui/material';
 const dummyInfo: InfoPost = {
   id: 4,
   title: '심장 강화를 위한 유산소 운동',
-  author: '정하나',
+  nickname: '정하나',
   content:
     '심장 건강을 향상시킬 수 있는 유산소 운동을 소개합니다. 간단한 단계를 따라하면서 건강을 관리하세요.',
   views: 410,
@@ -51,7 +51,7 @@ const InfoDetail: React.FC = () => {
         <DetailTitle>
           <h2>{info.title}</h2>
           <p>
-            <span>{info.author}</span>
+            <span>{info.nickname}</span>
             <span>조회수 0000</span>
             <span>작성일 0000-00-00</span>
           </p>
