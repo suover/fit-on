@@ -68,7 +68,11 @@ const SwiperList = <T extends SwiperDataType>({
         {swiperData.map((data) => (
           <SwiperSlide key={data.id}>
             <Link to={`/${pageURL}/${data.id}`}>
-              <ContentCard content={data} Icon={VisibilityOutlinedIcon} />
+              <ContentCard
+                content={data}
+                Icon={VisibilityOutlinedIcon}
+                boardType={pageURL}
+              />
             </Link>
           </SwiperSlide>
         ))}
