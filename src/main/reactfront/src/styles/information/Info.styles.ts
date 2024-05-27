@@ -3,6 +3,7 @@ import banner from '../../assets/img/information/infobanner1.jpg';
 
 const InfoSection = styled.section`
   width: 100%;
+  min-height: 700px;
   padding: 50px 0 100px 0;
 `;
 

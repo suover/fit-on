@@ -28,22 +28,22 @@ const InfoDetail: React.FC = () => {
 
   console.log(infoNum);
 
-  // useEffect(() => {
-  //   const fetchPost = async () => {
-  //     try {
-  //       const response = await fetch(`https://localHost:8080/info/${infoNum}`);
-  //       if (!response.ok) {
-  //         throw new Error('Failed to fetch data');
-  //       }
-  //       const data = await response.json();
-  //       setInfo(data);
-  //     } catch (error) {
-  //       console.error('Error fetching post:', error);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await fetch(`https://localHost:8080/info/${infoNum}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        const data = await response.json();
+        setInfo(data);
+      } catch (error) {
+        console.error('Error fetching post:', error);
+      }
+    };
 
-  //   fetchPost();
-  // }, [infoNum]);
+    fetchPost();
+  }, [infoNum]);
 
   return (
     <InfoWrapper>
