@@ -5,7 +5,9 @@ import QuantityInput from './QuantityInput';
 import UnstyledSelectForm from './UnstyledSelectForm';
 import BasicRating from './BasicRating';
 import { PurchasePanelBtn } from './PurchasePanelBtn';
-import { productData } from '../../types/ProductData';
+// import { productData } from '../../types/ProductData';
+import { Product } from '../../types/DataInterface';
+
 import {
   StyledProductDetail,
   TopContainer,
@@ -15,24 +17,31 @@ import {
   Btns,
 } from './PurchasePanel.styles';
 
-const PurchasePanel = () => {
-  const [product, setProduct] = useState({
-    name: '',
-    price: 0,
-  });
+interface PurchasePanelProps {
+  product: Product;
+}
+
+const PurchasePanel: React.FC<PurchasePanelProps> = ({ product }) => {
+  // const [product, setProduct] = useState({
+  //   name: '',
+  //   price: 0,
+  // });
   const [quantity, setQuantity] = useState(1);
   const [selection, setSelection] = useState('10');
   const [totalPrice, setTotalPrice] = useState(0);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    //데이터 로드
-    const productInfo = productData.find((p) => p.id === 1); // id가 '1'인 제품 찾기
-    if (productInfo) {
-      setProduct({ name: productInfo.name, price: productInfo.price });
-      setTotalPrice(productInfo.price); // 초기 totalPrice 설정
-    }
-  }, []);
+  //해야할 것 : product id 기반 리뷰 불러오기.
+  // 장바구니 : 누를시 상품 수량에 맞춰 카트로 이동시키기.
+
+  // useEffect(() => {
+  //   //데이터 로드
+  //   const productInfo = productData.find((p) => p.id === 1); // id가 '1'인 제품 찾기
+  //   if (productInfo) {
+  //     setProduct({ name: productInfo.name, price: productInfo.price });
+  //     setTotalPrice(productInfo.price); // 초기 totalPrice 설정
+  //   }
+  // }, []);
 
   useEffect(() => {
     setTotalPrice(product.price * quantity);
@@ -45,7 +54,7 @@ const PurchasePanel = () => {
     setSelection(event.target.value);
   };
 
-  //장바구니 이동
+  //장바구니 이동 >> 장바구니 상품 추가
   function handleCartClick() {
     navigate('/shopping-basket');
   }
@@ -68,7 +77,7 @@ const PurchasePanel = () => {
             </Button>
           </div>
         </div>
-        <p className="description">강도 조절 무소음 악력기</p>
+        <p className="description">{product.name}</p>
         <StyledRating>
           <BasicRating />
           <p>&#40;32 reviews&#41;</p>

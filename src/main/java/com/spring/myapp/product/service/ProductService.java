@@ -32,7 +32,9 @@ public class ProductService {
 		productMapper.save(product);
 		return product;
 	}
-
+	public void updateProduct(Product product) {
+		productMapper.updateProduct(product);
+	}
 
 	public void  deactivate(Long id, Boolean isDeleted) {
 		System.out.println("서비스단 시작");
@@ -40,7 +42,6 @@ public class ProductService {
 		productMapper.updateIsDeleted(id, isDeleted);
 		System.out.println("서비스단 종료");
 	}
-
 	public List<Product> getAllProductsWithMainImage() {
 		return productMapper.findAllWithMainImage();
 	}

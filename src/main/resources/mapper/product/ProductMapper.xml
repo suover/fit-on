@@ -40,6 +40,20 @@
         VALUES (#{name}, #{description}, #{price}, #{stock}, #{content}, #{discountRate}, #{isDeleted}, #{createdAt}, #{updatedAt}, #{categoryId})
     </insert>
 
+    <update id="updateProduct">
+        UPDATE products
+        SET name = #{name},
+        description = #{description},
+        price = #{price},
+        stock = #{stock},
+        content = #{content},
+        discount_rate = #{discountRate},
+        is_deleted = #{isDeleted},
+        updated_at = #{updatedAt},
+        category_id = #{categoryId}
+        WHERE product_id = #{productId}
+    </update>
+
     <update id="updateIsDeleted">
         UPDATE products
         SET  is_deleted = #{isDeleted}

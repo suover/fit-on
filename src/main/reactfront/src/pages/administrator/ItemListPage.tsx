@@ -19,8 +19,13 @@ import {
 import { Search } from '../../styles/administrator/ItemListPage.styles';
 import SearchBox from '../../components/common/search/SearchBox';
 import { useNavigate } from 'react-router-dom';
+import PanoramaFishEyeRoundedIcon from '@mui/icons-material/PanoramaFishEyeRounded';
+import DoNotDisturbRoundedIcon from '@mui/icons-material/DoNotDisturbRounded';
+import { red, green } from '@mui/material/colors';
 import GenericButton from '../../components/common/genericButton/GenericButton';
 import DeleteIcon from '../../components/icons/DeleteIcon';
+import EditIcon from '@mui/icons-material/Edit';
+
 import axios from 'axios';
 
 const categoryMap: { [key: number]: string } = {
@@ -40,11 +45,8 @@ const ItemListPage: React.FC = () => {
   const [selectedProductId, setSelectedProductId] = useState<number | null>(
     null,
   );
-
   const [filteredItems, setFilteredItems] = useState<Product[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
-  // const [productImgs, setProductImgs] = useState<ProductImage[]>([]);
-
   const navigate = useNavigate();
 
   //상품 정보 세팅
@@ -65,6 +67,20 @@ const ItemListPage: React.FC = () => {
     }
   };
 
+  //상품 게시글로
+  const handleItemClick = (product: Product) => {
+    navigate(`/mall/product-detail/${product.productId}`, {
+      state: { product },
+    });
+  };
+
+  //상품 수정
+  const handleUpdateClick = (product: Product) => {
+    navigate(`/administrator/item-update/${product.productId}`, {
+      state: { product },
+    });
+  };
+
   const handleDeleteClick = (productId: number) => {
     setSelectedProductId(productId);
     setIsDeleteConfirmationOpen(true);
@@ -78,22 +94,18 @@ const ItemListPage: React.FC = () => {
   const handleConfirmDelete = async () => {
     if (selectedProductId) {
       try {
-        // 백엔드에서 isDeleted 속성을 true로 설정
         await axios.patch(
           `http://localhost:8080/api/products/${selectedProductId}/deactivate`,
           { isDeleted: true },
         );
 
-        alert('상품이 정상적으로 비활성화 되었습니다.');
-//             setIsDeleteConfirmationOpen(false);
-//             setSelectedProductId(null);
+        setIsDeleteConfirmationOpen(false);
+        setSelectedProductId(null);
         navigate('/administrator/item-list');
       } catch (error) {
         console.error('Failed to update product:', error);
       }
     }
-
-
   };
 
   const handleSearch = (query: string) => {
@@ -113,11 +125,12 @@ const ItemListPage: React.FC = () => {
     { id: 'id', label: '번호', width: 5 },
     { id: 'name', label: '이름', width: 25 },
     { id: 'price', label: '가격', width: 10 },
-    { id: 'sales', label: '판매량', width: 10 },
+    // { id: 'sales', label: '판매량', width: 10 },
     { id: 'stock', label: '재고', width: 10 },
     { id: 'category', label: '카테고리', width: 10 },
-    { id: 'status', label: '상태', width: 10 },
-    { id: 'delete', label: '삭제', width: 10 },
+    { id: 'status', label: '상태', width: 5 },
+    { id: 'update', label: '수정', width: 5 },
+    { id: 'delete', label: '삭제', width: 5 },
   ];
 
   return (
@@ -136,16 +149,35 @@ const ItemListPage: React.FC = () => {
           <TableRow key={product.productId}>
             <TableData>{product.productId}</TableData>
             <TableData>
-              <Image $backgroundImage={product.imageUrl} />
-              {product.name}
+              <div
+                onClick={() => handleItemClick(product)}
+                style={{ cursor: 'pointer' }}
+              >
+                <Image $backgroundImage={product.imageUrl} />
+                {product.name}
+              </div>
             </TableData>
             <TableData>{product.price}원</TableData>
-            <TableData>판매량??</TableData>
+            {/* <TableData>판매량??</TableData> */}
             <TableData>{product.stock}</TableData>
             <TableData>
               {categoryMap[product.categoryId] || '알 수 없음'}
             </TableData>
-            <TableData>{product.isDeleted ? '비 활성화' : '활성화'}</TableData>
+            <TableData>
+              {product.isDeleted ? (
+                <DoNotDisturbRoundedIcon style={{ color: red[500] }} />
+              ) : (
+                <PanoramaFishEyeRoundedIcon style={{ color: green[500] }} />
+              )}
+            </TableData>
+            <TableData>
+              <div
+                onClick={() => handleUpdateClick(product)}
+                style={{ cursor: 'pointer' }}
+              >
+                <EditIcon />
+              </div>
+            </TableData>
             <TableData>
               <div
                 onClick={() => handleDeleteClick(product.productId)}
@@ -192,4 +224,3 @@ const ItemListPage: React.FC = () => {
 };
 
 export default ItemListPage;
-// <Image $backgroundImage={product.imgURL} />

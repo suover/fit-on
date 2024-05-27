@@ -56,6 +56,12 @@ public class ProductController {
 		return ResponseEntity.ok(products);
 	}
 
+	@PutMapping("/{id}")
+	public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
+		product.setProductId(id);
+		productService.updateProduct(product);
+		return ResponseEntity.ok(product);
+	}
 
 	@PatchMapping("/{deleteId}/deactivate")
 	public ResponseEntity<Void> deactivateProduct(@PathVariable("deleteId") Long deleteId) {

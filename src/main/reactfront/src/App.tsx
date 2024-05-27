@@ -57,6 +57,7 @@ import ItemInquiryListPage from './pages/administrator/ItemInquiryListPage';
 import EtcInquiryListPage from './pages/administrator/EtcInquiryListPage';
 import PostRegisterPage from './pages/administrator/PostRegisterPage';
 import ItemRegisterPage from './pages/administrator/ItemRegisterPage';
+import ItemUpdatePage from './pages/administrator/ItemUpdatePage';
 import ShoppingBasketPage from './pages/shoppingBasket/ShoppingBasketPage';
 
 import { AuthProvider } from './context/AuthContext';
@@ -141,6 +142,10 @@ const App = () => {
           <Route
             path="administrator/item-register"
             element={<ItemRegisterPage />}
+          />
+          <Route
+            path="administrator/item-update/:productId"
+            element={<ItemUpdatePage />}
           />
         </Routes>
         <Footer />

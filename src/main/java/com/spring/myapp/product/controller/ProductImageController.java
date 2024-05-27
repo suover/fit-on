@@ -31,11 +31,9 @@ public class ProductImageController {
 		return productImageService.getMainImgURLByProductId(id);
 	}
 
+	@GetMapping("/{id}/SubImgURL")
+	public String[] getSubImgURL (@PathVariable("id") Long id){
+		return productImageService.getSubImgsURLByProductId(id);
+	}
 
-
-	// @GetMapping("/{productId}/main-image")
-	// public ResponseEntity<ProductImage> getMainImageURL(@PathVariable("productId") Long id) {
-	// 	ProductImage returnImg = productImageService.getMainImageByProductId(id);
-	// 	return ResponseEntity.ok(returnImg); // 저장한 상품 정보 반환
-	// }
 }

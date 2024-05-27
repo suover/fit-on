@@ -19,4 +19,8 @@ public class ProductImageService {
 	public String getMainImgURLByProductId(Long productId) {
 		return productImageMapper.getMainImgURL(productId);
 	}// 메인이미지 경로
+
+	public String[] getSubImgsURLByProductId(Long productId) {
+		return productImageMapper.getSubImgURL(productId);
+	}// 서브이미지들 경로
 }

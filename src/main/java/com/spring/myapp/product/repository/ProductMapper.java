@@ -14,6 +14,7 @@ public interface ProductMapper {
 
 	Long findMaxProductId();
 
+	void updateProduct(Product product);
 	void updateIsDeleted(@Param("productId")Long productId,@Param("isDeleted") Boolean isDeleted);
 
 	List<Product> findAllWithMainImage();

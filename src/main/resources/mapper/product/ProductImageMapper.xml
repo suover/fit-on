@@ -22,4 +22,26 @@
     <select id="getMainImgURL" resultMap="ProductImageResultMap">
         SELECT image_url FROM product_images WHERE product_id = #{productId} AND is_main_image = true
     </select>
+
+    <select id="getSubImgURL" resultMap="ProductImageResultMap">
+        SELECT image_url FROM product_images WHERE product_id = #{productId} AND is_main_image = false
+    </select>
+
+<!--    <update id="updateMainImg" resultMap="ProductImageResultMap">-->
+
+<!--    </update>-->
+
+<!--    <update id="updateImg" parameterType="com.spring.myapp.product.model.ProductImage">-->
+<!--    UPDATE product_images
+        SET name = #{name},
+        description = #{description},
+        price = #{price},
+        stock = #{stock},
+        content = #{content},
+        discount_rate = #{discountRate},
+        is_deleted = #{isDeleted},
+        updated_at = #{updatedAt},
+        category_id = #{categoryId}
+        WHERE product_id = #{productId}    -->
+<!--    </update>-->
 </mapper>
