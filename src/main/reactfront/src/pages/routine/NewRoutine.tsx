@@ -19,7 +19,7 @@ import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import SelectBox from '../../components/common/SelectBox';
 import Editor from '../../components/common/Editor';
 
-const Purpose = [
+const Goal = [
   { value: '1', label: '근력 증가' },
   { value: '2', label: '다이어트' },
   { value: '3', label: '유연성 개선' },
@@ -30,7 +30,7 @@ const Level = [
   { value: '2', label: '중' },
   { value: '3', label: '하' },
 ];
-const Target = [
+const Part = [
   { value: '1', label: '전신' },
   { value: '2', label: '상체' },
   { value: '3', label: '하체' },
@@ -70,9 +70,9 @@ const NewRoutine = () => {
       userId: 1, // 로그인된 사용자 ID로 교체 필요
       title,
       content,
-      goalId: purpose,
-      levelId: level,
-      partId: target,
+      goalId: parseInt(purpose || '0', 10),  // 선택된 목적 값 설정
+      levelId: parseInt(level || '0', 10),   // 선택된 난이도 값 설정
+      partId: parseInt(target || '0', 10),   // 선택된 부위 값 설정
       isPublic,
       routineItems: lists,
     };
@@ -115,7 +115,7 @@ const NewRoutine = () => {
           <Box sx={{ display: 'flex' }}>
             <SelectBox
               label="운동 목적"
-              options={Purpose}
+              options={Goal}
               helperText="원하는 운동 목적을 선택하세요."
               onChange={setPurpose}
             />
@@ -128,7 +128,7 @@ const NewRoutine = () => {
             <SelectBox
               label="운동 부위"
               allowNull
-              options={Target}
+              options={Part}
               helperText="타겟 부위를 선택하세요."
               onChange={setTarget}
             />

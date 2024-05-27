@@ -28,31 +28,26 @@ public class RoutineBoardController {
 
 	@GetMapping
 	public ResponseEntity<List<RoutineBoard>> getAllRoutines() {
-		logger.info("@@Fetching all routines");
+		// 모든 루틴을 가져오는 요청 처리
 		List<RoutineBoard> routines = routineBoardService.getAllRoutines();
-		logger.debug("@@Fetched {} routines", routines.size());
 		return ResponseEntity.ok(routines);
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<RoutineBoard> getRoutineById(@PathVariable Long id) {
-		logger.info("@@@@@@@Fetching routine with id: {}", id);
+		// ID로 루틴을 가져오는 요청 처리
 		RoutineBoard routineBoard = routineBoardService.getRoutineById(id);
 		if (routineBoard != null) {
-			logger.debug("@@@@@@Found routine: {}", routineBoard);
 			return ResponseEntity.ok(routineBoard);
 		} else {
-			logger.warn("@@@@@@@@@@Routine with id {} not found", id);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}
 	}
 
 	@PostMapping("/new-routine")
 	public ResponseEntity<RoutineBoard> createRoutine(@RequestBody RoutineBoard routineBoard) {
-		logger.info("@@@@@@@@@@Creating new routine with title: {}", routineBoard.getTitle());
-		logger.debug("@@@@@Routine details: {}", routineBoard);
+		// 새로운 루틴을 생성하는 요청 처리
 		RoutineBoard savedRoutine = routineBoardService.createRoutineBoard(routineBoard);
-		logger.debug("@@@@@@@Created routine: {}", savedRoutine);
 		return ResponseEntity.ok(savedRoutine);
 	}
 }

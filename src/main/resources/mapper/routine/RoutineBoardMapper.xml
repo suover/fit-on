@@ -1,3 +1,7 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.spring.myapp.routineBoard.repository.RoutineBoardMapper">
     <resultMap id="RoutineBoardResultMap" type="com.spring.myapp.routineBoard.model.RoutineBoard">
         <id column="routine_id" property="routineId"/>
@@ -16,14 +20,40 @@
     </resultMap>
 
     <insert id="insertRoutineBoard" useGeneratedKeys="true" keyProperty="routineId">
-        INSERT INTO routines (user_id, title, content, created_at, is_public, goal_id, level_id, part_id)
-        VALUES (#{userId}, #{title}, #{content}, NOW(), #{isPublic}, #{goalId}, #{levelId}, #{partId})
+        INSERT INTO routines (
+        user_id, title, content, created_at, updated_at, view_count, share_count, is_deleted, is_public, goal_id,
+        level_id, part_id
+        ) VALUES (
+        #{userId}, #{title}, #{content}, #{createdAt}, #{updatedAt}, #{viewCount}, #{shareCount}, #{isDeleted},
+        #{isPublic}, #{goalId}, #{levelId}, #{partId}
+        )
     </insert>
 
+
     <insert id="insertRoutineItems">
-        <foreach collection="routineItems" item="item" separator=";">
-            INSERT INTO routine_items (routine_id, item_name)
+        <foreach collection="routineItems" item="item" separator=",">
+            INSERT INTO routine_items (routine_id, exercise_name)
             VALUES (#{routineId}, #{item})
         </foreach>
     </insert>
+
+    <select id="findAll" resultMap="RoutineBoardResultMap">
+        SELECT * FROM routines
+    </select>
+
+    <select id="findById" resultMap="RoutineBoardResultMap">
+        SELECT * FROM routines WHERE routine_id = #{routineId}
+    </select>
+
+    <select id="findGoalNameById" parameterType="int" resultType="String">
+        SELECT goal_name FROM routine_goals WHERE goal_id = #{goalId}
+    </select>
+
+    <select id="findLevelNameById" parameterType="int" resultType="String">
+        SELECT level_name FROM routine_levels WHERE level_id = #{levelId}
+    </select>
+
+    <select id="findPartNameById" parameterType="int" resultType="String">
+        SELECT part_name FROM routine_parts WHERE part_id = #{partId}
+    </select>
 </mapper>
