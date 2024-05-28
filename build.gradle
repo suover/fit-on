@@ -37,9 +37,12 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
-    implementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'
+    implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'com.google.api-client:google-api-client:1.33.2'
+    implementation 'com.google.oauth-client:google-oauth-client-jetty:1.33.1'
+    implementation 'com.google.http-client:google-http-client-jackson2:1.39.2'
 }
 
 tasks.named('test') {
