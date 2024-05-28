@@ -45,28 +45,23 @@ public class ProductController {
 	@PostMapping
 	public ResponseEntity<Product> createProduct(@RequestBody Product product) {
 		Product savedProduct = productService.saveProduct(product);
-		System.out.println(savedProduct);
 		return ResponseEntity.ok(savedProduct); // 저장한 상품 정보 반환
 	}
 	@GetMapping("/with-images")
 	public ResponseEntity<List<Product>> getAllProductsWithMainImage() {
 		List<Product> products = productService.getAllProductsWithMainImage();
-		System.out.println(products);
-
 		return ResponseEntity.ok(products);
 	}
 	@GetMapping("/with-images/active")
 	public ResponseEntity<List<Product>> getAllActiveProductsWithMainImage() {
 		List<Product> products = productService.getAllActiveProductsWithMainImage();
-		System.out.println(products);
-
 		return ResponseEntity.ok(products);
 	}
 	@GetMapping("/with-images/active/{category}")
 	public ResponseEntity<List<Product>> getAllActiveProductsWithMainImageByCategory(@PathVariable Long category) {
+		System.out.println("컨트롤러단 상품카테고리 밸류값 : "+category);
 		List<Product> products = productService.getAllActiveProductsWithMainImageByCategory(category);
-		System.out.println(products);
-
+		System.out.println("컨트롤러단 종료");
 		return ResponseEntity.ok(products);
 	}
 
@@ -80,8 +75,6 @@ public class ProductController {
 	@PatchMapping("/{deleteId}/deactivate")
 	public ResponseEntity<Void> deactivateProduct(@PathVariable("deleteId") Long deleteId) {
 		try {
-
-			System.out.println("Product deactivated: " + deleteId);
 			productService.deactivate(deleteId, true);
 			return ResponseEntity.ok().build();
 		} catch (Exception e) {

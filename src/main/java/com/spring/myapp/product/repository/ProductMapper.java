@@ -19,5 +19,5 @@ public interface ProductMapper {
 
 	List<Product> findAllWithMainImage();
 	List<Product> findAllActiveWithMainImage();
-	List<Product> findAllActiveWithMainImageByCategory(Long categoryId);
+	List<Product> findAllActiveWithMainImageByCategory(@Param("categoryId")Long categoryId);
 }

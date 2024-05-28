@@ -37,10 +37,7 @@ public class ProductService {
 	}
 
 	public void  deactivate(Long id, Boolean isDeleted) {
-		System.out.println("서비스단 시작");
-		System.out.println("서비스단 파라미터 확인 id:"+id+" isDeleted:"+isDeleted);
 		productMapper.updateIsDeleted(id, isDeleted);
-		System.out.println("서비스단 종료");
 	}
 	public List<Product> getAllProductsWithMainImage() {
 		return productMapper.findAllWithMainImage();
@@ -49,6 +46,7 @@ public class ProductService {
 		return productMapper.findAllActiveWithMainImage();
 	}
 	public List<Product> getAllActiveProductsWithMainImageByCategory(Long categoryId) {
+		System.out.println("서비스단 카테고리로 상품가져오기 시작");
 		return productMapper.findAllActiveWithMainImageByCategory(categoryId);
 	}
 
