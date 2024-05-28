@@ -19,8 +19,8 @@ const NoContentWrapper = styled.div`
 
 export interface Information {
   id: number;
-  userId: string;
-  categoryId: number;
+  nickname: string;
+  categoryName: string;
   title: string;
   content: string;
   imageUrl: string;
@@ -28,6 +28,7 @@ export interface Information {
   updatedAt: string;
   viewCount: number;
   isDeleted: boolean;
+  likes: number;
 }
 
 const axiosInstance = axios.create({
@@ -37,11 +38,6 @@ const axiosInstance = axios.create({
   },
 });
 
-const getAllInfo = async (): Promise<Information[]> => {
-  const response = await axiosInstance.get<Information[]>('/info');
-  return response.data;
-};
-
 const Info: React.FC = () => {
   const [infoList, setInfoList] = useState<Information[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -49,10 +45,11 @@ const Info: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getAllInfo();
-        const transformedData = data.map((info: any) => ({
+        const res = await axiosInstance.get<Information[]>('/info');
+        const transformedData = res.data.map((info: any) => ({
           ...info,
           id: info.infoId, // infoId를 id로 변환
+          views: info.viewCount,
         }));
         setInfoList(transformedData);
         console.log(transformedData);
@@ -72,15 +69,16 @@ const Info: React.FC = () => {
         <ImgWrapper>
           <p>fitON과 함께 더 건강해져요!</p>
         </ImgWrapper>
-        {loading && 'Loading...'}
-        {infoList.length !== 0 ? (
+        {infoList.length !== 0 && !loading ? (
           <CardList
             contents={infoList}
             pageURL="info"
             Icon={VisibilityOutlinedIcon}
           />
         ) : (
-          <NoContentWrapper>등록된 컨텐츠가 없습니다. 😥</NoContentWrapper>
+          <NoContentWrapper>
+            {loading ? 'Loading...' : '등록된 컨텐츠가 없습니다. 😥'}
+          </NoContentWrapper>
         )}
       </Container>
     </InfoSection>

@@ -7,13 +7,23 @@ import lombok.Data;
 
 @Data
 public class Comments {
-	private Integer commentId;
-	private Integer infoId;
-	private Integer userId;
+	private Long commentId;
+
+	private Long infoId;
+
+	private Long userId;
+
 	@NotBlank(message = "Content is mandatory")
 	private String content;
-	private Integer parentCommentId;
-	private LocalDateTime createdAt;
+
+	private Long parentCommentId;
+
+	private LocalDateTime createdAt = LocalDateTime.now();
+
 	private LocalDateTime updatedAt;
+
 	private Boolean isDeleted;
+
+	private String nickname;
+
 }

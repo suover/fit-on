@@ -7,9 +7,13 @@ import org.apache.ibatis.annotations.Mapper;
 import com.spring.myapp.informationBoard.model.Information;
 
 @Mapper
-public interface InformationMapper {
+public interface InfoMapper {
 
 	List<Information> findAll();
 
 	void writeNewInfo(Information info);
+
+	Information findByInfoId(Long infoId);
+
+	void updateViewCount(Long infoId);
 }

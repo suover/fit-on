@@ -3,8 +3,8 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.spring.myapp.informationBoard.repository.InformationMapper">
-    <resultMap id="InfoResultMap" type="com.spring.myapp.informationBoard.model.Information">
+<mapper namespace="com.spring.myapp.informationBoard.repository.InfoMapper">
+    <resultMap id="infoResultMap" type="com.spring.myapp.informationBoard.model.Information">
         <id property="infoId" column="info_id"/>
         <id property="userId" column="user_id"/>
         <id property="categoryId" column="category_id"/>
@@ -20,10 +20,15 @@
         />
         <association property="nickname" column="user_id"
                      select="findUserForInfo"/>
+        <association property="likes" column="info_id"
+                     select="findLikesForInfo"/>
     </resultMap>
 
-    <select id="findAll" resultMap="InfoResultMap">
-        SELECT * FROM info
+    <select id="findAll" resultMap="infoResultMap">
+        SELECT info_id, user_id, category_id, title, content, image_url, created_at, updated_at, view_count, is_deleted
+        FROM info
+        WHERE is_deleted = 0
+        ORDER BY created_at DESC
     </select>
 
     <select id="findCategoryForInfo" resultType="string">
@@ -38,6 +43,19 @@
         WHERE u.user_id = #{user_id}
     </select>
 
+    <select id="findLikesForInfo" resultType="Integer">
+        SELECT COUNT(user_id)
+        FROM info_likes
+        WHERE info_id = #{infoId}
+    </select>
+
+    <select id="findByInfoId" parameterType="Long" resultMap="infoResultMap">
+        SELECT info_id, user_id, category_id, title, content, image_url, created_at, updated_at, view_count,
+        is_deleted
+        FROM info
+        WHERE info_id = #{infoId}
+    </select>
+
     <insert id="writeNewInfo" parameterType="com.spring.myapp.informationBoard.model.Information">
         INSERT INTO info (info_id, user_id, category_id, title, content, image_url, created_at, updated_at, view_count,
         is_deleted)
@@ -45,17 +63,11 @@
         #{viewCount}, #{isDeleted})
     </insert>
 
-    <!--    <select id="findById" parameterType="map" resultMap="InfoResultMap">-->
-    <!--        SELECT * FROM information-->
-    <!--        WHERE info_id = #{infoId} AND user_id = #{userId} AND category_id = #{categoryId}-->
-    <!--    </select>-->
-
-    <!--    <insert id="insert" parameterType="InfoResultMap">-->
-    <!--        INSERT INTO information (info_id, user_id, category_id, title, content, image_url, created_at, updated_at,-->
-    <!--        view_count, is_deleted)-->
-    <!--        VALUES (#{infoId}, #{userId}, #{categoryId}, #{title}, #{content}, #{imageUrl}, #{createdAt}, #{updatedAt},-->
-    <!--        #{viewCount}, #{isDeleted})-->
-    <!--    </insert>-->
+    <update id="updateViewCount">
+        UPDATE info
+        SET view_count = view_count + 1
+        WHERE info_id = #{infoId}
+    </update>
 
     <!--    <update id="update" parameterType="InfoResultMap">-->
     <!--        UPDATE information-->

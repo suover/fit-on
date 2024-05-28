@@ -90,7 +90,7 @@ const App = () => {
           <Route path="routine/:routineNo" element={<ViewRoutineDetail />} />
           <Route path="new-routine" element={<NewRoutine />} />
           <Route path="info" element={<Info />} />
-          <Route path="info/:infoNum" element={<InfoDetail />} />
+          <Route path="info/:infoId" element={<InfoDetail />} />
           <Route path="service" element={<Service />}>
             <Route index element={<Notice />} />
             <Route path="notice" element={<Notice />} />

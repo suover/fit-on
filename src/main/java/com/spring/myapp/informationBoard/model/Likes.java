@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class Likes {
-	private Integer infoId;
-	private Integer userId;
+	private Long infoId;
+	private Long userId;
 	private LocalDateTime createdAt;
 }

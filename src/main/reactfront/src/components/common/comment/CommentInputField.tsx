@@ -1,12 +1,64 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
+import axios from 'axios';
 
+import AuthContext from '../../../context/AuthContext';
 import InputField from './CommentInputField.styles';
-// 등록 버튼을 누르면 axios 로 데이터 전달할 수 있도록 click event 만들어 주고, props 로 경로 받아서 전달할 수 있도록 해야함!
-const CommentInputField = () => {
+import { Comment } from './CommentList';
+
+const axiosInstance = axios.create({
+  baseURL: 'http://localhost:8080/',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+const CommentInputField: React.FC<{
+  route: string;
+  postId: string;
+  idName: string;
+  commentId?: number;
+  addComment: (comment: Comment) => void;
+}> = ({ route, postId, idName, addComment, commentId }) => {
+  const [content, setContent] = useState('');
+  //const { nickname } = useContext(AuthContext);
+
+  const handleCommentSubmit = async () => {
+    if (content.trim().length === 0) {
+      alert('내용을 입력해주세요.');
+      return;
+    }
+
+    const comment = {
+      [idName]: postId,
+      userId: 36,
+      content: content,
+      commentId: commentId ? commentId : null,
+    };
+
+    try {
+      const response = await axiosInstance.post(
+        `${route}/newComments`,
+        comment,
+      );
+      if (response.status === 200) {
+        setContent('');
+        const savedComment = response.data;
+        addComment(savedComment);
+      }
+    } catch (error) {
+      console.error('Error adding comment:', error);
+    }
+  };
+
   return (
     <InputField>
-      <textarea name="comment" id="comment" />
-      <button>등록</button>
+      <textarea
+        name="comment"
+        id="comment"
+        onChange={(e) => setContent(e.target.value)}
+        value={content}
+      />
+      <button onClick={handleCommentSubmit}>등록</button>
     </InputField>
   );
 };

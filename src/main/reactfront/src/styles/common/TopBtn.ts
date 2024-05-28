@@ -4,6 +4,7 @@ const ToTopBtn = styled.button<{ $isShow: boolean }>`
   position: fixed;
   bottom: 40px;
   right: 40px;
+  z-index: 10000;
   width: 50px;
   height: 50px;
   background: #e0e1dd;

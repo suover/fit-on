@@ -7,16 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spring.myapp.informationBoard.model.Information;
-import com.spring.myapp.informationBoard.repository.InformationMapper;
+import com.spring.myapp.informationBoard.repository.InfoMapper;
 
 @Service
-public class InformationService {
+public class InfoService {
 
 	@Autowired
-	private InformationMapper informationMapper;
+	private InfoMapper infoMapper;
 
 	public List<Information> getAllInfoList() {
-		return informationMapper.findAll();
+		return infoMapper.findAll();
 	}
 
 	public void writeNewInfo(Information info) {
@@ -28,14 +28,16 @@ public class InformationService {
 		newInfo.setContent(info.getContent());
 		newInfo.setImageUrl(info.getImageUrl());
 		newInfo.setUpdatedAt(LocalDateTime.now());
-		newInfo.setViewCount(1);
 
 		// 데이터베이스에 저장
-		informationMapper.writeNewInfo(newInfo);
+		infoMapper.writeNewInfo(newInfo);
 	}
 
-	//
-	// public void getInfoById(Long infoId) {
-	// 	// 상세글 조회
-	// }
+	public Information findByInfoId(Long infoId) {
+		return infoMapper.findByInfoId(infoId);
+	}
+
+	public void updateViewCount(Long infoId) {
+		infoMapper.updateViewCount(infoId);
+	}
 }

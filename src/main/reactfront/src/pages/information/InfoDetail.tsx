@@ -1,66 +1,142 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import DOMPurify from 'dompurify';
 
-import { InfoPost, comments } from '../../types/MainDummyData';
+import { useNavigate, useParams } from 'react-router-dom';
+
+import axios from 'axios';
+
+import { Information } from './Info';
+import { Comment } from '../../components/common/comment/CommentList';
 import {
   InfoWrapper,
   DetailTitle,
   Content,
+  ControllBtns,
 } from '../../styles/information/InfoDetail.styles';
 import CommentList from '../../components/common/comment/CommentList';
 
-import { Container } from '@mui/material';
+import { Container, Box, Button } from '@mui/material';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import AuthContext from '../../context/AuthContext';
 
-const dummyInfo: InfoPost = {
-  id: 4,
-  title: '심장 강화를 위한 유산소 운동',
-  nickname: '정하나',
-  content:
-    '심장 건강을 향상시킬 수 있는 유산소 운동을 소개합니다. 간단한 단계를 따라하면서 건강을 관리하세요.',
-  views: 410,
-  likes: 35,
-  imageUrl: 'https://example.com/images/cardio-workout.jpg',
-};
+const axiosInstance = axios.create({
+  baseURL: 'http://localhost:8080/api', // 백엔드 API의 기본 URL을 설정합니다.
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
 const InfoDetail: React.FC = () => {
-  const [info, setInfo] = useState<InfoPost>(dummyInfo);
-  const { infoNum } = useParams<{ infoNum: string }>();
-
-  console.log(infoNum);
+  const { infoId } = useParams<{ infoId: string }>();
+  const navigate = useNavigate();
+  const [info, setInfo] = useState<Information>();
+  const [infoComments, setInfoComments] = useState<Comment[]>([]);
+  const [infolikes, setInfoLikes] = useState<number>(53);
+  const [isLike, setIsLike] = useState<boolean>(false);
+  const { userRole } = useContext(AuthContext);
+  const sanitizedContent = info ? DOMPurify.sanitize(info.content) : '';
+  const createdDate = info?.createdAt.split('T')[0];
 
   useEffect(() => {
+    // 디테일 데이터 불러오기
     const fetchPost = async () => {
       try {
-        const response = await fetch(`https://localHost:8080/info/${infoNum}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch data');
-        }
-        const data = await response.json();
-        setInfo(data);
+        const res = await axiosInstance.get<Information>(`/info/${infoId}`);
+        setInfo(res.data);
+        setInfoLikes(res.data.likes);
       } catch (error) {
         console.error('Error fetching post:', error);
       }
     };
 
     fetchPost();
-  }, [infoNum]);
+  }, [infoId]);
+
+  const handleLikeClick = (): void => {
+    setIsLike((prevState) => !prevState);
+    if (!isLike) {
+      setInfoLikes(infolikes + 1);
+    } else {
+      setInfoLikes(infolikes - 1);
+    }
+  };
+
+  useEffect(() => {
+    // 댓글 불러오기
+    const fetchComment = async () => {
+      try {
+        const res = await axiosInstance.get<Comment[]>(
+          `info/${infoId}/comments`,
+        );
+        setInfoComments(res.data);
+      } catch (error) {
+        console.error('Error fetching post:', error);
+      }
+    };
+
+    fetchComment();
+  }, [infoId]);
+
+  const addComment = (comment: Comment): void => {
+    setInfoComments([...infoComments, comment]);
+    console.log(comment);
+  };
 
   return (
     <InfoWrapper>
       <Container>
         <DetailTitle>
-          <h2>{info.title}</h2>
+          <span>
+            <ArrowForwardIosIcon />
+            {info?.categoryName}
+          </span>
+          <h2>{info?.title}</h2>
           <p>
-            <span>{info.nickname}</span>
-            <span>조회수 0000</span>
-            <span>작성일 0000-00-00</span>
+            <span>{info?.nickname}</span>
+            <span>조회수 {info?.viewCount}</span>
+            <span>작성일 {createdDate}</span>
           </p>
         </DetailTitle>
-        <Content>{info.content}</Content>
+        <Content dangerouslySetInnerHTML={{ __html: sanitizedContent }} />
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginBottom: '30px',
+          }}
+        >
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<FavoriteIcon />}
+            sx={{
+              width: '80px',
+              height: '40px',
+              borderRadius: '20px',
+              padding: 'auto',
+            }}
+            onClick={handleLikeClick}
+          >
+            {infolikes}
+          </Button>
+        </Box>
       </Container>
-      <Container sx={{ padding: '20px 0' }}>
-        <CommentList comments={comments} />
+      <Container sx={{ padding: '20px 0', position: 'relative' }}>
+        <CommentList
+          comments={infoComments}
+          route={`api/info/${infoId}`}
+          postId={infoId ? infoId : ''}
+          idName="infoId"
+          addComment={addComment}
+        />
       </Container>
+      <ControllBtns>
+        {userRole === 'admin' && (
+          <button onClick={() => navigate('/info')}>수정</button>
+        )}
+        <button onClick={() => navigate('/info')}>목록</button>
+      </ControllBtns>
     </InfoWrapper>
   );
 };

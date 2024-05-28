@@ -34,4 +34,6 @@ public class Information {
 	private String categoryName;
 
 	private String nickname;
+
+	private Integer likes;
 }
