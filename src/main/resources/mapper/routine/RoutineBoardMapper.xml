@@ -25,6 +25,16 @@
         SELECT * FROM routines WHERE is_deleted = 0
     </select>
 
+    <select id="findAllWithPaging" resultMap="RoutineBoardResultMap">
+        SELECT * FROM routines WHERE is_deleted = 0
+        ORDER BY created_at DESC
+        LIMIT #{offset}, #{size}
+    </select>
+    
+    <select id="countRoutines" resultType="long">
+        SELECT COUNT(*) FROM routines WHERE is_deleted = 0
+    </select>
+
     <select id="findById" parameterType="long" resultMap="RoutineBoardResultMap">
         SELECT * FROM routines WHERE routine_id = #{routineId} AND is_deleted = 0
     </select>
@@ -47,7 +57,13 @@
         is_public = #{isPublic}, goal_id = #{goalId}, level_id = #{levelId}, part_id = #{partId}
         WHERE routine_id = #{routineId}
     </update>
-    
+
+    <update id="incrementViewCount" parameterType="long">
+        UPDATE routines
+        SET view_count = view_count + 1
+        WHERE routine_id = #{routineId}
+    </update>
+
     <select id="findGoalNameById" parameterType="int" resultType="String">
         SELECT goal_name FROM routine_goals WHERE goal_id = #{goalId}
     </select>

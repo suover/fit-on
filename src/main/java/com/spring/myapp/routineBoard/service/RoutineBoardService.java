@@ -24,23 +24,9 @@ public class RoutineBoardService {
 	}
 
 	public RoutineBoard createRoutineBoard(RoutineBoard routineBoard) {
-		// userId를 30으로 설정
 		routineBoard.setUserId(30);
-		// 현재 시간 설정
 		routineBoard.setCreatedAt(LocalDateTime.now());
 
-		// 로그로 입력된 값들을 출력
-		System.out.println("##### RoutineBoard Details #####");
-		System.out.println("User ID: " + routineBoard.getUserId());
-		System.out.println("Title: " + routineBoard.getTitle());
-		System.out.println("Content: " + routineBoard.getContent());
-		System.out.println("Goal ID: " + routineBoard.getGoalId());
-		System.out.println("Level ID: " + routineBoard.getLevelId());
-		System.out.println("Part ID: " + routineBoard.getPartId());
-		System.out.println("Created At: " + routineBoard.getCreatedAt());
-		System.out.println("Updated At: " + routineBoard.getUpdatedAt());
-
-		// 루틴 게시글 삽입
 		try {
 			routineBoardMapper.insertRoutineBoard(routineBoard);
 		} catch (Exception e) {
@@ -73,6 +59,10 @@ public class RoutineBoardService {
 		return routineBoard;
 	}
 
+	public void incrementViewCount(Long id) {
+		routineBoardMapper.incrementViewCount(id);
+	}
+
 	public String getGoalNameById(Integer goalId) {
 		return routineBoardMapper.findGoalNameById(goalId);
 	}
@@ -85,4 +75,12 @@ public class RoutineBoardService {
 		return routineBoardMapper.findPartNameById(partId);
 	}
 
+	public List<RoutineBoard> getRoutinesWithPaging(int page, int size) {
+		int offset = page * size;
+		return routineBoardMapper.findAllWithPaging(offset, size);
+	}
+
+	public long getRoutineCount() {
+		return routineBoardMapper.countRoutines();
+	}
 }

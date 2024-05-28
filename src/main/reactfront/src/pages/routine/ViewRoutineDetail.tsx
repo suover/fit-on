@@ -11,8 +11,12 @@ const ViewRoutineDetail = () => {
   const [error, setError] = useState<any>(null);
 
   useEffect(() => {
-    const fetchRoutineData = async () => {
+    const incrementViewCountAndFetchData = async () => {
       try {
+        // 조회수 증가 API 호출
+        await axios.put(`/api/routine/increment-view/${routineNo}`);
+
+        // 게시글 데이터 가져오기
         const response = await axios.get(`/api/routine/${routineNo}`);
         setRoutineData(response.data);
       } catch (error) {
@@ -23,7 +27,7 @@ const ViewRoutineDetail = () => {
       }
     };
 
-    fetchRoutineData();
+    incrementViewCountAndFetchData();
   }, [routineNo]);
 
   if (loading) {

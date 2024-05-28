@@ -238,14 +238,26 @@ const NewRoutine = () => {
               gap: 1,
             }}
           >
-            <Button
-              type="button"
-              variant="contained"
-              color="primary"
-              onClick={() => navigate('/routine')}
-            >
-              취소
-            </Button>
+            {routineId ? (
+              <Button
+                type="button"
+                variant="contained"
+                color="primary"
+                onClick={() => navigate(`/routine/${routineId}`)}
+              >
+                취소
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                variant="contained"
+                color="primary"
+                onClick={() => navigate('/routine')}
+              >
+                취소
+              </Button>
+            )}
+
             <Button type="submit" variant="contained" color="primary">
               {routineId ? '수정' : '등록'}
             </Button>

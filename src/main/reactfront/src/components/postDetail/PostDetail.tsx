@@ -6,7 +6,7 @@ import axios from 'axios';
 import ButtonLikePost from '../common/button/ButtonLikePost';
 import ButtonShare from '../common/button/ButtonShare';
 import { PostWrapper, BackBtn } from './PostDetail.styles';
-import { Box, Button, TextField } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PersonIcon from '@mui/icons-material/Person';
 import CommentList from '../common/comment/CommentList';
@@ -18,10 +18,22 @@ const partIdToNameMap: { [key: number]: string } = {
   3: '하체',
   4: 'None',
 };
-
+const levelIdToNameMap: { [key: number]: string } = {
+  1: '상',
+  2: '중',
+  3: '하',
+};
+const goalIdToNameMap: { [key: number]: string } = {
+  1: '근력 증가',
+  2: '다이어트',
+  3: '유연성 개선',
+  4: '체력 개선',
+};
 type DataType = {
   postId: number | string;
   partId: number;
+  levelId: number;
+  goalId: number;
   userId: string;
   title: string;
   content: string;
@@ -57,6 +69,8 @@ const PostDetail = <T extends DataType>({
     viewCount,
     likes,
     partId,
+    levelId,
+    goalId,
   } = data;
   const [contentData, setContentData] = useState<T>(data); // 실제 데이터가 들어오면 이용
   const [isLiked, setIsLiked] = useState(false);
@@ -98,14 +112,15 @@ const PostDetail = <T extends DataType>({
   };
 
   const partName = partId ? partIdToNameMap[partId] : '';
-
+  const goalName = goalId ? goalIdToNameMap[goalId] : '';
+  const levelName = levelId ? levelIdToNameMap[levelId] : '';
   return (
     <>
       <PostWrapper>
-        {partName ? (
+        {routineNo ? (
           <span>
             <ArrowForwardIosIcon />
-            운동부위 : {partName}
+            운동목적 : {goalName} / 난이도 : {levelName} / 운동부위 : {partName}
           </span>
         ) : (
           ''

@@ -17,8 +17,8 @@ public class RoutineBoard {
 	private String content;
 	private LocalDateTime createdAt = LocalDateTime.now();
 	private LocalDateTime updatedAt;
-	private Integer viewCount = 0;
-	private Integer shareCount = 0;
+	private int viewCount = 0;
+	private int shareCount = 0;
 	private boolean isDeleted = false;
 	private boolean isPublic = true;
 	private Integer goalId;
