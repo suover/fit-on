@@ -1,22 +1,13 @@
 import React, { useState } from 'react';
 import { ProImg, MainImg, DetailImg, ImageModal } from './ImageDetail.styled';
-
-// import { productData } from '../../types/ProductData'; // 더미
-
 import { Product } from '../../types/DataInterface';
 interface ImageDetailProps {
   product: Product;
 }
-
-// const ImgDetail = () => {
 const ImgDetail: React.FC<ImageDetailProps> = ({ product }) => {
-  // const product = productData[2];
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
   const [SubImages, setSubImages] = useState('');
-
-  // 해야할것 : 서브이미지들 불러와서 보여주기
-
   const openModal = (imageUrl: string) => {
     setSelectedImage(imageUrl);
     setModalOpen(true);
