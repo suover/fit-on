@@ -43,6 +43,7 @@ const NewRoutine = () => {
   const [level, setLevel] = useState<string | null>('');
   const [target, setTarget] = useState<string | null>('');
   const [content, setContent] = useState('');
+  const [image, setImage] = useState<File | null>(null);
   const navigate = useNavigate();
 
   const [routineItem, setRoutineItem] = useState(''); // 루틴 목록 입력 상태
@@ -64,8 +65,36 @@ const NewRoutine = () => {
     }
   };
 
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setImage(event.target.files[0]);
+    }
+  };
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    // 이미지 업로드
+    let imageUrl = '';
+    if (image) {
+      const formData = new FormData();
+      formData.append('image', image);
+
+      try {
+        const imageUploadResponse = await axios.post(
+          'http://localhost:8080/api/routine/upload',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          },
+        );
+        imageUrl = imageUploadResponse.data;
+      } catch (error) {
+        console.error('There was an error uploading the image!', error);
+      }
+    }
 
     const routineData = {
       userId: 30, // 로그인된 사용자 ID로 교체 필요
@@ -76,6 +105,7 @@ const NewRoutine = () => {
       partId: parseInt(target || '0', 10), // 선택된 부위 값 설정
       isPublic,
       routineItems: lists,
+      imageUrl,
     };
 
     console.log('Submitting routine data:', routineData);
@@ -194,6 +224,9 @@ const NewRoutine = () => {
               value={content}
               onChange={setContent}
             />
+          </Box>
+          <Box sx={{ mb: 2 }}>
+            <input type="file" accept="image/*" onChange={handleImageChange} />
           </Box>
           <Box
             sx={{
