@@ -58,17 +58,6 @@ const ShoppingBasketPage: React.FC = () => {
     fetchCartItems();
   }, [userId]);
 
-  // useEffect(() => {
-  //   const totalAmount = selectedItems.reduce((acc, id) => {
-  //     const product = items.find((product) => product.productId === id);
-  //     return product ? acc + product.price : acc;
-  //   }, 0);
-  //   const totalDeliveryFee =
-  //     totalAmount >= 50000 ? 0 : selectedItems.length > 0 ? 2500 : 0;
-
-  //   setTotalAmount(totalAmount);
-  //   setTotalDeliveryFee(totalDeliveryFee);
-  // }, [selectedItems]);
   useEffect(() => {
     const totalAmount = selectedItems.reduce((acc, id) => {
       const cartItem = items.find((cartItem) => cartItem.productId === id);
