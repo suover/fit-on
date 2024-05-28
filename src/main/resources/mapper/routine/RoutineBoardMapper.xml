@@ -40,6 +40,14 @@
         #{goalId}, #{levelId}, #{partId})
     </insert>
 
+    <update id="updateRoutineBoard" parameterType="com.spring.myapp.routineBoard.model.RoutineBoard">
+        UPDATE routines
+        SET title = #{title}, content = #{content}, updated_at = NOW(),
+        view_count = #{viewCount}, share_count = #{shareCount}, is_deleted = #{isDeleted},
+        is_public = #{isPublic}, goal_id = #{goalId}, level_id = #{levelId}, part_id = #{partId}
+        WHERE routine_id = #{routineId}
+    </update>
+    
     <select id="findGoalNameById" parameterType="int" resultType="String">
         SELECT goal_name FROM routine_goals WHERE goal_id = #{goalId}
     </select>

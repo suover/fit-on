@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,6 +50,7 @@ public class RoutineBoardController {
 		}
 	}
 
+	//게시글 삭제
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteRoutine(@PathVariable("id") Long id) {
 		logger.info("Deleting routine with id: {}", id);
@@ -76,6 +78,22 @@ public class RoutineBoardController {
 		RoutineBoard savedRoutine = routineBoardService.createRoutineBoard(routineBoard);
 		logger.debug("@@@@@@@@@@@Created routine: {}", savedRoutine);
 		return ResponseEntity.ok(savedRoutine);
+	}
+
+	//게시글 수정
+	@PutMapping("/{id}")
+	public ResponseEntity<RoutineBoard> updateRoutine(@PathVariable("id") Long id,
+		@RequestBody RoutineBoard routineBoard) {
+		logger.info("Updating routine with id: {}", id);
+
+		RoutineBoard updatedRoutine = routineBoardService.updateRoutine(id, routineBoard);
+		if (updatedRoutine != null) {
+			logger.debug("Updated routine: {}", updatedRoutine);
+			return ResponseEntity.ok(updatedRoutine);
+		} else {
+			logger.warn("Routine with id {} not found", id);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		}
 	}
 
 }

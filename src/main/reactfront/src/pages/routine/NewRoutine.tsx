@@ -1,7 +1,6 @@
-import React, { useState, FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, FormEvent } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-
 import {
   Paper,
   Container,
@@ -38,18 +37,44 @@ const Part = [
 ];
 
 const NewRoutine = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [title, setTitle] = useState('');
   const [purpose, setPurpose] = useState<string | null>('');
   const [level, setLevel] = useState<string | null>('');
   const [target, setTarget] = useState<string | null>('');
   const [content, setContent] = useState('');
-  const navigate = useNavigate();
+  const [routineId, setRoutineId] = useState<number | null>(null);
 
   const [routineItem, setRoutineItem] = useState(''); // 루틴 목록 입력 상태
   const [lists, setLists] = useState<string[]>([]); // 루틴 리스트 상태
 
   // 게시글 공개/비공개 상태를 관리하는 상태 변수
   const [isPublic, setIsPublic] = useState(true);
+
+  useEffect(() => {
+    if (location.state && location.state.routine) {
+      const {
+        title,
+        content,
+        goalId,
+        levelId,
+        partId,
+        routineId,
+        routineItems,
+        isPublic,
+      } = location.state.routine;
+      setTitle(title);
+      setContent(content);
+      setPurpose(String(goalId));
+      setLevel(String(levelId));
+      setTarget(String(partId));
+      setRoutineId(routineId);
+      setLists(routineItems || []);
+      setIsPublic(isPublic);
+    }
+  }, [location.state]);
 
   // 스위치 토글 이벤트 핸들러
   const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,14 +106,24 @@ const NewRoutine = () => {
     console.log('Submitting routine data:', routineData);
 
     try {
-      const response = await axios.post(
-        'http://localhost:8080/api/routine/new-routine',
-        routineData,
-      );
-      console.log('Routine created:', response.data);
+      if (routineId) {
+        // 기존 게시글 수정
+        const response = await axios.put(
+          `http://localhost:8080/api/routine/${routineId}`,
+          routineData,
+        );
+        console.log('Routine updated:', response.data);
+      } else {
+        // 새 게시글 생성
+        const response = await axios.post(
+          'http://localhost:8080/api/routine/new-routine',
+          routineData,
+        );
+        console.log('Routine created:', response.data);
+      }
       navigate('/routine'); // 페이지 이동
     } catch (error) {
-      console.error('There was an error creating the routine!', error);
+      console.error('There was an error creating/updating the routine!', error);
     }
   };
 
@@ -98,7 +133,7 @@ const NewRoutine = () => {
         <form onSubmit={handleSubmit}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
-              새 루틴 작성
+              {routineId ? '루틴 수정' : '새 루틴 작성'}
             </Typography>
             <FormControlLabel
               control={<Switch checked={isPublic} onChange={handleToggle} />}
@@ -212,7 +247,7 @@ const NewRoutine = () => {
               취소
             </Button>
             <Button type="submit" variant="contained" color="primary">
-              등록
+              {routineId ? '수정' : '등록'}
             </Button>
           </Box>
         </form>

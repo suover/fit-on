@@ -61,6 +61,18 @@ public class RoutineBoardService {
 		}
 	}
 
+	public RoutineBoard updateRoutine(Long id, RoutineBoard routineBoard) {
+		RoutineBoard existingRoutine = routineBoardMapper.findById(id);
+		if (existingRoutine == null) {
+			return null;
+		}
+
+		routineBoard.setRoutineId(id);
+		routineBoard.setUpdatedAt(LocalDateTime.now());
+		routineBoardMapper.updateRoutineBoard(routineBoard);
+		return routineBoard;
+	}
+
 	public String getGoalNameById(Integer goalId) {
 		return routineBoardMapper.findGoalNameById(goalId);
 	}

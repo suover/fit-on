@@ -6,7 +6,7 @@ import axios from 'axios';
 import ButtonLikePost from '../common/button/ButtonLikePost';
 import ButtonShare from '../common/button/ButtonShare';
 import { PostWrapper, BackBtn } from './PostDetail.styles';
-import { Box, Button } from '@mui/material';
+import { Box, Button, TextField } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PersonIcon from '@mui/icons-material/Person';
 import CommentList from '../common/comment/CommentList';
@@ -93,6 +93,10 @@ const PostDetail = <T extends DataType>({
     }
   };
 
+  const handleEditClick = () => {
+    navigate(`/routine/new-routine`, { state: { routine: contentData } });
+  };
+
   const partName = partId ? partIdToNameMap[partId] : '';
 
   return (
@@ -101,7 +105,7 @@ const PostDetail = <T extends DataType>({
         {partName ? (
           <span>
             <ArrowForwardIosIcon />
-            {partName}
+            운동부위 : {partName}
           </span>
         ) : (
           ''
@@ -119,7 +123,6 @@ const PostDetail = <T extends DataType>({
           className="content"
           dangerouslySetInnerHTML={{ __html: content }}
         ></div>
-        {/* 좋아요, 북마크 */}
         <Box
           sx={{
             display: 'flex',
@@ -138,17 +141,23 @@ const PostDetail = <T extends DataType>({
         </Box>
       </PostWrapper>
       <CommentList comments={comments} />
-      <Box sx={{ display: 'flex' }}>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleDeleteClick}
-        >
-          삭제
-        </Button>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Box>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={handleDeleteClick}
+            sx={{ marginRight: 1 }}
+          >
+            삭제
+          </Button>
+          <Button variant="contained" color="primary" onClick={handleEditClick}>
+            수정
+          </Button>
+        </Box>
         <BackBtn
-          style={{ marginLeft: 'auto' }}
           onClick={() => navigate(`/${pageURL}`)}
+          style={{ marginLeft: 'auto' }}
         >
           목록
         </BackBtn>

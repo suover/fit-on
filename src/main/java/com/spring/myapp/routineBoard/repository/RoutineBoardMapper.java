@@ -19,6 +19,8 @@ public interface RoutineBoardMapper {
 
 	void insertRoutineItems(@Param("routineId") Integer routineId, @Param("routineItems") List<String> routineItems);
 
+	void updateRoutineBoard(RoutineBoard routineBoard);
+
 	String findGoalNameById(@Param("goalId") Integer goalId);
 
 	String findLevelNameById(@Param("levelId") Integer levelId);
