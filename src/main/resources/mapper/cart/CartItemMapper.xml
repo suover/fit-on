@@ -10,13 +10,6 @@
         VALUES (#{cartId}, #{productId}, #{quantity}, NOW())
     </insert>
 
-<!--    <select id="findCartItemsByCartId" resultType="com.spring.myapp.cart.model.CartItem">-->
-<!--        SELECT ci.*, p.*, c.*-->
-<!--        FROM cart_items ci-->
-<!--        JOIN products p ON ci.product_id = p.product_id-->
-<!--        JOIN cart c ON ci.cart_id = c.cart_id-->
-<!--        WHERE ci.cart_id = #{cartId}-->
-<!--    </select>-->
     <select id="findCartItemsByCartId" resultType="com.spring.myapp.cart.model.CartItem">
         SELECT
         ci.cart_item_id AS cartItemId,
