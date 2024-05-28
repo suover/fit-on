@@ -14,8 +14,14 @@ interface AuthContextProps {
   isAuthenticated: boolean;
   userRole: string | null;
   nickname: string | null;
-  login: (token: string, roles: string[], nickname: string) => void;
+  login: (
+    token: string,
+    roles: string[],
+    nickname: string,
+    loginType: string,
+  ) => void;
   logout: () => void;
+  loginType: string | null;
 }
 
 const AuthContext = createContext<AuthContextProps>({
@@ -24,6 +30,7 @@ const AuthContext = createContext<AuthContextProps>({
   nickname: null,
   login: () => {},
   logout: () => {},
+  loginType: null,
 });
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
@@ -32,25 +39,42 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [nickname, setNickname] = useState<string | null>(null);
+  const [loginType, setLoginType] = useState<string | null>(null);
 
-  const login = (token: string, roles: string[], nickname: string) => {
+  const login = (
+    token: string,
+    roles: string[],
+    nickname: string,
+    loginType: string,
+  ) => {
     localStorage.setItem('token', token);
+    localStorage.setItem('roles', JSON.stringify(roles));
+    localStorage.setItem('nickname', nickname);
+    localStorage.setItem('loginType', loginType);
     setIsAuthenticated(true);
     setUserRole(roles.includes('ROLE_admin') ? 'admin' : 'user');
     setNickname(nickname);
+    setLoginType(loginType);
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   };
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('roles');
+    localStorage.removeItem('nickname');
+    localStorage.removeItem('loginType');
     setIsAuthenticated(false);
     setUserRole(null);
     setNickname(null);
+    setLoginType(null);
     delete axios.defaults.headers.common['Authorization'];
   };
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+    const storedRoles = localStorage.getItem('roles');
+    const storedNickname = localStorage.getItem('nickname');
+    const storedLoginType = localStorage.getItem('loginType');
     if (token) {
       try {
         const decodedToken = jwtDecode<DecodedToken>(token);
@@ -60,6 +84,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
             decodedToken.roles.includes('ROLE_admin') ? 'admin' : 'user',
           );
           setNickname(decodedToken.nickname);
+          setLoginType(storedLoginType);
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         } else {
           logout();
@@ -73,7 +98,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, userRole, nickname, login, logout }}
+      value={{ isAuthenticated, userRole, nickname, login, logout, loginType }}
     >
       {children}
     </AuthContext.Provider>
