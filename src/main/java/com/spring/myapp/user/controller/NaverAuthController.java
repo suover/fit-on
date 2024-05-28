@@ -33,6 +33,8 @@ public class NaverAuthController {
 				.queryParam("token", response.getToken())
 				.queryParam("roles", String.join(",", response.getRoles()))
 				.queryParam("nickname", response.getNickname())
+				.queryParam("userId", response.getUserId())
+				.queryParam("name", response.getName())
 				.build().toUriString();
 
 			HttpHeaders headers = new HttpHeaders();

@@ -47,9 +47,11 @@ public class UserController {
 
 		// JWT 토큰 생성
 		List<String> roles = userService.getUserRoles(user.getUserId());
-		String token = jwtTokenProvider.createToken(user.getEmail(), roles, user.getNickname());
+		String token = jwtTokenProvider.createToken(user.getEmail(), roles, user.getNickname(), user.getUserId(),
+			user.getName());
 
-		return ResponseEntity.ok(new JwtAuthenticationResponse(token, roles, user.getNickname()));
+		return ResponseEntity.ok(
+			new JwtAuthenticationResponse(token, roles, user.getNickname(), user.getUserId(), user.getName()));
 	}
 
 	@PostMapping("/auth/login")
@@ -68,9 +70,11 @@ public class UserController {
 				.map(authority -> authority.getAuthority())
 				.collect(Collectors.toList());
 			User user = userService.findByEmail(loginRequest.getEmail());
-			String jwt = jwtTokenProvider.createToken(authentication.getName(), roles, user.getNickname());
+			String jwt = jwtTokenProvider.createToken(authentication.getName(), roles, user.getNickname(),
+				user.getUserId(), user.getName());
 
-			return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, roles, user.getNickname()));
+			return ResponseEntity.ok(
+				new JwtAuthenticationResponse(jwt, roles, user.getNickname(), user.getUserId(), user.getName()));
 		} catch (Exception e) {
 			logger.error("User authentication failed: {}", loginRequest.getEmail(), e);
 			return ResponseEntity.status(401).body("Authentication failed");

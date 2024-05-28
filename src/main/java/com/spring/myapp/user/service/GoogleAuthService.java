@@ -58,10 +58,11 @@ public class GoogleAuthService {
 		List<String> roles = userMapper.getUserRoles(user.getUserId()).stream()
 			.map(role -> "ROLE_" + role)
 			.collect(Collectors.toList());
-		String jwtToken = jwtTokenProvider.createToken(user.getEmail(), roles, user.getNickname());
+		String jwtToken = jwtTokenProvider.createToken(user.getEmail(), roles, user.getNickname(), user.getUserId(),
+			user.getName());
 
 		return ResponseEntity.ok(
-			new JwtAuthenticationResponse(jwtToken, roles, user.getNickname()));
+			new JwtAuthenticationResponse(jwtToken, roles, user.getNickname(), user.getUserId(), user.getName()));
 	}
 
 	private User getUser(String provider, String providerId, String email, String name) {
