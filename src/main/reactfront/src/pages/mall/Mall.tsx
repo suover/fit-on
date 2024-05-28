@@ -101,8 +101,6 @@ const Mall: React.FC = () => {
           <SearchBox onSearch={handleSearch} />
         </Search>
         <ProductCardList products={filteredItems} />
-
-        {/* <Outlet /> */}
       </Container>
     </>
   );

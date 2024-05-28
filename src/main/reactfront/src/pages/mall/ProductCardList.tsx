@@ -13,18 +13,11 @@ import {
 } from '../../components/productCard/ProductCard.styles';
 import { Pagination, Stack } from '@mui/material';
 
-// import { productData, Product } from '../../types/ProductData'; // 더미데이터
-// import { productData } from '../../types/ProductData'; // 더미데이터
-// interface ProductCardListProps
 interface ProductCardListProps {
   products: Product[];
 }
 
-// const ProductCardList: React.FC = () => {
 const ProductCardList: React.FC<ProductCardListProps> = ({ products }) => {
-  // const [products, setProducts] = useState<Product[]>([]);
-  // const [filteredProducts, setFilteredProducts] = useState<Product[]>();
-
   return (
     <>
       <Grid

@@ -62,6 +62,13 @@ public class ProductController {
 
 		return ResponseEntity.ok(products);
 	}
+	@GetMapping("/with-images/active/{category}")
+	public ResponseEntity<List<Product>> getAllActiveProductsWithMainImageByCategory(@PathVariable Long category) {
+		List<Product> products = productService.getAllActiveProductsWithMainImageByCategory(category);
+		System.out.println(products);
+
+		return ResponseEntity.ok(products);
+	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {

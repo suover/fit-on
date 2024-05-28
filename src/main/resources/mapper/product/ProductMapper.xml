@@ -73,4 +73,11 @@
         WHERE p.is_deleted = false
     </select>
 
+    <select id="findAllActiveWithMainImageByCategory" resultMap="ProductResultMap">
+        SELECT p.*, pi.image_url
+        FROM products p
+        LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.is_main_image = 1
+        WHERE p.is_deleted = false AND category_id =#{categoryId}
+    </select>
+
 </mapper>

@@ -48,6 +48,9 @@ public class ProductService {
 	public List<Product> getAllActiveProductsWithMainImage() {
 		return productMapper.findAllActiveWithMainImage();
 	}
+	public List<Product> getAllActiveProductsWithMainImageByCategory(Long categoryId) {
+		return productMapper.findAllActiveWithMainImageByCategory(categoryId);
+	}
 
 
 }
