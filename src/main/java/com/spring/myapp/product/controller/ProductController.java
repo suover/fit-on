@@ -55,6 +55,13 @@ public class ProductController {
 
 		return ResponseEntity.ok(products);
 	}
+	@GetMapping("/with-images/active")
+	public ResponseEntity<List<Product>> getAllActiveProductsWithMainImage() {
+		List<Product> products = productService.getAllActiveProductsWithMainImage();
+		System.out.println(products);
+
+		return ResponseEntity.ok(products);
+	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
@@ -66,12 +73,11 @@ public class ProductController {
 	@PatchMapping("/{deleteId}/deactivate")
 	public ResponseEntity<Void> deactivateProduct(@PathVariable("deleteId") Long deleteId) {
 		try {
-			System.out.println("/{deleteId}/deactivate 컨트롤러단 시작");
+
 			System.out.println("Product deactivated: " + deleteId);
 			productService.deactivate(deleteId, true);
 			return ResponseEntity.ok().build();
 		} catch (Exception e) {
-			System.out.println("/{deleteId}/deactivate 컨트롤러단 오류다.");
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}

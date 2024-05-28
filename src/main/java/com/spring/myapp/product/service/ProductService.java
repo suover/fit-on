@@ -45,5 +45,9 @@ public class ProductService {
 	public List<Product> getAllProductsWithMainImage() {
 		return productMapper.findAllWithMainImage();
 	}
+	public List<Product> getAllActiveProductsWithMainImage() {
+		return productMapper.findAllActiveWithMainImage();
+	}
+
 
 }

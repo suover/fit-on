@@ -18,4 +18,5 @@ public interface ProductMapper {
 	void updateIsDeleted(@Param("productId")Long productId,@Param("isDeleted") Boolean isDeleted);
 
 	List<Product> findAllWithMainImage();
+	List<Product> findAllActiveWithMainImage();
 }

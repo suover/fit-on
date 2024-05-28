@@ -69,7 +69,7 @@ const ItemListPage: React.FC = () => {
 
   //상품 게시글로
   const handleItemClick = (product: Product) => {
-    navigate(`/mall/product-detail/${product.productId}`, {
+    navigate(`/product-detail/${product.productId}`, {
       state: { product },
     });
   };

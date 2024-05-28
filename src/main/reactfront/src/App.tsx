@@ -11,11 +11,11 @@ import Main from './pages/main/Main'; // 메인
 import SigninPage from './pages/signin/SigninPage'; // 로그인
 import SignupPage from './pages/signup/SignupPage'; // 회원가입
 import Mall from './pages/mall/Mall'; // 쇼핑몰
-import Products from './pages/mall/Products';
+// import Products from './pages/mall/ProductCardList';
 import ProductDetail from './pages/productDetail/ProductDetail';
-import Fittness from './pages/mall/Fittness';
-import Food from './pages/mall/Food';
-import Supplement from './pages/mall/Supplemnet';
+// import Fittness from './pages/mall/Fittness';
+// import Food from './pages/mall/Food';
+// import Supplement from './pages/mall/Supplemnet';
 import OrderPage from './pages/order/OrderPage';
 import Community from './pages/community/CommunityMain'; // 커뮤니티
 import ViewPostDetail from './pages/community/ViewPostDetail';
@@ -75,15 +75,15 @@ const App = () => {
           <Route path="order-page" element={<OrderPage />} />
           <Route path="/shopping-basket" element={<ShoppingBasketPage />} />
           <Route path="/mall" element={<Mall />}>
-            <Route index element={<Products />} />
-            <Route path="fitness" element={<Fittness />} />
+            {/* <Route index element={<Products />} /> */}
+            {/* <Route path="fitness" element={<Fittness />} />
             <Route path="supplement" element={<Supplement />} />
-            <Route path="food" element={<Food />} />
-            <Route
-              path="product-detail/:productNum"
-              element={<ProductDetail />}
-            />
+            <Route path="food" element={<Food />} /> */}
           </Route>
+          <Route
+            path="/product-detail/:productNum"
+            element={<ProductDetail />}
+          />
           <Route path="community" element={<Community />} />
           <Route path="community/:postNo" element={<ViewPostDetail />} />
           <Route path="community/new-post" element={<NewPost />} />

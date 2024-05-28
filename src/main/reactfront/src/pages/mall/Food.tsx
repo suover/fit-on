@@ -3,12 +3,18 @@ import React from 'react';
 import ProductCard from '../../components/productCard/ProductCard';
 import { productData } from '../../types/ProductData';
 
-const Food: React.FC = () => {
-  const filteredProducts = productData.filter(
-    (product) => product.category === '식품',
-  );
+// const Food: React.FC = () => {
+//   const filteredProducts = productData.filter(
+//     (product) => product.category === '식품',
+//   );
 
-  return <ProductCard product={filteredProducts} />;
+//   return <ProductCard product={filteredProducts} />;
+// };
+
+// export default Food;
+
+const Food = () => {
+  return <div></div>;
 };
 
 export default Food;
