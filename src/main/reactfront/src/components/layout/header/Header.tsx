@@ -4,10 +4,54 @@ import { MainHeader, Logo, Gnb, Tnb } from './Header.styles';
 import { Container } from '@mui/material';
 import TopBtn from '../../common/TopBtn';
 import AuthContext from '../../../context/AuthContext';
+import axios from 'axios';
 
 const Header = () => {
-  const { isAuthenticated, userRole, nickname, logout } =
+  const { isAuthenticated, userRole, nickname, logout, loginType } =
     useContext(AuthContext);
+
+  const handleLogout = async () => {
+    const token = localStorage.getItem('token');
+    const kakaoAccessToken = localStorage.getItem('kakaoAccessToken');
+    if (token) {
+      try {
+        if (loginType === 'kakao') {
+          await axios.post(
+            '/api/auth/kakao/logout',
+            {},
+            {
+              headers: { Authorization: `Bearer ${kakaoAccessToken}` },
+            },
+          );
+          handleKakaoLogout();
+          localStorage.removeItem('kakaoAccessToken'); // 카카오 액세스 토큰 제거
+          logout();
+          alert('로그아웃 되었습니다.');
+          window.location.href = '/';
+        } else {
+          logout();
+          alert('로그아웃 되었습니다.');
+          window.location.href = '/';
+        }
+      } catch (error) {
+        console.error('로그아웃 실패:', error);
+        alert('로그아웃 실패');
+      }
+    } else {
+      logout();
+      alert('로그아웃 되었습니다.');
+      window.location.href = '/';
+    }
+  };
+
+  const handleKakaoLogout = () => {
+    if (window.Kakao && window.Kakao.Auth) {
+      window.Kakao.Auth.logout(() => {
+        alert('로그아웃 되었습니다.');
+        window.location.href = '/';
+      });
+    }
+  };
 
   return (
     <MainHeader>
@@ -34,7 +78,7 @@ const Header = () => {
             <>
               {nickname && <li>{nickname}님</li>}
               <li>
-                <Link to="/" onClick={logout}>
+                <Link to="/" onClick={handleLogout}>
                   로그아웃
                 </Link>
               </li>

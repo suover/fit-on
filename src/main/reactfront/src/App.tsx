@@ -58,6 +58,7 @@ import EtcInquiryListPage from './pages/administrator/EtcInquiryListPage';
 import PostRegisterPage from './pages/administrator/PostRegisterPage';
 import ItemRegisterPage from './pages/administrator/ItemRegisterPage';
 import ShoppingBasketPage from './pages/shoppingBasket/ShoppingBasketPage';
+import LoginSuccess from './components/naverLogin/LoginSuccess';
 
 import { AuthProvider } from './context/AuthContext';
 
@@ -70,6 +71,8 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="sign-in" element={<SigninPage />} />
+          <Route path="/login-success" element={<LoginSuccess />} /> // 네이버
+          로그인 성공 시 리디렉션 경로
           <Route path="sign-up" element={<SignupPage />} />
           <Route path="order-page" element={<OrderPage />} />
           <Route path="/shopping-basket" element={<ShoppingBasketPage />} />
