@@ -1,7 +1,6 @@
 package com.spring.myapp.routineBoard.model;
 
-import java.sql.Timestamp;
-import java.util.List;
+import java.time.LocalDateTime;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,18 +11,17 @@ import lombok.ToString;
 @ToString
 public class RoutineBoard {
 
-	private Long routineId;
-	private Long userId;
+	private Integer routineId;
+	private Integer userId;
 	private String title;
 	private String content;
-	private Timestamp createdAt;
-	private Timestamp updatedAt;
-	private Long viewCount = 0L;  // 초기값 설정
-	private Long shareCount = 0L;  // 초기값 설정
-	private boolean isDeleted;
-	private boolean isPublic;
-	private int goalId;
-	private int levelId;
-	private int partId;
-	private List<String> routineItems;
+	private LocalDateTime createdAt = LocalDateTime.now();
+	private LocalDateTime updatedAt;
+	private Integer viewCount = 0;
+	private Integer shareCount = 0;
+	private boolean isDeleted = false;
+	private boolean isPublic = true;
+	private Integer goalId;
+	private Integer levelId;
+	private Integer partId;
 }

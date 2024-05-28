@@ -34,6 +34,7 @@ const Part = [
   { value: '1', label: '전신' },
   { value: '2', label: '상체' },
   { value: '3', label: '하체' },
+  { value: '4', label: 'None' },
 ];
 
 const NewRoutine = () => {
@@ -67,12 +68,12 @@ const NewRoutine = () => {
     event.preventDefault();
 
     const routineData = {
-      userId: 1, // 로그인된 사용자 ID로 교체 필요
+      userId: 30, // 로그인된 사용자 ID로 교체 필요
       title,
       content,
-      goalId: parseInt(purpose || '0', 10),  // 선택된 목적 값 설정
-      levelId: parseInt(level || '0', 10),   // 선택된 난이도 값 설정
-      partId: parseInt(target || '0', 10),   // 선택된 부위 값 설정
+      goalId: parseInt(purpose || '0', 10), // 선택된 목적 값 설정
+      levelId: parseInt(level || '0', 10), // 선택된 난이도 값 설정
+      partId: parseInt(target || '0', 10), // 선택된 부위 값 설정
       isPublic,
       routineItems: lists,
     };
@@ -127,7 +128,6 @@ const NewRoutine = () => {
             />
             <SelectBox
               label="운동 부위"
-              allowNull
               options={Part}
               helperText="타겟 부위를 선택하세요."
               onChange={setTarget}

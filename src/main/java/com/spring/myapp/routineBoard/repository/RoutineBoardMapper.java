@@ -15,11 +15,11 @@ public interface RoutineBoardMapper {
 
 	void insertRoutineBoard(RoutineBoard routineBoard);
 
-	void insertRoutineItems(@Param("routineId") Long routineId, @Param("routineItems") List<String> routineItems);
+	void insertRoutineItems(@Param("routineId") Integer routineId, @Param("routineItems") List<String> routineItems);
 
-	String findGoalNameById(@Param("goalId") int goalId);
+	String findGoalNameById(@Param("goalId") Integer goalId);
 
-	String findLevelNameById(@Param("levelId") int levelId);
+	String findLevelNameById(@Param("levelId") Integer levelId);
 
-	String findPartNameById(@Param("partId") int partId);
+	String findPartNameById(@Param("partId") Integer partId);
 }

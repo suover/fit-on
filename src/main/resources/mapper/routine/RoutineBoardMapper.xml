@@ -1,8 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.spring.myapp.routineBoard.repository.RoutineBoardMapper">
+
     <resultMap id="RoutineBoardResultMap" type="com.spring.myapp.routineBoard.model.RoutineBoard">
         <id column="routine_id" property="routineId"/>
         <result column="user_id" property="userId"/>
@@ -19,31 +21,20 @@
         <result column="part_id" property="partId"/>
     </resultMap>
 
-    <insert id="insertRoutineBoard" useGeneratedKeys="true" keyProperty="routineId">
-        INSERT INTO routines (
-        user_id, title, content, created_at, updated_at, view_count, share_count, is_deleted, is_public, goal_id,
-        level_id, part_id
-        ) VALUES (
-        #{userId}, #{title}, #{content}, #{createdAt}, #{updatedAt}, #{viewCount}, #{shareCount}, #{isDeleted},
-        #{isPublic}, #{goalId}, #{levelId}, #{partId}
-        )
-    </insert>
-
-
-    <insert id="insertRoutineItems">
-        <foreach collection="routineItems" item="item" separator=",">
-            INSERT INTO routine_items (routine_id, exercise_name)
-            VALUES (#{routineId}, #{item})
-        </foreach>
-    </insert>
-
     <select id="findAll" resultMap="RoutineBoardResultMap">
         SELECT * FROM routines
     </select>
 
-    <select id="findById" resultMap="RoutineBoardResultMap">
+    <select id="findById" parameterType="long" resultMap="RoutineBoardResultMap">
         SELECT * FROM routines WHERE routine_id = #{routineId}
     </select>
+
+    <insert id="insertRoutineBoard" parameterType="com.spring.myapp.routineBoard.model.RoutineBoard">
+        INSERT INTO routines (user_id, title, content, created_at, updated_at, view_count, share_count, is_deleted,
+        is_public, goal_id, level_id, part_id)
+        VALUES (#{userId}, #{title}, #{content}, NOW(), NOW(), 0, 0, #{isDeleted}, #{isPublic},
+        #{goalId}, #{levelId}, #{partId})
+    </insert>
 
     <select id="findGoalNameById" parameterType="int" resultType="String">
         SELECT goal_name FROM routine_goals WHERE goal_id = #{goalId}
@@ -56,4 +47,17 @@
     <select id="findPartNameById" parameterType="int" resultType="String">
         SELECT part_name FROM routine_parts WHERE part_id = #{partId}
     </select>
+
+    <select id="findAllRoutineGoals" resultType="com.spring.myapp.routineBoard.model.RoutineGoal">
+        SELECT * FROM routine_goals
+    </select>
+
+    <select id="findAllRoutineLevels" resultType="com.spring.myapp.routineBoard.model.RoutineLevel">
+        SELECT * FROM routine_levels
+    </select>
+
+    <select id="findAllRoutineParts" resultType="com.spring.myapp.routineBoard.model.RoutinePart">
+        SELECT * FROM routine_parts
+    </select>
+
 </mapper>

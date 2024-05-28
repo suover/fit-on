@@ -1,6 +1,6 @@
 package com.spring.myapp.routineBoard.service;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +24,10 @@ public class RoutineBoardService {
 	}
 
 	public RoutineBoard createRoutineBoard(RoutineBoard routineBoard) {
-
+		// userId를 30으로 설정
+		routineBoard.setUserId(30);
 		// 현재 시간 설정
-		Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-		routineBoard.setCreatedAt(currentTime);
-		routineBoard.setUpdatedAt(currentTime);
+		routineBoard.setCreatedAt(LocalDateTime.now());
 
 		// 로그로 입력된 값들을 출력
 		System.out.println("##### RoutineBoard Details #####");
@@ -41,12 +40,12 @@ public class RoutineBoardService {
 		System.out.println("Created At: " + routineBoard.getCreatedAt());
 		System.out.println("Updated At: " + routineBoard.getUpdatedAt());
 
-		// Insert the routine board
-		routineBoardMapper.insertRoutineBoard(routineBoard);
-
-		// Insert routine items if available
-		if (routineBoard.getRoutineItems() != null && !routineBoard.getRoutineItems().isEmpty()) {
-			routineBoardMapper.insertRoutineItems(routineBoard.getRoutineId(), routineBoard.getRoutineItems());
+		// 루틴 게시글 삽입
+		try {
+			routineBoardMapper.insertRoutineBoard(routineBoard);
+		} catch (Exception e) {
+			System.out.println("Error inserting routine board: " + e.getMessage());
+			throw e;
 		}
 
 		return routineBoard;

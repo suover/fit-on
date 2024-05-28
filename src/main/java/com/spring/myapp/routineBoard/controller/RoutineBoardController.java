@@ -1,7 +1,5 @@
 package com.spring.myapp.routineBoard.controller;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,28 +24,30 @@ public class RoutineBoardController {
 	@Autowired
 	private RoutineBoardService routineBoardService;
 
-	@GetMapping
-	public ResponseEntity<List<RoutineBoard>> getAllRoutines() {
-		// 모든 루틴을 가져오는 요청 처리
-		List<RoutineBoard> routines = routineBoardService.getAllRoutines();
-		return ResponseEntity.ok(routines);
-	}
-
 	@GetMapping("/{id}")
 	public ResponseEntity<RoutineBoard> getRoutineById(@PathVariable Long id) {
-		// ID로 루틴을 가져오는 요청 처리
+		logger.info("@@@@@@@@@@@Fetching routine with id: {}", id);
 		RoutineBoard routineBoard = routineBoardService.getRoutineById(id);
 		if (routineBoard != null) {
+			logger.debug("@@@@@@@@@@@Found routine: {}", routineBoard);
 			return ResponseEntity.ok(routineBoard);
 		} else {
+			logger.warn("@@@@@@@@@@@Routine with id {} not found", id);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}
 	}
 
 	@PostMapping("/new-routine")
 	public ResponseEntity<RoutineBoard> createRoutine(@RequestBody RoutineBoard routineBoard) {
-		// 새로운 루틴을 생성하는 요청 처리
+		logger.info("@@@@@@@@@@@Creating new routine with title: {}", routineBoard.getTitle());
+		String goalName = routineBoardService.getGoalNameById(routineBoard.getGoalId());
+		String levelName = routineBoardService.getLevelNameById(routineBoard.getLevelId());
+		String partName = routineBoardService.getPartNameById(routineBoard.getPartId());
+		logger.debug("@@@@@@@@@@@Routine Details: Title={}, GoalName={}, LevelName={}, PartName={}",
+			routineBoard.getTitle(),
+			goalName, levelName, partName);
 		RoutineBoard savedRoutine = routineBoardService.createRoutineBoard(routineBoard);
+		logger.debug("@@@@@@@@@@@Created routine: {}", savedRoutine);
 		return ResponseEntity.ok(savedRoutine);
 	}
 }
