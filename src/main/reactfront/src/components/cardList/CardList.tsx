@@ -10,11 +10,11 @@ import Stack from '@mui/material/Stack';
 type ContentsType = {
   id: number | string;
   title: string;
-  author?: string;
+  nickname?: string;
   views?: number;
   likes: number;
   imageUrl: string;
-  target?: string | string[];
+  routineParts?: string | string[];
 };
 
 interface CardListsProps<T> {
@@ -39,7 +39,7 @@ const CardLists = <T extends ContentsType>({
         {contents.map((content) => (
           <Grid2 key={content.id}>
             <Link to={`/${pageURL}/${content.id}`}>
-              <ContentCard content={content} Icon={Icon} />
+              <ContentCard content={content} Icon={Icon} boardType={pageURL} />
             </Link>
           </Grid2>
         ))}
