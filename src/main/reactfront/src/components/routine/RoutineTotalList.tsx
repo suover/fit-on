@@ -1,26 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import CardLists from '../cardList/CardList';
 import ShareIcon from '@mui/icons-material/Share';
+import axios from 'axios';
 
 const RoutineTotalList = () => {
-  const [routineList, setRoutineList] = useState<any[]>([]);
+  const [routines, setRoutines] = useState([]);
 
   useEffect(() => {
-    // 백엔드에서 데이터 가져오기
-    axios
-      .get('http://localhost:8080/api/routine') // 적절한 API 엔드포인트로 수정하세요
-      .then((response) => {
-        setRoutineList(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching routines:', error);
-      });
+    const fetchRoutines = async () => {
+      try {
+        const response = await axios.get('/api/routine');
+        const transformedData = response.data.map((info: any) => ({
+          ...info,
+          id: info.routineId, // routineId를 id로 변환
+          views: info.viewCount,
+        }));
+        setRoutines(transformedData);
+      } catch (error) {
+        console.error('Failed to fetch routines:', error);
+      }
+    };
+
+    fetchRoutines();
   }, []);
 
-  return (
-    <CardLists contents={routineList} pageURL="routine" Icon={ShareIcon} />
-  );
+  return <CardLists contents={routines} pageURL="routine" Icon={ShareIcon} />;
 };
 
 export default RoutineTotalList;

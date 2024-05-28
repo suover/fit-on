@@ -51,6 +51,16 @@ public class RoutineBoardService {
 		return routineBoard;
 	}
 
+	public boolean deleteRoutineById(Long id) {
+		try {
+			routineBoardMapper.updateIsDeletedById(id);
+			return true;
+		} catch (Exception e) {
+			System.out.println("Error updating isDeleted flag: " + e.getMessage());
+			return false;
+		}
+	}
+
 	public String getGoalNameById(Integer goalId) {
 		return routineBoardMapper.findGoalNameById(goalId);
 	}
@@ -62,4 +72,5 @@ public class RoutineBoardService {
 	public String getPartNameById(Integer partId) {
 		return routineBoardMapper.findPartNameById(partId);
 	}
+
 }

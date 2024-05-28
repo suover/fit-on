@@ -1,36 +1,45 @@
-import React from 'react';
-
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import { Container } from '@mui/material';
 import PostDetail from '../../components/postDetail/PostDetail';
 
-const dummyRoutine = {
-  postId: 10,
-  title: 'Meditation and Breathing Techniques',
-  userId: 'user010',
-  purpose: 'Promote relaxation and mental clarity',
-  target: ['Mind'],
-  level: 'All Levels',
-  list: [],
-  content:
-    '마음의 평화를 찾기 위한 명상과 마인드풀니스 기법을 배워보세요. 일상의 스트레스에서 벗어나 집중력과 평온함을 높일 수 있습니다.마음의 평화를 찾기 위한 명상과 마인드풀니스 기법을 배워보세요. 일상의 스트레스에서 벗어나 집중력과 평온함을 높일 수 있습니다.마음의 평화를 찾기 위한 명상과 마인드풀니스 기법을 배워보세요. 일상의 스트레스에서 벗어나 집중력과 평온함을 높일 수 있습니다.마음의 평화를 찾기 위한 명상과 마인드풀니스 기법을 배워보세요. 일상의 스트레스에서 벗어나 집중력과 평온함을 높일 수 있습니다.마음의 평화를 찾기 위한 명상과 마인드풀니스 기법을 배워보세요. 일상의 스트레스에서 벗어나 집중력과 평온함을 높일 수 있습니다.마음의 평화를 찾기 위한 명상과 마인드풀니스 기법을 배워보세요. 일상의 스트레스에서 벗어나 집중력과 평온함을 높일 수 있습니다.마음의 평화를 찾기 위한 명상과 마인드풀니스 기법을 배워보세요. 일상의 스트레스에서 벗어나 집중력과 평온함을 높일 수 있습니다.마음의 평화를 찾기 위한 명상과 마인드풀니스 기법을 배워보세요. 일상의 스트레스에서 벗어나 집중력과 평온함을 높일 수 있습니다.마음의 평화를 찾기 위한 명상과 마인드풀니스 기법을 배워보세요. 일상의 스트레스에서 벗어나 집중력과 평온함을 높일 수 있습니다.마음의 평화를 찾기 위한 명상과 마인드풀니스 기법을 배워보세요. 일상의 스트레스에서 벗어나 집중력과 평온함을 높일 수 있습니다.마음의 평화를 찾기 위한 명상과 마인드풀니스 기법을 배워보세요. 일상의 스트레스에서 벗어나 집중력과 평온함을 높일 수 있습니다.마음의 평화를 찾기 위한 명상과 마인드풀니스 기법을 배워보세요. 일상의 스트레스에서 벗어나 집중력과 평온함을 높일 수 있습니다.',
-  category: 'Meditation',
-  writtenTime: '2024-04-28',
-  likes: 200,
-  views: 2500,
-  createAt: '2024-04-24',
-  updateAt: '2024-04-24',
-  comments: [],
-  imageUrl:
-    'https://img.freepik.com/free-photo/full-shot-young-woman-stretching_23-2148309115.jpg',
-};
-
 const ViewRoutineDetail = () => {
+  const { routineNo } = useParams<{ routineNo: string }>(); // useParams를 통해 route parameter를 가져옵니다.
+  const [routineData, setRoutineData] = useState<any>(null); // 초기 상태를 null로 설정합니다.
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchRoutineData = async () => {
+      try {
+        const response = await axios.get(`/api/routine/${routineNo}`);
+        setRoutineData(response.data);
+      } catch (error) {
+        setError(error);
+        console.error('Error fetching routine data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRoutineData();
+  }, [routineNo]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!routineData) {
+    return <div>No routine found</div>;
+  }
+
   return (
     <Container
       maxWidth="lg"
       sx={{ minHeight: '700px', padding: '50px 0 100px' }}
     >
-      <PostDetail data={dummyRoutine} pageURL="routine" />
+      <PostDetail data={routineData} pageURL="routine" />
     </Container>
   );
 };

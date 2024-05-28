@@ -22,12 +22,16 @@
     </resultMap>
 
     <select id="findAll" resultMap="RoutineBoardResultMap">
-        SELECT * FROM routines
+        SELECT * FROM routines WHERE is_deleted = 0
     </select>
 
     <select id="findById" parameterType="long" resultMap="RoutineBoardResultMap">
-        SELECT * FROM routines WHERE routine_id = #{routineId}
+        SELECT * FROM routines WHERE routine_id = #{routineId} AND is_deleted = 0
     </select>
+
+    <update id="updateIsDeletedById" parameterType="long">
+        UPDATE routines SET is_deleted = 1 WHERE routine_id = #{routineId}
+    </update>
 
     <insert id="insertRoutineBoard" parameterType="com.spring.myapp.routineBoard.model.RoutineBoard">
         INSERT INTO routines (user_id, title, content, created_at, updated_at, view_count, share_count, is_deleted,

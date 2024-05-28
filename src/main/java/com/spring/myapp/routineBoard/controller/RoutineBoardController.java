@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,18 +36,34 @@ public class RoutineBoardController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<RoutineBoard> getRoutineById(@PathVariable Long id) {
-		logger.info("@@@@@@@@@@@Fetching routine with id: {}", id);
+	public ResponseEntity<RoutineBoard> getRoutineById(@PathVariable("id") Long id) {
+		logger.info("Fetching routine with id: {}", id);
+
 		RoutineBoard routineBoard = routineBoardService.getRoutineById(id);
 		if (routineBoard != null) {
-			logger.debug("@@@@@@@@@@@Found routine: {}", routineBoard);
+			logger.debug("Found routine: {}", routineBoard);
 			return ResponseEntity.ok(routineBoard);
 		} else {
-			logger.warn("@@@@@@@@@@@Routine with id {} not found", id);
+			logger.warn("Routine with id {} not found", id);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}
 	}
-	
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteRoutine(@PathVariable("id") Long id) {
+		logger.info("Deleting routine with id: {}", id);
+
+		boolean isDeleted = routineBoardService.deleteRoutineById(id);
+		if (isDeleted) {
+			logger.debug("Deleted routine with id: {}", id);
+			return ResponseEntity.noContent().build();
+		} else {
+			logger.warn("Failed to delete routine with id: {}", id);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+	}
+
+	//게시글 생성
 	@PostMapping("/new-routine")
 	public ResponseEntity<RoutineBoard> createRoutine(@RequestBody RoutineBoard routineBoard) {
 		logger.info("@@@@@@@@@@@Creating new routine with title: {}", routineBoard.getTitle());
@@ -60,4 +77,5 @@ public class RoutineBoardController {
 		logger.debug("@@@@@@@@@@@Created routine: {}", savedRoutine);
 		return ResponseEntity.ok(savedRoutine);
 	}
+
 }

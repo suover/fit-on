@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 public class RoutineBoard {
 
-	private Integer routineId;
+	private Long routineId;
 	private Integer userId;
 	private String title;
 	private String content;

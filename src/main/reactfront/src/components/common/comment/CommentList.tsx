@@ -1,5 +1,4 @@
 import React from 'react';
-
 import styled from 'styled-components';
 import CommentListItem from './CommentListItem';
 import { Comment } from '../../../types/MainDummyData';
@@ -11,14 +10,18 @@ const CommentHeading = styled.h3`
   margin-bottom: 5px;
 `;
 
-const CommentList: React.FC<{ comments: Comment[] }> = ({ comments }) => {
+const CommentList: React.FC<{ comments: Comment[] }> = ({ comments = [] }) => {
   return (
     <>
       <CommentHeading>댓글</CommentHeading>
       <CommentInputField />
-      {comments.map((comment) => (
-        <CommentListItem key={comment.id} comment={comment} />
-      ))}
+      {comments.length > 0 ? (
+        comments.map((comment) => (
+          <CommentListItem key={comment.id} comment={comment} />
+        ))
+      ) : (
+        <div>댓글이 없습니다.</div>
+      )}
     </>
   );
 };
