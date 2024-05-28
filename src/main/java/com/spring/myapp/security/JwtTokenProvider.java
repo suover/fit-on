@@ -28,14 +28,15 @@ public class JwtTokenProvider {
 		this.expiration = expiration;
 	}
 
-	public String createToken(String username, List<String> roles) {
+	public String createToken(String username, List<String> roles, String nickname) {
 		Date now = new Date();
 		Date expiryDate = new Date(now.getTime() + expiration);
 
 		return Jwts.builder()
 			.setSubject(username)
 			.claim("roles", roles)
-			.setIssuedAt(new Date())
+			.claim("nickname", nickname)
+			.setIssuedAt(now)
 			.setExpiration(expiryDate)
 			.signWith(secretKey, SignatureAlgorithm.HS256)
 			.compact();
@@ -69,6 +70,15 @@ public class JwtTokenProvider {
 			return rolesStringList;
 		}
 		return new ArrayList<>();
+	}
+
+	public String getNicknameFromToken(String token) {
+		Claims claims = Jwts.parserBuilder()
+			.setSigningKey(secretKey)
+			.build()
+			.parseClaimsJws(token)
+			.getBody();
+		return claims.get("nickname", String.class);
 	}
 
 	public boolean validateToken(String token) {
