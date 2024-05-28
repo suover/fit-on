@@ -30,7 +30,7 @@
         ORDER BY created_at DESC
         LIMIT #{offset}, #{size}
     </select>
-    
+
     <select id="countRoutines" resultType="long">
         SELECT COUNT(*) FROM routines WHERE is_deleted = 0
     </select>
@@ -49,6 +49,10 @@
         VALUES (#{userId}, #{title}, #{content}, NOW(), NOW(), 0, 0, #{isDeleted}, #{isPublic},
         #{goalId}, #{levelId}, #{partId})
     </insert>
+
+    <select id="findBestRoutines" resultMap="RoutineBoardResultMap">
+        SELECT * FROM routines WHERE is_deleted = 0 ORDER BY view_count DESC LIMIT 10
+    </select>
 
     <update id="updateRoutineBoard" parameterType="com.spring.myapp.routineBoard.model.RoutineBoard">
         UPDATE routines

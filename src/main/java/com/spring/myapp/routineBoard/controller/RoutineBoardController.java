@@ -90,7 +90,7 @@ public class RoutineBoardController {
 		return ResponseEntity.ok().build();
 	}
 
-	// 페이징을 위한 엔드포인트 추가
+	// 페이징
 	@GetMapping("/list")
 	public ResponseEntity<List<RoutineBoard>> getRoutinesWithPaging(
 		@RequestParam("page") int page, @RequestParam("size") int size) {
@@ -102,5 +102,12 @@ public class RoutineBoardController {
 	public ResponseEntity<Long> getRoutineCount() {
 		long count = routineBoardService.getRoutineCount();
 		return ResponseEntity.ok(count);
+	}
+
+	// 베스트 루틴 조회
+	@GetMapping("/best")
+	public ResponseEntity<List<RoutineBoard>> getBestRoutines() {
+		List<RoutineBoard> bestRoutines = routineBoardService.getBestRoutines();
+		return ResponseEntity.ok(bestRoutines);
 	}
 }

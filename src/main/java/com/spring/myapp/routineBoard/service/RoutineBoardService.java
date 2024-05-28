@@ -83,4 +83,8 @@ public class RoutineBoardService {
 	public long getRoutineCount() {
 		return routineBoardMapper.countRoutines();
 	}
+
+	public List<RoutineBoard> getBestRoutines() {
+		return routineBoardMapper.findBestRoutines();
+	}
 }

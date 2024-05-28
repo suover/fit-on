@@ -32,4 +32,6 @@ public interface RoutineBoardMapper {
 	List<RoutineBoard> findAllWithPaging(@Param("offset") int offset, @Param("size") int size);
 
 	long countRoutines();
+
+	List<RoutineBoard> findBestRoutines();
 }
