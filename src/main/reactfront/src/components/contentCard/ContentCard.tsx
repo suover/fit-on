@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { Card, TextBox } from './ContentCard.styles';
+
 import { SvgIconProps } from '@mui/material';
 import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 
@@ -30,7 +32,7 @@ const ContentCard = <T extends ContentType>({
   return (
     <Card>
       <div>
-        <img src={imageUrl} alt="thumbnail" />
+        <img src={imageUrl} alt="thumnail" />
       </div>
       <TextBox>
         <h3>{title}</h3>
