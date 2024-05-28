@@ -1,5 +1,7 @@
 package com.spring.myapp.routineBoard.controller;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,14 @@ public class RoutineBoardController {
 	@Autowired
 	private RoutineBoardService routineBoardService;
 
+	@GetMapping
+	public ResponseEntity<List<RoutineBoard>> getAllRoutines() {
+		logger.info("@@@@@@@@@@@Fetching all routines");
+		List<RoutineBoard> routines = routineBoardService.getAllRoutines();
+		logger.debug("@@@@@@@@@@@Fetched {} routines", routines.size());
+		return ResponseEntity.ok(routines);
+	}
+
 	@GetMapping("/{id}")
 	public ResponseEntity<RoutineBoard> getRoutineById(@PathVariable Long id) {
 		logger.info("@@@@@@@@@@@Fetching routine with id: {}", id);
@@ -36,7 +46,7 @@ public class RoutineBoardController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}
 	}
-
+	
 	@PostMapping("/new-routine")
 	public ResponseEntity<RoutineBoard> createRoutine(@RequestBody RoutineBoard routineBoard) {
 		logger.info("@@@@@@@@@@@Creating new routine with title: {}", routineBoard.getTitle());
