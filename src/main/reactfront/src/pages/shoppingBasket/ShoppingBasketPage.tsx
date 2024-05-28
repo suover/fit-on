@@ -24,129 +24,62 @@ import {
   HeaderTableCell,
 } from '../../styles/shoppingBasket/ShoppingBasket.styles';
 import GenericButton from '../../components/common/genericButton/GenericButton';
+import axios from 'axios';
+import { CartItem } from '../../types/DataInterface';
 
 const ShoppingBasketPage: React.FC = () => {
-  const initialItems: {
-    id: number;
-    imageUrl: string;
-    name: string;
-    quantity: number;
-    price: number;
-    deliveryFee: number;
-  }[] = [
-    {
-      id: 1,
-      imageUrl:
-        'https://img.danawa.com/prod_img/500000/020/308/img/5308020_1.jpg?_v=20221202170053',
-      name: '츄어블 비타민D 레몬맛',
-      quantity: 1,
-      price: 5000,
-      deliveryFee: 2500,
-    },
-    {
-      id: 2,
-      imageUrl:
-        'https://img.danawa.com/prod_img/500000/300/189/img/5189300_1.jpg?_v=20230714130047',
-      name: '눈 건강 젤리 베리믹스맛',
-      quantity: 1,
-      price: 5000,
-      deliveryFee: 2500,
-    },
-    {
-      id: 3,
-      imageUrl:
-        'https://www.costco.co.kr/medias/sys_master/images/hea/h88/33419840749598.jpg',
-      name: '프로바이오틱스 요구르트맛',
-      quantity: 2,
-      price: 0,
-      deliveryFee: 2500,
-    },
-    {
-      id: 4,
-      imageUrl:
-        'https://img.danawa.com/prod_img/500000/020/308/img/5308020_1.jpg?_v=20221202170053',
-      name: '비타민C 오렌지맛',
-      quantity: 3,
-      price: 5000,
-      deliveryFee: 2500,
-    },
-    {
-      id: 5,
-      imageUrl:
-        'https://quabdfrttgah10486813.cdn.ntruss.com/upload/item/1000000843/1000000843_ITEM.png',
-      name: '칼슘 마그네슘 영양제',
-      quantity: 1,
-      price: 5000,
-      deliveryFee: 2500,
-    },
-    {
-      id: 6,
-      imageUrl:
-        'https://m.soonsoofood.co.kr/web/product/big/202403/20cd1a4cbe9b7db604ce73e6fc6b8871.jpg',
-      name: '오메가3 피쉬오일',
-      quantity: 2,
-      price: 50000,
-      deliveryFee: 2500,
-    },
-    {
-      id: 7,
-      imageUrl:
-        'https://quabdfrttgah10486813.cdn.ntruss.com/upload/item/1000000843/1000000843_ITEM.png',
-      name: '멀티비타민 종합영양제',
-      quantity: 1,
-      price: 5000,
-      deliveryFee: 2500,
-    },
-    {
-      id: 8,
-      imageUrl:
-        'https://m.daewoong.co.kr/attach/202002/7a4c48140f7745ca9403367b718315ff.jpg',
-      name: '프로틴 바닐라맛',
-      quantity: 2,
-      price: 5000,
-      deliveryFee: 2500,
-    },
-    {
-      id: 9,
-      imageUrl:
-        'https://www.nanowellcare.com/mall/shop_image/202307/%BA%F1%C5%B8%B9%CEC_%C7%BB%BE%EE_%B9%F6%C6%DB%B5%E5_%C1%DF%BC%BA_1%B9%DA%BD%BA.png',
-      name: '아이허브 비타민D',
-      quantity: 3,
-      price: 5000,
-      deliveryFee: 2500,
-    },
-    {
-      id: 10,
-      imageUrl:
-        'https://quabdfrttgah10486813.cdn.ntruss.com/upload/item/1000000843/1000000843_ITEM.png',
-      name: '철분제 캡슐',
-      quantity: 1,
-      price: 3500,
-      deliveryFee: 2500,
-    },
-  ];
-
-  const [items, setItems] = useState(initialItems);
+  const [items, setItems] = useState<CartItem[]>([]);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [selectAll, setSelectAll] = useState(false);
   const [page, setPage] = useState(1);
   const rowsPerPage = 5;
   const navigate = useNavigate();
+  const userId = 36; // 관리자userid
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openOrderDialog, setOpenOrderDialog] = useState(false);
 
   useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        const response = await axios.get<CartItem[]>(
+          `/api/carts/${userId}/cartItems`,
+        );
+        if (response.status === 200) {
+          setItems(response.data);
+        } else {
+          console.error('Failed to fetch cart items');
+        }
+      } catch (error) {
+        console.error('Error fetching cart items', error);
+      }
+    };
+
+    fetchCartItems();
+  }, [userId]);
+
+  // useEffect(() => {
+  //   const totalAmount = selectedItems.reduce((acc, id) => {
+  //     const product = items.find((product) => product.productId === id);
+  //     return product ? acc + product.price : acc;
+  //   }, 0);
+  //   const totalDeliveryFee =
+  //     totalAmount >= 50000 ? 0 : selectedItems.length > 0 ? 2500 : 0;
+
+  //   setTotalAmount(totalAmount);
+  //   setTotalDeliveryFee(totalDeliveryFee);
+  // }, [selectedItems]);
+  useEffect(() => {
     const totalAmount = selectedItems.reduce((acc, id) => {
-      const item = items.find((item) => item.id === id);
-      return item ? acc + item.price : acc;
+      const cartItem = items.find((cartItem) => cartItem.productId === id);
+      return cartItem ? acc + cartItem.price * cartItem.quantity : acc;
     }, 0);
     const totalDeliveryFee =
       totalAmount >= 50000 ? 0 : selectedItems.length > 0 ? 2500 : 0;
 
     setTotalAmount(totalAmount);
     setTotalDeliveryFee(totalDeliveryFee);
-  }, [selectedItems]);
+  }, [selectedItems, items]);
 
   const [totalAmount, setTotalAmount] = useState(0);
   const [totalDeliveryFee, setTotalDeliveryFee] = useState(0);
@@ -155,7 +88,7 @@ const ShoppingBasketPage: React.FC = () => {
     if (selectAll) {
       setSelectedItems([]);
     } else {
-      setSelectedItems(items.map((item) => item.id));
+      setSelectedItems(items.map((item) => item.productId));
     }
     setSelectAll(!selectAll);
   };
@@ -169,7 +102,7 @@ const ShoppingBasketPage: React.FC = () => {
   };
 
   const handleDeleteItems = () => {
-    setItems(items.filter((item) => !selectedItems.includes(item.id)));
+    setItems(items.filter((item) => !selectedItems.includes(item.productId)));
     setSelectedItems([]);
     setSelectAll(false);
     setOpenDeleteDialog(false);
@@ -177,7 +110,7 @@ const ShoppingBasketPage: React.FC = () => {
 
   const handleOrderSelectedItems = () => {
     const selectedProducts = items.filter((item) =>
-      selectedItems.includes(item.id),
+      selectedItems.includes(item.productId),
     );
     navigate('/order-page', { state: { selectedProducts } });
     setOpenOrderDialog(false);
@@ -233,11 +166,11 @@ const ShoppingBasketPage: React.FC = () => {
           </TableHead>
           <TableBody>
             {paginatedItems.map((item, index) => (
-              <TableRow key={item.id}>
+              <TableRow key={item.cartItemId}>
                 <TableCell>
                   <Checkbox
-                    checked={selectedItems.includes(item.id)}
-                    onChange={() => handleSelectItem(item.id)}
+                    checked={selectedItems.includes(item.productId)}
+                    onChange={() => handleSelectItem(item.productId)}
                   />
                 </TableCell>
                 <TableCell
@@ -249,7 +182,7 @@ const ShoppingBasketPage: React.FC = () => {
                   }}
                 >
                   <img
-                    src={item.imageUrl}
+                    src={item.imageUrl || ''}
                     alt="#"
                     style={{
                       width: '100px',
@@ -257,14 +190,14 @@ const ShoppingBasketPage: React.FC = () => {
                       marginRight: '10px',
                     }}
                   />
-                  {item.name}
+                  {item.name || ''}
                 </TableCell>
                 <TableCell align="center">{item.quantity}</TableCell>
                 <TableCell align="center">
-                  {item.price.toLocaleString()} 원
+                  {item.price.toLocaleString() || 0} 원
                 </TableCell>
                 <TableCell align="center">
-                  {item.price.toLocaleString()} 원
+                  {(item.price * item.quantity).toLocaleString() || 0} 원
                 </TableCell>
                 <TableCell align="center"></TableCell>
               </TableRow>

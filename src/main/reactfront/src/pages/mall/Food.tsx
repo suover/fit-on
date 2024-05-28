@@ -61,7 +61,7 @@ const Food: React.FC = () => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get<Product[]>(
-        `http://localhost:8080/api/products/with-images/active/${categoryValue}`,
+        `http://localhost:8080/api/products/with-images/${categoryValue}/active`,
       );
       setProducts(response.data);
       setFilteredItems(response.data);

@@ -57,7 +57,7 @@ public class ProductController {
 		List<Product> products = productService.getAllActiveProductsWithMainImage();
 		return ResponseEntity.ok(products);
 	}
-	@GetMapping("/with-images/active/{category}")
+	@GetMapping("/with-images/{category}/active")
 	public ResponseEntity<List<Product>> getAllActiveProductsWithMainImageByCategory(@PathVariable Long category) {
 		System.out.println("컨트롤러단 상품카테고리 밸류값 : "+category);
 		List<Product> products = productService.getAllActiveProductsWithMainImageByCategory(category);
@@ -66,7 +66,7 @@ public class ProductController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
+	public ResponseEntity<Product> updateProduct(@PathVariable("id") Long id, @RequestBody Product product) {
 		product.setProductId(id);
 		productService.updateProduct(product);
 		return ResponseEntity.ok(product);
