@@ -20,9 +20,9 @@ const KakaoLoginButton: React.FC = () => {
         kakaoAccessToken: response.access_token,
       });
       if (res.status === 200) {
-        const { token, roles, nickname } = res.data;
+        const { token, roles, nickname, userId, name } = res.data;
         localStorage.setItem('kakaoAccessToken', response.access_token);
-        login(token, roles, nickname, 'kakao');
+        login(token, roles, nickname, 'kakao', userId, name);
         alert('Kakao 계정으로 로그인 하였습니다.');
         navigate('/');
       }

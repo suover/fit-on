@@ -15,8 +15,8 @@ const GoogleLoginButton: React.FC = () => {
           token: response.credential,
         });
         if (res.status === 200) {
-          const { token, roles, nickname } = res.data;
-          login(token, roles, nickname, 'google');
+          const { token, roles, nickname, userId, name } = res.data;
+          login(token, roles, nickname, 'google', userId, name);
           alert('Google 계정으로 로그인 하였습니다.');
           navigate('/');
         }

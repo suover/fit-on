@@ -183,8 +183,8 @@ const SigninPage: React.FC = () => {
     }
     try {
       const response = await axios.post('api/auth/login', { email, password });
-      const { token, roles, nickname } = response.data;
-      login(token, roles, nickname, 'standard');
+      const { token, roles, nickname, userId, name } = response.data;
+      login(token, roles, nickname, 'standard', userId, name);
       navigate('/');
     } catch (error) {
       console.error('로그인 실패:', error);

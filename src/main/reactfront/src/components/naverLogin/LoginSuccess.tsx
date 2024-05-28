@@ -11,9 +11,11 @@ const LoginSuccess: React.FC = () => {
     const token = params.get('token');
     const roles = params.get('roles')?.split(',') || [];
     const nickname = params.get('nickname');
+    const userId = params.get('userId');
+    const name = params.get('name');
 
-    if (token && roles.length > 0 && nickname) {
-      login(token, roles, nickname, 'naver');
+    if (token && roles.length > 0 && nickname && userId && name) {
+      login(token, roles, nickname, 'naver', parseInt(userId, 10), name);
       // alert('Naver 계정으로 로그인 하였습니다.');
       navigate('/');
     } else {

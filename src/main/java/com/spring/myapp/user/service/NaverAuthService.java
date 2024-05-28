@@ -69,9 +69,10 @@ public class NaverAuthService {
 		List<String> roles = userMapper.getUserRoles(user.getUserId()).stream()
 			.map(role -> "ROLE_" + role)
 			.collect(Collectors.toList());
-		String jwtToken = jwtTokenProvider.createToken(user.getEmail(), roles, user.getNickname());
+		String jwtToken = jwtTokenProvider.createToken(user.getEmail(), roles, user.getNickname(), user.getUserId(),
+			user.getName());
 
-		return new JwtAuthenticationResponse(jwtToken, roles, user.getNickname());
+		return new JwtAuthenticationResponse(jwtToken, roles, user.getNickname(), user.getUserId(), user.getName());
 	}
 
 	private User getUser(String provider, String providerId, String email, String name) {

@@ -6,11 +6,15 @@ public class JwtAuthenticationResponse {
 	private String token;
 	private List<String> roles;
 	private String nickname;
+	private Long userId;
+	private String name;
 
-	public JwtAuthenticationResponse(String token, List<String> roles, String nickname) {
+	public JwtAuthenticationResponse(String token, List<String> roles, String nickname, Long userId, String name) {
 		this.token = token;
 		this.roles = roles;
 		this.nickname = nickname;
+		this.userId = userId;
+		this.name = name;
 	}
 
 	public String getToken() {
@@ -25,6 +29,14 @@ public class JwtAuthenticationResponse {
 		return nickname;
 	}
 
+	public Long getUserId() {
+		return userId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
 	public void setToken(String token) {
 		this.token = token;
 	}
@@ -35,5 +47,13 @@ public class JwtAuthenticationResponse {
 
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }
