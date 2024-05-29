@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -15,6 +17,9 @@ public class ProductService {
 
 	public List<Product> getAllProducts() {
 		return productMapper.findAll();
+	}
+	public List<Product> getProducts() {
+		return productMapper.findAvailable();
 	}
 
 	public Product getProductById(Long id) {
@@ -27,13 +32,23 @@ public class ProductService {
 		productMapper.save(product);
 		return product;
 	}
-
 	public void updateProduct(Product product) {
-		productMapper.update(product);
+		productMapper.updateProduct(product);
 	}
 
-	public void deleteProduct(Long id) {
-		productMapper.deleteById(id);
+	public void  deactivate(Long id, Boolean isDeleted) {
+		productMapper.updateIsDeleted(id, isDeleted);
 	}
+	public List<Product> getAllProductsWithMainImage() {
+		return productMapper.findAllWithMainImage();
+	}
+	public List<Product> getAllActiveProductsWithMainImage() {
+		return productMapper.findAllActiveWithMainImage();
+	}
+	public List<Product> getAllActiveProductsWithMainImageByCategory(Long categoryId) {
+		System.out.println("서비스단 카테고리로 상품가져오기 시작");
+		return productMapper.findAllActiveWithMainImageByCategory(categoryId);
+	}
+
 
 }

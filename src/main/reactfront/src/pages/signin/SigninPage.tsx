@@ -15,7 +15,6 @@ import {
 import EmailIcon from '@mui/icons-material/Email';
 import KeyIcon from '@mui/icons-material/Key';
 import kakao from '../../assets/img/signin/kakao.png';
-import naver from '../../assets/img/signin/naver.png';
 import axios from '../../api/axiosConfig';
 import GenericButton from '../../components/common/genericButton/GenericButton';
 import {
@@ -25,11 +24,10 @@ import {
   SocialIconsContainer,
 } from '../../styles/signin/SigninPage.styles';
 import AuthContext from '../../context/AuthContext';
-import {
-  GoogleOAuthProvider,
-  GoogleLogin,
-  CredentialResponse,
-} from '@react-oauth/google';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import NaverLoginButton from '../../components/naverLogin/NaverLoginButton';
+import GoogleLoginButton from '../../components/googleLogin/GoogleLoginButton';
+import KakaoLoginButton from '../../components/kakaoLogin/KakaoLoginButton';
 
 const FindEmailForm = () => (
   <Box>
@@ -185,41 +183,13 @@ const SigninPage: React.FC = () => {
     }
     try {
       const response = await axios.post('api/auth/login', { email, password });
-      const { token, roles, nickname } = response.data;
-      login(token, roles, nickname);
+      const { token, roles, nickname, userId, name } = response.data;
+      login(token, roles, nickname, 'standard', userId, name);
       navigate('/');
     } catch (error) {
       console.error('로그인 실패:', error);
       alert('로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.');
     }
-  };
-
-  const handleOAuth2LoginSuccess = async (
-    provider: string,
-    response: CredentialResponse,
-  ) => {
-    const token = response.credential;
-    try {
-      const res = await axios.post('/api/auth/oauth2', { token, provider });
-      const { token: jwtToken, roles, nickname } = res.data;
-      login(jwtToken, roles, nickname);
-      navigate('/');
-    } catch (error) {
-      console.error(`${provider} 로그인 실패:`, error);
-      alert(`${provider} 로그인에 실패했습니다.`);
-    }
-  };
-
-  const handleLoginSuccess = async (
-    provider: string,
-    response: CredentialResponse,
-  ) => {
-    await handleOAuth2LoginSuccess(provider, response);
-  };
-
-  const handleLoginFailure = (provider: string) => {
-    console.error(`${provider} 로그인 실패`);
-    alert(`${provider} 로그인에 실패했습니다.`);
   };
 
   return (
@@ -340,20 +310,13 @@ const SigninPage: React.FC = () => {
 
         <SocialIconsContainer>
           <SocialIcon>
-            <a href="#" />
-            <img alt="KakaoTalk" width={40} src={kakao} />
+            <KakaoLoginButton />
           </SocialIcon>
           <SocialIcon>
-            <a href="#" />
-            <img alt="Naver" width={40} src={naver} />
+            <NaverLoginButton />
           </SocialIcon>
           <SocialIcon>
-            <GoogleLogin
-              onSuccess={(response) => handleLoginSuccess('google', response)}
-              onError={() => handleLoginFailure('google')}
-              type="icon"
-              size="large"
-            />
+            <GoogleLoginButton />
           </SocialIcon>
         </SocialIconsContainer>
         <Typography

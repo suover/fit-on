@@ -1,6 +1,5 @@
 package com.spring.myapp.security;
 
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +27,7 @@ public class JwtTokenProvider {
 		this.expiration = expiration;
 	}
 
-	public String createToken(String username, List<String> roles, String nickname) {
+	public String createToken(String username, List<String> roles, String nickname, Long userId, String name) {
 		Date now = new Date();
 		Date expiryDate = new Date(now.getTime() + expiration);
 
@@ -36,6 +35,8 @@ public class JwtTokenProvider {
 			.setSubject(username)
 			.claim("roles", roles)
 			.claim("nickname", nickname)
+			.claim("user_id", userId)
+			.claim("name", name)
 			.setIssuedAt(now)
 			.setExpiration(expiryDate)
 			.signWith(secretKey, SignatureAlgorithm.HS256)
@@ -58,18 +59,7 @@ public class JwtTokenProvider {
 			.parseClaimsJws(token)
 			.getBody();
 
-		Object roles = claims.get("roles");
-		if (roles instanceof List<?>) {
-			List<?> rolesList = (List<?>)roles;
-			List<String> rolesStringList = new ArrayList<>();
-			for (Object role : rolesList) {
-				if (role instanceof String) {
-					rolesStringList.add((String)role);
-				}
-			}
-			return rolesStringList;
-		}
-		return new ArrayList<>();
+		return claims.get("roles", List.class);
 	}
 
 	public String getNicknameFromToken(String token) {
@@ -79,6 +69,24 @@ public class JwtTokenProvider {
 			.parseClaimsJws(token)
 			.getBody();
 		return claims.get("nickname", String.class);
+	}
+
+	public Long getUserIdFromToken(String token) {
+		Claims claims = Jwts.parserBuilder()
+			.setSigningKey(secretKey)
+			.build()
+			.parseClaimsJws(token)
+			.getBody();
+		return claims.get("user_id", Long.class);
+	}
+
+	public String getNameFromToken(String token) {
+		Claims claims = Jwts.parserBuilder()
+			.setSigningKey(secretKey)
+			.build()
+			.parseClaimsJws(token)
+			.getBody();
+		return claims.get("name", String.class);
 	}
 
 	public boolean validateToken(String token) {
