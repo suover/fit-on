@@ -61,8 +61,47 @@ const getStatusStyles = (status: string) => {
   }
 };
 
+const dummyInquiry: Inquiry[] = [
+  {
+    id: '1',
+    productName: '체스트 프레스 머신',
+    title: '체스트 프레스 머신 설치 방법 문의',
+    inquiryDate: '2024-05-29',
+    status: '답변 대기',
+    photoUrl:
+      'https://m.fitboon.com/web/product/big/202107/a0ed4f360594c8ed9c3ad0959d5f3b1b.jpg',
+  },
+  {
+    id: '2',
+    productName: '바벨 세트',
+    title: '바벨 세트 무게 문의',
+    inquiryDate: '2024-05-12',
+    status: '답변 완료',
+    photoUrl:
+      'https://contents.lotteon.com/itemimage/_v154406/LO/12/74/44/77/93/_1/27/44/47/79/4/LO1274447793_1274447794_1.jpg/dims/optimize/dims/resizemc/400x400',
+  },
+  {
+    id: '3',
+    productName: '트레드밀',
+    title: '트레드밀 유지보수 관련 문의',
+    inquiryDate: '2024-05-09',
+    status: '답변 완료',
+    photoUrl:
+      'https://pama.co.kr/web/product/big/202109/5852cd81ec9e89aae24fbef3d44c10c2.png',
+  },
+  {
+    id: '4',
+    productName: '푸쉬업 바',
+    title: '푸쉬업 바 사용법 문의',
+    inquiryDate: '2024-05-03',
+    status: '답변 완료',
+    photoUrl:
+      'https://i.namu.wiki/i/MzYUJekuBNMqQw1s4iPLxJ0uzRJpc-3rRld209TY_B54bOrvJJ-fhQTqg9_nAuJHYlZCx7_3cICEU_LJlbzlRw.webp',
+  },
+];
+
 function ProductInquiryPage() {
-  const [inquiries, setInquiries] = useState<Inquiry[]>(initialInquiries);
+  const [inquiries, setInquiries] = useState<Inquiry[]>(dummyInquiry);
   const [searchText, setSearchText] = useState('');
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);

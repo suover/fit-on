@@ -47,6 +47,11 @@ public class InfoBoardController {
 	@GetMapping("/info")
 	public ResponseEntity<List<Information>> getAllInfoList() { // 전체 목록 조회. 페이징, 필터기능 포함해야함!
 		List<Information> infoList = infoService.getAllInfoList();
+
+		System.out.println("---------------------------");
+		System.out.println(infoList.get(1));
+		System.out.println("---------------------------");
+
 		return new ResponseEntity<>(infoList, HttpStatus.OK);
 	}
 
@@ -61,7 +66,7 @@ public class InfoBoardController {
 
 			String imageUrl = saveImage(file);
 			info.setImageUrl(imageUrl);
-			
+
 			infoService.writeNewInfo(info);
 
 			return ResponseEntity.ok("Information added successfully");
