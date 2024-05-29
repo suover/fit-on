@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useTheme } from '@mui/material/styles';
-
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
@@ -17,9 +16,11 @@ import { useNavigate } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Divider from '@mui/material/Divider';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 import { NavbarItem } from './NavbarItem';
 import StyledAvatar from './StyledAvatar';
+import AuthContext from '../../../context/AuthContext';
 
 interface SideNavbarProps {
   menuItems: NavbarItem[];
@@ -51,12 +52,27 @@ const SideNavbar: React.FC<SideNavbarProps> = ({
   const theme = useTheme();
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
+  const { isAuthenticated, name, nickname, logout, loginType } =
+    useContext(AuthContext);
 
   const toggleOpen = () => {
     setOpen(!open);
   };
 
   const drawerWidthClose = `calc((${paddingIconButton} + ${marginIconButton}) * 2 + ${iconMargin})`;
+
+  const handleLogout = () => {
+    if (loginType === 'kakao') {
+      localStorage.removeItem('kakaoAccessToken');
+    }
+    logout();
+    alert('로그아웃 되었습니다.');
+    navigate('/');
+  };
+
+  const handleLogin = () => {
+    navigate('/sign-in');
+  };
 
   const drawerContent = (
     <>
@@ -178,39 +194,72 @@ const SideNavbar: React.FC<SideNavbarProps> = ({
               alignContent: 'center',
             }}
           >
-            <StyledAvatar />
+            {isAuthenticated ? (
+              <StyledAvatar />
+            ) : (
+              <AccountCircleIcon sx={{ fontSize: '36px' }} />
+            )}
           </Box>
-          <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-            <Typography
-              component="span"
-              variant="body2"
+          {isAuthenticated ? (
+            <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+              <Typography
+                component="span"
+                variant="body2"
+                sx={{
+                  fontFamily: 'inherit',
+                  display: 'block',
+                  whiteSpace: 'nowrap',
+                  lineHeight: 'inherit',
+                  fontWeight: 500,
+                  color: 'black',
+                }}
+              >
+                {name}님
+              </Typography>
+              <Typography
+                component="span"
+                variant="body2"
+                sx={{
+                  display: 'block',
+                  whiteSpace: 'nowrap',
+                  lineHeight: 'inherit',
+                  color: 'black',
+                }}
+              >
+                {nickname}
+              </Typography>
+            </Box>
+          ) : (
+            <Box
               sx={{
-                fontFamily: 'inherit',
-                display: 'block',
-                whiteSpace: 'nowrap',
-                lineHeight: 'inherit',
-                fontWeight: 500,
-                color: 'black',
+                display: 'flex',
+                flexDirection: 'column',
+                flexGrow: 1,
+                cursor: 'pointer',
               }}
+              onClick={handleLogin}
             >
-              홍길동님
-            </Typography>
-            <Typography
-              component="span"
-              variant="body2"
-              sx={{
-                display: 'block',
-                whiteSpace: 'nowrap',
-                lineHeight: 'inherit',
-                color: 'black',
-              }}
-            >
-              nickname
-            </Typography>
-          </Box>
-          <IconButton sx={{ color: 'black' }}>
-            <ExitToAppIcon />
-          </IconButton>
+              <Typography
+                component="span"
+                variant="body2"
+                sx={{
+                  fontFamily: 'inherit',
+                  display: 'block',
+                  whiteSpace: 'nowrap',
+                  lineHeight: 'inherit',
+                  fontWeight: 500,
+                  color: 'black',
+                }}
+              >
+                로그인 해주세요
+              </Typography>
+            </Box>
+          )}
+          {isAuthenticated && (
+            <IconButton sx={{ color: 'black' }} onClick={handleLogout}>
+              <ExitToAppIcon />
+            </IconButton>
+          )}
         </Box>
       )}
     </>
