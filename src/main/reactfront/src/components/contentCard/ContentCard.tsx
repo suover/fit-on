@@ -40,7 +40,7 @@ const ContentCard = <T extends ContentType>({
             <ThumbUpOutlinedIcon /> {likes}
           </span>
           <span>
-            {Icon ? <Icon /> : <ThumbUpOutlinedIcon />} {views ? views : ''}
+            {Icon ? <Icon /> : <ThumbUpOutlinedIcon />} {views ? views : 0}
           </span>
         </p>
       </TextBox>
