@@ -52,23 +52,12 @@
     <update id="deleteComment">
         UPDATE info_comments
         SET is_deleted = 1
-        WHERE comment_id = #{commentId} AND parent_comment_id = #{commentId}
+        WHERE comment_id = #{commentId} OR parent_comment_id = #{commentId}
     </update>
-    <!--    <update id="updateComment">-->
-    <!--        UPDATE comments-->
-    <!--        SET content = #{content}, updated_at = #{updatedAt}-->
-    <!--        WHERE comment_id = #{commentId}-->
-    <!--    </update>-->
 
-    <!--    <update id="deleteComment">-->
-    <!--        UPDATE comments-->
-    <!--        SET is_deleted = TRUE-->
-    <!--        WHERE comment_id = #{commentId}-->
-    <!--    </update>-->
-
-    <!--    <select id="selectRepliesByParentCommentId" resultType="com.spring.myapp.informationBoard.model.Comments">-->
-    <!--        SELECT * FROM comments-->
-    <!--        WHERE parent_comment_id = #{parentCommentId} AND is_deleted = FALSE-->
-    <!--        ORDER BY created_at ASC-->
-    <!--    </select>-->
+    <update id="updateComment">
+        UPDATE info_comments
+        SET content = #{content}, updated_at = NOW()
+        WHERE comment_id = #{commentId}
+    </update>
 </mapper>

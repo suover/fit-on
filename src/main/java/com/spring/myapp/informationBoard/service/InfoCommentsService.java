@@ -34,11 +34,7 @@ public class InfoCommentsService {
 		newComment.setIsDeleted(false);
 
 		infoCommentsMapper.writeNewComment(newComment);
-
-		System.out.println("-------------------");
-		System.out.println(newComment.getCommentId());
-		System.out.println("-------------------");
-
+		
 		return infoCommentsMapper.getCommentById(newComment.getCommentId());
 	}
 
@@ -48,5 +44,9 @@ public class InfoCommentsService {
 
 	public void deleteComment(Long commentId) {
 		infoCommentsMapper.deleteComment(commentId);
+	}
+
+	public void updateComment(Long commentId, String content) {
+		infoCommentsMapper.updateComment(commentId, content);
 	}
 }

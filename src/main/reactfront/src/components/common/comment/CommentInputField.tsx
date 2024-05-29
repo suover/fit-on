@@ -20,7 +20,7 @@ const CommentInputField: React.FC<{
   addComment: (comment: Comment) => void;
 }> = ({ route, postId, idName, addComment, commentId }) => {
   const [content, setContent] = useState('');
-  //const { nickname } = useContext(AuthContext);
+  const { userId } = useContext(AuthContext);
 
   const handleCommentSubmit = async () => {
     if (content.trim().length === 0) {
@@ -30,7 +30,7 @@ const CommentInputField: React.FC<{
 
     const comment = {
       [idName]: postId,
-      userId: 36,
+      userId: userId,
       content: content,
       commentId: commentId ? commentId : null,
     };

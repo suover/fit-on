@@ -61,11 +61,7 @@ public class InfoBoardController {
 
 			String imageUrl = saveImage(file);
 			info.setImageUrl(imageUrl);
-
-			System.out.println("-------------------");
-			System.out.println(info);
-			System.out.println("-------------------");
-
+			
 			infoService.writeNewInfo(info);
 
 			return ResponseEntity.ok("Information added successfully");

@@ -13,6 +13,7 @@ export interface Comment {
   updatedAt: string;
   isDeleted: boolean;
   nickname: string;
+  parentCommentId?: number;
 }
 
 const CommentHeading = styled.h3`
@@ -27,10 +28,24 @@ const CommentList: React.FC<{
   postId: string;
   idName: string;
   addComment: (comment: Comment) => void;
-}> = ({ comments, route, postId, idName, addComment }) => {
+  deleteComment: (commentId: number) => void;
+  updateComment: (commentId: number, content: string) => void;
+}> = ({
+  comments,
+  route,
+  postId,
+  idName,
+  addComment,
+  deleteComment,
+  updateComment,
+}) => {
   const addedComment = (comment: Comment): void => {
     addComment(comment);
     console.log(comment);
+  };
+
+  const handleUpdateComment = (commentId: number, content: string): void => {
+    updateComment(commentId, content);
   };
 
   return (
@@ -49,6 +64,8 @@ const CommentList: React.FC<{
           route={route}
           postId={postId}
           idName={idName}
+          deleteComment={deleteComment}
+          updateComment={handleUpdateComment}
         />
       ))}
     </>

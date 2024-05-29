@@ -19,4 +19,6 @@ public interface InfoCommentsMapper {
 	public List<Comments> getRepliesById(@Param("commentId") Long commentId);
 
 	public void deleteComment(@Param("commentId") Long commentId);
+
+	public void updateComment(@Param("commentId") Long commentId, @Param("content") String content);
 }

@@ -1,32 +1,49 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useContext, useState } from 'react';
 
 import { Comment } from './CommentList';
+import AuthContext from '../../../context/AuthContext';
 import CommentItem from './StyledCommentItem.styles';
+import EditCommentInput from './EditCommentInput';
 
 import PersonIcon from '@mui/icons-material/Person';
 //import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
 const StyledCommentItem: React.FC<{
   comment: Comment;
+  route: string;
   isReply: boolean;
   cntReplies?: number;
   clickReply: (isShow: boolean) => void;
-}> = ({ comment, isReply, cntReplies, clickReply }) => {
+  handleDelete: (commentId: number) => void;
+  handleUpdate: (commentId: number, content: string) => void;
+}> = ({
+  comment,
+  route,
+  isReply,
+  cntReplies,
+  clickReply,
+  handleDelete,
+  handleUpdate,
+}) => {
   const [isExpand, setIsExpand] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const { nickname } = useContext(AuthContext);
+  const createdDate = comment.createdAt.split('T')[0];
+
   const handleClick = (): void => {
     clickReply(true);
     setIsExpand((prevState) => !prevState);
   };
-  const createdDate = comment.createdAt.split('T')[0];
+
+  const handleEdit = () => {
+    setIsEditing((prevState) => !prevState);
+  };
+
+  const handleUpdateComment = (commentId: number, content: string) => {
+    handleUpdate(commentId, content);
+    setIsEditing(false);
+  };
 
   return (
     <CommentItem $isReply={isReply} $isExpand={isExpand}>
@@ -37,7 +54,17 @@ const StyledCommentItem: React.FC<{
         <span>{comment.nickname}</span>
         <span>{createdDate}</span>
       </div>
-      <p>{comment.content}</p>
+      {isEditing ? (
+        <EditCommentInput
+          comment={comment}
+          route={route}
+          commentId={comment.commentId}
+          existingContent={comment.content}
+          handleUpdate={handleUpdateComment}
+        />
+      ) : (
+        <p>{comment.content}</p>
+      )}
       <div className="control">
         {!isReply && (
           <>
@@ -50,8 +77,14 @@ const StyledCommentItem: React.FC<{
             </span> */}
           </>
         )}
-        <span>수정</span>
-        <span>삭제</span>
+        {comment.nickname === nickname ? (
+          <>
+            <span onClick={handleEdit}>수정</span>
+            <span onClick={() => handleDelete(comment.commentId)}>삭제</span>
+          </>
+        ) : (
+          ''
+        )}
       </div>
     </CommentItem>
   );

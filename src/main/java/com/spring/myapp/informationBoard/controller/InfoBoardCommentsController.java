@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,11 +44,6 @@ public class InfoBoardCommentsController {
 	public ResponseEntity<?> newInfoComment(@RequestBody Comments comment) { // 새 정보글 등록
 		try {
 			logger.info("Received new information post request: {}", comment);
-
-			System.out.println("-------------------");
-			System.out.println(comment);
-			System.out.println("-------------------");
-
 			Comments savedComment = infoCommentsService.writeNewComment(comment);
 
 			return ResponseEntity.ok(savedComment);
@@ -72,6 +68,18 @@ public class InfoBoardCommentsController {
 		} catch (Exception e) {
 			logger.error("Error while deleting comment", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while deleting comment");
+		}
+	}
+
+	@PutMapping("/{infoId}/{commentId}/update")
+	public ResponseEntity<?> updateComment(@PathVariable("commentId") Long commentId,
+		@RequestBody Comments updatedComment) {
+		try {
+			infoCommentsService.updateComment(commentId, updatedComment.getContent());
+			return ResponseEntity.ok("Comment updated successfully");
+		} catch (Exception e) {
+			logger.error("Error while updating comment", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while updating comment");
 		}
 	}
 }

@@ -83,6 +83,26 @@ const InfoDetail: React.FC = () => {
     console.log(comment);
   };
 
+  const deleteComment = (commentId: number) => {
+    setInfoComments(
+      infoComments.filter(
+        (comment) =>
+          comment.commentId !== commentId &&
+          comment.parentCommentId !== commentId,
+      ),
+    );
+  };
+
+  const updateComment = (commentId: number, updatedContent: string): void => {
+    setInfoComments((prevComments) =>
+      prevComments.map((comment) =>
+        comment.commentId === commentId
+          ? { ...comment, content: updatedContent }
+          : comment,
+      ),
+    );
+  };
+
   return (
     <InfoWrapper>
       <Container>
@@ -129,6 +149,8 @@ const InfoDetail: React.FC = () => {
           postId={infoId ? infoId : ''}
           idName="infoId"
           addComment={addComment}
+          deleteComment={deleteComment}
+          updateComment={updateComment}
         />
       </Container>
       <ControllBtns>

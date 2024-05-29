@@ -26,7 +26,9 @@ const CommentListItem: React.FC<{
   route: string;
   postId: string;
   idName: string;
-}> = ({ comment, route, postId, idName }) => {
+  deleteComment: (commentId: number) => void;
+  updateComment: (commentId: number, content: string) => void;
+}> = ({ comment, route, postId, idName, deleteComment, updateComment }) => {
   const [showReplies, setShowReplies] = useState<boolean>(false);
   const [replies, setReplies] = useState<Comment[]>([]);
   const [countReplies, setCountReplies] = useState<number>();
@@ -62,13 +64,39 @@ const CommentListItem: React.FC<{
     setShowReplies((prevState) => !prevState);
   };
 
+  const handleDelete = async (commentId: number) => {
+    try {
+      const response = await axiosInstance.delete(
+        `${route}/${commentId}/delete`,
+      );
+      if (response.status === 200) {
+        deleteComment(commentId); // 최상위 컴포넌트에 삭제 요청
+        setReplies((prevReplies) =>
+          prevReplies.filter((reply) => reply.commentId !== commentId),
+        );
+        setCountReplies((prevCount) =>
+          prevCount !== undefined ? prevCount - 1 : 0,
+        );
+      }
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+    }
+  };
+
+  const handleUpdate = (commentId: number, content: string) => {
+    updateComment(commentId, content);
+  };
+
   return (
     <CommentWrapper>
       <StyledCommentItem
+        route={route}
         comment={comment}
         isReply={false}
         cntReplies={countReplies}
         clickReply={handleShowReply}
+        handleDelete={handleDelete}
+        handleUpdate={handleUpdate}
       />
       {showReplies && (
         <ReplyWrapper>
@@ -82,10 +110,13 @@ const CommentListItem: React.FC<{
           {replies
             ? replies.map((eachreplies) => (
                 <StyledCommentItem
+                  route={route}
                   key={eachreplies.commentId}
                   comment={eachreplies}
                   isReply={true}
                   clickReply={handleShowReply}
+                  handleDelete={handleDelete}
+                  handleUpdate={handleUpdate}
                 />
               ))
             : ''}
