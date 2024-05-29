@@ -20,6 +20,7 @@ import OrderPage from './pages/order/OrderPage';
 import Community from './pages/community/CommunityMain'; // 커뮤니티
 import ViewPostDetail from './pages/community/ViewPostDetail';
 import NewPost from './pages/community/NewPost';
+import CommunityPostEdit from './pages/community/CommunityPostEdit';
 import RoutineMain from './pages/routine/RoutineMain'; // 루틴
 import ViewRoutineDetail from './pages/routine/ViewRoutineDetail';
 import NewRoutine from './pages/routine/NewRoutine';
@@ -72,8 +73,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="sign-in" element={<SigninPage />} />
-          <Route path="/login-success" element={<LoginSuccess />} /> // 네이버
-          로그인 성공 시 리디렉션 경로
+          <Route path="/login-success" element={<LoginSuccess />} />
           <Route path="sign-up" element={<SignupPage />} />
           <Route path="order-page" element={<OrderPage />} />
           <Route path="/shopping-basket" element={<ShoppingBasketPage />} />
@@ -88,8 +88,12 @@ const App = () => {
             element={<ProductDetail />}
           />
           <Route path="community" element={<Community />} />
-          <Route path="community/:postNo" element={<ViewPostDetail />} />
+          <Route path="community/:postId" element={<ViewPostDetail />} />
           <Route path="community/new-post" element={<NewPost />} />
+          <Route
+            path="/community/edit/:postId"
+            element={<CommunityPostEdit />}
+          />
           <Route path="routine" element={<RoutineMain />} />
           <Route path="routine/:routineNo" element={<ViewRoutineDetail />} />
           <Route path="routine/new-routine" element={<NewRoutine />} />
