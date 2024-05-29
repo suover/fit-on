@@ -67,7 +67,7 @@ public class UserController {
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 
 			User user = userService.findByEmail(loginRequest.getEmail());
-			List<String> roles = userService.getUserRoles(user.getUserId()); // 권한 조회
+			List<String> roles = userService.getUserRoles(user.getUserId());
 			roles = roles.stream().map(role -> "ROLE_" + role).collect(Collectors.toList());
 			String jwt = jwtTokenProvider.createToken(authentication.getName(), roles, user.getNickname(),
 				user.getUserId(), user.getName());
