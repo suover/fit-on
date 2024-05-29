@@ -31,16 +31,16 @@ interface Address {
 const initialAddresses: Address[] = [
   {
     id: '1',
-    name: '청와대',
-    address: '서울특별시 종로구 청와대로 1',
-    contact: '010-1111-1111',
+    name: '집',
+    address: '경기도 안산시 단원구 고잔로 81',
+    contact: '010-1364-9841',
     isDefault: true,
   },
   {
     id: '2',
-    name: '경복궁',
-    address: '서울 종로구 사직로 161 경복궁',
-    contact: '010-1234-5678',
+    name: '사무실',
+    address: '경기도 안산시 단원구 광덕동로 99 4층 407호',
+    contact: '070-7954-1699',
     isDefault: false,
   },
 ];

@@ -55,20 +55,22 @@ const UserInfoPage: React.FC = () => {
 
   const [additionalInfo, setAdditionalInfo] = useState({
     gender: 'male',
-    job: '헬스트레이너',
-    benchPress: '150',
-    squat: '100',
-    deadlift: '30',
+    job: '프로그래머',
+    benchPress: '90',
+    squat: '180',
+    deadlift: '190',
   });
 
+  const [changedInfo, setChangedInfo] = useState(additionalInfo);
+
   const [mainInfo, setMainInfo] = useState({
-    email: 'example@domain.com',
-    name: '홍길동',
+    email: 'seungmin@naver.com',
+    name: '백승민',
     password: '',
     passwordConfirm: '',
-    nickname: 'nickname',
+    nickname: 'zl존승민',
     phone: '010-1111-1111',
-    birthday: '1990-01-01',
+    birthday: '1998-05-01',
   });
 
   const jobOptions = [
@@ -93,12 +95,12 @@ const UserInfoPage: React.FC = () => {
 
   const handleSelectChange = (event: SelectChangeEvent<string>) => {
     const { name, value } = event.target;
-    setAdditionalInfo({ ...additionalInfo, [name]: value });
+    setChangedInfo({ ...changedInfo, [name]: value });
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setAdditionalInfo({ ...additionalInfo, [name]: value });
+    setChangedInfo({ ...changedInfo, [name]: value });
   };
 
   const handleMainInputChange = (
@@ -109,7 +111,7 @@ const UserInfoPage: React.FC = () => {
   };
 
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAdditionalInfo({ ...additionalInfo, gender: event.target.value });
+    setChangedInfo({ ...changedInfo, gender: event.target.value });
   };
 
   const handleDeleteClick = () => {
@@ -133,6 +135,7 @@ const UserInfoPage: React.FC = () => {
   };
 
   const handleSaveEditInfo = () => {
+    setAdditionalInfo(changedInfo);
     setIsEditInfoModalOpen(false);
   };
 
@@ -174,9 +177,9 @@ const UserInfoPage: React.FC = () => {
                     </FloatingActionButton>
                   </FabContainer>
                   <div>
-                    <p>홍길동</p>
-                    <p className="text-secondary mb-1">example@domain.com</p>
-                    <p className="text-muted font-size-sm">nickname</p>
+                    <p>백승민</p>
+                    <p className="text-secondary mb-1">seungmin@naver.com</p>
+                    <p className="text-muted font-size-sm">zl존승민</p>
                   </div>
                 </UserInfo>
               </CardBody>
@@ -282,7 +285,7 @@ const UserInfoPage: React.FC = () => {
               <Typography>성별</Typography>
               <RadioGroup
                 row
-                value={additionalInfo.gender}
+                value={changedInfo.gender}
                 onChange={handleRadioChange}
               >
                 <FormControlLabel
@@ -302,7 +305,7 @@ const UserInfoPage: React.FC = () => {
                 <InputLabel>직업</InputLabel>
                 <Select
                   name="job"
-                  value={additionalInfo.job}
+                  value={changedInfo.job}
                   onChange={handleSelectChange}
                 >
                   {jobOptions.map((job, index) => (
@@ -317,7 +320,7 @@ const UserInfoPage: React.FC = () => {
               <TextField
                 label="벤치프레스 (kg)"
                 name="benchPress"
-                value={additionalInfo.benchPress}
+                value={changedInfo.benchPress}
                 onChange={handleInputChange}
                 fullWidth
               />
@@ -326,7 +329,7 @@ const UserInfoPage: React.FC = () => {
               <TextField
                 label="스쿼트 (kg)"
                 name="squat"
-                value={additionalInfo.squat}
+                value={changedInfo.squat}
                 onChange={handleInputChange}
                 fullWidth
               />
@@ -335,7 +338,7 @@ const UserInfoPage: React.FC = () => {
               <TextField
                 label="데드리프트 (kg)"
                 name="deadlift"
-                value={additionalInfo.deadlift}
+                value={changedInfo.deadlift}
                 onChange={handleInputChange}
                 fullWidth
               />
