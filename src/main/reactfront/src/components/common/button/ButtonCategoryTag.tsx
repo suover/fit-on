@@ -8,31 +8,29 @@ import { Typography } from '@mui/material';
 type Category = {
   no: number; //댓글 분류번호
   name: string;
-  cnt: number; //카테고리에 해당하는 글 개수
 };
-function createCategoryData(no: number, name: string, cnt: number): Category {
+function createCategoryData(no: number, name: string): Category {
   return {
     no,
     name,
-    cnt,
   };
 }
 //더미 카테고리 리스트
 const exampleCategory: Category[] = [
-  createCategoryData(1, '베스트', 100),
-  createCategoryData(2, '운동완료', 100),
-  createCategoryData(3, '식단', 100),
-  createCategoryData(4, '보충제', 100),
-  createCategoryData(5, '닭가슴살', 100),
-  createCategoryData(6, '상체운동', 100),
-  createCategoryData(7, '하체운동', 100),
-  createCategoryData(8, '전신운동', 100),
-  createCategoryData(9, '맨몸운동', 100),
-  createCategoryData(10, '유산소', 100),
-  createCategoryData(11, '재활운동', 100),
-  createCategoryData(12, '스트레칭', 100),
-  createCategoryData(13, '건강', 100),
-  createCategoryData(14, '이슈', 100),
+  createCategoryData(1, '베스트'),
+  createCategoryData(2, '운동완료'),
+  createCategoryData(3, '식단'),
+  createCategoryData(4, '보충제'),
+  createCategoryData(5, '닭가슴살'),
+  createCategoryData(6, '상체운동'),
+  createCategoryData(7, '하체운동'),
+  createCategoryData(8, '전신운동'),
+  createCategoryData(9, '맨몸운동'),
+  createCategoryData(10, '유산소'),
+  createCategoryData(11, '재활운동'),
+  createCategoryData(12, '스트레칭'),
+  createCategoryData(13, '건강'),
+  createCategoryData(14, '이슈'),
 ];
 
 // 카테고리 스타일
@@ -80,7 +78,7 @@ const ButtonCategoryTag: React.FC<ButtonCategoryTagProps> = ({
           <Grid xs={2} sm={2} key={category.no}>
             <Item onClick={() => handleCategoryClick(category.name)}>
               #{category.name}
-              <br />({category.cnt})
+              <br />
             </Item>
           </Grid>
         ))}
