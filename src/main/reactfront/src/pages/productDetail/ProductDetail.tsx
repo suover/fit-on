@@ -1,8 +1,12 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
+import { Product } from '../../types/DataInterface';
+import { Container } from '@mui/material';
 import styled from 'styled-components';
+import SideNavbar from '../../components/layout/sideNavBar/SideNavbar';
 import ImageDetail from '../../components/productDetail/ImageDetail';
 import PurchasePanel from '../../components/productDetail/PurchasePanel';
-import ProductEx from '../../components/productDetail/ProductExplain';
+import ProductExplain from '../../components/productDetail/ProductExplain';
 
 const TopInfo = styled.div`
   display: flex;
@@ -24,15 +28,20 @@ const StyledImageDetail = styled(ImageDetail)`
 `;
 
 function ProductDetail() {
+  const location = useLocation();
+  const product: Product = location.state.product;
+
   return (
     <>
-      <TopInfo>
-        <StyledImageDetail />
-        <PurchasePanel />
-      </TopInfo>
-      <BottomInfo>
-        <ProductEx />
-      </BottomInfo>
+      <Container maxWidth="lg" sx={{ paddingTop: '20px' }}>
+        <TopInfo>
+          <StyledImageDetail product={product} />
+          <PurchasePanel product={product} />
+        </TopInfo>
+        <BottomInfo>
+          <ProductExplain product={product} />
+        </BottomInfo>
+      </Container>
     </>
   );
 }

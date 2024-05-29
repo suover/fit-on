@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-// import { Product } from '../../types/administrator/ItemsData';
-// import { Product, products } from '../../types/administrator/ItemsData';
-import { Product } from '../../types/DataInterface';
+import { Product, ProductImage } from '../../types/DataInterface';
 import {
   Image,
   TableData,
@@ -21,40 +19,69 @@ import {
 import { Search } from '../../styles/administrator/ItemListPage.styles';
 import SearchBox from '../../components/common/search/SearchBox';
 import { useNavigate } from 'react-router-dom';
+import PanoramaFishEyeRoundedIcon from '@mui/icons-material/PanoramaFishEyeRounded';
+import DoNotDisturbRoundedIcon from '@mui/icons-material/DoNotDisturbRounded';
+import { red, green } from '@mui/material/colors';
 import GenericButton from '../../components/common/genericButton/GenericButton';
 import DeleteIcon from '../../components/icons/DeleteIcon';
+import EditIcon from '@mui/icons-material/Edit';
+
 import axios from 'axios';
+
+const categoryMap: { [key: number]: string } = {
+  1: '피트니스',
+  2: '보충제',
+  3: '영양제',
+  4: '식품',
+  5: '요가 & 필라테스',
+  6: '구기용품',
+  7: '러닝 & 자전거용품',
+  8: '복싱 & 잡화',
+};
 
 const ItemListPage: React.FC = () => {
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(
     null,
   );
-  const navigate = useNavigate();
-  //   const [filteredItems, setFilteredItems] = useState<Product[]>(products);
-
   const [filteredItems, setFilteredItems] = useState<Product[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const navigate = useNavigate();
 
-  //상품 리스트 가져오기
+  //상품 정보 세팅
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get<Product[]>(
-          'http://localhost:8080/api/products',
-        );
-        setProducts(response.data);
-        setFilteredItems(response.data);
-      } catch (error) {
-        console.error('Failed to fetch products:', error);
-      }
-    };
-
     fetchProducts();
   }, []);
 
-  const handleDeleteClick = (productId: string) => {
+  //상품 정보 가져오기
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get<Product[]>(
+        'http://localhost:8080/api/products/with-images',
+      );
+      setProducts(response.data);
+      setFilteredItems(response.data);
+    } catch (error) {
+      console.error('Failed to fetch products:', error);
+    }
+  };
+
+  //상품 게시글로
+  const handleItemClick = (product: Product) => {
+    navigate(`/product-detail/${product.productId}`, {
+      state: { product },
+    });
+  };
+
+  //상품 수정
+  const handleUpdateClick = (product: Product) => {
+    navigate(`/administrator/item-update/${product.productId}`, {
+      state: { product },
+    });
+  };
+
+  const handleDeleteClick = (productId: number) => {
     setSelectedProductId(productId);
     setIsDeleteConfirmationOpen(true);
   };
@@ -64,14 +91,21 @@ const ItemListPage: React.FC = () => {
     setSelectedProductId(null);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (selectedProductId) {
-      setFilteredItems((prevItems) =>
-        prevItems.filter((product) => product.id !== selectedProductId),
-      );
+      try {
+        await axios.patch(
+          `http://localhost:8080/api/products/${selectedProductId}/deactivate`,
+          { isDeleted: true },
+        );
+
+        setIsDeleteConfirmationOpen(false);
+        setSelectedProductId(null);
+        navigate('/administrator/item-list');
+      } catch (error) {
+        console.error('Failed to update product:', error);
+      }
     }
-    setIsDeleteConfirmationOpen(false);
-    setSelectedProductId(null);
   };
 
   const handleSearch = (query: string) => {
@@ -91,11 +125,12 @@ const ItemListPage: React.FC = () => {
     { id: 'id', label: '번호', width: 5 },
     { id: 'name', label: '이름', width: 25 },
     { id: 'price', label: '가격', width: 10 },
-    { id: 'sales', label: '판매량', width: 10 },
+    // { id: 'sales', label: '판매량', width: 10 },
     { id: 'stock', label: '재고', width: 10 },
     { id: 'category', label: '카테고리', width: 10 },
-    { id: 'status', label: '상태', width: 10 },
-    { id: 'delete', label: '삭제', width: 10 },
+    { id: 'status', label: '상태', width: 5 },
+    { id: 'update', label: '수정', width: 5 },
+    { id: 'delete', label: '삭제', width: 5 },
   ];
 
   return (
@@ -113,15 +148,39 @@ const ItemListPage: React.FC = () => {
         renderRow={(product: Product) => (
           <TableRow key={product.productId}>
             <TableData>{product.productId}</TableData>
-            <TableData>{product.name}</TableData>
-            <TableData>{product.price}원</TableData>
-            <TableData>판매량??</TableData>
-            <TableData>{product.stock}</TableData>
-            <TableData>{product.categoryId}</TableData>
-            <TableData>{product.isDeleted}</TableData>
             <TableData>
               <div
-                onClick={() => handleDeleteClick(product.id)}
+                onClick={() => handleItemClick(product)}
+                style={{ cursor: 'pointer' }}
+              >
+                <Image $backgroundImage={product.imageUrl} />
+                {product.name}
+              </div>
+            </TableData>
+            <TableData>{product.price}원</TableData>
+            {/* <TableData>판매량??</TableData> */}
+            <TableData>{product.stock}</TableData>
+            <TableData>
+              {categoryMap[product.categoryId] || '알 수 없음'}
+            </TableData>
+            <TableData>
+              {product.isDeleted ? (
+                <DoNotDisturbRoundedIcon style={{ color: red[500] }} />
+              ) : (
+                <PanoramaFishEyeRoundedIcon style={{ color: green[500] }} />
+              )}
+            </TableData>
+            <TableData>
+              <div
+                onClick={() => handleUpdateClick(product)}
+                style={{ cursor: 'pointer' }}
+              >
+                <EditIcon />
+              </div>
+            </TableData>
+            <TableData>
+              <div
+                onClick={() => handleDeleteClick(product.productId)}
                 style={{ cursor: 'pointer' }}
               >
                 <DeleteIcon />
@@ -165,5 +224,3 @@ const ItemListPage: React.FC = () => {
 };
 
 export default ItemListPage;
-
-// <Image $backgroundImage={product.imageUrl} />
