@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { Container, Box, Typography } from '@mui/material';
 import RoutineBestList from '../../components/routine/RoutineBestList';
 import ButtonNewRoutine from '../../components/common/button/ButtonNewRoutine';
@@ -5,6 +6,12 @@ import RoutineTotalList from '../../components/routine/RoutineTotalList';
 import SearchBox from '../../components/common/search/SearchBox';
 
 const RoutineMain = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
+
   return (
     <Container sx={{ padding: '50px 0 100px', position: 'relative' }}>
       <Box sx={{ marginBottom: '50px' }}>
@@ -32,12 +39,12 @@ const RoutineMain = () => {
         >
           루틴
         </Typography>
-        <SearchBox onSearch={() => {}} styleProps={{ width: '300px' }} />
+        <SearchBox onSearch={handleSearch} styleProps={{ width: '200px' }} />
       </Box>
       <Box>
-        <RoutineTotalList />
+        <RoutineTotalList searchQuery={searchQuery} />
       </Box>
-      <Box sx={{ position: 'absolute', right: '0', bottom: '100px' }}>
+      <Box sx={{ position: 'absolute', right: '25px', bottom: '100px' }}>
         <ButtonNewRoutine />
       </Box>
     </Container>

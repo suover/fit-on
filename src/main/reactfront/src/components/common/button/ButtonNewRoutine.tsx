@@ -48,7 +48,7 @@ const ButtonNewRoutine = () => {
   let navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/new-routine');
+    navigate('/routine/new-routine');
   };
 
   return (

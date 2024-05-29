@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.myapp.routineBoard.repository.RoutineBoardMapper">
+
+    <resultMap id="RoutineBoardResultMap" type="com.spring.myapp.routineBoard.model.RoutineBoard">
+        <id column="routine_id" property="routineId"/>
+        <result column="user_id" property="userId"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="view_count" property="viewCount"/>
+        <result column="share_count" property="shareCount"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="is_public" property="isPublic"/>
+        <result column="goal_id" property="goalId"/>
+        <result column="level_id" property="levelId"/>
+        <result column="part_id" property="partId"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="RoutineBoardResultMap">
+        SELECT * FROM routines WHERE is_deleted = 0
+    </select>
+
+    <select id="findAllWithPaging" resultMap="RoutineBoardResultMap">
+        SELECT * FROM routines WHERE is_deleted = 0
+        ORDER BY created_at DESC
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="countRoutines" resultType="long">
+        SELECT COUNT(*) FROM routines WHERE is_deleted = 0
+    </select>
+
+    <select id="findById" parameterType="long" resultMap="RoutineBoardResultMap">
+        SELECT * FROM routines WHERE routine_id = #{routineId} AND is_deleted = 0
+    </select>
+
+    <update id="updateIsDeletedById" parameterType="long">
+        UPDATE routines SET is_deleted = 1 WHERE routine_id = #{routineId}
+    </update>
+
+    <insert id="insertRoutineBoard" parameterType="com.spring.myapp.routineBoard.model.RoutineBoard">
+        INSERT INTO routines (user_id, title, content, created_at, updated_at, view_count, share_count, is_deleted,
+        is_public, goal_id, level_id, part_id)
+        VALUES (#{userId}, #{title}, #{content}, NOW(), NOW(), 0, 0, #{isDeleted}, #{isPublic},
+        #{goalId}, #{levelId}, #{partId})
+    </insert>
+
+    <select id="findBestRoutines" resultMap="RoutineBoardResultMap">
+        SELECT * FROM routines WHERE is_deleted = 0 ORDER BY view_count DESC LIMIT 10
+    </select>
+
+    <update id="updateRoutineBoard" parameterType="com.spring.myapp.routineBoard.model.RoutineBoard">
+        UPDATE routines
+        SET title = #{title}, content = #{content}, updated_at = NOW(),
+        view_count = #{viewCount}, share_count = #{shareCount}, is_deleted = #{isDeleted},
+        is_public = #{isPublic}, goal_id = #{goalId}, level_id = #{levelId}, part_id = #{partId}
+        WHERE routine_id = #{routineId}
+    </update>
+
+    <update id="incrementViewCount" parameterType="long">
+        UPDATE routines
+        SET view_count = view_count + 1
+        WHERE routine_id = #{routineId}
+    </update>
+
+    <select id="findGoalNameById" parameterType="int" resultType="String">
+        SELECT goal_name FROM routine_goals WHERE goal_id = #{goalId}
+    </select>
+
+    <select id="findLevelNameById" parameterType="int" resultType="String">
+        SELECT level_name FROM routine_levels WHERE level_id = #{levelId}
+    </select>
+
+    <select id="findPartNameById" parameterType="int" resultType="String">
+        SELECT part_name FROM routine_parts WHERE part_id = #{partId}
+    </select>
+
+    <select id="findAllRoutineGoals" resultType="com.spring.myapp.routineBoard.model.RoutineGoal">
+        SELECT * FROM routine_goals
+    </select>
+
+    <select id="findAllRoutineLevels" resultType="com.spring.myapp.routineBoard.model.RoutineLevel">
+        SELECT * FROM routine_levels
+    </select>
+
+    <select id="findAllRoutineParts" resultType="com.spring.myapp.routineBoard.model.RoutinePart">
+        SELECT * FROM routine_parts
+    </select>
+
+    <select id="findAllWithPagingAndSearch" resultMap="RoutineBoardResultMap">
+        SELECT * FROM routines WHERE is_deleted = 0 AND title LIKE CONCAT('%', #{query}, '%')
+        ORDER BY created_at DESC
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="countRoutinesWithSearch" resultType="long">
+        SELECT COUNT(*) FROM routines WHERE is_deleted = 0 AND title LIKE CONCAT('%', #{query}, '%')
+    </select>
+
+</mapper>

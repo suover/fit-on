@@ -1,5 +1,4 @@
 import React from 'react';
-
 import styled from 'styled-components';
 import CommentListItem from './CommentListItem';
 import CommentInputField from './CommentInputField';
@@ -68,6 +67,7 @@ const CommentList: React.FC<{
           updateComment={handleUpdateComment}
         />
       ))}
+
     </>
   );
 };

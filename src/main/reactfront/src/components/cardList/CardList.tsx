@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
 import ContentCard from '../contentCard/ContentCard';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { SvgIconProps } from '@mui/material';
@@ -48,7 +47,7 @@ const CardLists = <T extends ContentsType>({
         spacing={2}
         sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
       >
-        <Pagination count={5} variant="outlined" />
+        {/* <Pagination count={5} variant="outlined" /> */}
       </Stack>
     </>
   );
