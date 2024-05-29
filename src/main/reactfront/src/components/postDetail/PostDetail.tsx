@@ -10,7 +10,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PersonIcon from '@mui/icons-material/Person';
 
 import CommentList from '../common/comment/CommentList';
-import { Comment } from '../../types/MainDummyData';
+// import { Comment } from '../../types/MainDummyData';
 
 type DataType = {
   postId: number | string;
@@ -38,7 +38,7 @@ const PostDetail = <T extends DataType>({
   const [contentData, setcontentData] = useState<T>(data); // 실제 데이터가 들어오면 이용
   const [isLiked, setIsLiked] = useState(false);
   const [isShared, setisShared] = useState(false);
-  const navigete = useNavigate();
+  const navigate = useNavigate();
 
   const handleLikeClick = () => {
     if (data) {
@@ -94,11 +94,11 @@ const PostDetail = <T extends DataType>({
           <ButtonShare isShared={isShared} onClick={handleShareClick} />
         </Box>
       </PostWrapper>
-      <CommentList comments={comments} />
+      {/* <CommentList comments={comments} /> */}
       <Box sx={{ display: 'flex' }}>
         <BackBtn
           style={{ marginLeft: 'auto' }}
-          onClick={() => navigete(`/${pageURL}`)}
+          onClick={() => navigate(`/${pageURL}`)}
         >
           목록
         </BackBtn>

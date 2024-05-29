@@ -15,6 +15,7 @@ const InputField = styled.div`
     resize: none;
     margin-right: 10px;
     font-size: 1rem;
+    font-family: 'Noto Sans KR', 'Raleway', sans-serif;
 
     &:focus {
       outline: none;
