@@ -34,4 +34,9 @@ public interface RoutineBoardMapper {
 	long countRoutines();
 
 	List<RoutineBoard> findBestRoutines();
+
+	List<RoutineBoard> findAllWithPagingAndSearch(@Param("offset") int offset, @Param("size") int size,
+		@Param("query") String query);
+
+	long countRoutinesWithSearch(@Param("query") String query);
 }

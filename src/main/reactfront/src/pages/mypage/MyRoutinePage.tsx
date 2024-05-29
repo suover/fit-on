@@ -39,7 +39,7 @@ const MyRoutinePage: React.FC = () => {
           </Button>
         </Link>
         {isMyRoutinesPage && (
-          <Link to="/new-routine" style={{ marginLeft: 'auto' }}>
+          <Link to="/routine/new-routine" style={{ marginLeft: 'auto' }}>
             <GenericButton>루틴 작성</GenericButton>
           </Link>
         )}

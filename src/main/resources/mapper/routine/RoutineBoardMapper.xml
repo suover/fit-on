@@ -92,4 +92,14 @@
         SELECT * FROM routine_parts
     </select>
 
+    <select id="findAllWithPagingAndSearch" resultMap="RoutineBoardResultMap">
+        SELECT * FROM routines WHERE is_deleted = 0 AND title LIKE CONCAT('%', #{query}, '%')
+        ORDER BY created_at DESC
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="countRoutinesWithSearch" resultType="long">
+        SELECT COUNT(*) FROM routines WHERE is_deleted = 0 AND title LIKE CONCAT('%', #{query}, '%')
+    </select>
+
 </mapper>

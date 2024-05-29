@@ -87,4 +87,12 @@ public class RoutineBoardService {
 	public List<RoutineBoard> getBestRoutines() {
 		return routineBoardMapper.findBestRoutines();
 	}
+
+	public List<RoutineBoard> getRoutinesWithPagingAndSearch(int offset, int size, String query) {
+		return routineBoardMapper.findAllWithPagingAndSearch(offset, size, query);
+	}
+
+	public long getRoutineCountWithSearch(String query) {
+		return routineBoardMapper.countRoutinesWithSearch(query);
+	}
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FormEvent } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import axios from 'axios';
 import {
   Paper,
@@ -127,6 +127,19 @@ const NewRoutine = () => {
     }
   };
 
+  const handleCancel = () => {
+    if (
+      location.state &&
+      location.state.from === '/mypage/my-routine/my-routines'
+    ) {
+      navigate('/mypage/my-routine/my-routines');
+    } else if (routineId) {
+      navigate(`/routine/${routineId}`);
+    } else {
+      navigate('/routine');
+    }
+  };
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Paper sx={{ p: 3, margin: 'auto' }}>
@@ -238,26 +251,14 @@ const NewRoutine = () => {
               gap: 1,
             }}
           >
-            {routineId ? (
-              <Button
-                type="button"
-                variant="contained"
-                color="primary"
-                onClick={() => navigate(`/routine/${routineId}`)}
-              >
-                취소
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                variant="contained"
-                color="primary"
-                onClick={() => navigate('/routine')}
-              >
-                취소
-              </Button>
-            )}
-
+            <Button
+              type="button"
+              variant="contained"
+              color="primary"
+              onClick={handleCancel}
+            >
+              취소
+            </Button>
             <Button type="submit" variant="contained" color="primary">
               {routineId ? '수정' : '등록'}
             </Button>

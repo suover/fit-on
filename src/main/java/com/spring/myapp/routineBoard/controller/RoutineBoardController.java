@@ -93,14 +93,26 @@ public class RoutineBoardController {
 	// 페이징
 	@GetMapping("/list")
 	public ResponseEntity<List<RoutineBoard>> getRoutinesWithPaging(
-		@RequestParam("page") int page, @RequestParam("size") int size) {
-		List<RoutineBoard> routines = routineBoardService.getRoutinesWithPaging(page, size);
+		@RequestParam("page") int page, @RequestParam("size") int size,
+		@RequestParam(value = "query", required = false) String query) {
+		int offset = page * size;
+		List<RoutineBoard> routines;
+		if (query != null && !query.isEmpty()) {
+			routines = routineBoardService.getRoutinesWithPagingAndSearch(offset, size, query);
+		} else {
+			routines = routineBoardService.getRoutinesWithPaging(offset, size);
+		}
 		return ResponseEntity.ok(routines);
 	}
 
 	@GetMapping("/count")
-	public ResponseEntity<Long> getRoutineCount() {
-		long count = routineBoardService.getRoutineCount();
+	public ResponseEntity<Long> getRoutineCount(@RequestParam(value = "query", required = false) String query) {
+		long count;
+		if (query != null && !query.isEmpty()) {
+			count = routineBoardService.getRoutineCountWithSearch(query);
+		} else {
+			count = routineBoardService.getRoutineCount();
+		}
 		return ResponseEntity.ok(count);
 	}
 
