@@ -51,7 +51,7 @@ const MyHome: React.FC = () => {
             >
               <Avatar sx={{ bgcolor: 'secondary.main' }}>U</Avatar>
               <Typography variant="h6" component="div" color="black">
-                홍길동님 안녕하세요.
+                백승민님 안녕하세요.
               </Typography>
               <Button
                 href="/mypage/user-info-login"
@@ -71,19 +71,19 @@ const MyHome: React.FC = () => {
               <Box textAlign="center" flex="1">
                 <Typography variant="subtitle1">글작성수</Typography>
                 <Typography variant="h6" color="black">
-                  10
+                  15
                 </Typography>
               </Box>
               <Box textAlign="center" flex="1">
                 <Typography variant="subtitle1">댓글수</Typography>
                 <Typography variant="h6" color="black">
-                  5
+                  26
                 </Typography>
               </Box>
               <Box textAlign="center" flex="1">
                 <Typography variant="subtitle1">좋아요수</Typography>
                 <Typography variant="h6" color="black">
-                  20
+                  57
                 </Typography>
               </Box>
             </Box>
@@ -145,9 +145,9 @@ const MyHome: React.FC = () => {
                   <TableRow
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
-                    <TableCell align="center">0 건</TableCell>
                     <TableCell align="center">1 건</TableCell>
-                    <TableCell align="center">0 건</TableCell>
+                    <TableCell align="center">1 건</TableCell>
+                    <TableCell align="center">1 건</TableCell>
                     <TableCell align="center">2 건</TableCell>
                   </TableRow>
                 </TableBody>
