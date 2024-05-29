@@ -69,15 +69,4 @@
         WHERE info_id = #{infoId}
     </update>
 
-    <!--    <update id="update" parameterType="InfoResultMap">-->
-    <!--        UPDATE information-->
-    <!--        SET title = #{title}, content = #{content}, image_url = #{imageUrl},-->
-    <!--        created_at = #{createdAt}, updated_at = #{updatedAt}, view_count = #{viewCount}, is_deleted = #{isDeleted}-->
-    <!--        WHERE info_id = #{infoId} AND user_id = #{userId} AND category_id = #{categoryId}-->
-    <!--    </update>-->
-
-    <!--    <delete id="delete" parameterType="map">-->
-    <!--        DELETE FROM information-->
-    <!--        WHERE info_id = #{infoId} AND user_id = #{userId} AND category_id = #{categoryId}-->
-    <!--    </delete>-->
 </mapper>
