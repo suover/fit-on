@@ -10,7 +10,7 @@ import { Box, Button } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PersonIcon from '@mui/icons-material/Person';
 import CommentList from '../common/comment/CommentList';
-import { Comment } from '../../types/MainDummyData';
+// import { Comment } from '../../types/MainDummyData';
 
 const partIdToNameMap: { [key: number]: string } = {
   1: '전신',
