@@ -76,4 +76,21 @@ const BackBtn = styled.button`
   }
 `;
 
-export { PostWrapper, BackBtn };
+const RedBtn = styled.button`
+  width: 80px;
+  height: 40px;
+  background: transparent;
+  border: 1px solid #777;
+  border-radius: 3px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: red;
+
+  &:hover {
+    background: #333;
+    color: #fff;
+  }
+`;
+
+export { PostWrapper, BackBtn, RedBtn };
