@@ -15,6 +15,7 @@ const RoutineBestList = () => {
         const transformedData = response.data.map((info: any) => ({
           ...info,
           id: info.routineId, // routineId를 id로 변환
+          views: info.viewCount,
         }));
         setRoutines(transformedData);
       } catch (error) {

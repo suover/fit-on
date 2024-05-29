@@ -1,30 +1,29 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Container } from '@mui/material';
 import PostDetail from '../../components/postDetail/PostDetail';
 
 const ViewRoutineDetail = () => {
-  const { routineNo } = useParams<{ routineNo: string }>();
-  const [routineData, setRoutineData] = useState<any>(null);
+  const { routineNo } = useParams<{ routineNo: string }>(); // useParams를 통해 route parameter를 가져옵니다.
+  const [routineData, setRoutineData] = useState<any>(null); // 초기 상태를 null로 설정합니다.
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any>(null);
-  const hasIncrementedView = useRef(false);
 
   useEffect(() => {
     const incrementViewCountAndFetchData = async () => {
-      const visitedKey = `visited_${routineNo}`;
-      const isVisited = localStorage.getItem(visitedKey);
-
       try {
-        if (!isVisited && !hasIncrementedView.current) {
-          await axios.put(`/api/routine/increment-view/${routineNo}`);
-          localStorage.setItem(visitedKey, 'true');
-          hasIncrementedView.current = true;
-        }
-
         const response = await axios.get(`/api/routine/${routineNo}`);
         setRoutineData(response.data);
+
+        const visitedKey = `visited_${routineNo}`;
+        const isVisited = localStorage.getItem(visitedKey);
+
+        if (!isVisited) {
+          // 조회수 증가 API 호출
+          await axios.put(`/api/routine/increment-view/${routineNo}`);
+          localStorage.setItem(visitedKey, 'true');
+        }
       } catch (error) {
         setError(error);
         console.error('Error fetching routine data:', error);
