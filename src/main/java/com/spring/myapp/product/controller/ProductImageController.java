@@ -22,7 +22,18 @@ public class ProductImageController {
 		productImageService.saveProductImage(productImage);
 	}
 	@GetMapping("/{id}")
-	public List<ProductImage> getProductImages (@PathVariable Long id){
+	public List<ProductImage> getProductImages (@PathVariable("id") Long id){
 		return productImageService.getAllProductImages(id);
 	}
+
+	@GetMapping("/{id}/MainImgURL")
+	public String getMainImgURL (@PathVariable("id") Long id){
+		return productImageService.getMainImgURLByProductId(id);
+	}
+
+	@GetMapping("/{id}/SubImgURL")
+	public String[] getSubImgURL (@PathVariable("id") Long id){
+		return productImageService.getSubImgsURLByProductId(id);
+	}
+
 }

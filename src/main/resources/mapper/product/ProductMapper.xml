@@ -27,6 +27,10 @@
         SELECT * FROM products
     </select>
 
+    <select id="findAvailable" resultMap="ProductResultMap">
+        SELECT * FROM products where is_deleted = false
+    </select>
+
     <select id="findById" resultMap="ProductResultMap">
         SELECT * FROM products WHERE product_id = #{productId}
     </select>
@@ -36,7 +40,7 @@
         VALUES (#{name}, #{description}, #{price}, #{stock}, #{content}, #{discountRate}, #{isDeleted}, #{createdAt}, #{updatedAt}, #{categoryId})
     </insert>
 
-    <update id="update">
+    <update id="updateProduct">
         UPDATE products
         SET name = #{name},
         description = #{description},
@@ -45,22 +49,35 @@
         content = #{content},
         discount_rate = #{discountRate},
         is_deleted = #{isDeleted},
-        created_at = #{createdAt},
         updated_at = #{updatedAt},
         category_id = #{categoryId}
         WHERE product_id = #{productId}
     </update>
 
-    <delete id="deleteById">
-        DELETE FROM products WHERE product_id = #{productId}
-    </delete>
+    <update id="updateIsDeleted">
+        UPDATE products
+        SET  is_deleted = #{isDeleted}
+        WHERE product_id = #{productId}
+    </update>
 
+    <select id="findAllWithMainImage" resultMap="ProductResultMap">
+        SELECT p.*, pi.image_url
+        FROM products p
+        LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.is_main_image = 1
+    </select>
 
+    <select id="findAllActiveWithMainImage" resultMap="ProductResultMap">
+        SELECT p.*, pi.image_url
+        FROM products p
+        LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.is_main_image = 1
+        WHERE p.is_deleted = false
+    </select>
 
-
-<!--    -->
-
-
-
+    <select id="findAllActiveWithMainImageByCategory" resultMap="ProductResultMap">
+        SELECT p.*, pi.image_url
+        FROM products p
+        LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.is_main_image = 1
+        WHERE p.is_deleted = false AND category_id = #{categoryId}
+    </select>
 
 </mapper>

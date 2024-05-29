@@ -8,10 +8,16 @@ import java.util.List;
 public interface ProductMapper {
 
 	List<Product> findAll();
+	List<Product> findAvailable();
 	Product findById(Long productId);
 	void save(Product product);
-	void update(Product product);
-	void deleteById(Long productId);
+
 	Long findMaxProductId();
 
+	void updateProduct(Product product);
+	void updateIsDeleted(@Param("productId")Long productId,@Param("isDeleted") Boolean isDeleted);
+
+	List<Product> findAllWithMainImage();
+	List<Product> findAllActiveWithMainImage();
+	List<Product> findAllActiveWithMainImageByCategory(@Param("categoryId")Long categoryId);
 }
