@@ -10,7 +10,7 @@ const colunmData = [
   { columnId: 'writer', title: '작성자', width: 80, marginRight: 50 },
   { columnId: 'likes', title: '좋아요', width: 80, marginRight: 50 },
   { columnId: 'views', title: '조회수', width: 80, marginRight: 50 },
-  { columnId: 'createDate', title: '작성일', width: 80 },
+  { columnId: 'createDate', title: '작성일', width: 100 },
 ];
 
 const MainCommuity: React.FC = () => {
