@@ -1,16 +1,8 @@
 import React, { useState } from 'react';
 
 import ProductCard from '../../components/productCard/ProductCard';
-import { Product, ProductImage } from '../../types/DataInterface';
-import Grid from '@mui/material/Grid';
-import {
-  Cards,
-  Card,
-  CardInfoHover,
-  CardInfo,
-  CardText,
-  CardLike,
-} from '../../components/productCard/ProductCard.styles';
+import { Product } from '../../types/DataInterface';
+import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { Pagination, Stack } from '@mui/material';
 
 interface ProductCardListProps {
@@ -20,20 +12,19 @@ interface ProductCardListProps {
 const ProductCardList: React.FC<ProductCardListProps> = ({ products }) => {
   return (
     <>
-      <Grid
+      <Grid2
         container
-        spacing={3}
         rowSpacing={3}
-        columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+        columnSpacing={{ xs: 1, sm: 2, md: 6.3 }}
+        sx={{ marginBottom: '30px' }}
       >
-        <Cards>
-          {products.map((product) => (
-            <Grid item key={product.productId} xs={12} sm={6} md={4}>
-              <ProductCard product={product} />
-            </Grid>
-          ))}
-        </Cards>
-      </Grid>
+        {products.map((product) => (
+          <Grid2 key={product.productId}>
+            {/* xs={12} sm={6} md={4} */}
+            <ProductCard product={product} />
+          </Grid2>
+        ))}
+      </Grid2>
       <Stack
         spacing={2}
         sx={{
@@ -41,9 +32,7 @@ const ProductCardList: React.FC<ProductCardListProps> = ({ products }) => {
           justifyContent: 'center',
           alignItems: 'center',
         }}
-      >
-        <Pagination count={5} variant="outlined" />
-      </Stack>
+      ></Stack>
     </>
   );
 };

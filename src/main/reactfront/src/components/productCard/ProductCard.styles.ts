@@ -11,7 +11,8 @@ export const Cards = styled.section`
 // 각 카드 스타일
 export const Card = styled.article<{ bgImage: string }>`
   background-color: #fff;
-  width: 100%;
+  /* width: 100%; */
+  width: 250px;
   position: relative;
   border-radius: 12px;
   overflow: hidden;
@@ -64,6 +65,9 @@ export const CardInfo = styled.div`
 export const CardText = styled.div`
   h3 {
     font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   p:first-of-type {
