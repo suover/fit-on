@@ -52,7 +52,7 @@ const ProductCard: React.FC<CardComponentProps> = ({ product }) => {
             <p>{product.description}</p>
             <p>
               <span>{product.discountRate || 0}% 할인</span>
-              <span>{product.price}원</span>
+              <span>{product.price.toLocaleString()}원</span>
               {/* <span>{product.sales || 0} 판매</span> */}
             </p>
           </CardText>
