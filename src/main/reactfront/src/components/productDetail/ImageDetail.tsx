@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { ProImg, MainImg, DetailImg, ImageModal } from './ImageDetail.styled';
-import { productData } from '../../types/ProductData';
-
-const ImgDetail = () => {
-  const product = productData[2];
+import { Product } from '../../types/DataInterface';
+interface ImageDetailProps {
+  product: Product;
+}
+const ImgDetail: React.FC<ImageDetailProps> = ({ product }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
-
+  const [SubImages, setSubImages] = useState('');
   const openModal = (imageUrl: string) => {
     setSelectedImage(imageUrl);
     setModalOpen(true);
@@ -42,6 +43,7 @@ const ImgDetail = () => {
           />
         ))}
       </DetailImg>
+
       {modalOpen && (
         <ImageModal onClick={closeModal}>
           <img
