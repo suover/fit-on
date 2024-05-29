@@ -52,6 +52,7 @@ const Info: React.FC = () => {
           views: info.viewCount,
         }));
         setInfoList(transformedData);
+        console.log(transformedData);
       } catch (error) {
         console.error('Error fetching information:', error);
       } finally {

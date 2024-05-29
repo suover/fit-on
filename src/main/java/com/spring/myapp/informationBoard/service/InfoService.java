@@ -28,6 +28,7 @@ public class InfoService {
 		newInfo.setContent(info.getContent());
 		newInfo.setImageUrl(info.getImageUrl());
 		newInfo.setUpdatedAt(LocalDateTime.now());
+		newInfo.setViewCount(0);
 
 		// 데이터베이스에 저장
 		infoMapper.writeNewInfo(newInfo);

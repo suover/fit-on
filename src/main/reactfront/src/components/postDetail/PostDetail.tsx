@@ -155,7 +155,7 @@ const PostDetail = <T extends DataType>({
           <ButtonShare isShared={isShared} onClick={handleShareClick} />
         </Box>
       </PostWrapper>
-      <CommentList comments={comments} />
+      {/* <CommentList comments={comments} /> */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box>
           <Button

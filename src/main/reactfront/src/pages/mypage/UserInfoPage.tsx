@@ -55,10 +55,10 @@ const UserInfoPage: React.FC = () => {
 
   const [additionalInfo, setAdditionalInfo] = useState({
     gender: 'male',
-    job: '',
-    benchPress: '',
-    squat: '',
-    deadlift: '',
+    job: '헬스트레이너',
+    benchPress: '150',
+    squat: '100',
+    deadlift: '30',
   });
 
   const [mainInfo, setMainInfo] = useState({
