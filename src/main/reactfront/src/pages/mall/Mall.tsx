@@ -10,7 +10,7 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 
 import SearchBox from '../../components/common/search/SearchBox';
 import SidebarWrapper from '../../components/common/sidebar/SidebarWrapper';
-import { Pagination, Container, Box } from '@mui/material';
+import { Container, Box } from '@mui/material';
 import { Product } from '../../types/DataInterface';
 import ProductCardList from './ProductCardList';
 import axios from 'axios';
@@ -103,20 +103,14 @@ const Mall: React.FC = () => {
         />
       </SidebarWrapper>
 
-      <Container sx={{ paddingTop: '50px', paddingBottom: '100px' }}>
+      <Container
+        sx={{ paddingTop: '50px', paddingBottom: '100px', minHeight: '800px' }}
+      >
         <Search>
           <SearchBox onSearch={handleSearch} />
         </Search>
         <Box>
           <ProductCardList products={filteredItems} />
-          <Box display="flex" justifyContent="center" mt={4}>
-            <Pagination
-              count={totalPages}
-              page={page}
-              onChange={handlePageChange}
-              color="primary"
-            />
-          </Box>
         </Box>
       </Container>
     </>

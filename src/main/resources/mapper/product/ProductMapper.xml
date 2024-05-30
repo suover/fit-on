@@ -64,6 +64,7 @@
         SELECT p.*, pi.image_url
         FROM products p
         LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.is_main_image = 1
+        ORDER BY p.product_id DESC
     </select>
 
     <select id="findAllActiveWithMainImage" resultMap="ProductResultMap">
@@ -71,6 +72,7 @@
         FROM products p
         LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.is_main_image = 1
         WHERE p.is_deleted = false
+        ORDER BY p.product_id DESC
     </select>
 
     <select id="findAllActiveWithMainImageByCategory" resultMap="ProductResultMap">
