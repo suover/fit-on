@@ -1,7 +1,21 @@
 import thumbnail from '../assets/img/main/loop.jpg';
+import product1 from '../assets/product1.jpg';
+import product2 from '../assets/product2.jpg';
+import product3 from '../assets/product3.jpg';
+import product4 from '../assets/product4.jpg';
 import productImg1 from '../assets/img/main/product1.jpg'; // 실제 데이터 들어오면 사진 삭제
 import productImg2 from '../assets/img/main/product2.jpg';
 import productImg3 from '../assets/img/main/product3.jpg';
+
+import info1 from '../assets/img/main/info/info1.png';
+import info2 from '../assets/img/main/info/info2.jpg';
+import info3 from '../assets/img/main/info/info3.png';
+import info4 from '../assets/img/main/info/info4.jpg';
+import info5 from '../assets/img/main/info/info5.jpg';
+import info6 from '../assets/img/main/info/info6.png';
+import info7 from '../assets/img/main/info/info7.png';
+import info8 from '../assets/img/main/info/info8.jpg';
+import info9 from '../assets/img/main/info/info9.jpg';
 
 export interface PostData {
   id: number;
@@ -74,7 +88,7 @@ export interface Inquiry {
 export const posts: PostData[] = [
   // 더미 데이터, 실제 데이터로 교체해야 함
   {
-    id: 1,
+    id: 107,
     title: '운동하는 사람들을 위한 제로 펩시 핫딜 정보 공유',
     writer: '제로펩시킹',
     content: '',
@@ -83,7 +97,7 @@ export const posts: PostData[] = [
     createDate: '2024. 5. 30.',
   },
   {
-    id: 2,
+    id: 106,
     title: '공부하느라 시간 없지만 오운완입니다.',
     writer: '오징어땅콩',
     content: '',
@@ -92,7 +106,7 @@ export const posts: PostData[] = [
     createDate: '2024. 5. 30.',
   },
   {
-    id: 3,
+    id: 105,
     title: '러닝 크루 모집합니다.',
     writer: '올때메로나',
     content: '',
@@ -101,7 +115,7 @@ export const posts: PostData[] = [
     createDate: '2024. 5. 30.',
   },
   {
-    id: 4,
+    id: 104,
     title: '근육이 놀란거 같은데 한의원 가면 될까요?',
     writer: '소금빵러버',
     content: '',
@@ -110,7 +124,7 @@ export const posts: PostData[] = [
     createDate: '2024. 5. 28.',
   },
   {
-    id: 5,
+    id: 103,
     title: '운동과 휴식의 균형',
     writer: '초록나무',
     content: '',
@@ -119,7 +133,7 @@ export const posts: PostData[] = [
     createDate: '2024. 5. 15.',
   },
   {
-    id: 6,
+    id: 102,
     title: '효과적인 스트레칭 방법',
     writer: '푸른하늘',
     content: '',
@@ -128,7 +142,7 @@ export const posts: PostData[] = [
     createDate: '2024. 5. 14.',
   },
   {
-    id: 7,
+    id: 101,
     title: '운동 동기 부여',
     writer: '보라빛달',
     content: '',
@@ -137,7 +151,7 @@ export const posts: PostData[] = [
     createDate: '2024. 5. 13.',
   },
   {
-    id: 8,
+    id: 100,
     title: '영양 관리의 중요성',
     writer: '노란햇살',
     content: '',
@@ -146,7 +160,7 @@ export const posts: PostData[] = [
     createDate: '2024. 5. 12.',
   },
   {
-    id: 9,
+    id: 99,
     title: '새로운 운동 루틴 괜찮나요?? 평가좀',
     writer: '빨간장미',
     content: '',
@@ -155,7 +169,7 @@ export const posts: PostData[] = [
     createDate: '2024. 5. 11.',
   },
   {
-    id: 10,
+    id: 98,
     title: '전신 운동 추천',
     writer: '주황코끼리',
     content: '',
@@ -169,103 +183,93 @@ export const posts: PostData[] = [
 export const InfoPosts: InfoPost[] = [
   {
     id: 1,
-    title: '초보자를 위한 전신 운동 가이드',
-    nickname: '김진수',
+    title: '고혈압이 있다면? :: 고혈압 환자 운동시 주의사항',
+    nickname: 'admin',
     content:
       '이 전신 운동 프로그램은 초보자를 위해 설계되었으며, 모든 주요 근육 그룹을 대상으로 하는 기본 운동들을 포함하고 있습니다. 자세한 가이드를 따라 시작해 보세요!',
-    views: 150,
-    likes: 10,
-    imageUrl: thumbnail,
+    views: 7,
+    likes: 14,
+    imageUrl: info2,
   },
   {
     id: 2,
-    title: '매일 10분 요가 루틴',
-    nickname: '박소연',
+    title: '스포츠심리학 : 최고의 멘탈 조성을 위한 일반적 지침',
+    nickname: 'admin',
     content:
       '유연성을 향상시키고 스트레스를 줄이기 위해 매일 짧은 요가 루틴을 생활에 통합해보세요. 바쁜 일정에도 완벽한 10분 세션입니다.',
-    views: 235,
-    likes: 15,
-    imageUrl: thumbnail,
+    views: 11,
+    likes: 17,
+    imageUrl: info7,
   },
   {
     id: 3,
-    title: '건강한 척추를 위한 스트레칭',
-    nickname: '이민호',
+    title: '신체활동 저하로 인해 생기는 변화와 신체활동의 중요성',
+    nickname: 'admin',
     content:
       '척추 건강을 위한 스트레칭 방법을 소개합니다. 규칙적으로 실행하여 등 건강을 유지하고 통증을 예방하세요.',
-    views: 300,
-    likes: 25,
-    imageUrl: thumbnail,
+    views: 12,
+    likes: 12,
+    imageUrl: info9,
   },
   {
     id: 4,
-    title: '심장 강화를 위한 유산소 운동',
-    nickname: '정하나',
+    title: '100세시대 건강하게 장수하자! 앉아서 하는 전신운동',
+    nickname: 'admin',
     content:
       '심장 건강을 향상시킬 수 있는 유산소 운동을 소개합니다. 간단한 단계를 따라하면서 건강을 관리하세요.',
-    views: 410,
-    likes: 35,
-    imageUrl: thumbnail,
+    views: 13,
+    likes: 15,
+    imageUrl: info4,
   },
   {
     id: 5,
-    title: '집에서 할 수 있는 팔 근력 강화 운동',
-    nickname: '최영철',
+    title: '어린이 비만 걱정하지 마세요, 줄넘기로 해결돼요.',
+    nickname: 'admin',
     content:
       '집에서 간단한 도구를 사용하여 팔 근력을 강화할 수 있는 운동 방법을 배워보세요. 몇 가지 운동만으로도 효과를 볼 수 있습니다.',
-    views: 120,
-    likes: 5,
-    imageUrl: thumbnail,
+    views: 16,
+    likes: 19,
+    imageUrl: info5,
   },
   {
     id: 6,
-    title: '다리와 엉덩이를 위한 최고의 운동',
-    nickname: '한지민',
+    title: '잘 못된 다이어트 식단, 탈모 유발의 원인?!',
+    nickname: 'admin',
     content:
       '다리와 엉덩이 근육을 강화하는 최고의 운동을 소개합니다. 이 운동들로 더욱 단단하고 건강한 하체를 만드세요.',
-    views: 500,
-    likes: 45,
-    imageUrl: thumbnail,
+    views: 20,
+    likes: 20,
+    imageUrl: info1,
   },
   {
     id: 7,
-    title: '전문가와 함께하는 중급자를 위한 피트니스 루틴',
-    nickname: '박지성',
+    title: '감기 걸렸을 때 운동해도 될까요?',
+    nickname: 'admin',
     content:
       '중급자를 위한 좀 더 도전적인 피트니스 루틴을 전문가의 도움으로 진행해보세요. 각 운동의 효과를 극대화하는 팁도 배울 수 있습니다.',
-    views: 620,
-    likes: 50,
-    imageUrl: thumbnail,
+    views: 21,
+    likes: 11,
+    imageUrl: info6,
   },
   {
     id: 8,
-    title: '어린이를 위한 즐거운 체육 활동',
-    nickname: '김태희',
+    title: '콜레스테롤 잡는 3가지 관리 방법 :: 식이, 약, 운동',
+    nickname: 'admin',
     content:
       '어린이의 체력을 증진시킬 수 있는 즐거운 체육 활동을 소개합니다. 안전하면서도 재미있는 운동으로 아이들의 건강을 지켜주세요.',
-    views: 280,
-    likes: 20,
-    imageUrl: thumbnail,
+    views: 24,
+    likes: 7,
+    imageUrl: info3,
   },
   {
     id: 9,
-    title: '노인을 위한 건강 운동',
-    nickname: '서현진',
+    title: '거북목&굽은등 교정방법',
+    nickname: 'admin',
     content:
       '노년기의 건강을 유지하고 증진시킬 수 있는 운동을 소개합니다. 부담 없이 할 수 있는 운동으로 활력을 느껴보세요.',
-    views: 350,
-    likes: 30,
-    imageUrl: thumbnail,
-  },
-  {
-    id: 10,
-    title: '평화로운 명상과 마인드풀니스',
-    nickname: '조미경',
-    content:
-      '마음의 평화를 찾기 위한 명상과 마인드풀니스 기법을 배워보세요. 일상의 스트레스에서 벗어나 집중력과 평온함을 높일 수 있습니다.',
-    views: 410,
-    likes: 40,
-    imageUrl: thumbnail,
+    views: 29,
+    likes: 16,
+    imageUrl: 'https://fiton-bucket.s3.ap-northeast-2.amazonaws.com/info/cdeafe1c-b212-4477-a3ff-91681ed13873-%EA%B1%B0%EB%B6%81%EB%AA%A9.jpg',
   },
   // 더 많은 글을 추가할 수 있습니다.
 ];
@@ -308,43 +312,43 @@ export const products: { [key: string]: Product[] } = {
   운동용품: [
     {
       id: 21,
-      name: '점프 로프',
-      price: 5000,
-      discountRate: 10,
-      description: '칼로리 소모에 효과적인 점프 로프',
+      name: '컬러 풀업 밴드',
+      price: 12500,
+      discountRate: 8,
+      description: '컬러감이 예쁜 풀업 밴드',
       sales: 300,
       likes: 150,
-      imageUrl: productImg2,
+      imageUrl: product1,
     },
     {
       id: 22,
-      name: '요가 매트',
-      price: 25000,
-      discountRate: 15,
-      description: '프리미엄 안티슬립 요가 매트',
+      name: '실내용 스텝퍼',
+      price: 53900,
+      discountRate: 5,
+      description: '화사한 컬러의 스텝퍼',
       sales: 250,
       likes: 125,
-      imageUrl: productImg2,
+      imageUrl: product2,
     },
     {
       id: 23,
-      name: '덤벨 세트',
-      price: 45000,
+      name: '필라테스 써클링',
+      price: 12000,
       discountRate: 5,
       description: '집에서도 할 수 있는 다양한 무게의 덤벨 세트',
       sales: 200,
       likes: 100,
-      imageUrl: productImg2,
+      imageUrl: product3,
     },
     {
       id: 24,
-      name: '풀업 바',
-      price: 15000,
-      discountRate: 20,
-      description: '문에 설치 가능한 풀업 바',
+      name: '필라테스 토닝볼',
+      price: 16100,
+      discountRate: 5,
+      description: '가벼운 토닝볼 근력 운동',
       sales: 220,
       likes: 110,
-      imageUrl: productImg2,
+      imageUrl: product4,
     },
     {
       id: 25,

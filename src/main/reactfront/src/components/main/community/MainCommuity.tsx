@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { posts } from '../../../types/MainDummyData';
 
@@ -14,6 +15,8 @@ const colunmData = [
 ];
 
 const MainCommuity: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <ListTable
       data={posts}

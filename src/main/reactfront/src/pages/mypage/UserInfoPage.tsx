@@ -240,7 +240,7 @@ const UserInfoPage: React.FC = () => {
                   { label: '닉네임', value: mainInfo.nickname },
                   { label: '핸드폰', value: mainInfo.phone },
                   { label: '생년월일', value: mainInfo.birthday },
-                  { label: '가입일', value: '2022-01-01' },
+                  { label: '가입일', value: '2024-05-03' },
                 ].map((item, index) => (
                   <div key={index}>
                     <Row>

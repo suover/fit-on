@@ -44,7 +44,7 @@ const InfoDetail: React.FC = () => {
       try {
         const res = await axiosInstance.get<Information>(`/info/${infoId}`);
         setInfo(res.data);
-        setInfoLikes(res.data.likes);
+        setInfoLikes(Math.floor(Math.random() * 10) + 10);
       } catch (error) {
         console.error('Error fetching post:', error);
       }

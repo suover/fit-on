@@ -16,7 +16,7 @@ const ItemImgWrapper = styled.div<{ $imgHeight: number }>`
 
   img {
     width: 100%;
-    height: auto;
+    height: ${(props) => props.$imgHeight}px;;
     transform: scale(1);
     transition: all 0.4s;
   }

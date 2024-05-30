@@ -50,6 +50,7 @@ const Info: React.FC = () => {
           ...info,
           id: info.infoId, // infoId를 id로 변환
           views: info.viewCount,
+          likes: Math.floor(Math.random() * 10) + 10,
         }));
         setInfoList(transformedData);
       } catch (error) {
