@@ -24,7 +24,7 @@ public class RoutineBoardService {
 	}
 
 	public RoutineBoard createRoutineBoard(RoutineBoard routineBoard) {
-		routineBoard.setUserId(30);
+		routineBoard.setUserId(150);
 		routineBoard.setCreatedAt(LocalDateTime.now());
 
 		try {
@@ -90,6 +90,15 @@ public class RoutineBoardService {
 
 	public List<RoutineBoard> getRoutinesWithPagingAndSearch(int offset, int size, String query) {
 		return routineBoardMapper.findAllWithPagingAndSearch(offset, size, query);
+	}
+
+	public List<RoutineBoard> getRoutines(int page, int size, String query) {
+		int offset = page * size;
+		if (query != null && !query.isEmpty()) {
+			return getRoutinesWithPagingAndSearch(offset, size, query);
+		} else {
+			return getRoutinesWithPaging(offset, size);
+		}
 	}
 
 	public long getRoutineCountWithSearch(String query) {
