@@ -95,13 +95,8 @@ public class RoutineBoardController {
 	public ResponseEntity<List<RoutineBoard>> getRoutinesWithPaging(
 		@RequestParam("page") int page, @RequestParam("size") int size,
 		@RequestParam(value = "query", required = false) String query) {
-		int offset = page * size;
-		List<RoutineBoard> routines;
-		if (query != null && !query.isEmpty()) {
-			routines = routineBoardService.getRoutinesWithPagingAndSearch(offset, size, query);
-		} else {
-			routines = routineBoardService.getRoutinesWithPaging(offset, size);
-		}
+		logger.debug("Fetching routines with page: {} and size: {}", page, size); // 수정된 로그
+		List<RoutineBoard> routines = routineBoardService.getRoutines(page, size, query);
 		return ResponseEntity.ok(routines);
 	}
 

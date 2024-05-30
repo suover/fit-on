@@ -56,7 +56,7 @@ export const ReviewComponent: React.FC<{ review: Review }> = ({ review }) => {
       <ReviewContainer>
         <ReviewHeader>
           <UserProfile>
-            <AccountCircle style={{ fontSize: '70px' }} /> {/* 프로필 사진 */}
+            <AccountCircle style={{ fontSize: '70px' }} />
             <UserID>{review.id}</UserID>
           </UserProfile>
 

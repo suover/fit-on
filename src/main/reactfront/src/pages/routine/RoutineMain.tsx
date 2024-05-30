@@ -13,7 +13,13 @@ const RoutineMain = () => {
   };
 
   return (
-    <Container sx={{ padding: '50px 0 100px', position: 'relative' }}>
+    <Container
+      sx={{
+        padding: '50px 0 100px',
+        position: 'relative',
+        minHeight: '800px ',
+      }}
+    >
       <Box sx={{ marginBottom: '50px' }}>
         <Typography
           variant="h3"

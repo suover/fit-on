@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { ProImg, MainImg, DetailImg, ImageModal } from './ImageDetail.styled';
+import axios from 'axios';
+
 import { Product } from '../../types/DataInterface';
 interface ImageDetailProps {
   product: Product;
@@ -8,6 +10,21 @@ const ImgDetail: React.FC<ImageDetailProps> = ({ product }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
   const [SubImages, setSubImages] = useState('');
+// const [subImages, setSubImages] = useState<string[]>([]);
+
+//  useEffect(() => {
+//     const fetchSubImages = async () => {
+//       try {
+//         const response = await axios.get<string[]>(/api/products/${product.productId}/SubImgURL);
+//         setSubImages(response.data);
+//       } catch (error) {
+//         console.error('Error fetching sub images:', error);
+//       }
+//     };
+//
+//     fetchSubImages();
+//   }, [product.productId]);
+
   const openModal = (imageUrl: string) => {
     setSelectedImage(imageUrl);
     setModalOpen(true);
