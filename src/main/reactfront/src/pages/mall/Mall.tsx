@@ -51,7 +51,7 @@ const Mall: React.FC = () => {
       route: '/shopping-basket',
       menuName: '장바구니',
       icon: ShoppingCartIcon,
-//       badge: 3,
+      //       badge: 3,
     },
   ];
 
