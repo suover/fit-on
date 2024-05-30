@@ -12,7 +12,7 @@ export default function HalfRating() {
       <Rating
         name="size-small"
         size="small"
-        defaultValue={2}
+        defaultValue={4}
         precision={1.5}
         readOnly
       />
