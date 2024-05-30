@@ -56,7 +56,6 @@ public class UserController {
 
 	@PostMapping("/auth/login")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-
 		try {
 			Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(
@@ -66,10 +65,10 @@ public class UserController {
 			);
 
 			SecurityContextHolder.getContext().setAuthentication(authentication);
-			List<String> roles = authentication.getAuthorities().stream()
-				.map(authority -> authority.getAuthority())
-				.collect(Collectors.toList());
+
 			User user = userService.findByEmail(loginRequest.getEmail());
+			List<String> roles = userService.getUserRoles(user.getUserId());
+			roles = roles.stream().map(role -> "ROLE_" + role).collect(Collectors.toList());
 			String jwt = jwtTokenProvider.createToken(authentication.getName(), roles, user.getNickname(),
 				user.getUserId(), user.getName());
 

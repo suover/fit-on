@@ -1,4 +1,6 @@
 import React, { useState, useMemo, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import {
   Box,
   Dialog,
@@ -53,23 +55,25 @@ export interface Order {
 const initialOrders: Order[] = [
   {
     id: '1',
-    name: '푸쉬업 바',
+    name: '덤벨 세트',
     quantity: 2,
     amount: 9900,
     category: '운동기구',
-    destination: '우리집',
+    destination: '경기도 안산시',
     deliveryStatus: '결제완료',
-    photoUrl: 'https://source.unsplash.com/random',
+    photoUrl:
+      'https://img.danawa.com/prod_img/500000/728/994/img/14994728_1.jpg?_v=20210817132425',
   },
   {
     id: '2',
-    name: '시원해요 안마기',
+    name: '트레이닝복',
     quantity: 1,
     amount: 29000,
-    category: '건강',
-    destination: '너네집',
+    category: '운동복',
+    destination: '경기도 안산시',
     deliveryStatus: '배송준비중',
-    photoUrl: 'https://source.unsplash.com/random',
+    photoUrl:
+      'https://m.aggro-korea.com/web/product/big/202111/2a9ac8a87724cc3be6709ee874d10608.jpg',
   },
   {
     id: '3',
@@ -77,19 +81,20 @@ const initialOrders: Order[] = [
     quantity: 1,
     amount: 15000,
     category: '운동기구',
-    destination: '서울시 강남구',
-    deliveryStatus: '배송완료',
-    photoUrl: 'https://source.unsplash.com/random',
+    destination: '경기도 안산시',
+    deliveryStatus: '배송중',
+    photoUrl: 'https://cdn.imweb.me/thumbnail/20201125/78253a1598310.png',
   },
   {
     id: '4',
-    name: '블루투스 이어폰',
+    name: '점핑 로프',
     quantity: 1,
     amount: 46000,
-    category: '전자제품',
-    destination: '서울시 서대문구',
-    deliveryStatus: '배송중',
-    photoUrl: 'https://source.unsplash.com/random',
+    category: '운동용품',
+    destination: '경기도 안산시',
+    deliveryStatus: '배송완료',
+    photoUrl:
+      'https://img.kwcdn.com/product/open/2023-05-16/1684243248652-28cc4bcfc4a04c93a435e6858769b5a1-goods.jpeg?imageMogr2/auto-orient%7CimageView2/2/w/800/q/70/format/webp',
   },
   {
     id: '5',
@@ -97,159 +102,10 @@ const initialOrders: Order[] = [
     quantity: 3,
     amount: 30000,
     category: '건강',
-    destination: '부산시 해운대구',
+    destination: '경기도 안산시',
     deliveryStatus: '배송완료',
-    photoUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    id: '6',
-    name: '런닝화',
-    quantity: 1,
-    amount: 110000,
-    category: '운동기구',
-    destination: '인천시 연수구',
-    deliveryStatus: '배송중',
-    photoUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    id: '7',
-    name: '등산배낭',
-    quantity: 1,
-    amount: 80000,
-    category: '여행',
-    destination: '대전시 유성구',
-    deliveryStatus: '배송완료',
-    photoUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    id: '8',
-    name: '수영복',
-    quantity: 2,
-    amount: 35000,
-    category: '운동기구',
-    destination: '경기도 수원시',
-    deliveryStatus: '배송중',
-    photoUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    id: '9',
-    name: '캠핑 의자',
-    quantity: 4,
-    amount: 25000,
-    category: '여행',
-    destination: '제주도 서귀포시',
-    deliveryStatus: '배송준비중',
-    photoUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    id: '10',
-    name: '골프채 세트',
-    quantity: 1,
-    amount: 450000,
-    category: '운동기구',
-    destination: '서울시 노원구',
-    deliveryStatus: '결제완료',
-    photoUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    id: '11',
-    name: '자동차용 청소기',
-    quantity: 1,
-    amount: 35000,
-    category: '전자제품',
-    destination: '울산시 북구',
-    deliveryStatus: '배송중',
-    photoUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    id: '12',
-    name: '텀블러',
-    quantity: 3,
-    amount: 12000,
-    category: '건강',
-    destination: '부산시 남구',
-    deliveryStatus: '배송완료',
-    photoUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    id: '13',
-    name: '햇빛 가리개',
-    quantity: 2,
-    amount: 25000,
-    category: '가정용품',
-    destination: '인천시 남동구',
-    deliveryStatus: '결제완료',
-    photoUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    id: '14',
-    name: '맥북 프로',
-    quantity: 1,
-    amount: 2500000,
-    category: '전자제품',
-    destination: '서울시 마포구',
-    deliveryStatus: '배송준비중',
-    photoUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    id: '15',
-    name: '운동용 바지',
-    quantity: 2,
-    amount: 19000,
-    category: '운동기구',
-    destination: '경기도 안양시',
-    deliveryStatus: '배송완료',
-    photoUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    id: '16',
-    name: '게임 콘솔',
-    quantity: 1,
-    amount: 400000,
-    category: '전자제품',
-    destination: '서울시 영등포구',
-    deliveryStatus: '배송준비중',
-    photoUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    id: '17',
-    name: '등산 스틱',
-    quantity: 2,
-    amount: 48000,
-    category: '여행',
-    destination: '광주시 서구',
-    deliveryStatus: '배송중',
-    photoUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    id: '18',
-    name: '필통',
-    quantity: 4,
-    amount: 6000,
-    category: '가정용품',
-    destination: '대구시 동구',
-    deliveryStatus: '배송완료',
-    photoUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    id: '19',
-    name: '세라믹 식기 세트',
-    quantity: 1,
-    amount: 150000,
-    category: '가정용품',
-    destination: '서울시 중랑구',
-    deliveryStatus: '배송준비중',
-    photoUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    id: '20',
-    name: '폴라로이드 카메라',
-    quantity: 1,
-    amount: 80000,
-    category: '전자제품',
-    destination: '충주시 충원동',
-    deliveryStatus: '결제완료',
-    photoUrl: 'https://source.unsplash.com/random',
+    photoUrl:
+      'https://m.nutritionfactory.co.kr/web/product/big/202305/24aac9a476a4fc7368bdd5298337c71d.png',
   },
 ];
 const labels: { [index: string]: string } = {
@@ -300,6 +156,7 @@ function OrderHistoryPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [value, setValue] = React.useState<number | null>(0);
   const [hover, setHover] = React.useState(-1);
+  const navigate = useNavigate();
 
   const filteredData = useMemo(() => {
     if (!searchText.trim()) return orders;
@@ -350,6 +207,10 @@ function OrderHistoryPage() {
   const handleConfirmSubmit = () => {
     setIsSubmitConfirmationOpen(false);
     handleReviewClose();
+
+    setTimeout(() => {
+      navigate('/mypage/product-review');
+    }, 1000);
   };
 
   const handleCancelSubmit = () => {

@@ -33,11 +33,11 @@ const MyRoutinePage: React.FC = () => {
         <Link to="my-routines">
           <Button sx={{ color: 'black', fontSize: '1rem' }}>나의 루틴</Button>
         </Link>
-        <Link to="shared-routine">
+        {/* <Link to="shared-routine">
           <Button sx={{ color: 'black', fontSize: '1rem' }}>
             공유받은 루틴
           </Button>
-        </Link>
+        </Link> */}
         {isMyRoutinesPage && (
           <Link to="/routine/new-routine" style={{ marginLeft: 'auto' }}>
             <GenericButton>루틴 작성</GenericButton>

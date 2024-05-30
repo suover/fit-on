@@ -20,6 +20,7 @@ import {
   PrimaryText,
 } from '../../components/genericTable/GenericTable.styles';
 import StyledTypography from '../../styles/mypage/StyledTypography';
+import PurchasePanel from '../../components/productDetail/PurchasePanel';
 
 const columns = [
   { id: 'id', label: '번호', width: 50 },
@@ -49,8 +50,29 @@ const initialReviews: Review[] = Array.from({ length: 15 }, (_, index) => ({
   photoUrl: 'https://source.unsplash.com/random',
 }));
 
+const dummyReview: Review[] = [
+  {
+    id: '1',
+    productName: '점핑 로프',
+    purchaseDate: '2024-05-21',
+    rating: 4,
+    review: '그립감이 나쁘지 않습니다!',
+    photoUrl:
+      'https://img.kwcdn.com/product/open/2023-05-16/1684243248652-28cc4bcfc4a04c93a435e6858769b5a1-goods.jpeg?imageMogr2/auto-orient%7CimageView2/2/w/800/q/70/format/webp',
+  },
+  {
+    id: '2',
+    productName: '프로틴 쉐이크',
+    purchaseDate: '2024-05-10',
+    rating: 5,
+    review: '비린맛 안나고 맛있었어요! 재구매 각입니다!',
+    photoUrl:
+      'https://m.nutritionfactory.co.kr/web/product/big/202305/24aac9a476a4fc7368bdd5298337c71d.png',
+  },
+];
+
 function ProductReviewPage() {
-  const [reviews, setReviews] = useState<Review[]>(initialReviews);
+  const [reviews, setReviews] = useState<Review[]>(dummyReview);
   const [searchText, setSearchText] = useState('');
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);

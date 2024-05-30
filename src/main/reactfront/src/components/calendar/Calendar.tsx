@@ -18,14 +18,15 @@ const Calendar: React.FC = () => {
   const [currentDate, setCurrentDate] = useState<Date>(new window.Date());
 
   // 임시 데이터
-  const events: { [key: number]: Event[] } = {
-    1: [{ title: '루틴', type: 'work' }],
-    5: [{ title: '루틴', type: 'personal' }],
-    12: [{ title: '루틴', type: 'celebration' }],
-    20: [{ title: '루틴', type: 'work' }],
-    25: [{ title: '루틴', type: 'celebration' }],
-    30: [{ title: '루틴', type: 'celebration' }],
-  };
+   // 임시 데이터
+   const events: { [key: number]: Event[] } = {
+     1: [{ title: '루틴', type: 'work' }],
+ //     5: [{ title: '루틴', type: 'personal' }],
+     12: [{ title: '루틴', type: 'celebration' }],
+ //     20: [{ title: '루틴', type: 'work' }],
+     25: [{ title: '루틴', type: 'celebration' }],
+ //     30: [{ title: '루틴', type: 'celebration' }],
+   };
 
   const renderDays = () => {
     const startOfMonth = new window.Date(

@@ -19,6 +19,7 @@ import {
   StatusIndicator,
 } from '../../components/genericTable/GenericTable.styles';
 import StyledTypography from '../../styles/mypage/StyledTypography';
+import GenericButton from '../../components/common/genericButton/GenericButton';
 
 const columns = [
   { id: 'id', label: '번호', width: 50 },
@@ -60,9 +61,61 @@ const getStatusStyles = (status: string) => {
   }
 };
 
+const dummyInquiryData: OneToOneInquiry[] = [
+  {
+    id: '1',
+    title: '제품 환불 요청',
+    inquiryType: '환불',
+    inquiryDate: '2024-05-28',
+    status: '답변 대기',
+  },
+  {
+    id: '2',
+    title: '배송 지연 문의',
+    inquiryType: '배송',
+    inquiryDate: '2024-05-16',
+    status: '답변 완료',
+  },
+  {
+    id: '3',
+    title: '제품 교환 문의',
+    inquiryType: '교환',
+    inquiryDate: '2024-05-12',
+    status: '답변 완료',
+  },
+  {
+    id: '4',
+    title: '제품 사용법 문의',
+    inquiryType: '사용법',
+    inquiryDate: '2024-05-08',
+    status: '답변 완료',
+  },
+  {
+    id: '5',
+    title: '구매 취소 요청',
+    inquiryType: '취소',
+    inquiryDate: '2024-05-05',
+    status: '답변 완료',
+  },
+  {
+    id: '6',
+    title: '제품 품질 문의',
+    inquiryType: '품질',
+    inquiryDate: '2024-05-02',
+    status: '답변 완료',
+  },
+  {
+    id: '7',
+    title: '결제 오류 문의',
+    inquiryType: '결제',
+    inquiryDate: '2024-4-30',
+    status: '답변 완료',
+  },
+];
+
 function OneToOneInquiryPage() {
   const [inquiries, setInquiries] =
-    useState<OneToOneInquiry[]>(initialInquiries);
+    useState<OneToOneInquiry[]>(dummyInquiryData);
   const [searchText, setSearchText] = useState('');
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
@@ -161,6 +214,13 @@ function OneToOneInquiryPage() {
         includeCheckboxes={false}
         renderRow={renderRow}
       />
+      <Box sx={{ position: 'relative' }}>
+        <GenericButton
+          style={{ position: 'absolute', right: 0, bottom: '-8px' }}
+        >
+          문의 등록
+        </GenericButton>
+      </Box>
       <Dialog
         open={isDeleteConfirmationOpen}
         onClose={handleCancelDelete}

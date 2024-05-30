@@ -10,7 +10,7 @@ import {
   Paper,
 } from '@mui/material';
 
-const TEMP_PASSWORD = '1234'; // 임시 비밀번호
+const TEMP_PASSWORD = 'qwe12312'; // 임시 비밀번호
 
 const UserInfoLoginPage: React.FC = () => {
   const [password, setPassword] = useState('');

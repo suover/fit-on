@@ -47,12 +47,200 @@ const columns = [
   { id: 'modifyDelete', label: '수정 / 삭제', width: 150 },
 ];
 
+const dummyComment: Post[] = [
+  {
+    id: '1',
+    title: '진짜 재밌어 보여요!',
+    views: 1,
+    comments: 2,
+    date: '2024-05-27',
+  },
+  {
+    id: '2',
+    title: '좋은 글 감사합니다.',
+    views: 4,
+    comments: 0,
+    date: '2024-05-25',
+  },
+  {
+    id: '3',
+    title: '많은 도움이 되었어요.',
+    views: 5,
+    comments: 1,
+    date: '2024-05-22',
+  },
+  {
+    id: '4',
+    title: '이 글 덕분에 목표를 달성했어요!',
+    views: 9,
+    comments: 4,
+    date: '2024-05-21',
+  },
+  {
+    id: '5',
+    title: '좋은 정보 감사합니다!',
+    views: 11,
+    comments: 1,
+    date: '2024-05-23',
+  },
+  {
+    id: '6',
+    title: '추가로 산책가기도 좋을것 같네요!',
+    views: 17,
+    comments: 4,
+    date: '2024-05-23',
+  },
+  {
+    id: '7',
+    title: '같이 운동해요!',
+    views: 21,
+    comments: 5,
+    date: '2024-05-11',
+  },
+  {
+    id: '8',
+    title: '한번 시도해볼게요.',
+    views: 23,
+    comments: 4,
+    date: '2024-05-07',
+  },
+  {
+    id: '9',
+    title: '정말 도움 되는 글이에요.',
+    views: 26,
+    comments: 1,
+    date: '2024-05-03',
+  },
+  {
+    id: '10',
+    title: '여기 추천합니다!',
+    views: 28,
+    comments: 9,
+    date: '2024-05-03',
+  },
+  {
+    id: '11',
+    title: '저도 같은 생각입니다.',
+    views: 31,
+    comments: 6,
+    date: '2024-05-14',
+  },
+  {
+    id: '12',
+    title: '잘 읽었습니다.',
+    views: 32,
+    comments: 0,
+    date: '2024-05-10',
+  },
+  {
+    id: '13',
+    title: '정말 유익한 글이네요.',
+    views: 39,
+    comments: 3,
+    date: '2024-05-02',
+  },
+];
+
+const dummyRoutineComment: Post[] = [
+  {
+    id: '1',
+    title: '루틴 공유해주셔서 감사합니다!',
+    views: 2,
+    comments: 9,
+    date: '2024-05-28',
+  },
+  {
+    id: '2',
+    title: '저도 이 루틴 따라해볼게요.',
+    views: 7,
+    comments: 2,
+    date: '2024-05-27',
+  },
+  {
+    id: '3',
+    title: '몇 세트씩 하나요?',
+    views: 12,
+    comments: 7,
+    date: '2024-05-27',
+  },
+  {
+    id: '4',
+    title: '이 루틴에 추가할 운동 추천해주실 수 있나요?',
+    views: 13,
+    comments: 7,
+    date: '2024-05-23',
+  },
+  {
+    id: '5',
+    title: '제가 해본 루틴 중에 최고에요.',
+    views: 16,
+    comments: 9,
+    date: '2024-05-22',
+  },
+  {
+    id: '6',
+    title: '운동 시간은 얼마나 걸리나요?',
+    views: 18,
+    comments: 0,
+    date: '2024-05-22',
+  },
+  {
+    id: '7',
+    title: '다이어트에도 도움이 될까요?',
+    views: 22,
+    comments: 7,
+    date: '2024-05-22',
+  },
+  {
+    id: '8',
+    title: '이 루틴을 몇 주 동안 했나요?',
+    views: 24,
+    comments: 8,
+    date: '2024-05-12',
+  },
+  {
+    id: '9',
+    title: '초보자가 따라하기엔 어려울까요?',
+    views: 28,
+    comments: 9,
+    date: '2024-05-10',
+  },
+  {
+    id: '10',
+    title: '이 루틴 정말 좋아 보이네요!',
+    views: 32,
+    comments: 3,
+    date: '2024-05-06',
+  },
+  {
+    id: '11',
+    title: '이 루틴 따라하면서 조언해주실 점 있을까요?',
+    views: 32,
+    comments: 8,
+    date: '2024-05-04',
+  },
+  {
+    id: '12',
+    title: '효과는 어느 정도 보셨나요?',
+    views: 35,
+    comments: 2,
+    date: '2024-05-03',
+  },
+  {
+    id: '13',
+    title: '근력 향상에 좋을 것 같아요.',
+    views: 38,
+    comments: 3,
+    date: '2024-05-02',
+  },
+];
+
 function CommentManagementPage() {
   const [currentTab, setCurrentTab] = useState(0);
   const [searchText, setSearchText] = useState('');
   const [selected, setSelected] = useState<{ [key: string]: boolean }>({});
 
-  const allPosts = currentTab === 0 ? communityPosts : routinePosts;
+  const allPosts = currentTab === 0 ? dummyComment : dummyRoutineComment;
 
   const filteredPosts = useMemo(
     () =>

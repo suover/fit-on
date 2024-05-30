@@ -126,7 +126,7 @@ const PurchasePanel: React.FC<PurchasePanelProps> = ({ product }) => {
       </InfoContainer>
       <InfoContainer>
         <p>배송비</p>
-        <p>무료배송</p>
+        <p>2,500원</p>
       </InfoContainer>
       <ShippingContainer>
         <p>구매 예정 금액</p>
