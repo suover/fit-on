@@ -3,8 +3,8 @@ import React from 'react';
 import { routines } from '../../../types/MainDummyData';
 import RoutineLists from './MainRoutines.styles';
 import RoutineList from './RoutineList';
-import routineImg1 from '../../../assets/img/main/routine1.jpg';
-import routineImg2 from '../../../assets/img/main/routine2.jpg';
+import routineImg1 from '../../../assets/img/main/routine1.png';
+import routineImg2 from '../../../assets/img/main/routine2.webp';
 import routineImg3 from '../../../assets/img/main/routine3.jpg';
 
 const MainRoutines: React.FC = () => {

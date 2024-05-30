@@ -1,5 +1,3 @@
-// PostDetail.tsx
-
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -37,6 +35,7 @@ type DataType = {
   userId: string;
   title: string;
   content: string;
+  imageUrl: string;
   createdAt: string;
   comments: Comment[];
   viewCount: number;
@@ -65,6 +64,7 @@ const PostDetail = <T extends DataType>({
     userId,
     content,
     createdAt,
+    imageUrl,
     comments,
     viewCount,
     likes,
@@ -138,6 +138,18 @@ const PostDetail = <T extends DataType>({
           className="content"
           dangerouslySetInnerHTML={{ __html: content }}
         ></div>
+        {imageUrl && (
+          <div
+            className="postImage"
+            style={{ textAlign: 'center', marginTop: '20px' }}
+          >
+            <img
+              src={imageUrl}
+              alt={title}
+              style={{ maxWidth: '100%', height: 'auto' }}
+            />
+          </div>
+        )}
         <Box
           sx={{
             display: 'flex',
