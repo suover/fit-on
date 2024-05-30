@@ -3,9 +3,9 @@ import React from 'react';
 import { routines } from '../../../types/MainDummyData';
 import RoutineLists from './MainRoutines.styles';
 import RoutineList from './RoutineList';
-import routineImg1 from '../../../assets/img/main/routine1.png';
-import routineImg2 from '../../../assets/img/main/routine2.webp';
-import routineImg3 from '../../../assets/img/main/routine3.jpg';
+import chest from '../../../assets/img/routine/chest.png';
+import apsan from '../../../assets/img/routine/Apsan.webp';
+import frontdouble from '../../../assets/img/routine/frontdouble.jpg';
 
 const MainRoutines: React.FC = () => {
   return (
@@ -13,9 +13,9 @@ const MainRoutines: React.FC = () => {
       {/* {routines.map((routine) => (
         <RoutineList key={routine.id} routine={routine} />
       ))} */}
-      <RoutineList routine={routines[0]} img={routineImg1} />
-      <RoutineList routine={routines[1]} img={routineImg2} />
-      <RoutineList routine={routines[2]} img={routineImg3} />
+      <RoutineList routine={routines[0]} img={chest} />
+      <RoutineList routine={routines[1]} img={apsan} />
+      <RoutineList routine={routines[2]} img={frontdouble} />
     </RoutineLists>
   );
 };
