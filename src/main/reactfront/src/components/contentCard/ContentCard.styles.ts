@@ -19,6 +19,11 @@ const Card = styled.div`
     height: 250px;
     overflow: hidden;
     position: relative;
+
+    img {
+    width: 250px;
+    height: auto;
+    }
   }
 `;
 
