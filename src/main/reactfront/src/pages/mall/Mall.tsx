@@ -103,7 +103,7 @@ const Mall: React.FC = () => {
         />
       </SidebarWrapper>
 
-      <Container sx={{ paddingTop: '50px', paddingBottom: '100px' }}>
+      <Container sx={{ paddingTop: '50px', paddingBottom: '100px' , minHeight: '800px' }}>
         <Search>
           <SearchBox onSearch={handleSearch} />
         </Search>
