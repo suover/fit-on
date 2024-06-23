@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import { Outlet } from 'react-router-dom'; // 뭔지 모르겠음
-
 import styled from 'styled-components';
 
 import SideNavbar from '../../components/layout/sideNavBar/SideNavbar';
@@ -12,11 +10,10 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 
 import SearchBox from '../../components/common/search/SearchBox';
 import SidebarWrapper from '../../components/common/sidebar/SidebarWrapper';
-import { Container } from '@mui/material';
+import { Pagination, Container, Box } from '@mui/material';
 import { Product } from '../../types/DataInterface';
 import ProductCardList from './ProductCardList';
 import axios from 'axios';
-// import { productData, Product } from '../../types/ProductData'; // 더미데이터
 
 export const Search = styled.div`
   display: flex;
@@ -32,6 +29,9 @@ export const Search = styled.div`
 const Mall: React.FC = () => {
   const [filteredItems, setFilteredItems] = useState<Product[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const pageSize = 12;
 
   // 장바구니만 route로 적용시키고, 나머지는 카테고리 필터링으로 변경
   const menuItems = [
@@ -86,24 +86,42 @@ const Mall: React.FC = () => {
     setFilteredItems(filtered);
   };
 
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number,
+  ) => {
+    setPage(value);
+  };
+
   return (
     <>
-      <Container sx={{ paddingTop: '50px', paddingBottom: '100px' }}>
-        <SidebarWrapper>
-          <SideNavbar
-            menuItems={menuItems}
-            drawerWidthOpen="200px"
-            title="FitOn Mall"
-          />
-        </SidebarWrapper>
+      <SidebarWrapper>
+        <SideNavbar
+          menuItems={menuItems}
+          drawerWidthOpen="200px"
+          title="FitOn Mall"
+        />
+      </SidebarWrapper>
 
+      <Container sx={{ paddingTop: '50px', paddingBottom: '100px' , minHeight: '800px' }}>
         <Search>
           <SearchBox onSearch={handleSearch} />
         </Search>
-        <ProductCardList products={filteredItems} />
+        <Box>
+          <ProductCardList products={filteredItems} />
+          <Box display="flex" justifyContent="center" mt={4}>
+            <Pagination
+              count={totalPages}
+              page={page}
+              onChange={handlePageChange}
+              color="primary"
+            />
+          </Box>
+        </Box>
       </Container>
     </>
   );
 };
 
 export default Mall;
+
