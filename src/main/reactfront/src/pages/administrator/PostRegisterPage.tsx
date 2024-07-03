@@ -1,9 +1,10 @@
-import React, { useState, ChangeEvent, useContext } from 'react';
+import React, { useState, ChangeEvent, useContext, useEffect } from 'react';
 
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import axios from 'axios';
 
+import { Information } from '../information/Info';
 import AuthContext from '../../context/AuthContext';
 import GenericButton from '../../components/common/genericButton/GenericButton';
 import Editor from '../../components/common/Editor';
@@ -15,18 +16,48 @@ interface InfoValues {
   title: string;
   categoryId: string;
   content: string;
+  userId: number | null;
 }
 
 const PostRegisterPage: React.FC = () => {
-  const { nickname } = useContext(AuthContext);
+  const { infoId } = useParams<{ infoId: string }>();
+  const { userId } = useContext(AuthContext);
   const navigate = useNavigate();
   const [infoValues, setInfoValues] = useState<InfoValues>({
     title: '',
     categoryId: '',
     content: '',
+    userId: userId,
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+
+  // 수정 경로로 들어왔을 경우 데이터 세팅
+  useEffect(() => {
+    if (infoId !== undefined) {
+      const fetchPost = async () => {
+        try {
+          const res = await axios.get<Information>(
+            `http://localhost:8080/api/info/${infoId}`,
+          );
+          const infoData = res.data;
+
+          setInfoValues({
+            title: infoData.title,
+            categoryId: infoData.categoryId,
+            content: infoData.content,
+            userId: userId,
+          });
+
+          setImagePreview(infoData.imageUrl);
+        } catch (error) {
+          console.error('Error fetching post:', error);
+        }
+      };
+
+      fetchPost();
+    }
+  }, [infoId]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     // 제목
@@ -40,8 +71,8 @@ const PostRegisterPage: React.FC = () => {
   };
 
   const handleDescriptionChange = (value: string) => {
-    // 이미지
-    setInfoValues({ ...infoValues, content: value });
+    // 내용
+    // setInfoValues({ ...infoValues, content: value });
   };
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -91,6 +122,7 @@ const PostRegisterPage: React.FC = () => {
       title: infoValues.title,
       categoryId: infoValues.categoryId,
       content: infoValues.content,
+      userId: userId,
     };
 
     const formData = new FormData();
@@ -180,7 +212,7 @@ const PostRegisterPage: React.FC = () => {
             />
             <TextField
               select
-              name="category"
+              name="categoryId"
               label="카테고리"
               value={infoValues.categoryId}
               onChange={handleSelectChange}

@@ -9,6 +9,7 @@ import { Information } from './Info';
 import { Comment } from '../../components/common/comment/CommentList';
 import {
   InfoWrapper,
+  NoContentWrapper,
   DetailTitle,
   Content,
   ControllBtns,
@@ -21,7 +22,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import AuthContext from '../../context/AuthContext';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/api', // 백엔드 API의 기본 URL을 설정합니다.
+  baseURL: 'http://localhost:8080/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -31,6 +32,7 @@ const InfoDetail: React.FC = () => {
   const { infoId } = useParams<{ infoId: string }>();
   const navigate = useNavigate();
   const [info, setInfo] = useState<Information>();
+  const [noContent, setNoContent] = useState<boolean>(false);
   const [infoComments, setInfoComments] = useState<Comment[]>([]);
   const [infolikes, setInfoLikes] = useState<number>(53);
   const [isLike, setIsLike] = useState<boolean>(false);
@@ -43,8 +45,13 @@ const InfoDetail: React.FC = () => {
     const fetchPost = async () => {
       try {
         const res = await axiosInstance.get<Information>(`/info/${infoId}`);
-        setInfo(res.data);
-        setInfoLikes(res.data.likes);
+
+        if (!res.data) {
+          setNoContent(true);
+        } else {
+          setInfo(res.data);
+          setInfoLikes(res.data.likes);
+        }
       } catch (error) {
         console.error('Error fetching post:', error);
       }
@@ -103,6 +110,14 @@ const InfoDetail: React.FC = () => {
     );
   };
 
+  if (noContent) {
+    return (
+      <NoContentWrapper>
+        <p>존재하지 않는 게시글입니다. 😥</p>
+      </NoContentWrapper>
+    );
+  }
+
   return (
     <InfoWrapper>
       <Container>
@@ -155,7 +170,9 @@ const InfoDetail: React.FC = () => {
       </Container>
       <ControllBtns>
         {userRole === 'admin' && (
-          <button onClick={() => navigate('/info')}>수정</button>
+          <button onClick={() => navigate(`/info/update/${infoId}`)}>
+            수정
+          </button>
         )}
         <button onClick={() => navigate('/info')}>목록</button>
       </ControllBtns>

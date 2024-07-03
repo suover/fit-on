@@ -5,6 +5,14 @@ const InfoWrapper = styled.section`
   padding: 100px 0 100px 0;
 `;
 
+const NoContentWrapper = styled.section`
+  width: 100%;
+  min-height: 800px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 const DetailTitle = styled.div`
   border-bottom: 1px solid #999;
   padding-bottom: 5px;
@@ -72,4 +80,4 @@ const ControllBtns = styled.div`
   }
 `;
 
-export { InfoWrapper, DetailTitle, Content, ControllBtns };
+export { InfoWrapper, NoContentWrapper, DetailTitle, Content, ControllBtns };

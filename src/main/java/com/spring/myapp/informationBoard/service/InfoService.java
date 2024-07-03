@@ -22,7 +22,7 @@ public class InfoService {
 	public void writeNewInfo(Information info) {
 
 		Information newInfo = new Information();
-		newInfo.setUserId(36); // 일단 하드코딩
+		newInfo.setUserId(info.getUserId());
 		newInfo.setCategoryId(info.getCategoryId());
 		newInfo.setTitle(info.getTitle());
 		newInfo.setContent(info.getContent());

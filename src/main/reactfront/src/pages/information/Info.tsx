@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 
 import axios from 'axios';
 
-import { InfoPosts } from '../../types/MainDummyData';
 import { InfoSection, ImgWrapper } from '../../styles/information/Info.styles';
 
 import CardList from '../../components/cardList/CardList';
@@ -21,6 +20,7 @@ export interface Information {
   id: number;
   nickname: string;
   categoryName: string;
+  categoryId: string;
   title: string;
   content: string;
   imageUrl: string;
@@ -32,7 +32,7 @@ export interface Information {
 }
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/api', // 백엔드 API의 기본 URL을 설정합니다.
+  baseURL: 'http://localhost:8080/api',
   headers: {
     'Content-Type': 'application/json',
   },
