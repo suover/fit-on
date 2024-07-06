@@ -24,4 +24,5 @@ public class RoutineBoard {
 	private Integer goalId;
 	private Integer levelId;
 	private Integer partId;
+	private String imageUrl;
 }

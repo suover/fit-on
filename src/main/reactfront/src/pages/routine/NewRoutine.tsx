@@ -14,7 +14,6 @@ import {
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
-
 import SelectBox from '../../components/common/SelectBox';
 import Editor from '../../components/common/Editor';
 
@@ -36,6 +35,69 @@ const Part = [
   { value: '4', label: 'None' },
 ];
 
+interface ImageUploadProps {
+  onImageChange: (file: File) => void;
+}
+
+const ImageUpload: React.FC<ImageUploadProps> = ({ onImageChange }) => {
+  const [preview, setPreview] = useState<string | null>(null);
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (reader.result) {
+          setPreview(reader.result as string);
+          onImageChange(file);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        mb: 2,
+      }}
+    >
+      <Button variant="contained" component="label">
+        사진 업로드
+        <input
+          type="file"
+          accept="image/*"
+          hidden
+          onChange={handleImageChange}
+        />
+      </Button>
+      {preview && (
+        <Box
+          sx={{
+            width: 200,
+            height: 300,
+            mt: 2,
+            border: '1px solid #ccc',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            overflow: 'hidden',
+          }}
+        >
+          <img
+            src={preview}
+            alt="thumbnail"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        </Box>
+      )}
+    </Box>
+  );
+};
+
 const NewRoutine = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -47,8 +109,9 @@ const NewRoutine = () => {
   const [content, setContent] = useState('');
   const [routineId, setRoutineId] = useState<number | null>(null);
 
-  const [routineItem, setRoutineItem] = useState(''); // 루틴 목록 입력 상태
-  const [lists, setLists] = useState<string[]>([]); // 루틴 리스트 상태
+  const [routineItem, setRoutineItem] = useState('');
+  const [lists, setLists] = useState<string[]>([]);
+  const [image, setImage] = useState<File | null>(null);
 
   // 게시글 공개/비공개 상태를 관리하는 상태 변수
   const [isPublic, setIsPublic] = useState(true);
@@ -88,24 +151,44 @@ const NewRoutine = () => {
       setRoutineItem('');
     }
   };
-
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const routineData = {
-      userId: 30, // 로그인된 사용자 ID로 교체 필요
-      title,
-      content,
-      goalId: parseInt(purpose || '0', 10), // 선택된 목적 값 설정
-      levelId: parseInt(level || '0', 10), // 선택된 난이도 값 설정
-      partId: parseInt(target || '0', 10), // 선택된 부위 값 설정
-      isPublic,
-      routineItems: lists,
-    };
-
-    console.log('Submitting routine data:', routineData);
+    if (!image) {
+      alert('이미지를 업로드해주세요.');
+      return;
+    }
 
     try {
+      const formData = new FormData();
+      formData.append('image', image);
+
+      const imageUploadResponse = await axios.post(
+        'http://localhost:8080/api/upload',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
+
+      const imageUrl = imageUploadResponse.data;
+
+      const routineData = {
+        userId: 30,
+        title,
+        content,
+        goalId: parseInt(purpose || '0', 10),
+        levelId: parseInt(level || '0', 10),
+        partId: parseInt(target || '0', 10),
+        isPublic,
+        routineItems: lists,
+        imageUrl: imageUrl,
+      };
+
+      console.log('Submitting routine data:', routineData);
+
       if (routineId) {
         // 기존 게시글 수정
         const response = await axios.put(
@@ -123,10 +206,12 @@ const NewRoutine = () => {
       }
       navigate('/routine'); // 페이지 이동
     } catch (error) {
-      console.error('There was an error creating/updating the routine!', error);
+      console.error(
+        'There was an error uploading the image or creating/updating the routine!',
+        error,
+      );
     }
   };
-
   const handleCancel = () => {
     if (
       location.state &&
@@ -153,6 +238,7 @@ const NewRoutine = () => {
               label={isPublic ? 'Public' : 'Private'}
             />
           </Box>
+          <ImageUpload onImageChange={setImage} />
           <TextField
             label="제목"
             fullWidth

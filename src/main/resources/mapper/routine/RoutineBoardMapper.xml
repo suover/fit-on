@@ -19,6 +19,7 @@
         <result column="goal_id" property="goalId"/>
         <result column="level_id" property="levelId"/>
         <result column="part_id" property="partId"/>
+        <result column="image_url" property="imageUrl"/>
     </resultMap>
 
     <select id="findAll" resultMap="RoutineBoardResultMap">
@@ -45,9 +46,9 @@
 
     <insert id="insertRoutineBoard" parameterType="com.spring.myapp.routineBoard.model.RoutineBoard">
         INSERT INTO routines (user_id, title, content, created_at, updated_at, view_count, share_count, is_deleted,
-        is_public, goal_id, level_id, part_id)
+        is_public, goal_id, level_id, part_id, image_url)
         VALUES (#{userId}, #{title}, #{content}, NOW(), NOW(), 0, 0, #{isDeleted}, #{isPublic},
-        #{goalId}, #{levelId}, #{partId})
+        #{goalId}, #{levelId}, #{partId}, #{imageUrl})
     </insert>
 
     <select id="findBestRoutines" resultMap="RoutineBoardResultMap">
@@ -58,7 +59,8 @@
         UPDATE routines
         SET title = #{title}, content = #{content}, updated_at = NOW(),
         view_count = #{viewCount}, share_count = #{shareCount}, is_deleted = #{isDeleted},
-        is_public = #{isPublic}, goal_id = #{goalId}, level_id = #{levelId}, part_id = #{partId}
+        is_public = #{isPublic}, goal_id = #{goalId}, level_id = #{levelId}, part_id = #{partId},
+        image_url = #{imageUrl}
         WHERE routine_id = #{routineId}
     </update>
 
