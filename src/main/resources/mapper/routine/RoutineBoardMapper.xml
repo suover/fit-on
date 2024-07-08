@@ -22,15 +22,6 @@
         <result column="image_url" property="imageUrl"/>
     </resultMap>
 
-    <select id="findAll" resultMap="RoutineBoardResultMap">
-        SELECT * FROM routines WHERE is_deleted = 0
-    </select>
-
-    <select id="findAllWithPaging" resultMap="RoutineBoardResultMap">
-        SELECT * FROM routines WHERE is_deleted = 0
-        ORDER BY created_at DESC
-        LIMIT #{offset}, #{size}
-    </select>
 
     <select id="countRoutines" resultType="long">
         SELECT COUNT(*) FROM routines WHERE is_deleted = 0
@@ -94,6 +85,12 @@
         SELECT * FROM routine_parts
     </select>
 
+    <select id="findAllWithPaging" resultMap="RoutineBoardResultMap">
+        SELECT * FROM routines WHERE is_deleted = 0
+        ORDER BY created_at DESC
+        LIMIT #{offset}, #{size}
+    </select>
+    
     <select id="findAllWithPagingAndSearch" resultMap="RoutineBoardResultMap">
         SELECT * FROM routines WHERE is_deleted = 0 AND title LIKE CONCAT('%', #{query}, '%')
         ORDER BY created_at DESC

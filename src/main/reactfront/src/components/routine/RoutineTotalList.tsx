@@ -45,22 +45,6 @@ const RoutineTotalList: React.FC<RoutineTotalListProps> = ({ searchQuery }) => {
     setPage(value);
   };
 
-  const handleFileUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append('image', file);
-
-    try {
-      const response = await axios.post('/api/routine/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      console.log('Image uploaded successfully:', response.data);
-    } catch (error) {
-      console.error('Failed to upload image:', error);
-    }
-  };
-
   return (
     <Box>
       <CardLists contents={routines} pageURL="routine" Icon={ShareIcon} />

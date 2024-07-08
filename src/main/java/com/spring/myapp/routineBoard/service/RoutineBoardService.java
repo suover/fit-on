@@ -75,8 +75,7 @@ public class RoutineBoardService {
 		return routineBoardMapper.findPartNameById(partId);
 	}
 
-	public List<RoutineBoard> getRoutinesWithPaging(int page, int size) {
-		int offset = page * size;
+	public List<RoutineBoard> getRoutinesWithPaging(int offset, int size) {
 		return routineBoardMapper.findAllWithPaging(offset, size);
 	}
 

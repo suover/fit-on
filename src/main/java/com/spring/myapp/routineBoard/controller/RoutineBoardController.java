@@ -40,16 +40,25 @@ public class RoutineBoardController {
 	@Autowired
 	private RoutineBoardService routineBoardService;
 
-	@GetMapping
-	public ResponseEntity<List<RoutineBoard>> getAllRoutines(
-		@RequestParam(defaultValue = "0") int page,
-		@RequestParam(defaultValue = "12") int size) {
+	@GetMapping("/list")
+	public ResponseEntity<List<RoutineBoard>> getRoutinesWithPaging(
+		@RequestParam(value = "page") int page,
+		@RequestParam(value = "size") int size,
+		@RequestParam(value = "query", required = false) String query) {
 		try {
 			int offset = page * size;
-			List<RoutineBoard> routines = routineBoardService.getRoutinesWithPaging(offset, size);
+			List<RoutineBoard> routines;
+			if (query != null && !query.isEmpty()) {
+				routines = routineBoardService.getRoutinesWithPagingAndSearch(offset, size, query);
+				logger.info("@@@@@@@Fetched routines with search query '{}' for page: {} with size: {}@@@@@@@@@@",
+					query, page, size);
+			} else {
+				routines = routineBoardService.getRoutinesWithPaging(offset, size);
+				logger.info("@@@@@@@@@Fetched routines for page: {} with size: {}@@@@@@@@@@@", page, size);
+			}
 			return ResponseEntity.ok(routines);
 		} catch (Exception e) {
-			logger.error("@@@@@@@@@Error getting all routines@@@@@@@@@", e);
+			logger.error("@@@@@@@@@Error getting routines with paging@@@@@@@", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
 	}
@@ -133,6 +142,7 @@ public class RoutineBoardController {
 		@RequestParam("partId") Integer partId,
 		@RequestParam("isPublic") boolean isPublic) {
 		try {
+
 			String imageUrl = saveImage(file);
 			RoutineBoard routineBoard = new RoutineBoard();
 			routineBoard.setTitle(title);
@@ -171,37 +181,20 @@ public class RoutineBoardController {
 		}
 	}
 
-	@GetMapping("/list")
-	public ResponseEntity<List<RoutineBoard>> getRoutinesWithPaging(
-		@RequestParam("page") int page, @RequestParam("size") int size,
-		@RequestParam(value = "query", required = false) String query) {
-		try {
-			int offset = page * size;
-			List<RoutineBoard> routines;
-			if (query != null && !query.isEmpty()) {
-				routines = routineBoardService.getRoutinesWithPagingAndSearch(offset, size, query);
-			} else {
-				routines = routineBoardService.getRoutinesWithPaging(offset, size);
-			}
-			return ResponseEntity.ok(routines);
-		} catch (Exception e) {
-			logger.error("@@@@@@@@Error getting routines with paging@@@@@@", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		}
-	}
-
 	@GetMapping("/count")
 	public ResponseEntity<Long> getRoutineCount(@RequestParam(value = "query", required = false) String query) {
 		try {
 			long count;
 			if (query != null && !query.isEmpty()) {
 				count = routineBoardService.getRoutineCountWithSearch(query);
+				logger.info("@@@@@@@@@@Fetched routine count with search query '{}': {}@@@@@@@@@", query, count);
 			} else {
 				count = routineBoardService.getRoutineCount();
+				logger.info("@@@@@@@@@@Fetched routine count: {}@@@@@@@@", count);
 			}
 			return ResponseEntity.ok(count);
 		} catch (Exception e) {
-			logger.error("@@@@@@@@Error getting routine count@@@@@@@@", e);
+			logger.error("@@@@@@@@@Error getting routine count@@@@@@@@", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
 	}
@@ -210,9 +203,10 @@ public class RoutineBoardController {
 	public ResponseEntity<List<RoutineBoard>> getBestRoutines() {
 		try {
 			List<RoutineBoard> bestRoutines = routineBoardService.getBestRoutines();
+			logger.info("Fetched best routines");
 			return ResponseEntity.ok(bestRoutines);
 		} catch (Exception e) {
-			logger.error("@@@@@@Error getting best routines@@@@@@@@@@", e);
+			logger.error("Error getting best routines", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
 	}
