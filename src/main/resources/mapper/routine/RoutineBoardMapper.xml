@@ -59,8 +59,8 @@
         UPDATE routines
         SET title = #{title}, content = #{content}, updated_at = NOW(),
         view_count = #{viewCount}, share_count = #{shareCount}, is_deleted = #{isDeleted},
-        is_public = #{isPublic}, goal_id = #{goalId}, level_id = #{levelId}, part_id = #{partId},
-        image_url = #{imageUrl}
+        is_public = #{isPublic}, goal_id = #{goalId}, level_id = #{levelId}, part_id = #{partId}, image_url =
+        #{imageUrl}
         WHERE routine_id = #{routineId}
     </update>
 
