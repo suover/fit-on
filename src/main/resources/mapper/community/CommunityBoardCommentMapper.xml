@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.myapp.community.repository.CommunityBoardCommentMapper">
+
+    <insert id="insertComment" parameterType="com.spring.myapp.community.dto.CommunityBoardCommentDTO">
+        INSERT INTO community_comments (community_id, user_id, content, created_at, updated_at, is_deleted)
+        VALUES (#{communityId}, #{userId}, #{content}, NOW(), NOW(), FALSE)
+    </insert>
+
+    <select id="selectCommentsByCommunityId" resultType="com.spring.myapp.community.dto.CommunityBoardCommentDTO">
+        SELECT * FROM community_comments WHERE community_id = #{communityId} AND is_deleted = FALSE
+    </select>
+
+    <select id="selectCommentById" resultType="com.spring.myapp.community.dto.CommunityBoardCommentDTO">
+        SELECT * FROM community_comments WHERE comment_id = #{commentId} AND is_deleted = FALSE
+    </select>
+
+    <select id="selectCommentByIdAndCommunityId" resultType="com.spring.myapp.community.dto.CommunityBoardCommentDTO">
+        SELECT * FROM community_comments
+        WHERE comment_id = #{commentId}
+        AND community_id = #{communityId}
+    </select>
+
+    <select id="selectRepliesByCommentId" resultType="com.spring.myapp.community.dto.CommunityBoardCommentDTO">
+        SELECT * FROM community_comments
+        WHERE parent_comment_id = #{commentId}
+        AND is_deleted = FALSE
+    </select>
+
+    <update id="updateComment">
+        UPDATE community_comments
+        SET content = #{content}, updated_at = NOW()
+        WHERE comment_id = #{commentId}
+    </update>
+
+    <delete id="deleteComment">
+        UPDATE community_comments
+        SET is_deleted = TRUE
+        WHERE comment_id = #{commentId}
+    </delete>
+
+</mapper>

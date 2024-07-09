@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ButtonLikePost from '../common/button/ButtonLikePost';
@@ -15,8 +15,10 @@ import {
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PersonIcon from '@mui/icons-material/Person';
 import AuthContext from '../../context/AuthContext';
+import { Comment } from '../common/comment/CommentList'; // Comment 타입 가져오기
+
 type DataType = {
-  postId: number | string;
+  communityId: number | string;
   categoryName?: string;
   nickname: string;
   title: string;
@@ -25,6 +27,7 @@ type DataType = {
   comments: Comment[];
   viewCount: number;
   likes: number;
+  // communityId: number;
 };
 
 interface PostDetailProps<T> {
@@ -45,8 +48,11 @@ const CommunityPostDetail = <T extends DataType>({
     categoryName,
     viewCount,
     likes,
-    postId,
+    communityId,
   } = data;
+
+  console.log('*******Post data: ', data);
+
   const [contentData, setcontentData] = useState<T>(data); // 실제 데이터가 들어오면 이용
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(likes);
@@ -75,12 +81,12 @@ const CommunityPostDetail = <T extends DataType>({
       try {
         if (isLiked) {
           await axios.post(
-            `http://localhost:8080/api/community/posts/${postId}/unlike`,
+            `http://localhost:8080/api/community/posts/${communityId}/unlike`,
           );
           setLikeCount(likeCount - 1);
         } else {
           await axios.post(
-            `http://localhost:8080/api/community/posts/${postId}/like`,
+            `http://localhost:8080/api/community/posts/${communityId}/like`,
           );
           setLikeCount(likeCount + 1);
         }
@@ -98,13 +104,20 @@ const CommunityPostDetail = <T extends DataType>({
   };
 
   const handleEditClick = () => {
-    navigate(`/community/edit/${postId}`);
+    navigate(`/community/edit/${communityId}`);
   };
 
   const handleDeleteClick = async () => {
-    console.log(`Deleting post with id: ${postId}`); // 로그 추가
+    //추가
+    if (!communityId) {
+      console.error('Post ID is undefined');
+      return;
+    }
+    console.log(`########## Deleting post with id: ${communityId}`); // 로그 추가
     try {
-      await axios.delete(`http://localhost:8080/api/community/posts/${postId}`);
+      await axios.delete(
+        `http://localhost:8080/api/community/posts/${communityId}`,
+      );
       navigate(`/${pageURL}`);
     } catch (error) {
       console.error('Error deleting post:', error);
@@ -177,6 +190,7 @@ const CommunityPostDetail = <T extends DataType>({
         )}
         <BackBtn onClick={() => navigate(`/${pageURL}`)}>목록</BackBtn>
       </Box>
+
       {/* 삭제 확인 다이얼로그 */}
       <Dialog
         open={open}

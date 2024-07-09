@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import CommentListItem from './CommentListItem';
-import CommentInputField from './CommentInputField';
+import CommentListItem from './CommunityCommentListItem';
+import CommentInputField from '../common/comment/CommentInputField';
 
 export interface Comment {
   commentId: number;

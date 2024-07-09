@@ -74,17 +74,16 @@ const Board: React.FC<BoardProps> = ({ selectedCategory }) => {
   };
 
   const columns = [
-    { id: 'title', label: 'Title', width: 200 },
-    { id: 'categoryName', label: 'Category', width: 50 },
-    { id: 'nickname', label: 'Nickname', width: 40 },
-    { id: 'like', label: 'Likes', width: 30 },
-    { id: 'viewCount', label: 'Views', width: 30 },
+    { id: 'title', label: '제목', width: 200 },
+    { id: 'categoryName', label: '카테고리', width: 40 },
+    { id: 'nickname', label: '닉네임', width: 40 },
+    { id: 'createdAt', label: '작성일', width: 40 },
+    { id: 'viewCount', label: '조회수', width: 30 },
   ];
 
   const renderRow = (
     post: Post,
     isSelected: boolean,
-    // onSelect: (postId: number) => void,
     onSelect: (id: string, isSelected: boolean) => void,
   ) => (
     <TableRow key={post.id} onClick={() => onSelect(post.id, isSelected)}>
@@ -105,7 +104,7 @@ const Board: React.FC<BoardProps> = ({ selectedCategory }) => {
         {post.nickname}
       </TableData>
       <TableData style={{ textAlign: 'center', width: 30 }}>
-        {post.like}
+        {new Date(post.createdAt).toLocaleDateString()}
       </TableData>
       <TableData style={{ textAlign: 'center', width: 30 }}>
         {post.viewCount}
