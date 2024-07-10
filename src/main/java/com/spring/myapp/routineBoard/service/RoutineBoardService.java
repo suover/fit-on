@@ -23,8 +23,9 @@ public class RoutineBoardService {
 		return routineBoardMapper.findById(id);
 	}
 
-	public RoutineBoard createRoutineBoard(RoutineBoard routineBoard) {
-		routineBoard.setUserId(30);
+	public RoutineBoard createRoutineBoard(RoutineBoard routineBoard, Long userId, String nickname) {
+		routineBoard.setUserId(userId);
+		routineBoard.setNickname(nickname);
 		routineBoard.setCreatedAt(LocalDateTime.now());
 
 		try {

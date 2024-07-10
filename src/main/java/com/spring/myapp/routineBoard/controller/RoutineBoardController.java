@@ -80,8 +80,17 @@ public class RoutineBoardController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteRoutine(@PathVariable("id") Long id) {
+	public ResponseEntity<Void> deleteRoutine(@PathVariable("id") Long id, @RequestParam("userId") Long userId) {
 		try {
+			RoutineBoard routineBoard = routineBoardService.getRoutineById(id);
+			if (routineBoard == null) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+			}
+
+			if (!routineBoard.getUserId().equals(userId)) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+			}
+
 			boolean isDeleted = routineBoardService.deleteRoutineById(id);
 			if (isDeleted) {
 				return ResponseEntity.noContent().build();
@@ -102,11 +111,16 @@ public class RoutineBoardController {
 		@RequestParam("goalId") Integer goalId,
 		@RequestParam("levelId") Integer levelId,
 		@RequestParam("partId") Integer partId,
-		@RequestParam("isPublic") boolean isPublic) {
+		@RequestParam("isPublic") boolean isPublic,
+		@RequestParam("nickname") String nickname,
+		@RequestParam("userId") Long userId) {
 		try {
 			RoutineBoard routineBoard = routineBoardService.getRoutineById(id);
 			if (routineBoard == null) {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+			}
+			if (!routineBoard.getUserId().equals(userId)) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
 			}
 
 			if (file != null && !file.isEmpty()) {
@@ -120,6 +134,7 @@ public class RoutineBoardController {
 			routineBoard.setLevelId(levelId);
 			routineBoard.setPartId(partId);
 			routineBoard.setPublic(isPublic);
+			routineBoard.setNickname(nickname);
 
 			RoutineBoard updatedRoutine = routineBoardService.updateRoutine(id, routineBoard);
 			return ResponseEntity.ok(updatedRoutine);
@@ -140,7 +155,9 @@ public class RoutineBoardController {
 		@RequestParam("goalId") Integer goalId,
 		@RequestParam("levelId") Integer levelId,
 		@RequestParam("partId") Integer partId,
-		@RequestParam("isPublic") boolean isPublic) {
+		@RequestParam("isPublic") boolean isPublic,
+		@RequestParam("userId") Long userId,
+		@RequestParam("nickname") String nickname) {
 		try {
 
 			String imageUrl = saveImage(file);
@@ -151,9 +168,11 @@ public class RoutineBoardController {
 			routineBoard.setLevelId(levelId);
 			routineBoard.setPartId(partId);
 			routineBoard.setPublic(isPublic);
+			routineBoard.setUserId(userId);
+			routineBoard.setNickname(nickname);
 			routineBoard.setImageUrl(imageUrl);
 
-			RoutineBoard savedRoutine = routineBoardService.createRoutineBoard(routineBoard);
+			RoutineBoard savedRoutine = routineBoardService.createRoutineBoard(routineBoard, userId, nickname);
 			return ResponseEntity.ok(savedRoutine);
 		} catch (IOException e) {
 			logger.error("@@@@@@@@Error uploading image@@@@@@", e);

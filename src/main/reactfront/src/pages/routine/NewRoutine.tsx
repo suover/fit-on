@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FormEvent } from 'react';
+import React, { useState, useEffect, FormEvent, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import {
@@ -17,6 +17,7 @@ import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import SelectBox from '../../components/common/SelectBox';
 import Editor from '../../components/common/Editor';
 import noImage from '../../assets/itemRegister/noImage.jpeg';
+import AuthContext from '../../context/AuthContext';
 
 const Goal = [
   { value: '1', label: '근력 증가' },
@@ -93,6 +94,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageChange }) => {
 };
 
 const NewRoutine = () => {
+  const { userId, nickname } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -111,6 +113,12 @@ const NewRoutine = () => {
   const [isPublic, setIsPublic] = useState(true);
 
   useEffect(() => {
+    if (!userId) {
+      alert('로그인 후 게시글 작성이 가능합니다.');
+      navigate('/sign-in');
+      return;
+    }
+
     if (location.state && location.state.routine) {
       const {
         title,
@@ -178,6 +186,8 @@ const NewRoutine = () => {
       formData.append('levelId', level!.toString());
       formData.append('partId', target!.toString());
       formData.append('isPublic', isPublic.toString());
+      formData.append('userId', userId!.toString());
+      formData.append('nickname', nickname!);
 
       if (routineId) {
         // 기존 게시글 수정

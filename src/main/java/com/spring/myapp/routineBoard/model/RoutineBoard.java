@@ -12,7 +12,8 @@ import lombok.ToString;
 public class RoutineBoard {
 
 	private Long routineId;
-	private Integer userId;
+	private Long userId;
+	private String nickname;
 	private String title;
 	private String content;
 	private LocalDateTime createdAt = LocalDateTime.now();

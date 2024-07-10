@@ -1,6 +1,4 @@
-// PostDetail.tsx
-
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import ButtonLikePost from '../common/button/ButtonLikePost';
@@ -10,7 +8,7 @@ import { Box, Button } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PersonIcon from '@mui/icons-material/Person';
 import CommentList from '../common/comment/CommentList';
-// import { Comment } from '../../types/MainDummyData';
+import AuthContext from '../../context/AuthContext';
 
 const partIdToNameMap: { [key: number]: string } = {
   1: '전신',
@@ -29,6 +27,7 @@ const goalIdToNameMap: { [key: number]: string } = {
   3: '유연성 개선',
   4: '체력 개선',
 };
+
 type DataType = {
   postId: number | string;
   partId: number;
@@ -77,6 +76,7 @@ const PostDetail = <T extends DataType>({
   const [isShared, setIsShared] = useState(false);
   const { routineNo } = useParams<{ routineNo: string }>();
   const navigate = useNavigate();
+  const { userId: currentUserId } = useContext(AuthContext);
 
   const handleLikeClick = () => {
     if (data) {
@@ -95,9 +95,16 @@ const PostDetail = <T extends DataType>({
   };
 
   const handleDeleteClick = async () => {
+    if (currentUserId !== Number(userId)) {
+      alert('삭제 권한이 없습니다.');
+      return;
+    }
+
     if (window.confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
       try {
-        await axios.delete(`/api/routine/${routineNo}`);
+        await axios.delete(`/api/routine/${routineNo}`, {
+          params: { userId: currentUserId },
+        });
         alert('게시글이 삭제되었습니다.');
         navigate(`/${pageURL}`);
       } catch (error) {
@@ -108,12 +115,18 @@ const PostDetail = <T extends DataType>({
   };
 
   const handleEditClick = () => {
+    if (currentUserId !== Number(userId)) {
+      alert('수정 권한이 없습니다.');
+      return;
+    }
+
     navigate(`/routine/new-routine`, { state: { routine: contentData } });
   };
 
   const partName = partId ? partIdToNameMap[partId] : '';
   const goalName = goalId ? goalIdToNameMap[goalId] : '';
   const levelName = levelId ? levelIdToNameMap[levelId] : '';
+
   return (
     <>
       <PostWrapper>
