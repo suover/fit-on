@@ -77,6 +77,7 @@ public class SecurityConfig {
 	public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
 		AuthenticationManagerBuilder authenticationManagerBuilder =
 			http.getSharedObject(AuthenticationManagerBuilder.class);
+		authenticationManagerBuilder.parentAuthenticationManager(null);
 		authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 		return authenticationManagerBuilder.build();
 	}

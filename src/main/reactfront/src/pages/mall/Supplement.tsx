@@ -25,7 +25,7 @@ export const Search = styled.div`
   }
 `;
 
-const Supplemnet: React.FC = () => {
+const Supplement: React.FC = () => {
   const [filteredItems, setFilteredItems] = useState<Product[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [categoryValue, setCategoryValue] = useState<number>(2);
@@ -102,4 +102,4 @@ const Supplemnet: React.FC = () => {
   );
 };
 
-export default Supplemnet;
+export default Supplement;
