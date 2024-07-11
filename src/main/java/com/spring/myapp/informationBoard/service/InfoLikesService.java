@@ -15,9 +15,9 @@ public class InfoLikesService {
 	private InfoLikesMapper likesMapper;
 
 	public boolean toggleLike(Long infoId, Long userId) {
-		boolean likeCheck = likesMapper.checkLikes(infoId, userId);
+		Integer likeCheck = likesMapper.checkLikes(infoId, userId);
 
-		if (!likeCheck) {
+		if (likeCheck == null || likeCheck <= 0) {
 			Likes newLikes = new Likes();
 			newLikes.setInfoId(infoId);
 			newLikes.setUserId(userId);

@@ -70,7 +70,7 @@ const CommentListItem: React.FC<{
         `${route}/${commentId}/delete`,
       );
       if (response.status === 200) {
-        deleteComment(commentId); // 최상위 컴포넌트에 삭제 요청
+        deleteComment(commentId); // 최상위 컴포넌트에 삭제 요청 -> UI 반영
         setReplies((prevReplies) =>
           prevReplies.filter((reply) => reply.commentId !== commentId),
         );
