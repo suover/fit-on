@@ -45,7 +45,8 @@ export const routines: Routine[] = [
     createdAt: new Date('2024-04-20'),
     updatedAt: new Date('2024-04-20'),
     comments: [],
-    imageUrl: 'https://img.freepik.com/free-photo/full-shot-young-woman-stretching_23-2148309115.jpg',
+    imageUrl:
+      'https://img.freepik.com/free-photo/full-shot-young-woman-stretching_23-2148309115.jpg',
   },
   {
     id: 2,
@@ -55,7 +56,8 @@ export const routines: Routine[] = [
     target: ['Cardiovascular'],
     level: 'Advanced',
     list: [],
-    content: 'Push your limits with this high-intensity cardio routine to blast fat.',
+    content:
+      'Push your limits with this high-intensity cardio routine to blast fat.',
     category: 'Cardio',
     writtenTime: '2024-04-20',
     likes: 95,
@@ -63,7 +65,8 @@ export const routines: Routine[] = [
     createdAt: new Date('2024-04-20'),
     updatedAt: new Date('2024-04-21'),
     comments: [],
-    imageUrl: 'https://img.freepik.com/free-photo/full-shot-young-woman-stretching_23-2148309115.jpg',
+    imageUrl:
+      'https://img.freepik.com/free-photo/full-shot-young-woman-stretching_23-2148309115.jpg',
   },
   {
     id: 3,
@@ -81,7 +84,8 @@ export const routines: Routine[] = [
     createdAt: new Date('2024-04-21'),
     updatedAt: new Date('2024-04-22'),
     comments: [],
-    imageUrl: 'https://img.freepik.com/free-photo/full-shot-young-woman-stretching_23-2148309115.jpg',
+    imageUrl:
+      'https://img.freepik.com/free-photo/full-shot-young-woman-stretching_23-2148309115.jpg',
   },
   {
     id: 4,
@@ -99,7 +103,8 @@ export const routines: Routine[] = [
     createdAt: new Date('2024-04-22'),
     updatedAt: new Date('2024-04-23'),
     comments: [],
-    imageUrl: 'https://img.freepik.com/free-photo/full-shot-young-woman-stretching_23-2148309115.jpg',
+    imageUrl:
+      'https://img.freepik.com/free-photo/full-shot-young-woman-stretching_23-2148309115.jpg',
   },
   {
     id: 5,
@@ -118,7 +123,7 @@ export const routines: Routine[] = [
     updatedAt: new Date('2024-04-24'),
     comments: [],
     imageUrl:
-    'https://img.freepik.com/free-photo/full-shot-young-woman-stretching_23-2148309115.jpg',
+      'https://img.freepik.com/free-photo/full-shot-young-woman-stretching_23-2148309115.jpg',
   },
   {
     id: 6,
@@ -136,7 +141,8 @@ export const routines: Routine[] = [
     createdAt: new Date('2024-04-24'),
     updatedAt: new Date('2024-04-25'),
     comments: [],
-    imageUrl: 'https://img.freepik.com/free-photo/full-shot-young-woman-stretching_23-2148309115.jpg',
+    imageUrl:
+      'https://img.freepik.com/free-photo/full-shot-young-woman-stretching_23-2148309115.jpg',
   },
   {
     id: 7,
@@ -154,7 +160,8 @@ export const routines: Routine[] = [
     createdAt: new Date('2024-04-25'),
     updatedAt: new Date('2024-04-26'),
     comments: [],
-    imageUrl: 'https://img.freepik.com/free-photo/full-shot-young-woman-stretching_23-2148309115.jpg',
+    imageUrl:
+      'https://img.freepik.com/free-photo/full-shot-young-woman-stretching_23-2148309115.jpg',
   },
   {
     id: 8,
@@ -172,7 +179,8 @@ export const routines: Routine[] = [
     createdAt: new Date('2024-04-26'),
     updatedAt: new Date('2024-04-27'),
     comments: [],
-    imageUrl: 'https://img.freepik.com/free-photo/full-shot-young-woman-stretching_23-2148309115.jpg',
+    imageUrl:
+      'https://img.freepik.com/free-photo/full-shot-young-woman-stretching_23-2148309115.jpg',
   },
   {
     id: 9,
@@ -182,7 +190,8 @@ export const routines: Routine[] = [
     target: ['Arms', 'Legs'],
     level: 'Beginner',
     list: [],
-    content: 'Kickboxing routines to learn the basics and improve your fitness.',
+    content:
+      'Kickboxing routines to learn the basics and improve your fitness.',
     category: 'Kickboxing',
     writtenTime: '2024-04-27',
     likes: 90,
@@ -191,7 +200,7 @@ export const routines: Routine[] = [
     updatedAt: new Date('2024-04-28'),
     comments: [],
     imageUrl:
-    'https://img.freepik.com/free-photo/full-shot-young-woman-stretching_23-2148309115.jpg',
+      'https://img.freepik.com/free-photo/full-shot-young-woman-stretching_23-2148309115.jpg',
   },
   {
     id: 10,
@@ -201,7 +210,8 @@ export const routines: Routine[] = [
     target: ['Mind'],
     level: 'All Levels',
     list: [],
-    content: 'Explore various meditation and breathing techniques to calm your mind and body.',
+    content:
+      'Explore various meditation and breathing techniques to calm your mind and body.',
     category: 'Meditation',
     writtenTime: '2024-04-28',
     likes: 200,
@@ -209,6 +219,7 @@ export const routines: Routine[] = [
     createdAt: new Date('2024-04-28'),
     updatedAt: new Date('2024-04-29'),
     comments: [],
-    imageUrl: 'https://img.freepik.com/free-photo/full-shot-young-woman-stretching_23-2148309115.jpg',
+    imageUrl:
+      'https://img.freepik.com/free-photo/full-shot-young-woman-stretching_23-2148309115.jpg',
   },
 ];

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import ButtonLikePost from '../common/button/ButtonLikePost';
@@ -33,7 +33,7 @@ type DataType = {
   partId: number;
   levelId: number;
   goalId: number;
-  userId: string;
+  userId: number;
   title: string;
   content: string;
   createdAt: string;
@@ -73,18 +73,55 @@ const PostDetail = <T extends DataType>({
   } = data;
   const [contentData, setContentData] = useState<T>(data); // 실제 데이터가 들어오면 이용
   const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(likes); // 좋아요 수 상태 추가
   const [isShared, setIsShared] = useState(false);
   const { routineNo } = useParams<{ routineNo: string }>();
   const navigate = useNavigate();
-  const { userId: currentUserId } = useContext(AuthContext);
+  const { userId: currentUserId, isAuthenticated } = useContext(AuthContext);
 
-  const handleLikeClick = () => {
-    if (data) {
-      setIsLiked(!isLiked);
-      setContentData({
-        ...data,
-        likes: isLiked ? data.likes - 1 : data.likes + 1,
-      });
+  useEffect(() => {
+    // 초기 로딩 시 현재 사용자가 이 게시글에 좋아요를 눌렀는지 확인
+    const checkLikeStatus = async () => {
+      if (isAuthenticated) {
+        try {
+          const response = await axios.get(`/api/routine/${routineNo}/likes`, {
+            params: { userId: currentUserId },
+          });
+          setIsLiked(response.data.liked);
+          setLikeCount(response.data.count); // 좋아요 수 설정
+        } catch (error) {
+          console.error('Error checking like status:', error);
+        }
+      }
+    };
+
+    checkLikeStatus();
+  }, [routineNo, currentUserId, isAuthenticated]);
+
+  const handleLikeClick = async () => {
+    if (!isAuthenticated) {
+      alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
+      navigate('/sign-in'); // 로그인 페이지로 리디렉션
+      return;
+    }
+
+    try {
+      if (isLiked) {
+        await axios.post(`/api/routine/${routineNo}/unlike`, null, {
+          params: { userId: currentUserId },
+        });
+        setIsLiked(false);
+        setLikeCount((prevCount) => prevCount - 1); // 좋아요 수 감소
+      } else {
+        await axios.post(`/api/routine/${routineNo}/like`, null, {
+          params: { userId: currentUserId },
+        });
+        setIsLiked(true);
+        setLikeCount((prevCount) => prevCount + 1); // 좋아요 수 증가
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error);
+      alert('좋아요 처리 중 오류가 발생했습니다.');
     }
   };
 
@@ -95,8 +132,8 @@ const PostDetail = <T extends DataType>({
   };
 
   const handleDeleteClick = async () => {
-    if (currentUserId !== Number(userId)) {
-      alert('삭제 권한이 없습니다.');
+    if (currentUserId !== userId) {
+      alert('본인 게시글만 삭제 할 수 있습니다.');
       return;
     }
 
@@ -115,8 +152,8 @@ const PostDetail = <T extends DataType>({
   };
 
   const handleEditClick = () => {
-    if (currentUserId !== Number(userId)) {
-      alert('수정 권한이 없습니다.');
+    if (currentUserId !== userId) {
+      alert('본인 게시글만 수정 할 수 있습니다.');
       return;
     }
 
@@ -140,12 +177,15 @@ const PostDetail = <T extends DataType>({
         )}
         <h2>{title || '제목 없음'}</h2>
         <div className="postInfo">
-          <span>
+          <span className="icon">
             <PersonIcon />
           </span>
           <span>{userId}</span>
-          <span>작성일 : {formatDate(createdAt)}</span>
-          <span>{`조회수: ${viewCount || 0}`}</span>
+          <div className="infos">
+            <span>작성일 : {formatDate(createdAt)}</span>
+            <span>{`좋아요 : ${likeCount || 0} `}</span>
+            <span>{`조회수 : ${viewCount || 0}`}</span>
+          </div>
         </div>
         <div
           className="content"
@@ -162,7 +202,7 @@ const PostDetail = <T extends DataType>({
         >
           <ButtonLikePost
             isLiked={isLiked}
-            likeNum={likes}
+            likeNum={likeCount}
             onClick={handleLikeClick}
           />
           <ButtonShare isShared={isShared} onClick={handleShareClick} />

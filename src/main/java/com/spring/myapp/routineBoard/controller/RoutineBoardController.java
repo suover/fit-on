@@ -1,7 +1,9 @@
 package com.spring.myapp.routineBoard.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -23,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.myapp.routineBoard.model.RoutineBoard;
 import com.spring.myapp.routineBoard.service.RoutineBoardService;
+import com.spring.myapp.routineBoard.service.RoutineLikesService;
 import com.spring.myapp.routineBoard.service.RoutineS3Service;
 
 @RestController
@@ -39,6 +42,9 @@ public class RoutineBoardController {
 
 	@Autowired
 	private RoutineBoardService routineBoardService;
+
+	@Autowired
+	private RoutineLikesService routineLikesService;
 
 	@GetMapping("/list")
 	public ResponseEntity<List<RoutineBoard>> getRoutinesWithPaging(
@@ -229,4 +235,55 @@ public class RoutineBoardController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
 	}
+
+	@PostMapping("/{id}/like")
+	public ResponseEntity<Integer> likeRoutine(@PathVariable("id") Long routineId,
+		@RequestParam("userId") Long userId) {
+		try {
+			if (!routineLikesService.isLiked(routineId, userId)) {
+				routineLikesService.likeRoutine(routineId, userId);
+				int likesCount = routineLikesService.getLikesCount(routineId);
+				return ResponseEntity.ok(likesCount);
+			} else {
+				return ResponseEntity.status(HttpStatus.CONFLICT).build();
+			}
+		} catch (Exception e) {
+			logger.error("@@@@@@@Error liking routine@@@@@@@", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	@PostMapping("/{id}/unlike")
+	public ResponseEntity<Integer> unlikeRoutine(@PathVariable("id") Long routineId,
+		@RequestParam("userId") Long userId) {
+		try {
+			if (routineLikesService.isLiked(routineId, userId)) {
+				routineLikesService.unlikeRoutine(routineId, userId);
+				int likesCount = routineLikesService.getLikesCount(routineId);
+				return ResponseEntity.ok(likesCount);
+			} else {
+				return ResponseEntity.status(HttpStatus.CONFLICT).build();
+			}
+		} catch (Exception e) {
+			logger.error("@@@@@@@Error unliking routine@@@@@@@", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	@GetMapping("/{id}/likes")
+	public ResponseEntity<Map<String, Object>> getLikesCount(@PathVariable("id") Long routineId,
+		@RequestParam("userId") Long userId) {
+		try {
+			int count = routineLikesService.getLikesCount(routineId);
+			boolean liked = routineLikesService.isLiked(routineId, userId);
+			Map<String, Object> response = new HashMap<>();
+			response.put("count", count);
+			response.put("liked", liked);
+			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			logger.error("@@@@@@@Error getting likes count@@@@@@@", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
+	}
+
 }

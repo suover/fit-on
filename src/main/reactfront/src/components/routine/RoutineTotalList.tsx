@@ -3,6 +3,7 @@ import CardLists from '../cardList/CardList';
 import ShareIcon from '@mui/icons-material/Share';
 import axios from 'axios';
 import { Pagination, Box } from '@mui/material';
+import { useParams } from 'react-router-dom';
 
 interface RoutineTotalListProps {
   searchQuery: string;
@@ -12,6 +13,7 @@ const RoutineTotalList: React.FC<RoutineTotalListProps> = ({ searchQuery }) => {
   const [routines, setRoutines] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+
   const pageSize = 12;
 
   useEffect(() => {

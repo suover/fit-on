@@ -31,8 +31,9 @@ const ButtonLikePost: React.FC<ButtonLikePostProps> = ({
       }}
       style={isLiked ? { backgroundColor: 'red' } : undefined}
     >
-      {isLiked ? likeNum : likeNum}
+      {likeNum}
     </Button>
   );
 };
+
 export default ButtonLikePost;

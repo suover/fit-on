@@ -35,7 +35,7 @@ const ContentCard = <T extends ContentType>({
         <p>
           <span>{nickname}</span>
           <span>
-            <ThumbUpOutlinedIcon /> {likes}
+            <ThumbUpOutlinedIcon /> {likes ? likes : 0}
           </span>
           <span>
             {Icon ? <Icon /> : <ThumbUpOutlinedIcon />} {views ? views : 0}

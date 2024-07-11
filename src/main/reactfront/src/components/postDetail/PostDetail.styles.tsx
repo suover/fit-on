@@ -21,14 +21,13 @@ const PostWrapper = styled.div`
 
   div.postInfo {
     display: flex;
-    justyfy-content: space-between;
     align-items: center;
     padding: 0 5px 10px;
     padding-bottom: 10px;
     border-bottom: 1px solid #999;
     margin-bottom: 10px;
 
-    span:nth-of-type(1) {
+    .icon {
       display: inline-block;
       width: 40px;
       height: 40px;
@@ -41,17 +40,13 @@ const PostWrapper = styled.div`
         font-size: 2.25rem;
       }
     }
-
-    span:nth-of-type(2) {
-      font-size: 1.25rem;
-    }
-
-    span:nth-of-type(3) {
-      margin-left: auto;
-      margin-right: 20px;
-    }
   }
-
+  .infos {
+    display: flex;
+    margin-left: auto;
+    font-weight: bold;
+    gap: 15px;
+  }
   div.content {
     padding: 10px;
     word-break: normal;
