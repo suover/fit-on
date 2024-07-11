@@ -2,15 +2,28 @@ import styled from 'styled-components';
 
 const InfoWrapper = styled.section`
   width: 100%;
+  min-height: 600px;
   padding: 100px 0 100px 0;
 `;
 
-const NoContentWrapper = styled.section`
+const StateWrapper = styled.section`
   width: 100%;
-  min-height: 800px;
+  min-height: 700px;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+
+  p {
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  a {
+    font-size: 0.875rem;
+    color: #777;
+    text-decoration: underline;
+  }
 `;
 
 const DetailTitle = styled.div`
@@ -58,6 +71,7 @@ const ControllBtns = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  gap: 5px;
 
   button {
     width: 80px;
@@ -73,11 +87,7 @@ const ControllBtns = styled.div`
       background: #333;
       color: #fff;
     }
-
-    &:first-of-type {
-      margin-right: 5px;
-    }
   }
 `;
 
-export { InfoWrapper, NoContentWrapper, DetailTitle, Content, ControllBtns };
+export { InfoWrapper, StateWrapper, DetailTitle, Content, ControllBtns };

@@ -2,25 +2,22 @@ import React, { useEffect, useState } from 'react';
 
 import axios from 'axios';
 
-import { InfoSection, ImgWrapper } from '../../styles/information/Info.styles';
+import {
+  InfoSection,
+  NoContentWrapper,
+  ImgWrapper,
+  TabBtns,
+} from '../../styles/information/Info.styles';
 
 import CardList from '../../components/cardList/CardList';
-import { Container } from '@mui/material';
+import { Container, Stack, Pagination } from '@mui/material';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import styled from 'styled-components';
-
-const NoContentWrapper = styled.div`
-  padding-top: 200px;
-  font-size: 1.125rem;
-  font-weight: bold;
-  text-align: center;
-`;
 
 export interface Information {
   id: number;
   nickname: string;
   categoryName: string;
-  categoryId: string;
+  categoryId: number;
   title: string;
   content: string;
   imageUrl: string;
@@ -40,18 +37,27 @@ const axiosInstance = axios.create({
 
 const Info: React.FC = () => {
   const [infoList, setInfoList] = useState<Information[]>([]);
+  const [totalPages, setTotalPage] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(true);
+  const [selectedTab, setSelectedTab] = useState<String>('전체');
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
+
       try {
-        const res = await axiosInstance.get<Information[]>('/info');
-        const transformedData = res.data.map((info: any) => ({
+        const res = await axiosInstance.get(`/info/search`, {
+          params: { keyword: selectedTab, page: currentPage - 1 },
+        });
+        const data: Information[] = res.data.content;
+        const transformedData = data.map((info: any) => ({
           ...info,
           id: info.infoId, // infoId를 id로 변환
           views: info.viewCount,
         }));
         setInfoList(transformedData);
+        setTotalPage(res.data.totalPages);
       } catch (error) {
         console.error('Error fetching information:', error);
       } finally {
@@ -60,14 +66,48 @@ const Info: React.FC = () => {
     };
 
     fetchData();
-  }, []);
+  }, [selectedTab, currentPage]);
+
+  const handleClickTab = (event: React.MouseEvent) => {
+    let target = event.target as HTMLElement;
+    let seleted = target.innerText;
+
+    setSelectedTab(seleted);
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number,
+  ): void => {
+    setCurrentPage(value);
+  };
 
   return (
     <InfoSection>
       <Container>
         <ImgWrapper>
-          <p>fitON과 함께 더 건강해져요!</p>
+          <p>FitON과 함께 더 건강해져요!</p>
         </ImgWrapper>
+        <TabBtns>
+          {[
+            '전체',
+            '헬스',
+            '요가/필라테스',
+            '스트레칭/홈트',
+            '재활/체형교정',
+            '스포츠훈련',
+            '스포츠테이핑',
+          ].map((tab, idx) => (
+            <button
+              key={tab + idx}
+              className={selectedTab === tab ? 'active' : ''}
+              onClick={handleClickTab}
+            >
+              {tab}
+            </button>
+          ))}
+        </TabBtns>
         {infoList.length !== 0 && !loading ? (
           <CardList
             contents={infoList}
@@ -80,6 +120,15 @@ const Info: React.FC = () => {
           </NoContentWrapper>
         )}
       </Container>
+      {infoList.length > 0 && (
+        <Stack spacing={2} sx={{ alignItems: 'center' }}>
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={handlePageChange}
+          />
+        </Stack>
+      )}
     </InfoSection>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import DOMPurify from 'dompurify';
 
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 
 import axios from 'axios';
 
@@ -9,7 +9,7 @@ import { Information } from './Info';
 import { Comment } from '../../components/common/comment/CommentList';
 import {
   InfoWrapper,
-  NoContentWrapper,
+  StateWrapper,
   DetailTitle,
   Content,
   ControllBtns,
@@ -22,7 +22,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import AuthContext from '../../context/AuthContext';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/api',
+  baseURL: 'http://localhost:8080/api/info',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -33,10 +33,11 @@ const InfoDetail: React.FC = () => {
   const navigate = useNavigate();
   const [info, setInfo] = useState<Information>();
   const [noContent, setNoContent] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [infoComments, setInfoComments] = useState<Comment[]>([]);
-  const [infolikes, setInfoLikes] = useState<number>(53);
-  const [isLike, setIsLike] = useState<boolean>(false);
-  const { userRole } = useContext(AuthContext);
+  const [infolikes, setInfoLikes] = useState<number>(0);
+  // const [isLike, setIsLike] = useState<boolean>(false);
+  const { userRole, userId } = useContext(AuthContext);
   const sanitizedContent = info ? DOMPurify.sanitize(info.content) : '';
   const createdDate = info?.createdAt.split('T')[0];
 
@@ -44,13 +45,16 @@ const InfoDetail: React.FC = () => {
     // 디테일 데이터 불러오기
     const fetchPost = async () => {
       try {
-        const res = await axiosInstance.get<Information>(`/info/${infoId}`);
+        const res = await axiosInstance.get<Information>(`${infoId}`);
 
-        if (!res.data) {
-          setNoContent(true);
-        } else {
+        if (res.data) {
           setInfo(res.data);
           setInfoLikes(res.data.likes);
+          setNoContent(false);
+          setLoading(false);
+        } else {
+          setNoContent(true);
+          setLoading(false);
         }
       } catch (error) {
         console.error('Error fetching post:', error);
@@ -60,22 +64,12 @@ const InfoDetail: React.FC = () => {
     fetchPost();
   }, [infoId]);
 
-  const handleLikeClick = (): void => {
-    setIsLike((prevState) => !prevState);
-    if (!isLike) {
-      setInfoLikes(infolikes + 1);
-    } else {
-      setInfoLikes(infolikes - 1);
-    }
-  };
-
+  // ------------------------댓글------------------------------
+  // 댓글 불러오기
   useEffect(() => {
-    // 댓글 불러오기
     const fetchComment = async () => {
       try {
-        const res = await axiosInstance.get<Comment[]>(
-          `info/${infoId}/comments`,
-        );
+        const res = await axiosInstance.get<Comment[]>(`${infoId}/comments`);
         setInfoComments(res.data);
       } catch (error) {
         console.error('Error fetching post:', error);
@@ -85,11 +79,13 @@ const InfoDetail: React.FC = () => {
     fetchComment();
   }, [infoId]);
 
+  // 댓글 추가
   const addComment = (comment: Comment): void => {
     setInfoComments([...infoComments, comment]);
     console.log(comment);
   };
 
+  // 댓글 삭제
   const deleteComment = (commentId: number) => {
     setInfoComments(
       infoComments.filter(
@@ -99,7 +95,7 @@ const InfoDetail: React.FC = () => {
       ),
     );
   };
-
+  // 댓글 수정
   const updateComment = (commentId: number, updatedContent: string): void => {
     setInfoComments((prevComments) =>
       prevComments.map((comment) =>
@@ -109,12 +105,66 @@ const InfoDetail: React.FC = () => {
       ),
     );
   };
+  // ------------------------댓글------------------------------
 
-  if (noContent) {
+  // ------------------------좋아요----------------------------
+  const handleLikeClick = async () => {
+    if (userId === null) {
+      alert('로그인 해주세요!');
+      navigate('/sign-in');
+      return;
+    }
+
+    try {
+      const res = await axiosInstance.put(`${infoId}/like`, null, {
+        params: { userId },
+      });
+
+      if (res.data === 'Liked') {
+        console.log(res.data);
+
+        setInfoLikes((prevState) => prevState + 1);
+      } else {
+        setInfoLikes((prevState) => prevState - 1);
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    }
+  };
+  // ------------------------좋아요----------------------------
+
+  // 정보글 삭제
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm('삭제하시겠습니까?');
+
+    if (confirmDelete) {
+      try {
+        const res = await axiosInstance.put(`delete/${infoId}`);
+        console.log('Response:', res.data);
+        alert('삭제 되었습니다.');
+        navigate('/info'); // 삭제 후 이동할 경로
+      } catch (error) {
+        console.error('Error deleting info:', error);
+      }
+    }
+  };
+
+  // 로딩 중일때
+  if (loading) {
     return (
-      <NoContentWrapper>
+      <StateWrapper>
+        <p>Loading...</p>
+      </StateWrapper>
+    );
+  }
+
+  // 글이 없을 때
+  if (noContent && !loading) {
+    return (
+      <StateWrapper>
         <p>존재하지 않는 게시글입니다. 😥</p>
-      </NoContentWrapper>
+        <Link to="/info">목록으로 돌아가기</Link>
+      </StateWrapper>
     );
   }
 
@@ -170,9 +220,12 @@ const InfoDetail: React.FC = () => {
       </Container>
       <ControllBtns>
         {userRole === 'admin' && (
-          <button onClick={() => navigate(`/info/update/${infoId}`)}>
-            수정
-          </button>
+          <>
+            <button onClick={() => navigate(`/info/update/${infoId}`)}>
+              수정
+            </button>
+            <button onClick={handleDelete}>삭제</button>
+          </>
         )}
         <button onClick={() => navigate('/info')}>목록</button>
       </ControllBtns>

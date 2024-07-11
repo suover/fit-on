@@ -4,7 +4,7 @@ import banner from '../../assets/img/information/infobanner1.jpg';
 const InfoSection = styled.section`
   width: 100%;
   min-height: 700px;
-  padding: 50px 0 100px 0;
+  padding: 50px 0 80px 0;
 `;
 
 const ImgWrapper = styled.div`
@@ -14,7 +14,7 @@ const ImgWrapper = styled.div`
   border-radius: 8px;
   overflow: hidden;
   background: url(${banner}) no-repeat center center;
-  margin-bottom: 50px;
+  margin-bottom: 25px;
   font-size: 1.875rem;
   color: #fff;
   font-weight: bold;
@@ -39,4 +39,33 @@ const ImgWrapper = styled.div`
   }
 `;
 
-export { InfoSection, ImgWrapper };
+const NoContentWrapper = styled.div`
+  padding-top: 200px;
+  font-size: 1.125rem;
+  font-weight: bold;
+  text-align: center;
+`;
+
+const TabBtns = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 25px;
+
+  button {
+    padding: 5px 15px;
+    border-radius: 8px;
+    background: #f1f1f1;
+    transition: all 0.4s;
+    cursor: pointer;
+
+    &:hover,
+    &.active {
+      background: #555;
+      color: #fff;
+    }
+  }
+`;
+
+export { InfoSection, NoContentWrapper, ImgWrapper, TabBtns };
