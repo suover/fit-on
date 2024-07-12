@@ -39,7 +39,7 @@ type DataType = {
   createdAt: string;
   comments: Comment[];
   viewCount: number;
-  likes: number;
+  likes: number; // 좋아요 수 필드 변경
 };
 
 interface PostDetailProps<T> {
@@ -66,14 +66,14 @@ const PostDetail = <T extends DataType>({
     createdAt,
     comments,
     viewCount,
-    likes,
+    likes, // 좋아요 수 필드 변경
     partId,
     levelId,
     goalId,
   } = data;
   const [contentData, setContentData] = useState<T>(data); // 실제 데이터가 들어오면 이용
   const [isLiked, setIsLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(likes); // 좋아요 수 상태 추가
+  const [likeCount, setLikeCount] = useState(likes); // 좋아요 수 상태 likes로 변경
   const [isShared, setIsShared] = useState(false);
   const { routineNo } = useParams<{ routineNo: string }>();
   const navigate = useNavigate();
@@ -82,16 +82,14 @@ const PostDetail = <T extends DataType>({
   useEffect(() => {
     // 초기 로딩 시 현재 사용자가 이 게시글에 좋아요를 눌렀는지 확인
     const checkLikeStatus = async () => {
-      if (isAuthenticated) {
-        try {
-          const response = await axios.get(`/api/routine/${routineNo}/likes`, {
-            params: { userId: currentUserId },
-          });
-          setIsLiked(response.data.liked);
-          setLikeCount(response.data.count); // 좋아요 수 설정
-        } catch (error) {
-          console.error('Error checking like status:', error);
-        }
+      try {
+        const response = await axios.get(`/api/routine/${routineNo}/likes`, {
+          params: { userId: currentUserId },
+        });
+        setIsLiked(response.data.liked);
+        setLikeCount(response.data.count); // 좋아요 수 설정
+      } catch (error) {
+        console.error('Error checking like status:', error);
       }
     };
 

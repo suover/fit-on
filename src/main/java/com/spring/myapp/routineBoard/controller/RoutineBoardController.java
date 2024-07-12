@@ -62,6 +62,13 @@ public class RoutineBoardController {
 				routines = routineBoardService.getRoutinesWithPaging(offset, size);
 				logger.info("@@@@@@@@@Fetched routines for page: {} with size: {}@@@@@@@@@@@", page, size);
 			}
+
+			// 좋아요 수 포함
+			routines.forEach(routine -> {
+				int likes = routineLikesService.getLikesCount(routine.getRoutineId());
+				routine.setLikes(likes);
+			});
+
 			return ResponseEntity.ok(routines);
 		} catch (Exception e) {
 			logger.error("@@@@@@@@@Error getting routines with paging@@@@@@@", e);
@@ -69,6 +76,68 @@ public class RoutineBoardController {
 		}
 	}
 
+	@GetMapping("/count")
+	public ResponseEntity<Long> getRoutineCount(@RequestParam(value = "query", required = false) String query) {
+		try {
+			long count;
+			if (query != null && !query.isEmpty()) {
+				count = routineBoardService.getRoutineCountWithSearch(query);
+				logger.info("@@@@@@@@@@Fetched routine count with search query '{}': {}@@@@@@@@@", query, count);
+			} else {
+				count = routineBoardService.getRoutineCount();
+				logger.info("@@@@@@@@@@Fetched routine count: {}@@@@@@@@", count);
+			}
+			return ResponseEntity.ok(count);
+		} catch (Exception e) {
+			logger.error("@@@@@@@@@Error getting routine count@@@@@@@@", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
+	}
+
+	//게시글 생성
+	@PostMapping("/new-routine")
+	public ResponseEntity<RoutineBoard> createRoutine(
+		@RequestPart("file") MultipartFile file,
+		@RequestParam("title") String title,
+		@RequestParam("content") String content,
+		@RequestParam("goalId") Integer goalId,
+		@RequestParam("levelId") Integer levelId,
+		@RequestParam("partId") Integer partId,
+		@RequestParam("isPublic") boolean isPublic,
+		@RequestParam("userId") Long userId,
+		@RequestParam("nickname") String nickname) {
+		try {
+
+			String imageUrl = saveImage(file);
+			RoutineBoard routineBoard = new RoutineBoard();
+			routineBoard.setTitle(title);
+			routineBoard.setContent(content);
+			routineBoard.setGoalId(goalId);
+			routineBoard.setLevelId(levelId);
+			routineBoard.setPartId(partId);
+			routineBoard.setPublic(isPublic);
+			routineBoard.setUserId(userId);
+			routineBoard.setNickname(nickname);
+			routineBoard.setImageUrl(imageUrl);
+
+			RoutineBoard savedRoutine = routineBoardService.createRoutineBoard(routineBoard, userId, nickname);
+			return ResponseEntity.ok(savedRoutine);
+		} catch (IOException e) {
+			logger.error("@@@@@@@@Error uploading image@@@@@@", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		} catch (Exception e) {
+			logger.error("@@@@@@Error creating routine@@@@@@@", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
+	}
+
+	private String saveImage(MultipartFile file) throws IOException {
+		String filename = UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
+		s3Service.uploadFile("routines", filename, file);
+		return s3Service.getFileUrl("routines", filename);
+	}
+
+	//게시글 조회
 	@GetMapping("/{id}")
 	public ResponseEntity<RoutineBoard> getRoutineById(@PathVariable("id") Long id) {
 		try {
@@ -85,6 +154,7 @@ public class RoutineBoardController {
 		}
 	}
 
+	//게시글 삭제
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteRoutine(@PathVariable("id") Long id, @RequestParam("userId") Long userId) {
 		try {
@@ -109,6 +179,7 @@ public class RoutineBoardController {
 		}
 	}
 
+	//게시글 수정
 	@PutMapping("/{id}")
 	public ResponseEntity<RoutineBoard> updateRoutine(@PathVariable("id") Long id,
 		@RequestPart(value = "file", required = false) MultipartFile file,
@@ -153,48 +224,7 @@ public class RoutineBoardController {
 		}
 	}
 
-	@PostMapping("/new-routine")
-	public ResponseEntity<RoutineBoard> createRoutine(
-		@RequestPart("file") MultipartFile file,
-		@RequestParam("title") String title,
-		@RequestParam("content") String content,
-		@RequestParam("goalId") Integer goalId,
-		@RequestParam("levelId") Integer levelId,
-		@RequestParam("partId") Integer partId,
-		@RequestParam("isPublic") boolean isPublic,
-		@RequestParam("userId") Long userId,
-		@RequestParam("nickname") String nickname) {
-		try {
-
-			String imageUrl = saveImage(file);
-			RoutineBoard routineBoard = new RoutineBoard();
-			routineBoard.setTitle(title);
-			routineBoard.setContent(content);
-			routineBoard.setGoalId(goalId);
-			routineBoard.setLevelId(levelId);
-			routineBoard.setPartId(partId);
-			routineBoard.setPublic(isPublic);
-			routineBoard.setUserId(userId);
-			routineBoard.setNickname(nickname);
-			routineBoard.setImageUrl(imageUrl);
-
-			RoutineBoard savedRoutine = routineBoardService.createRoutineBoard(routineBoard, userId, nickname);
-			return ResponseEntity.ok(savedRoutine);
-		} catch (IOException e) {
-			logger.error("@@@@@@@@Error uploading image@@@@@@", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		} catch (Exception e) {
-			logger.error("@@@@@@Error creating routine@@@@@@@", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		}
-	}
-
-	private String saveImage(MultipartFile file) throws IOException {
-		String filename = UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
-		s3Service.uploadFile("routines", filename, file);
-		return s3Service.getFileUrl("routines", filename);
-	}
-
+	//게시글 조회수 + 1
 	@PutMapping("/increment-view/{id}")
 	public ResponseEntity<Void> incrementViewCount(@PathVariable("id") Long id) {
 		try {
@@ -206,29 +236,18 @@ public class RoutineBoardController {
 		}
 	}
 
-	@GetMapping("/count")
-	public ResponseEntity<Long> getRoutineCount(@RequestParam(value = "query", required = false) String query) {
-		try {
-			long count;
-			if (query != null && !query.isEmpty()) {
-				count = routineBoardService.getRoutineCountWithSearch(query);
-				logger.info("@@@@@@@@@@Fetched routine count with search query '{}': {}@@@@@@@@@", query, count);
-			} else {
-				count = routineBoardService.getRoutineCount();
-				logger.info("@@@@@@@@@@Fetched routine count: {}@@@@@@@@", count);
-			}
-			return ResponseEntity.ok(count);
-		} catch (Exception e) {
-			logger.error("@@@@@@@@@Error getting routine count@@@@@@@@", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		}
-	}
-
+	//베스트 루틴
 	@GetMapping("/best")
 	public ResponseEntity<List<RoutineBoard>> getBestRoutines() {
 		try {
 			List<RoutineBoard> bestRoutines = routineBoardService.getBestRoutines();
 			logger.info("Fetched best routines");
+
+			// 좋아요 수 포함
+			bestRoutines.forEach(routine -> {
+				int likes = routineLikesService.getLikesCount(routine.getRoutineId());
+				routine.setLikes(likes);
+			});
 			return ResponseEntity.ok(bestRoutines);
 		} catch (Exception e) {
 			logger.error("Error getting best routines", e);
@@ -272,10 +291,10 @@ public class RoutineBoardController {
 
 	@GetMapping("/{id}/likes")
 	public ResponseEntity<Map<String, Object>> getLikesCount(@PathVariable("id") Long routineId,
-		@RequestParam("userId") Long userId) {
+		@RequestParam(value = "userId", required = false) Long userId) {
 		try {
 			int count = routineLikesService.getLikesCount(routineId);
-			boolean liked = routineLikesService.isLiked(routineId, userId);
+			boolean liked = (userId != null) && routineLikesService.isLiked(routineId, userId);
 			Map<String, Object> response = new HashMap<>();
 			response.put("count", count);
 			response.put("liked", liked);

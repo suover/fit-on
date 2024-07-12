@@ -19,6 +19,7 @@ public class RoutineBoard {
 	private LocalDateTime createdAt = LocalDateTime.now();
 	private LocalDateTime updatedAt;
 	private int viewCount = 0;
+	private int likes = 0;
 	private int shareCount = 0;
 	private boolean isDeleted = false;
 	private boolean isPublic = true;

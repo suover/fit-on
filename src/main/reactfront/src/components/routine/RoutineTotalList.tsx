@@ -3,17 +3,11 @@ import CardLists from '../cardList/CardList';
 import ShareIcon from '@mui/icons-material/Share';
 import axios from 'axios';
 import { Pagination, Box } from '@mui/material';
-import { useParams } from 'react-router-dom';
 
-interface RoutineTotalListProps {
-  searchQuery: string;
-}
-
-const RoutineTotalList: React.FC<RoutineTotalListProps> = ({ searchQuery }) => {
-  const [routines, setRoutines] = useState([]);
+const RoutineTotalList = ({ searchQuery }: { searchQuery: any }) => {
+  const [routines, setRoutines] = useState<any[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-
   const pageSize = 12;
 
   useEffect(() => {
@@ -24,7 +18,8 @@ const RoutineTotalList: React.FC<RoutineTotalListProps> = ({ searchQuery }) => {
         });
         const transformedData = response.data.map((info: any) => ({
           ...info,
-          id: info.routineId, // routineId를 id로 변환
+          id: info.routineId,
+          likes: info.likes, // 좋아요 수 포함
         }));
         setRoutines(transformedData);
 
@@ -40,10 +35,7 @@ const RoutineTotalList: React.FC<RoutineTotalListProps> = ({ searchQuery }) => {
     fetchRoutines();
   }, [page, searchQuery]);
 
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number,
-  ) => {
+  const handlePageChange = (event: any, value: any) => {
     setPage(value);
   };
 
