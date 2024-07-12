@@ -52,8 +52,10 @@ public class CommunityBoardCommentService {
 		// 댓글 업데이트
 		public CommunityBoardCommentDTO update(CommunityBoardCommentDTO communityBoardCommentDTO) {
 				communityBoardCommentMapper.updateComment(communityBoardCommentDTO);
-				return communityBoardCommentDTO;
+				// return communityBoardCommentDTO;
+				return communityBoardCommentMapper.selectCommentById(communityBoardCommentDTO.getCommentId());
 		}
+
 
 		// 특정 게시글의 모든 댓글 삭제
 		@Transactional
