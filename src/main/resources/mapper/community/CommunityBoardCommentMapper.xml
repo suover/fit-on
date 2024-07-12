@@ -10,24 +10,57 @@
         VALUES (#{communityId}, #{userId}, #{content}, NOW(), NOW(), FALSE)
     </insert>
 
+<!--    <select id="selectCommentsByCommunityId" resultType="com.spring.myapp.community.dto.CommunityBoardCommentDTO">-->
+<!--        SELECT * FROM community_comments WHERE community_id = #{communityId} AND is_deleted = FALSE-->
+<!--    </select>-->
+
     <select id="selectCommentsByCommunityId" resultType="com.spring.myapp.community.dto.CommunityBoardCommentDTO">
-        SELECT * FROM community_comments WHERE community_id = #{communityId} AND is_deleted = FALSE
+        SELECT cc.*, u.nickname
+        FROM community_comments cc
+        JOIN users u ON cc.user_id = u.user_id
+        WHERE cc.community_id = #{communityId} AND cc.is_deleted = FALSE
     </select>
+
+<!--    <select id="selectCommentById" resultType="com.spring.myapp.community.dto.CommunityBoardCommentDTO">-->
+<!--        SELECT * FROM community_comments WHERE comment_id = #{commentId} AND is_deleted = FALSE-->
+<!--    </select>-->
+
 
     <select id="selectCommentById" resultType="com.spring.myapp.community.dto.CommunityBoardCommentDTO">
-        SELECT * FROM community_comments WHERE comment_id = #{commentId} AND is_deleted = FALSE
+        SELECT cc.*, u.nickname
+        FROM community_comments cc
+        JOIN users u ON cc.user_id = u.user_id
+        WHERE cc.comment_id = #{commentId} AND cc.is_deleted = FALSE
     </select>
+
+<!--    <select id="selectCommentByIdAndCommunityId" resultType="com.spring.myapp.community.dto.CommunityBoardCommentDTO">-->
+<!--        SELECT * FROM community_comments-->
+<!--        WHERE comment_id = #{commentId}-->
+<!--        AND community_id = #{communityId}-->
+<!--    </select>-->
 
     <select id="selectCommentByIdAndCommunityId" resultType="com.spring.myapp.community.dto.CommunityBoardCommentDTO">
-        SELECT * FROM community_comments
-        WHERE comment_id = #{commentId}
-        AND community_id = #{communityId}
+        SELECT cc.*, u.nickname
+        FROM community_comments cc
+        JOIN users u ON cc.user_id = u.user_id
+        WHERE cc.comment_id = #{commentId} AND cc.community_id = #{communityId} AND cc.is_deleted = FALSE
     </select>
 
+<!--    <select id="selectCommentByIdAndCommunityId" resultType="com.spring.myapp.community.dto.CommunityBoardCommentDTO">-->
+<!--        SELECT * FROM community_comments WHERE comment_id = #{commentId} AND community_id = #{communityId} AND is_deleted = FALSE-->
+<!--    </select>-->
+
+<!--    <select id="selectRepliesByCommentId" resultType="com.spring.myapp.community.dto.CommunityBoardCommentDTO">-->
+<!--        SELECT * FROM community_comments-->
+<!--        WHERE parent_comment_id = #{commentId}-->
+<!--        AND is_deleted = FALSE-->
+<!--    </select>-->
+
     <select id="selectRepliesByCommentId" resultType="com.spring.myapp.community.dto.CommunityBoardCommentDTO">
-        SELECT * FROM community_comments
-        WHERE parent_comment_id = #{commentId}
-        AND is_deleted = FALSE
+        SELECT cc.*, u.nickname
+        FROM community_comments cc
+        JOIN users u ON cc.user_id = u.user_id
+        WHERE cc.parent_comment_id = #{commentId} AND cc.is_deleted = FALSE
     </select>
 
     <update id="updateComment">
@@ -36,10 +69,25 @@
         WHERE comment_id = #{commentId}
     </update>
 
-    <delete id="deleteComment">
+    <!-- 댓글 삭제 -->
+    <delete id="deleteCommentsByCommunityId" parameterType="long">
+        DELETE FROM community_comments WHERE community_id = #{communityId};
+    </delete>
+
+    <delete id="deleteComment" parameterType="long">
+        DELETE FROM community_comments WHERE comment_id = #{commentId}
+    </delete>
+
+    <update id="softDeleteComment">
         UPDATE community_comments
         SET is_deleted = TRUE
         WHERE comment_id = #{commentId}
-    </delete>
+    </update>
+
+<!--    <delete id="deleteComment">-->
+<!--        UPDATE community_comments-->
+<!--        SET is_deleted = TRUE-->
+<!--        WHERE comment_id = #{commentId}-->
+<!--    </delete>-->
 
 </mapper>

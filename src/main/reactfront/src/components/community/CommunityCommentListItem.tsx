@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-// import axios from 'axios';
-import { Comment } from './CommunityCommentList';
-import StyledCommentItem from '../common/comment/StyledCommentItem';
-import CommentInputField from '../common/comment/CommentInputField';
 import axiosInstance from '../../types/AxiosInstance';
+import { Comment } from '../../types/CommentTypes';
+import StyledCommunityCommentItem from './StyledCommunityCommentItem';
+import CommunityCommentInputField from './CommunityCommentInputField';
 
 const CommentWrapper = styled.div`
   width: 100%;
@@ -14,14 +13,7 @@ const ReplyWrapper = styled.div`
   padding-left: 60px;
 `;
 
-// const axiosInstance = axios.create({
-//   baseURL: 'http://localhost:8080/',
-//   headers: {
-//     'Content-Type': 'application/json',
-//   },
-// });
-
-const CommentListItem: React.FC<{
+const CommunityCommentListItem: React.FC<{
   comment: Comment;
   route: string;
   postId: string;
@@ -32,27 +24,30 @@ const CommentListItem: React.FC<{
   const [showReplies, setShowReplies] = useState<boolean>(false);
   const [replies, setReplies] = useState<Comment[]>([]);
   const [countReplies, setCountReplies] = useState<number>();
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false); // 중복 요청 방지를 위한 상태 추가
 
   useEffect(() => {
-    // 대댓글 불러오기
-    const fetchComment = async () => {
-      try {
-        const res = await axiosInstance.get<Comment[]>(
-          `${route}/${comment.commentId}/comments`,
-        );
-        setReplies(res.data);
-        setCountReplies(res.data.length);
-      } catch (error) {
-        console.error('Error fetching comments:', error);
-      }
-    };
+    if (comment.commentId !== null) {
+      // 대댓글 불러오기
+      const fetchComment = async () => {
+        try {
+          const res = await axiosInstance.get<Comment[]>(
+            // `${route}/comments/${comment.commentId}/replies`,
+            `${route}/posts/${postId}/comments/${comment.commentId}/replies`,
+          );
+          setReplies(res.data);
+          setCountReplies(res.data.length);
+        } catch (error) {
+          console.error('Error fetching replies:', error);
+        }
+      };
 
-    fetchComment();
+      fetchComment();
+    }
     // }, [comment.commentId, route]);
-  }, []);
+  }, [comment.commentId, route, postId]);
 
   useEffect(() => {
-    // prop 'comment'가 변경될 때마다 실행
     setCountReplies(replies.length);
   }, [replies]);
 
@@ -61,19 +56,25 @@ const CommentListItem: React.FC<{
     setCountReplies((prevCount) => (prevCount || 0) + 1);
   };
 
-  const handleShowReply = (isShow: boolean): void => {
+  const handleShowReply = (): void => {
     setShowReplies((prevState) => !prevState);
   };
 
+  //대댓글 삭제
   const handleDelete = async (commentId: number) => {
     try {
       const response = await axiosInstance.delete(
+        // `/api/community/comments/${commentId}`,
+        // `${route}/comments/${commentId}`,
         `/api/community/comments/${commentId}`,
       );
       if (response.status === 200) {
-        deleteComment(commentId); // 최상위 컴포넌트에 삭제 요청
+        deleteComment(commentId);
         setReplies((prevReplies) =>
-          prevReplies.filter((reply) => reply.commentId !== commentId),
+          // prevReplies.filter((reply) => reply.commentId !== commentId),
+          Array.isArray(prevReplies)
+            ? prevReplies.filter((reply) => reply.commentId !== commentId)
+            : [],
         );
         setCountReplies((prevCount) =>
           prevCount !== undefined ? prevCount - 1 : 0,
@@ -84,13 +85,50 @@ const CommentListItem: React.FC<{
     }
   };
 
-  const handleUpdate = (commentId: number, content: string) => {
-    updateComment(commentId, content);
+  //대댓글 업데이트
+  const handleUpdate = async (commentId: number, content: string) => {
+    try {
+      const response = await axiosInstance.put(
+        `/api/community/comments/${commentId}`,
+        // `${route}/comments/${commentId}`,
+        // `${route}/posts/${postId}/comments/${commentId}/update`,
+        { content },
+      );
+      if (response.status === 200) {
+        updateComment(commentId, content);
+        // updateComment(commentId, response.data.content); // 반환된 데이터를 사용
+      }
+    } catch (error) {
+      console.error('Error updating comment:', error);
+    }
+  };
+
+  //대댓글 추가
+  const handleAddComment = async (comment: Comment) => {
+    if (isSubmitting) return; // 중복 요청 방지
+    setIsSubmitting(true);
+    try {
+      const response = await axiosInstance.post(
+        // `${route}/comments`, comment
+        // `${route}/newComments`,
+        `${route}/posts/${postId}/newComments`,
+        comment,
+      );
+      if (response.status === 200) {
+        const newComment = response.data;
+        console.log('New Comment:', newComment); // 댓글 생성 후 반환된 데이터 로그
+        addedReplies(response.data);
+      }
+    } catch (error) {
+      console.error('Error adding comment:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <CommentWrapper>
-      <StyledCommentItem
+      <StyledCommunityCommentItem
         route={route}
         comment={comment}
         isReply={false}
@@ -101,30 +139,28 @@ const CommentListItem: React.FC<{
       />
       {showReplies && (
         <ReplyWrapper>
-          <CommentInputField
+          <CommunityCommentInputField
             route={route}
             postId={postId}
             idName={idName}
             commentId={comment.commentId}
-            addComment={addedReplies}
+            addComment={handleAddComment}
           />
-          {replies
-            ? replies.map((eachreplies) => (
-                <StyledCommentItem
-                  route={route}
-                  key={eachreplies.commentId}
-                  comment={eachreplies}
-                  isReply={true}
-                  clickReply={handleShowReply}
-                  handleDelete={handleDelete}
-                  handleUpdate={handleUpdate}
-                />
-              ))
-            : ''}
+          {replies.map((eachReply) => (
+            <StyledCommunityCommentItem
+              route={route}
+              key={eachReply.commentId}
+              comment={eachReply}
+              isReply={true}
+              clickReply={handleShowReply}
+              handleDelete={handleDelete}
+              handleUpdate={handleUpdate}
+            />
+          ))}
         </ReplyWrapper>
       )}
     </CommentWrapper>
   );
 };
 
-export default CommentListItem;
+export default CommunityCommentListItem;

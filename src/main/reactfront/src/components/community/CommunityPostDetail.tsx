@@ -1,4 +1,5 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import { Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ButtonLikePost from '../common/button/ButtonLikePost';
@@ -15,7 +16,8 @@ import {
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PersonIcon from '@mui/icons-material/Person';
 import AuthContext from '../../context/AuthContext';
-import { Comment } from '../common/comment/CommentList'; // Comment 타입 가져오기
+import CommunityCommentList from '../../components/community/CommunityCommentList';
+import { Comment } from '../../types/CommentTypes';
 
 type DataType = {
   communityId: number | string;
@@ -27,7 +29,6 @@ type DataType = {
   comments: Comment[];
   viewCount: number;
   likes: number;
-  // communityId: number;
 };
 
 interface PostDetailProps<T> {
@@ -44,22 +45,35 @@ const CommunityPostDetail = <T extends DataType>({
     nickname,
     content,
     createdAt,
-    comments,
+    comments = [], // comments가 undefined일 경우 빈 배열로 초기화
     categoryName,
     viewCount,
     likes,
     communityId,
   } = data;
 
-  console.log('*******Post data: ', data);
-
-  const [contentData, setcontentData] = useState<T>(data); // 실제 데이터가 들어오면 이용
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(likes);
-  const [isShared, setisShared] = useState(false);
   const [open, setOpen] = useState(false); // Dialog open 상태 관리
+  const [postComments, setPostComments] = useState<Comment[]>(
+    comments.map((comment) => ({
+      ...comment,
+      isDeleted: comment.isDeleted || false, // 기본값 설정
+    })),
+  );
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const navigate = useNavigate();
   const { isAuthenticated } = useContext(AuthContext);
+
+  useEffect(() => {
+    setPostComments(
+      comments.map((comment) => ({
+        ...comment,
+        isDeleted: comment.isDeleted || false, // 기본값 설정
+      })),
+    );
+  }, [comments]);
 
   function formatDate(dateString: string): string {
     const date = new Date(dateString);
@@ -97,12 +111,6 @@ const CommunityPostDetail = <T extends DataType>({
     }
   };
 
-  const handleShareClick = () => {
-    if (data) {
-      setisShared(!isShared);
-    }
-  };
-
   const handleEditClick = () => {
     navigate(`/community/edit/${communityId}`);
   };
@@ -125,12 +133,70 @@ const CommunityPostDetail = <T extends DataType>({
   };
 
   const handleClickOpen = () => {
-    console.log('Opening delete confirmation dialog'); // 로그 추가
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  // 댓글 추가 함수
+  const addComment = async (comment: Comment): Promise<void> => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
+    try {
+      const response = await axios.post<Comment>(
+        `http://localhost:8080/api/community/posts/${communityId}/newComments`,
+        comment,
+      );
+      const newComment = response.data;
+      console.log('* New Comment:', newComment); // 댓글 생성 후 반환된 데이터 로그
+      setPostComments((prevComments) => [...prevComments, newComment]);
+    } catch (error) {
+      console.error('*****Error adding comment:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // 댓글 삭제 함수
+  const deleteComment = async (commentId: number) => {
+    try {
+      await axios.delete(
+        `http://localhost:8080/api/community/comments/${commentId}`,
+      );
+      setPostComments(
+        postComments.filter(
+          (comment) =>
+            comment.commentId !== commentId &&
+            comment.parentCommentId !== commentId,
+        ),
+      );
+    } catch (error) {
+      console.error('*****Error deleting comment:', error);
+    }
+  };
+
+  // 댓글 업데이트 함수
+  const updateComment = async (
+    commentId: number,
+    updatedContent: string,
+  ): Promise<void> => {
+    try {
+      const response = await axios.put<Comment>(
+        `http://localhost:8080/api/community/comments/${commentId}`,
+        { content: updatedContent },
+      );
+      const updatedComment = response.data;
+      setPostComments((prevComments) =>
+        prevComments.map((comment) =>
+          comment.commentId === commentId ? updatedComment : comment,
+        ),
+      );
+    } catch (error) {
+      console.error('*****Error updating comment:', error);
+    }
   };
 
   return (
@@ -190,6 +256,17 @@ const CommunityPostDetail = <T extends DataType>({
         )}
         <BackBtn onClick={() => navigate(`/${pageURL}`)}>목록</BackBtn>
       </Box>
+      <Container sx={{ padding: '20px 0', position: 'relative' }}>
+        <CommunityCommentList
+          comments={postComments} // 상태에서 가져온 댓글 목록을 전달
+          route={`api/community/posts/${communityId}`}
+          postId={communityId.toString()}
+          idName="communityId"
+          addComment={addComment}
+          deleteComment={deleteComment}
+          updateComment={updateComment}
+        />
+      </Container>
 
       {/* 삭제 확인 다이얼로그 */}
       <Dialog

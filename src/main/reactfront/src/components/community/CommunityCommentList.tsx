@@ -1,19 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import CommentListItem from './CommunityCommentListItem';
-import CommentInputField from '../common/comment/CommentInputField';
-
-export interface Comment {
-  commentId: number;
-  postId: number;
-  userId: number;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-  isDeleted: boolean;
-  nickname: string;
-  parentCommentId?: number;
-}
+import CommunityCommentListItem from './CommunityCommentListItem';
+import CommunityCommentInputField from './CommunityCommentInputField';
+import { Comment } from '../../types/CommentTypes';
 
 const CommentHeading = styled.h3`
   font-size: 1.25rem;
@@ -21,8 +10,8 @@ const CommentHeading = styled.h3`
   margin-bottom: 5px;
 `;
 
-const CommentList: React.FC<{
-  comments: Comment[]; //comments가 undefined인 경우 빈 배열을 기본값으로 사용하도록 설정
+const CommunityCommentList: React.FC<{
+  comments: Comment[];
   route: string;
   postId: string;
   idName: string;
@@ -30,7 +19,7 @@ const CommentList: React.FC<{
   deleteComment: (commentId: number) => void;
   updateComment: (commentId: number, content: string) => void;
 }> = ({
-  comments = [],
+  comments,
   route,
   postId,
   idName,
@@ -50,14 +39,14 @@ const CommentList: React.FC<{
   return (
     <>
       <CommentHeading>댓글</CommentHeading>
-      <CommentInputField
+      <CommunityCommentInputField
         route={route}
         postId={postId}
         idName={idName}
         addComment={addedComment}
       />
       {comments.map((comment) => (
-        <CommentListItem
+        <CommunityCommentListItem
           key={comment.commentId}
           comment={comment}
           route={route}
@@ -71,4 +60,4 @@ const CommentList: React.FC<{
   );
 };
 
-export default CommentList;
+export default CommunityCommentList;

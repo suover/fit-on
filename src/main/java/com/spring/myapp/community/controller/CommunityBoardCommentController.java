@@ -3,6 +3,7 @@ package com.spring.myapp.community.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +29,7 @@ public class CommunityBoardCommentController {
 		public ResponseEntity<CommunityBoardCommentDTO> addComment(
 				  @PathVariable("communityId") Long communityId,
 				  @RequestBody CommunityBoardCommentDTO communityBoardCommentDTO) {
-				System.out.println("##### Add comment request received for communityId: " + communityId);
+				System.out.println("##### Add comment request received for communityId: " + communityId); // 로그 추가
 				communityBoardCommentDTO.setCommunityId(communityId);
 				CommunityBoardCommentDTO savedComment = communityBoardCommentService.save(communityBoardCommentDTO);
 				return ResponseEntity.ok(savedComment);
@@ -42,25 +43,6 @@ public class CommunityBoardCommentController {
 				return ResponseEntity.ok(comments);
 		}
 
-		//특정 댓글 조회
-		// @GetMapping("/comments/{communityId}")
-		// public ResponseEntity<CommunityBoardCommentDTO> getCommentById(
-		// 		@PathVariable("communityId") Long communityId) {
-		// 		CommunityBoardCommentDTO comment = communityBoardCommentService.findById(communityId);
-		// 		return ResponseEntity.ok(comment);
-		// }
-
-		//필요없을것같아서
-		// @GetMapping("/posts/{communityId}/comments/{commentId}")
-		// public ResponseEntity<CommunityBoardCommentDTO> getCommentById(
-		// // public ResponseEntity<List<CommunityBoardCommentDTO>> getCommentById(
-		// 		@PathVariable("communityId") Long communityId,
-		// 		@PathVariable("commentId") Long commentId) {
-		// 		CommunityBoardCommentDTO comment = communityBoardCommentService.findByIdAndCommunityId(commentId, communityId);
-		// 		// List<CommunityBoardCommentDTO> comments = communityBoardCommentService.findRepliesByCommentId(commentId);
-		// 		return ResponseEntity.ok(comment);
-		// }
-
 		//댓글 업데이트
 		@PutMapping("/comments/{commentId}")
 		public ResponseEntity<CommunityBoardCommentDTO> updateComment(
@@ -68,6 +50,8 @@ public class CommunityBoardCommentController {
 					@RequestBody CommunityBoardCommentDTO communityBoardCommentDTO) {
 				communityBoardCommentDTO.setCommentId(commentId);
 				CommunityBoardCommentDTO updatedComment = communityBoardCommentService.update(communityBoardCommentDTO);
+				// 업데이트된 댓글을 다시 조회하여 반환
+				CommunityBoardCommentDTO fullUpdatedComment = communityBoardCommentService.findById(commentId);
 				return ResponseEntity.ok(updatedComment);
 		}
 
@@ -75,7 +59,8 @@ public class CommunityBoardCommentController {
 		@DeleteMapping("/comments/{commentId}")
 		public ResponseEntity<Void> deleteComment(
 					@PathVariable("commentId") Long commentId) {
-				communityBoardCommentService.delete(commentId);
+				// communityBoardCommentService.delete(commentId);
+				communityBoardCommentService.softDelete(commentId); // softDelete 메서드 호출
 				return ResponseEntity.ok().build();
 		}
 
@@ -84,6 +69,9 @@ public class CommunityBoardCommentController {
 		public ResponseEntity<List<CommunityBoardCommentDTO>> getRepliesForComment(
 				@PathVariable("communityId") Long communityId,
 				@PathVariable("commentId") Long commentId) {
+				if (commentId == null) {
+						return ResponseEntity.badRequest().build();
+				}
 				List<CommunityBoardCommentDTO> replies = communityBoardCommentService.findRepliesByCommentId(commentId);
 				return ResponseEntity.ok(replies);
 		}

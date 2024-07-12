@@ -22,7 +22,7 @@ const CommentHeading = styled.h3`
 `;
 
 const CommentList: React.FC<{
-  comments: Comment[]; //comments가 undefined인 경우 빈 배열을 기본값으로 사용하도록 설정
+  comments: Comment[];
   route: string;
   postId: string;
   idName: string;
@@ -30,7 +30,7 @@ const CommentList: React.FC<{
   deleteComment: (commentId: number) => void;
   updateComment: (commentId: number, content: string) => void;
 }> = ({
-  comments = [],
+  comments,
   route,
   postId,
   idName,

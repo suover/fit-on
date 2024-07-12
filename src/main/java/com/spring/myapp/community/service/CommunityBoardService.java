@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.spring.myapp.community.dto.CommunityBoardDTO;
 import com.spring.myapp.community.model.CommunityBoardUserDetails;
+import com.spring.myapp.community.repository.CommunityBoardCommentMapper;
 import com.spring.myapp.community.repository.CommunityBoardMapper;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CommunityBoardService {
 		private final CommunityBoardMapper communityMapper;
+		private final CommunityBoardCommentMapper commentMapper;
 
 		// 모든 게시글 조회
 		public List<CommunityBoardDTO> findAllPosts() {
@@ -83,6 +85,9 @@ public class CommunityBoardService {
 				if (existingPost == null) {
 						throw new IllegalArgumentException("해당 게시글을 찾을 수 없습니다.");
 				}
+				// 먼저 댓글 삭제
+				commentMapper.deleteCommentsByCommunityId(id);
+				// 그 다음 게시글 삭제
 				communityMapper.deletePost(id);
 		}
 
