@@ -14,7 +14,7 @@
         WHERE info_id = #{infoId} AND user_id = #{userId}
     </delete>
 
-    <select id="checkLike" resultType="Integer">
+    <select id="checkLikes" parameterType="Long" resultType="Integer">
         SELECT user_Id
         FROM info_likes
         WHERE info_id = #{infoId} AND user_id = #{userId}

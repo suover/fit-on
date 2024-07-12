@@ -4,6 +4,7 @@ import axios from 'axios';
 import AuthContext from '../../../context/AuthContext';
 import InputField from './CommentInputField.styles';
 import { Comment } from './CommentList';
+import { useNavigate } from 'react-router-dom';
 
 const axiosInstance = axios.create({
   baseURL: 'http://localhost:8080/',
@@ -20,11 +21,22 @@ const CommentInputField: React.FC<{
   addComment: (comment: Comment) => void;
 }> = ({ route, postId, idName, addComment, commentId }) => {
   const [content, setContent] = useState('');
+  const [isDisable, setIsDisable] = useState(false);
   const { userId } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleCommentSubmit = async () => {
+    setIsDisable(true);
+    if (userId === null || userId === undefined) {
+      alert('로그인 후 이용해주세요!');
+      navigate('/sign-in');
+      setIsDisable(false);
+      return;
+    }
+
     if (content.trim().length === 0) {
       alert('내용을 입력해주세요.');
+      setIsDisable(false);
       return;
     }
 
@@ -44,6 +56,7 @@ const CommentInputField: React.FC<{
         setContent('');
         const savedComment = response.data;
         addComment(savedComment);
+        setIsDisable(false);
       }
     } catch (error) {
       console.error('Error adding comment:', error);
@@ -58,7 +71,9 @@ const CommentInputField: React.FC<{
         onChange={(e) => setContent(e.target.value)}
         value={content}
       />
-      <button onClick={handleCommentSubmit}>등록</button>
+      <button onClick={handleCommentSubmit} disabled={isDisable ? true : false}>
+        등록
+      </button>
     </InputField>
   );
 };

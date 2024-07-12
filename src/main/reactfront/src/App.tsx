@@ -100,6 +100,7 @@ const App = () => {
             <Route path="routine/new-routine" element={<NewRoutine />} />
             <Route path="info" element={<Info />} />
             <Route path="info/:infoId" element={<InfoDetail />} />
+            <Route path="info/update/:infoId" element={<PostRegisterPage />} />
             <Route path="service" element={<Service />}>
               <Route index element={<Notice />} />
               <Route path="notice" element={<Notice />} />
