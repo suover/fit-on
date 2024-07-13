@@ -1,14 +1,15 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import ButtonLikePost from '../common/button/ButtonLikePost';
 import ButtonShare from '../common/button/ButtonShare';
 import { PostWrapper, BackBtn } from './PostDetail.styles';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Container } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PersonIcon from '@mui/icons-material/Person';
-import CommentList from '../common/comment/CommentList';
 import AuthContext from '../../context/AuthContext';
+import { Comment } from '../../components/common/comment/CommentList';
+import CommentList from '../../components/common/comment/CommentList';
 
 const partIdToNameMap: { [key: number]: string } = {
   1: '전신',
@@ -39,7 +40,7 @@ type DataType = {
   createdAt: string;
   comments: Comment[];
   viewCount: number;
-  likes: number; // 좋아요 수 필드 변경
+  likes: number;
 };
 
 interface PostDetailProps<T> {
@@ -64,30 +65,29 @@ const PostDetail = <T extends DataType>({
     userId,
     content,
     createdAt,
-    comments,
     viewCount,
-    likes, // 좋아요 수 필드 변경
+    likes,
     partId,
     levelId,
     goalId,
   } = data;
-  const [contentData, setContentData] = useState<T>(data); // 실제 데이터가 들어오면 이용
+  const [contentData, setContentData] = useState<T>(data);
   const [isLiked, setIsLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(likes); // 좋아요 수 상태 likes로 변경
+  const [likeCount, setLikeCount] = useState(likes);
   const [isShared, setIsShared] = useState(false);
+  const [routineComments, setRoutineComments] = useState<Comment[]>([]);
   const { routineNo } = useParams<{ routineNo: string }>();
   const navigate = useNavigate();
   const { userId: currentUserId, isAuthenticated } = useContext(AuthContext);
 
   useEffect(() => {
-    // 초기 로딩 시 현재 사용자가 이 게시글에 좋아요를 눌렀는지 확인
     const checkLikeStatus = async () => {
       try {
         const response = await axios.get(`/api/routine/${routineNo}/likes`, {
           params: { userId: currentUserId },
         });
         setIsLiked(response.data.liked);
-        setLikeCount(response.data.count); // 좋아요 수 설정
+        setLikeCount(response.data.count);
       } catch (error) {
         console.error('Error checking like status:', error);
       }
@@ -99,7 +99,7 @@ const PostDetail = <T extends DataType>({
   const handleLikeClick = async () => {
     if (!isAuthenticated) {
       alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
-      navigate('/sign-in'); // 로그인 페이지로 리디렉션
+      navigate('/sign-in');
       return;
     }
 
@@ -109,13 +109,13 @@ const PostDetail = <T extends DataType>({
           params: { userId: currentUserId },
         });
         setIsLiked(false);
-        setLikeCount((prevCount) => prevCount - 1); // 좋아요 수 감소
+        setLikeCount((prevCount) => prevCount - 1);
       } else {
         await axios.post(`/api/routine/${routineNo}/like`, null, {
           params: { userId: currentUserId },
         });
         setIsLiked(true);
-        setLikeCount((prevCount) => prevCount + 1); // 좋아요 수 증가
+        setLikeCount((prevCount) => prevCount + 1);
       }
     } catch (error) {
       console.error('Error toggling like:', error);
@@ -156,6 +156,43 @@ const PostDetail = <T extends DataType>({
     }
 
     navigate(`/routine/new-routine`, { state: { routine: contentData } });
+  };
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const response = await axios.get(`/api/routine/${routineNo}/comments`);
+        setRoutineComments(response.data);
+      } catch (error) {
+        console.error('Error fetching comments:', error);
+      }
+    };
+
+    fetchComments();
+  }, [routineNo]);
+
+  const addComment = (comment: Comment): void => {
+    setRoutineComments((prevComments) => [...prevComments, comment]);
+  };
+
+  const deleteComment = (commentId: number) => {
+    setRoutineComments(
+      routineComments.filter(
+        (comment) =>
+          comment.commentId !== commentId &&
+          comment.parentCommentId !== commentId,
+      ),
+    );
+  };
+
+  const updateComment = (commentId: number, updatedContent: string): void => {
+    setRoutineComments((prevComments) =>
+      prevComments.map((comment) =>
+        comment.commentId === commentId
+          ? { ...comment, content: updatedContent }
+          : comment,
+      ),
+    );
   };
 
   const partName = partId ? partIdToNameMap[partId] : '';
@@ -206,7 +243,17 @@ const PostDetail = <T extends DataType>({
           <ButtonShare isShared={isShared} onClick={handleShareClick} />
         </Box>
       </PostWrapper>
-      {/* <CommentList comments={comments} /> */}
+      <Container sx={{ padding: '20px 0', position: 'relative' }}>
+        <CommentList
+          comments={routineComments}
+          route={`/api/routine/${routineNo}`}
+          postId={routineNo ? routineNo : ''}
+          idName="routineNo"
+          addComment={addComment}
+          deleteComment={deleteComment}
+          updateComment={updateComment}
+        />
+      </Container>
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box>
           <Button
