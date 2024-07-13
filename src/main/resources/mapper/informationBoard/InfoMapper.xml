@@ -30,6 +30,44 @@
         WHERE is_deleted = 0
         ORDER BY created_at DESC
     </select>
+    
+    <select id="keywordInfoList" parameterType="com.spring.myapp.informationBoard.model.InfoPaging"
+            resultMap="infoResultMap">
+        <![CDATA[
+            SELECT i.*
+            FROM info i
+            JOIN info_categories c ON i.category_id = c.category_id
+        ]]>
+        <where>
+            <if test="infoData != null and infoData != '전체'">
+                c.category_name = #{infoData}
+            </if>
+            AND is_deleted = 0
+        </where>
+        <if test="pageable.sort != null and !pageable.sort.isEmpty()">
+            ORDER BY
+            <foreach collection="pageable.sort" item="order" separator=",">
+                ${order.property} ${order.direction}
+            </foreach>
+        </if>
+        <![CDATA[
+            LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
+        ]]>
+    </select>
+
+    <select id="countKeywordInfoList" parameterType="String" resultType="Integer">
+        <![CDATA[
+            SELECT COUNT(*)
+            FROM info i
+            JOIN info_categories c ON i.category_id = c.category_id
+        ]]>
+        <where>
+            <if test="infoData != null and infoData != '전체'">
+                c.category_name = #{infoData}
+            </if>
+            AND is_deleted = 0
+        </where>
+    </select>
 
     <select id="findCategoryForInfo" resultType="string">
         SELECT ic.category_name
@@ -62,6 +100,19 @@
         VALUES (#{infoId}, #{userId}, #{categoryId}, #{title}, #{content}, #{imageUrl}, #{createdAt}, #{updatedAt},
         #{viewCount}, #{isDeleted})
     </insert>
+
+    <update id="updateInfo" parameterType="com.spring.myapp.informationBoard.model.Information">
+        UPDATE info
+        SET category_id = #{categoryId}, title = #{title}, content = #{content}, image_url = #{imageUrl}, updated_at =
+        #{updatedAt}
+        WHERE info_id = #{infoId}
+    </update>
+
+    <update id="deleteInfo" parameterType="Long">
+        UPDATE info
+        SET is_deleted = 1
+        WHERE info_id = #{infoId}
+    </update>
 
     <update id="updateViewCount">
         UPDATE info

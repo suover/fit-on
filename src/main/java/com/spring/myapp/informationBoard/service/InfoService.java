@@ -4,8 +4,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.spring.myapp.informationBoard.model.InfoPaging;
 import com.spring.myapp.informationBoard.model.Information;
 import com.spring.myapp.informationBoard.repository.InfoMapper;
 
@@ -19,10 +23,20 @@ public class InfoService {
 		return infoMapper.findAll();
 	}
 
+	public Page<Information> infoListPaging(String keyword, Pageable pageable) {
+
+		InfoPaging<?> requestList = InfoPaging.builder().infoData(keyword).pageable(pageable).build();
+
+		List<Information> infoList = infoMapper.keywordInfoList(requestList);
+		int total = infoMapper.countKeywordInfoList(keyword);
+		
+		return new PageImpl<>(infoList, pageable, total);
+	}
+
 	public void writeNewInfo(Information info) {
 
 		Information newInfo = new Information();
-		newInfo.setUserId(36); // 일단 하드코딩
+		newInfo.setUserId(info.getUserId());
 		newInfo.setCategoryId(info.getCategoryId());
 		newInfo.setTitle(info.getTitle());
 		newInfo.setContent(info.getContent());
@@ -41,4 +55,23 @@ public class InfoService {
 	public void updateViewCount(Long infoId) {
 		infoMapper.updateViewCount(infoId);
 	}
+
+	public void updateInfo(Information info, Long infoId) {
+
+		Information updateData = new Information();
+		updateData.setInfoId(infoId);
+		updateData.setCategoryId(info.getCategoryId());
+		updateData.setTitle(info.getTitle());
+		updateData.setContent(info.getContent());
+		updateData.setImageUrl(info.getImageUrl());
+		updateData.setUpdatedAt(LocalDateTime.now());
+
+		infoMapper.updateInfo(updateData);
+	}
+
+	public boolean deleteInfo(Long infoId) {
+		int deleteResult = infoMapper.deleteInfo(infoId);
+		return deleteResult > 0;
+	}
+
 }
