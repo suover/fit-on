@@ -85,9 +85,9 @@ public class CommunityBoardService {
 				if (existingPost == null) {
 						throw new IllegalArgumentException("해당 게시글을 찾을 수 없습니다.");
 				}
-				// 먼저 댓글 삭제
+				// 댓글 소프트 삭제
 				commentMapper.deleteCommentsByCommunityId(id);
-				// 그 다음 게시글 삭제
+				// 게시글 소프트 삭제
 				communityMapper.deletePost(id);
 		}
 

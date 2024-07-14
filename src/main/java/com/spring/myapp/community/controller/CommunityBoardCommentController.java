@@ -142,6 +142,7 @@ public class CommunityBoardCommentController {
 				return new ResponseEntity<>(allReplies, HttpStatus.OK);
 		}
 
+		// 댓글 삭제
 		@DeleteMapping("/{communityId}/{commentId}/delete")
 		public ResponseEntity<?> deleteComment(@PathVariable("commentId") Long commentId) {
 				try {
@@ -153,6 +154,7 @@ public class CommunityBoardCommentController {
 				}
 		}
 
+		//댓글 수정
 		@PutMapping("/{communityId}/{commentId}/update")
 		public ResponseEntity<?> updateComment(@PathVariable("commentId") Long commentId,
 				@RequestBody CommunityBoardComments updatedComment) {

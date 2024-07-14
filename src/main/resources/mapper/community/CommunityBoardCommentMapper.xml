@@ -71,9 +71,11 @@
         WHERE comment_id = #{commentId} AND is_deleted = 0
     </update>
 
-    <!-- 특정 커뮤니티의 모든 댓글 삭제 -->
-    <delete id="deleteCommentsByCommunityId" parameterType="long">
-        DELETE FROM community_comments WHERE community_id = #{communityId}
-    </delete>
+    <!-- 소프트 삭제를 위한 UPDATE 쿼리 추가 -->
+    <update id="deleteCommentsByCommunityId" parameterType="long">
+        UPDATE community_comments
+        SET is_deleted = 1
+        WHERE community_id = #{communityId}
+    </update>
 
 </mapper>

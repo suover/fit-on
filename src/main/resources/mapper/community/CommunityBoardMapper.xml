@@ -79,8 +79,14 @@
         WHERE community_id = #{communityId};
     </update>
 
-    <delete id="deletePost" parameterType="long">
-        DELETE FROM community WHERE community_id = #{id};
-    </delete>
+    <update id="deletePost" parameterType="long">
+        UPDATE community
+        SET is_deleted = 1
+        WHERE community_id = #{id};
+    </update>
+
+<!--    <delete id="deletePost" parameterType="long">-->
+<!--        DELETE FROM community WHERE community_id = #{id};-->
+<!--    </delete>-->
 
 </mapper>
