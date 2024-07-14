@@ -85,6 +85,12 @@ const CommentListItem: React.FC<{
 
   const handleUpdate = (commentId: number, content: string) => {
     updateComment(commentId, content);
+    //수정된 대댓글 표시
+    setReplies((prevReplies) =>
+      prevReplies.map((reply) =>
+        reply.commentId === commentId ? { ...reply, content: content } : reply,
+      ),
+    );
   };
 
   return (
