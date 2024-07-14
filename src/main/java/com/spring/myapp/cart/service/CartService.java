@@ -28,12 +28,20 @@ public class CartService {
 			cart.setUserId(userId);
 			cartMapper.insertCart(cart);
 		}
-
-		CartItem cartItem = new CartItem();
-		cartItem.setCartId(cart.getCartId());
-		cartItem.setProductId(productId);
-		cartItem.setQuantity(quantity);
-		cartItemMapper.insertCartItem(cartItem);
+		// 장바구니 ID와 상품 ID로 기존 장바구니 항목 찾기
+		CartItem existingCartItem = cartItemMapper.findCartItemByCartIdAndProductId(cart.getCartId(), productId);
+		if (existingCartItem != null) {
+			// 기존 항목이 있으면 수량 증가
+			existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
+			cartItemMapper.updateCartItem(existingCartItem);
+		} else {
+			// 기존 항목이 없으면 새로운 항목 추가
+			CartItem cartItem = new CartItem();
+			cartItem.setCartId(cart.getCartId());
+			cartItem.setProductId(productId);
+			cartItem.setQuantity(quantity);
+			cartItemMapper.insertCartItem(cartItem);
+		}
 	}
 
 	public List<CartItem> getCartItems(Long userId) {
@@ -43,4 +51,31 @@ public class CartService {
 		}
 		return Collections.emptyList();
 	}
+
+
+
+	public void removeCartItem(Long userId, Long productId) {
+		Cart cart = cartMapper.findCartByUserId(userId);
+		CartItem cartItem = cartItemMapper.findByUserIdAndProductId(userId, productId);
+		if (cartItem != null) {
+			cartItemMapper.deleteCartItemByProductId(cart.getCartId(), productId);
+		}
+	}
+
+
+	public void removeAllCartItems(Long userId) {
+		cartMapper.deleteCart(userId);
+	}
+
+	// 장바구니 내 상품수량 수정
+	public void updateCartItemQuantity(Long userId, Long productId, Integer quantity) {
+		CartItem cartItem = cartItemMapper.findByUserIdAndProductId(userId, productId);
+		if (cartItem != null) {
+			cartItem.setQuantity(quantity);
+			cartItemMapper.updateCartItem(cartItem);
+		}
+	}
+
+
+
 }

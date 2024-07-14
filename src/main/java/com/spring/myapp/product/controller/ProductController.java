@@ -26,13 +26,13 @@ public class ProductController {
 	private ProductService productService;
 	
 	
-	//전체 상품
+	//전체 상품리스트
 	@GetMapping
 	public List<Product> getAllProducts() {
 		return productService.getAllProducts();
 	}
 
-	// 삭제처리 되지 않은 상품
+	// 삭제처리 되지 않은 전체상품 리스트
 	@GetMapping("/available")
 	public List<Product> getProducts() {
 		return productService.getProducts();
@@ -42,10 +42,12 @@ public class ProductController {
 	public Product getProductById(@PathVariable Long id) {
 		return productService.getProductById(id);
 	}
+	
+	//상품 생성
 	@PostMapping
 	public ResponseEntity<Product> createProduct(@RequestBody Product product) {
 		Product savedProduct = productService.saveProduct(product);
-		return ResponseEntity.ok(savedProduct); // 저장한 상품 정보 반환
+		return ResponseEntity.ok(savedProduct); 
 	}
 	@GetMapping("/with-images")
 	public ResponseEntity<List<Product>> getAllProductsWithMainImage() {
@@ -59,13 +61,11 @@ public class ProductController {
 	}
 	@GetMapping("/with-images/{category}/active")
 	public ResponseEntity<List<Product>> getAllActiveProductsWithMainImageByCategory(@PathVariable Long category) {
-		System.out.println("컨트롤러단 상품카테고리 밸류값 : "+category);
 		List<Product> products = productService.getAllActiveProductsWithMainImageByCategory(category);
-		System.out.println("컨트롤러단 종료");
 		return ResponseEntity.ok(products);
 	}
 
-	@PutMapping("/{id}")
+	@PutMapping("/update/{id}")
 	public ResponseEntity<Product> updateProduct(@PathVariable("id") Long id, @RequestBody Product product) {
 		product.setProductId(id);
 		productService.updateProduct(product);
