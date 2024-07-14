@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import axiosInstance from '../../types/AxiosInstance';
 import { Comment } from '../../types/CommentTypes';
-import StyledCommunityCommentItem from './StyledCommunityCommentItem';
+import StyledCommentItem from '../common/comment/StyledCommentItem';
 import CommunityCommentInputField from './CommunityCommentInputField';
 
 const CommentWrapper = styled.div`
@@ -128,7 +128,7 @@ const CommunityCommentListItem: React.FC<{
 
   return (
     <CommentWrapper>
-      <StyledCommunityCommentItem
+      <StyledCommentItem
         route={route}
         comment={comment}
         isReply={false}
@@ -147,7 +147,7 @@ const CommunityCommentListItem: React.FC<{
             addComment={handleAddComment}
           />
           {replies.map((eachReply) => (
-            <StyledCommunityCommentItem
+            <StyledCommentItem
               route={route}
               key={eachReply.commentId}
               comment={eachReply}

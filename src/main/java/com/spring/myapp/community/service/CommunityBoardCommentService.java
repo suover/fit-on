@@ -102,11 +102,14 @@ public class CommunityBoardCommentService {
 				newComment.setCommunityId(comment.getCommunityId());
 				newComment.setUserId(comment.getUserId());
 				newComment.setContent(comment.getContent());
+				newComment.setCreatedAt(LocalDateTime.now());
 				newComment.setUpdatedAt(LocalDateTime.now());
 				newComment.setIsDeleted(false);
 
+				// 댓글 삽입
 				communityBoardCommentMapper.writeNewComment(newComment);
 
+				// 삽입된 댓글의 전체 정보를 조회
 				return communityBoardCommentMapper.getCommentById(newComment.getCommentId());
 		}
 

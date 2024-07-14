@@ -67,11 +67,9 @@ const CommunityCommentInputField: React.FC<{
         onChange={(e) => setContent(e.target.value)}
         value={content}
       />
-      {/* <button onClick={handleCommentSubmit} >등록</button> */}
       <button onClick={handleCommentSubmit} disabled={isSubmitting}>
         등록
       </button>{' '}
-      {/* 버튼 비활성화 추가 */}
     </InputField>
   );
 };

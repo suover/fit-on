@@ -4,21 +4,55 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.spring.myapp.community.repository.CommunityBoardCommentMapper">
+
+    <resultMap id="commentResultMap" type="com.spring.myapp.community.model.CommunityBoardComments">
+        <id property="commentId" column="comment_id"/>
+        <result property="communityId" column="community_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="content" column="content"/>
+        <result property="parentCommentId" column="parent_comment_id"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <association property="nickname" column="user_id"
+                     select="findUserForComment"/>
+    </resultMap>
+
+    <select id="findUserForComment" resultType="string">
+        SELECT u.nickname
+        FROM users u
+        WHERE u.user_id = #{user_id}
+    </select>
+
     <!-- 특정 커뮤니티의 모든 댓글 조회 -->
     <select id="getAllComments" parameterType="long" resultType="com.spring.myapp.community.model.CommunityBoardComments">
-        SELECT * FROM community_comments WHERE community_id = #{communityId} AND is_deleted = 0
+        SELECT cc.*, u.nickname
+        FROM community_comments cc
+        JOIN users u ON cc.user_id = u.user_id
+        WHERE cc.community_id = #{communityId} AND cc.is_deleted = 0
+    </select>
+
+    <select id="getCommentWithUserDetails" parameterType="long" resultMap="commentResultMap">
+        SELECT cc.*, u.nickname
+        FROM community_comments cc
+        JOIN users u ON cc.user_id = u.user_id
+        WHERE cc.comment_id = #{commentId} AND cc.is_deleted = 0
     </select>
 
     <!-- 새로운 댓글 작성 -->
-    <insert id="writeNewComment" parameterType="com.spring.myapp.community.model.CommunityBoardComments">
-        INSERT INTO community_comments (community_id, user_id, content, parent_comment_id, created_at, is_deleted)
-        VALUES (#{communityId}, #{userId}, #{content}, #{parentCommentId}, NOW(), 0)
+    <insert id="writeNewComment" useGeneratedKeys="true" keyProperty="commentId" keyColumn="comment_id">
+        INSERT INTO community_comments (comment_id, community_id, user_id, content, parent_comment_id, created_at, updated_at, is_deleted)
+        VALUES (#{commentId}, #{communityId}, #{userId}, #{content}, #{parentCommentId}, #{createdAt}, #{updatedAt}, #{isDeleted})
     </insert>
 
     <!-- 특정 댓글 조회 -->
-    <select id="getCommentById" parameterType="long" resultType="com.spring.myapp.community.model.CommunityBoardComments">
-        SELECT * FROM community_comments WHERE comment_id = #{commentId} AND is_deleted = 0
+    <select id="getCommentById" parameterType="long"  resultMap="commentResultMap">
+        SELECT cc.*, u.nickname
+        FROM community_comments cc
+        JOIN users u ON cc.user_id = u.user_id
+        WHERE cc.comment_id = #{commentId} AND cc.is_deleted = 0
     </select>
+
 
     <!-- 특정 댓글의 답글 조회 -->
     <select id="getRepliesById" parameterType="long" resultType="com.spring.myapp.community.model.CommunityBoardComments">
@@ -32,72 +66,14 @@
 
     <!-- 댓글 수정 -->
     <update id="updateComment" parameterType="map">
-        UPDATE community_comments SET content = #{content}, updated_at = NOW() WHERE comment_id = #{commentId} AND is_deleted = 0
+        UPDATE community_comments
+        SET content = #{content}, updated_at = NOW()
+        WHERE comment_id = #{commentId} AND is_deleted = 0
     </update>
 
     <!-- 특정 커뮤니티의 모든 댓글 삭제 -->
     <delete id="deleteCommentsByCommunityId" parameterType="long">
         DELETE FROM community_comments WHERE community_id = #{communityId}
     </delete>
-
-<!--    <insert id="insertComment" parameterType="com.spring.myapp.community.dto.CommunityBoardCommentDTO">-->
-<!--        INSERT INTO community_comments (community_id, user_id, content, created_at, updated_at, is_deleted)-->
-<!--        VALUES (#{communityId}, #{userId}, #{content}, NOW(), NOW(), FALSE)-->
-<!--    </insert>-->
-<!--    -->
-
-<!--    <select id="selectCommentsByCommunityId" resultType="com.spring.myapp.community.dto.CommunityBoardCommentDTO">-->
-<!--        SELECT cc.*, u.nickname-->
-<!--        FROM community_comments cc-->
-<!--        JOIN users u ON cc.user_id = u.user_id-->
-<!--        WHERE cc.community_id = #{communityId} AND cc.is_deleted = FALSE-->
-<!--    </select>-->
-<!--    -->
-
-
-<!--    <select id="selectCommentById" resultType="com.spring.myapp.community.dto.CommunityBoardCommentDTO">-->
-<!--        SELECT cc.*, u.nickname-->
-<!--        FROM community_comments cc-->
-<!--        JOIN users u ON cc.user_id = u.user_id-->
-<!--        WHERE cc.comment_id = #{commentId} AND cc.is_deleted = FALSE-->
-<!--    </select>-->
-<!--    -->
-
-<!--    <select id="selectCommentByIdAndCommunityId" resultType="com.spring.myapp.community.dto.CommunityBoardCommentDTO">-->
-<!--        SELECT cc.*, u.nickname-->
-<!--        FROM community_comments cc-->
-<!--        JOIN users u ON cc.user_id = u.user_id-->
-<!--        WHERE cc.comment_id = #{commentId} AND cc.community_id = #{communityId} AND cc.is_deleted = FALSE-->
-<!--    </select>-->
-<!--    -->
-
-<!--    <select id="selectRepliesByCommentId" resultType="com.spring.myapp.community.dto.CommunityBoardCommentDTO">-->
-<!--        SELECT cc.*, u.nickname-->
-<!--        FROM community_comments cc-->
-<!--        JOIN users u ON cc.user_id = u.user_id-->
-<!--        WHERE cc.parent_comment_id = #{commentId} AND cc.is_deleted = FALSE-->
-<!--    </select>-->
-
-<!--    <update id="updateComment">-->
-<!--        UPDATE community_comments-->
-<!--        SET content = #{content}, updated_at = NOW()-->
-<!--        WHERE comment_id = #{commentId}-->
-<!--    </update>-->
-
-<!--    &lt;!&ndash; 댓글 삭제 &ndash;&gt;-->
-<!--    <delete id="deleteCommentsByCommunityId" parameterType="long">-->
-<!--        DELETE FROM community_comments WHERE community_id = #{communityId};-->
-<!--    </delete>-->
-
-<!--    <delete id="deleteComment" parameterType="long">-->
-<!--        DELETE FROM community_comments WHERE comment_id = #{commentId}-->
-<!--    </delete>-->
-
-<!--    <update id="softDeleteComment">-->
-<!--        UPDATE community_comments-->
-<!--        SET is_deleted = TRUE-->
-<!--        WHERE comment_id = #{commentId}-->
-<!--    </update>-->
-
 
 </mapper>

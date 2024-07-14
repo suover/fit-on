@@ -16,7 +16,7 @@ import {
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PersonIcon from '@mui/icons-material/Person';
 import AuthContext from '../../context/AuthContext';
-import CommunityCommentList from '../../components/community/CommunityCommentList';
+import CommentList from '../common/comment/CommentList';
 import { Comment } from '../../types/CommentTypes';
 
 type DataType = {
@@ -257,7 +257,7 @@ const CommunityPostDetail = <T extends DataType>({
         <BackBtn onClick={() => navigate(`/${pageURL}`)}>목록</BackBtn>
       </Box>
       <Container sx={{ padding: '20px 0', position: 'relative' }}>
-        <CommunityCommentList
+        <CommentList
           comments={postComments} // 상태에서 가져온 댓글 목록을 전달
           route={`api/community/posts/${communityId}`}
           postId={communityId.toString()}

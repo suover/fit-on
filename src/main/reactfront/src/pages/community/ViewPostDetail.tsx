@@ -1,137 +1,3 @@
-// import React, { useEffect, useState } from 'react';
-// import { Container, CircularProgress, Typography } from '@mui/material';
-// import { useParams } from 'react-router-dom';
-// import CommunityPostDetail from '../../components/community/CommunityPostDetail';
-// import { PostDetailWrapper } from '../../styles/community/CommunityDetail.styles';
-// import axiosInstance from '../../types/AxiosInstance';
-// import { Comment } from '../../types/CommentTypes';
-
-// interface Post {
-//   communityId: number;
-//   userId: number;
-//   postId: number;
-//   categoryId: number;
-//   title: string;
-//   content: string;
-//   createdAt: string;
-//   updatedAt: string;
-//   viewCount: number;
-//   isDeleted: boolean;
-//   nickname: string;
-//   categoryName: string;
-//   comments: Comment[];
-//   likes: number;
-// }
-
-// const ViewPostDetail = () => {
-//   const { postId } = useParams<{ postId: string }>(); // URL 파라미터에서 postId 가져오기
-//   const [post, setPost] = useState<Post | null>(null);
-//   const [loading, setLoading] = useState(true);
-//   const [comments, setComments] = useState<Comment[]>([]);
-
-//   // // 댓글 목록 불러오기
-//   // const fetchComments = async (communityId: number) => {
-//   //   try {
-//   //     const response = await axiosInstance.get<Comment[]>(
-//   //       `/api/community/posts/${communityId}/comments`,
-//   //     );
-//   //     setPostComments(response.data);
-//   //   } catch (error) {
-//   //     console.error('Error fetching comments:', error);
-//   //   }
-//   // };
-
-//   const fetchComments = async (communityId: number) => {
-//     try {
-//       const response = await axiosInstance.get<Comment[]>(
-//         `/api/community/posts/${communityId}/comments`,
-//       );
-//       setComments(response.data);
-//     } catch (error) {
-//       console.error('Error fetching comments:', error);
-//     }
-//   };
-
-//   // 초기 데이터 불러오기
-//   useEffect(() => {
-//     if (postId) {
-//       const fetchPost = async () => {
-//         try {
-//           const response = await axiosInstance.get<Post>(
-//             `/api/community/posts/${postId}`,
-//           );
-//           console.log('#####Fetched post:', response.data); // API 응답 데이터 확인@@
-//           setPost(response.data);
-//           await fetchComments(response.data.communityId);
-//         } catch (error) {
-//           console.error(
-//             'Error fetching post:게시물 가져오는 중 오류 발생',
-//             error,
-//           );
-//         } finally {
-//           setLoading(false);
-//         }
-//       };
-
-//       fetchPost();
-//     } else {
-//       setLoading(false);
-//     }
-//   }, [postId]);
-
-//   if (loading) {
-//     return (
-//       <Container
-//         maxWidth="lg"
-//         sx={{
-//           minHeight: '700px',
-//           padding: '50px 0 100px',
-//           display: 'flex',
-//           justifyContent: 'center',
-//           alignItems: 'center',
-//         }}
-//       >
-//         <CircularProgress />
-//       </Container>
-//     );
-//   }
-
-//   if (!post) {
-//     return (
-//       <Container
-//         maxWidth="lg"
-//         sx={{
-//           minHeight: '700px',
-//           padding: '50px 0 100px',
-//           display: 'flex',
-//           justifyContent: 'center',
-//           alignItems: 'center',
-//         }}
-//       >
-//         <Typography variant="h6">게시글을 불러오는 데 실패했습니다.</Typography>
-//       </Container>
-//     );
-//   }
-
-//   return (
-//     <PostDetailWrapper>
-//       <Container
-//         maxWidth="lg"
-//         sx={{ minHeight: '700px', padding: '50px 0 100px' }}
-//       >
-//         {post && (
-//           <CommunityPostDetail
-//             data={{ ...post, comments }}
-//             pageURL="community"
-//           />
-//         )}
-//       </Container>
-//     </PostDetailWrapper>
-//   );
-// };
-
-// export default ViewPostDetail;
-
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -303,65 +169,92 @@ const ViewPostDetail = () => {
     setOpen(false);
   };
 
-  //---------------------------------------------------------댓글--------------------------------------
+  //---------------------------댓글--------------------------------------
+
+  // // 댓글 추가
+  // const addComment = async (comment: Comment): Promise<void> => {
+  //   if (isSubmitting) return;
+  //   setIsSubmitting(true);
+
+  //   try {
+  //     const response = await axiosInstance.post<Comment>(
+  //       `/api/community/${postId}/newComments`,
+  //       comment,
+  //     );
+  //     const newComment = response.data;
+  //     console.log('* New Comment:', newComment); // 댓글 생성 후 반환된 데이터 로그
+  //     setComments((prevComments) => [...prevComments, newComment]);
+  //   } catch (error) {
+  //     console.error('*****Error adding comment:', error);
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
+
+  // // 댓글 삭제
+  // const deleteComment = async (commentId: number) => {
+  //   try {
+  //     await axiosInstance.delete(
+  //       `/api/community/${postId}/${commentId}/delete`,
+  //     );
+  //     setComments(
+  //       comments.filter(
+  //         (comment) =>
+  //           comment.commentId !== commentId &&
+  //           comment.parentCommentId !== commentId,
+  //       ),
+  //     );
+  //   } catch (error) {
+  //     console.error('*****Error deleting comment:', error);
+  //   }
+  // };
+
+  // // 댓글 업데이트 함수
+  // const updateComment = async (
+  //   commentId: number,
+  //   updatedContent: string,
+  // ): Promise<void> => {
+  //   try {
+  //     const response = await axiosInstance.put<Comment>(
+  //       `/api/community/${postId}/${commentId}/update`,
+  //       { content: updatedContent },
+  //     );
+  //     const updatedComment = response.data;
+  //     setComments((prevComments) =>
+  //       prevComments.map((comment) =>
+  //         comment.commentId === commentId ? updatedComment : comment,
+  //       ),
+  //     );
+  //   } catch (error) {
+  //     console.error('*****Error updating comment:', error);
+  //   }
+  // };
 
   // 댓글 추가
-  const addComment = async (comment: Comment): Promise<void> => {
-    if (isSubmitting) return;
-    setIsSubmitting(true);
-
-    try {
-      const response = await axiosInstance.post<Comment>(
-        `/api/community/${postId}/newComments`,
-        comment,
-      );
-      const newComment = response.data;
-      console.log('* New Comment:', newComment); // 댓글 생성 후 반환된 데이터 로그
-      setComments((prevComments) => [...prevComments, newComment]);
-    } catch (error) {
-      console.error('*****Error adding comment:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
+  const addComment = (comment: Comment): void => {
+    setComments([...comments, comment]);
+    console.log(comment);
   };
 
   // 댓글 삭제
-  const deleteComment = async (commentId: number) => {
-    try {
-      await axiosInstance.delete(
-        `/api/community/${postId}/${commentId}/delete`,
-      );
-      setComments(
-        comments.filter(
-          (comment) =>
-            comment.commentId !== commentId &&
-            comment.parentCommentId !== commentId,
-        ),
-      );
-    } catch (error) {
-      console.error('*****Error deleting comment:', error);
-    }
+  const deleteComment = (commentId: number) => {
+    setComments(
+      comments.filter(
+        (comment) =>
+          comment.commentId !== commentId &&
+          comment.parentCommentId !== commentId,
+      ),
+    );
   };
-
-  // 댓글 업데이트 함수
-  const updateComment = async (
-    commentId: number,
-    updatedContent: string,
-  ): Promise<void> => {
-    try {
-      const response = await axiosInstance.put<Comment>(
-        `/api/community/${postId}/${commentId}/update`,
-        { content: updatedContent },
-      );
-      const updatedComment = response.data;
-      setComments((prevComments) =>
-        prevComments.map((comment) =>
-          comment.commentId === commentId ? updatedComment : comment,
-        ),
-      );
-    } catch (error) {
-      console.error('*****Error updating comment:', error);
-    }
+  // 댓글 수정
+  const updateComment = (commentId: number, updatedContent: string): void => {
+    setComments((prevComments) =>
+      prevComments.map((comment) =>
+        comment.commentId === commentId
+          ? { ...comment, content: updatedContent }
+          : comment,
+      ),
+    );
   };
 
   if (loading) {
@@ -460,8 +353,10 @@ const ViewPostDetail = () => {
         <Container sx={{ padding: '20px 0', position: 'relative' }}>
           <CommentList
             comments={comments} // 상태에서 가져온 댓글 목록을 전달
-            route={`api/community/${postId || ''}`}
-            postId={postId || ''}
+            // route={`api/community/${postId || ''}`}
+            route={`api/community/${postId}`}
+            // postId={postId || ''}
+            postId={postId ? postId : ''}
             idName="communityId"
             addComment={addComment}
             deleteComment={deleteComment}
