@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.spring.myapp.security.JwtAuthenticationResponse;
 import com.spring.myapp.user.service.KakaoAuthService;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/api/auth")
 public class KakaoAuthController {
@@ -21,14 +23,15 @@ public class KakaoAuthController {
 	private KakaoAuthService kakaoAuthService;
 
 	@PostMapping("/kakao")
-	public ResponseEntity<JwtAuthenticationResponse> authenticateKakao(@RequestBody Map<String, String> payload) {
+	public ResponseEntity<JwtAuthenticationResponse> authenticateKakao(@RequestBody Map<String, String> payload,
+		HttpServletResponse response) {
 		String kakaoAccessToken = payload.get("kakaoAccessToken");
 		if (kakaoAccessToken == null) {
 			return ResponseEntity.badRequest().body(null);
 		}
 
 		try {
-			return kakaoAuthService.verifyKakaoToken(kakaoAccessToken);
+			return kakaoAuthService.verifyKakaoToken(kakaoAccessToken, response);
 		} catch (Exception e) {
 			return ResponseEntity.status(401).body(null);
 		}
