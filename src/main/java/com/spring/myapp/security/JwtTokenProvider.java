@@ -57,7 +57,7 @@ public class JwtTokenProvider {
 			claims.put("nickname", nickname);
 		}
 		if (userId != null) {
-			claims.put("user_id", userId);
+			claims.put("userId", userId);
 		}
 		if (name != null) {
 			claims.put("name", name);
