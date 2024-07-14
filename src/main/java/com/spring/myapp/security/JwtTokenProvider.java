@@ -10,33 +10,61 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.Getter;
 
 @Component
 public class JwtTokenProvider {
 
 	private final SecretKey secretKey;
-	private final long expiration;
+
+	@Getter
+	private final long accessTokenExpiration;
+
+	@Getter
+	private final long refreshTokenExpiration;
 
 	public JwtTokenProvider(@Value("${spring.security.jwt.secret}") String base64Secret,
-		@Value("${spring.security.jwt.expiration}") long expiration) {
-		byte[] decodedKey = Base64.getDecoder().decode(base64Secret);
-		this.secretKey = Keys.hmacShaKeyFor(decodedKey);
-		this.expiration = expiration;
+		@Value("${spring.security.jwt.access-expiration}") long accessTokenExpiration,
+		@Value("${spring.security.jwt.refresh-expiration}") long refreshTokenExpiration) {
+		this.secretKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(base64Secret));
+		this.accessTokenExpiration = accessTokenExpiration;
+		this.refreshTokenExpiration = refreshTokenExpiration;
 	}
 
-	public String createToken(String username, List<String> roles, String nickname, Long userId, String name) {
+	public String createAccessToken(String username, List<String> roles, String nickname, Long userId, String name) {
+		return createToken(username, roles, nickname, userId, name, accessTokenExpiration);
+	}
+
+	public String createRefreshToken(String username) {
+		return createToken(username, null, null, null, null, refreshTokenExpiration);
+	}
+
+	private String createToken(String username, List<String> roles, String nickname, Long userId, String name,
+		long expiration) {
 		Date now = new Date();
 		Date expiryDate = new Date(now.getTime() + expiration);
 
+		Claims claims = Jwts.claims().setSubject(username);
+		if (roles != null) {
+			claims.put("roles", roles);
+		}
+		if (nickname != null) {
+			claims.put("nickname", nickname);
+		}
+		if (userId != null) {
+			claims.put("user_id", userId);
+		}
+		if (name != null) {
+			claims.put("name", name);
+		}
+
 		return Jwts.builder()
-			.setSubject(username)
-			.claim("roles", roles)
-			.claim("nickname", nickname)
-			.claim("user_id", userId)
-			.claim("name", name)
+			.setClaims(claims)
 			.setIssuedAt(now)
 			.setExpiration(expiryDate)
 			.signWith(secretKey, SignatureAlgorithm.HS256)
@@ -53,48 +81,26 @@ public class JwtTokenProvider {
 	}
 
 	public List<String> getRolesFromToken(String token) {
-		Claims claims = Jwts.parserBuilder()
-			.setSigningKey(secretKey)
-			.build()
-			.parseClaimsJws(token)
-			.getBody();
-
+		Claims claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
 		return claims.get("roles", List.class);
-	}
-
-	public String getNicknameFromToken(String token) {
-		Claims claims = Jwts.parserBuilder()
-			.setSigningKey(secretKey)
-			.build()
-			.parseClaimsJws(token)
-			.getBody();
-		return claims.get("nickname", String.class);
-	}
-
-	public Long getUserIdFromToken(String token) {
-		Claims claims = Jwts.parserBuilder()
-			.setSigningKey(secretKey)
-			.build()
-			.parseClaimsJws(token)
-			.getBody();
-		return claims.get("user_id", Long.class);
-	}
-
-	public String getNameFromToken(String token) {
-		Claims claims = Jwts.parserBuilder()
-			.setSigningKey(secretKey)
-			.build()
-			.parseClaimsJws(token)
-			.getBody();
-		return claims.get("name", String.class);
 	}
 
 	public boolean validateToken(String token) {
 		try {
 			Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
 			return true;
+		} catch (ExpiredJwtException e) {
+			throw e;
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	public String getTokenFromRequest(HttpServletRequest request) {
+		String bearerToken = request.getHeader("Authorization");
+		if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+			return bearerToken.substring(7);
+		}
+		return null;
 	}
 }

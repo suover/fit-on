@@ -16,13 +16,12 @@ const KakaoLoginButton: React.FC = () => {
 
   const handleLoginSuccess = async (response: any) => {
     try {
-      const res = await axios.post('http://localhost:8080/api/auth/kakao', {
+      const res = await axios.post('/api/auth/kakao', {
         kakaoAccessToken: response.access_token,
       });
       if (res.status === 200) {
-        const { token, roles, nickname, userId, name } = res.data;
-        localStorage.setItem('kakaoAccessToken', response.access_token);
-        login(token, roles, nickname, 'kakao', userId, name);
+        const { accessToken } = res.data;
+        login(accessToken, 'kakao');
         alert('Kakao 계정으로 로그인 하였습니다.');
         navigate('/');
       }

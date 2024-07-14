@@ -14,5 +14,5 @@ public interface InfoLikesMapper {
 
 	void decreaseLike(@Param("infoId") Long infoId, @Param("userId") Long userId);
 
-	boolean checkLikes(@Param("infoId") Long infoId, @Param("userId") Long userId);
+	Integer checkLikes(@Param("infoId") Long infoId, @Param("userId") Long userId);
 }

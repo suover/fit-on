@@ -1,5 +1,12 @@
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import axios from '../api/axiosConfig';
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  ReactNode,
+  useCallback,
+} from 'react';
+import customAxios from '../api/axiosConfig';
+import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
 interface DecodedToken {
@@ -18,16 +25,11 @@ interface AuthContextProps {
   nickname: string | null;
   userId: number | null;
   name: string | null;
-  login: (
-    token: string,
-    roles: string[],
-    nickname: string,
-    loginType: string,
-    userId: number,
-    name: string,
-  ) => void;
+  login: (accessToken: string, loginType: string) => void;
   logout: () => void;
   loginType: string | null;
+  isLoading: boolean;
+  updateAuthState: () => void;
 }
 
 const AuthContext = createContext<AuthContextProps>({
@@ -39,6 +41,8 @@ const AuthContext = createContext<AuthContextProps>({
   login: () => {},
   logout: () => {},
   loginType: null,
+  isLoading: true,
+  updateAuthState: () => {},
 });
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
@@ -50,83 +54,83 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [loginType, setLoginType] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
   const [name, setName] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const login = (
-    token: string,
-    roles: string[],
-    nickname: string,
-    loginType: string,
-    userId: number,
-    name: string,
-  ) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('roles', JSON.stringify(roles));
-    localStorage.setItem('nickname', nickname);
+  const login = (accessToken: string, loginType: string) => {
+    localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('loginType', loginType);
-    localStorage.setItem('userId', userId.toString());
-    localStorage.setItem('name', name);
+    const decodedToken = jwtDecode<DecodedToken>(accessToken);
     setIsAuthenticated(true);
-    setUserRole(roles.includes('ROLE_admin') ? 'admin' : 'user');
-    setNickname(nickname);
+    setUserRole(decodedToken.roles.includes('ROLE_admin') ? 'admin' : 'user');
+    setNickname(decodedToken.nickname);
     setLoginType(loginType);
-    setUserId(userId);
-    setName(name);
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    setUserId(decodedToken.userId);
+    setName(decodedToken.name);
+    customAxios.defaults.headers.common['Authorization'] =
+      `Bearer ${accessToken}`;
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('roles');
-    localStorage.removeItem('nickname');
-    localStorage.removeItem('loginType');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('name');
-    setIsAuthenticated(false);
-    setUserRole(null);
-    setNickname(null);
-    setLoginType(null);
-    setUserId(null);
-    setName(null);
-    delete axios.defaults.headers.common['Authorization'];
-  };
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    const storedRoles = localStorage.getItem('roles');
-    const storedNickname = localStorage.getItem('nickname');
-    const storedLoginType = localStorage.getItem('loginType');
-    const storedUserId = localStorage.getItem('userId');
-    const storedName = localStorage.getItem('name');
-
-    if (
-      token &&
-      storedRoles &&
-      storedNickname &&
-      storedLoginType &&
-      storedUserId &&
-      storedName
-    ) {
-      try {
-        const decodedToken = jwtDecode<DecodedToken>(token);
-        if (decodedToken.exp * 1000 > Date.now()) {
-          setIsAuthenticated(true);
-          setUserRole(
-            decodedToken.roles.includes('ROLE_admin') ? 'admin' : 'user',
-          );
-          setNickname(decodedToken.nickname);
-          setLoginType(storedLoginType);
-          setUserId(parseInt(storedUserId, 10));
-          setName(storedName);
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        } else {
-          logout();
+  const logout = async () => {
+    try {
+      await axios.post('/api/auth/logout');
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('loginType');
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith('kakao_')) {
+          localStorage.removeItem(key);
         }
+      });
+      setIsAuthenticated(false);
+      setUserRole(null);
+      setNickname(null);
+      setLoginType(null);
+      setUserId(null);
+      setName(null);
+      delete customAxios.defaults.headers.common['Authorization'];
+    } catch (error) {
+      console.error('Logout failed', error);
+    }
+  };
+
+  const updateAuthState = useCallback(() => {
+    const accessToken = localStorage.getItem('accessToken');
+    const storedLoginType = localStorage.getItem('loginType');
+
+    if (accessToken && storedLoginType) {
+      try {
+        const decodedToken = jwtDecode<DecodedToken>(accessToken);
+        setIsAuthenticated(true);
+        setUserRole(
+          decodedToken.roles.includes('ROLE_admin') ? 'admin' : 'user',
+        );
+        setNickname(decodedToken.nickname);
+        setLoginType(storedLoginType);
+        setUserId(decodedToken.userId);
+        setName(decodedToken.name);
+        customAxios.defaults.headers.common['Authorization'] =
+          `Bearer ${accessToken}`;
       } catch (error) {
         console.error('Failed to decode token', error);
         logout();
       }
+    } else {
+      logout();
     }
+    setIsLoading(false);
   }, []);
+
+  useEffect(() => {
+    updateAuthState();
+
+    const handleTokenRefresh = () => {
+      updateAuthState();
+    };
+
+    window.addEventListener('tokenRefreshed', handleTokenRefresh);
+    return () => {
+      window.removeEventListener('tokenRefreshed', handleTokenRefresh);
+    };
+  }, [updateAuthState]);
 
   return (
     <AuthContext.Provider
@@ -139,6 +143,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         login,
         logout,
         loginType,
+        isLoading,
+        updateAuthState,
       }}
     >
       {children}

@@ -64,6 +64,7 @@ import LoginSuccess from './components/naverLogin/LoginSuccess';
 import NotFound from './pages/notFound/NotFound';
 
 import { AuthProvider } from './context/AuthContext';
+import PrivateRoute from './components/common/PrivateRoute';
 
 const App = () => {
   return (
@@ -100,6 +101,7 @@ const App = () => {
             <Route path="routine/new-routine" element={<NewRoutine />} />
             <Route path="info" element={<Info />} />
             <Route path="info/:infoId" element={<InfoDetail />} />
+            <Route path="info/update/:infoId" element={<PostRegisterPage />} />
             <Route path="service" element={<Service />}>
               <Route index element={<Notice />} />
               <Route path="notice" element={<Notice />} />
@@ -109,61 +111,77 @@ const App = () => {
               <Route path="faq" element={<FAQ />} />
               <Route path="inquiry" element={<Inquiry />} />
             </Route>
-            <Route path="mypage" element={<MyPageLayout />}>
-              <Route index element={<MyHome />} />
-              <Route path="user-info-login" element={<UserInfoLoginPage />} />
-              <Route path="user-info" element={<UserInfoPage />} />
-              <Route path="my-routine" element={<MyRoutinePage />}>
-                <Route index element={<MyRoutinesPage />} />
-                <Route path="my-routines" element={<MyRoutinesPage />} />
-                <Route path="shared-routine" element={<SharedRoutinePage />} />
+            <Route element={<PrivateRoute />}>
+              <Route path="mypage" element={<MyPageLayout />}>
+                <Route index element={<MyHome />} />
+                <Route path="user-info-login" element={<UserInfoLoginPage />} />
+                <Route path="user-info" element={<UserInfoPage />} />
+                <Route path="my-routine" element={<MyRoutinePage />}>
+                  <Route index element={<MyRoutinesPage />} />
+                  <Route path="my-routines" element={<MyRoutinesPage />} />
+                  <Route
+                    path="shared-routine"
+                    element={<SharedRoutinePage />}
+                  />
+                </Route>
+                <Route
+                  path="post-management"
+                  element={<PostManagementPage />}
+                />
+                <Route
+                  path="comment-management"
+                  element={<CommentManagementPage />}
+                />
+                <Route path="order-history" element={<OrderInfoPage />} />
+                <Route
+                  path="return-exchange"
+                  element={<ReturnAndExchangePage />}
+                />
+                <Route
+                  path="shipping-address"
+                  element={<ShippingAddressPage />}
+                />
+                <Route path="product-review" element={<ProductReviewPage />} />
+                <Route
+                  path="product-inquiry"
+                  element={<ProductInquiryPage />}
+                />
+                <Route
+                  path="one-to-one-inquiry"
+                  element={<OneToOneInquiryPage />}
+                />
               </Route>
-              <Route path="post-management" element={<PostManagementPage />} />
+            </Route>
+            <Route element={<PrivateRoute roles={['admin']} />}>
+              <Route path="administrator" element={<AdminPage />}>
+                <Route index element={<MemberListPage />} />
+                <Route path="member-list" element={<MemberListPage />} />
+                <Route path="item-list" element={<ItemListPage />} />
+                <Route path="post-list" element={<PostListPage />} />
+                <Route path="community-list" element={<CommunityListPage />} />
+                <Route path="review-list" element={<ReviewListPage />} />
+                <Route
+                  path="item-inquiry-list"
+                  element={<ItemInquiryListPage />}
+                />
+                <Route
+                  path="etc-inquiry-list"
+                  element={<EtcInquiryListPage />}
+                />
+              </Route>
               <Route
-                path="comment-management"
-                element={<CommentManagementPage />}
+                path="administrator/post-register"
+                element={<PostRegisterPage />}
               />
-              <Route path="order-history" element={<OrderInfoPage />} />
               <Route
-                path="return-exchange"
-                element={<ReturnAndExchangePage />}
+                path="administrator/item-register"
+                element={<ItemRegisterPage />}
               />
               <Route
-                path="shipping-address"
-                element={<ShippingAddressPage />}
-              />
-              <Route path="product-review" element={<ProductReviewPage />} />
-              <Route path="product-inquiry" element={<ProductInquiryPage />} />
-              <Route
-                path="one-to-one-inquiry"
-                element={<OneToOneInquiryPage />}
+                path="administrator/item-update/:productId"
+                element={<ItemUpdatePage />}
               />
             </Route>
-            <Route path="administrator" element={<AdminPage />}>
-              <Route index element={<MemberListPage />} />
-              <Route path="member-list" element={<MemberListPage />} />
-              <Route path="item-list" element={<ItemListPage />} />
-              <Route path="post-list" element={<PostListPage />} />
-              <Route path="community-list" element={<CommunityListPage />} />
-              <Route path="review-list" element={<ReviewListPage />} />
-              <Route
-                path="item-inquiry-list"
-                element={<ItemInquiryListPage />}
-              />
-              <Route path="etc-inquiry-list" element={<EtcInquiryListPage />} />
-            </Route>
-            <Route
-              path="administrator/post-register"
-              element={<PostRegisterPage />}
-            />
-            <Route
-              path="administrator/item-register"
-              element={<ItemRegisterPage />}
-            />
-            <Route
-              path="administrator/item-update/:productId"
-              element={<ItemUpdatePage />}
-            />
           </Route>
           <Route path="*" element={<NotFoundLayout />} />
         </Routes>

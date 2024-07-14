@@ -11,12 +11,12 @@ const GoogleLoginButton: React.FC = () => {
   const handleLoginSuccess = async (response: CredentialResponse) => {
     if (response.credential) {
       try {
-        const res = await axios.post('http://localhost:8080/api/auth/google', {
+        const res = await axios.post('/api/auth/google', {
           token: response.credential,
         });
         if (res.status === 200) {
-          const { token, roles, nickname, userId, name } = res.data;
-          login(token, roles, nickname, 'google', userId, name);
+          const { accessToken } = res.data;
+          login(accessToken, 'google');
           alert('Google 계정으로 로그인 하였습니다.');
           navigate('/');
         }

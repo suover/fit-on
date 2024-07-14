@@ -14,8 +14,7 @@ import {
 } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import KeyIcon from '@mui/icons-material/Key';
-import kakao from '../../assets/img/signin/kakao.png';
-import axios from '../../api/axiosConfig';
+import axios from 'axios';
 import GenericButton from '../../components/common/genericButton/GenericButton';
 import {
   LoginButtons,
@@ -183,8 +182,8 @@ const SigninPage: React.FC = () => {
     }
     try {
       const response = await axios.post('api/auth/login', { email, password });
-      const { token, roles, nickname, userId, name } = response.data;
-      login(token, roles, nickname, 'standard', userId, name);
+      const { accessToken } = response.data;
+      login(accessToken, 'standard');
       navigate('/');
     } catch (error) {
       console.error('로그인 실패:', error);
