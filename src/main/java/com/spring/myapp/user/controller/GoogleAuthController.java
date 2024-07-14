@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.spring.myapp.security.JwtAuthenticationResponse;
 import com.spring.myapp.user.service.GoogleAuthService;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/api/auth")
 public class GoogleAuthController {
@@ -20,14 +22,15 @@ public class GoogleAuthController {
 	private GoogleAuthService googleAuthService;
 
 	@PostMapping("/google")
-	public ResponseEntity<JwtAuthenticationResponse> authenticateGoogle(@RequestBody Map<String, String> payload) {
+	public ResponseEntity<JwtAuthenticationResponse> authenticateGoogle(@RequestBody Map<String, String> payload,
+		HttpServletResponse response) {
 		String token = payload.get("token");
 		if (token == null) {
 			return ResponseEntity.badRequest().body(null);
 		}
 
 		try {
-			return googleAuthService.verifyGoogleToken(token);
+			return googleAuthService.verifyGoogleToken(token, response);
 		} catch (Exception e) {
 			return ResponseEntity.status(401).body(null);
 		}
