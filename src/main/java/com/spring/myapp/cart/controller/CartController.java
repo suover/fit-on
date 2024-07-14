@@ -43,14 +43,15 @@ public class CartController {
 
 	//장바구니 상품 변경
 	@PutMapping("/{userId}/cartItems/{productId}")
-	public void updateCartItemQuantity(@PathVariable Long userId, @PathVariable Long productId, @RequestBody Integer quantity) {
+	public void updateCartItemQuantity(@PathVariable("userId") Long userId, @PathVariable Long productId, @RequestBody Integer quantity) {
 		cartService.updateCartItemQuantity(userId, productId, quantity);
 	}
 
 	//장바구니 상품 삭제
-	@DeleteMapping("/{userId}/cartItems/{productId}")
-	public void removeCartItem(@PathVariable Long userId, @PathVariable Long productId) {
-		cartService.removeCartItem(userId, productId);
+	@DeleteMapping("/{userId}/cartItems")
+	public void removeCartItems(@PathVariable("userId") Long userId, @RequestBody List<Long> productIds) {
+		logger.info("Received request to remove items from cart: userId={}, productIds={}", userId, productIds);
+		cartService.removeCartItems(userId, productIds);
 	}
 
 }

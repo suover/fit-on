@@ -43,43 +43,74 @@ const PurchasePanel: React.FC<PurchasePanelProps> = ({ product }) => {
     setSelection(event.target.value);
   };
 
-  //장바구니 상품 추가
+  //사용자정보 받아오기
+  const getUserIdFromLocalStorage = (): number | null => {
+    const storedUserId = localStorage.getItem('userId');
+    return storedUserId ? parseInt(storedUserId, 10) : null;
+  };
+
+  // 장바구니 상품 추가
   const handleCartClick = async () => {
-    const userId = 36; // 관리자 userid
-    try {
-      const response = await axios.post('/api/carts/add', {
-        userId,
-        productId: product.productId,
-        quantity,
-      });
-      if (response.status === 200) {
-        setOpen(true); //장 바구니 추가 성공시 알람
-      } else {
-        console.error('Failed to add product to cart');
+    const userId = getUserIdFromLocalStorage();
+    if (userId) {
+      try {
+        const response = await axios.post('/api/carts/add', {
+          userId,
+          productId: product.productId,
+          quantity,
+        });
+        if (response.status === 200) {
+          setOpen(true); // 장바구니 추가 성공 시 알림
+        } else {
+          console.error('Failed to add product to cart');
+        }
+      } catch (error) {
+        console.error('Error adding product to cart', error);
       }
-    } catch (error) {
-      console.error('Error adding product to cart', error);
+    } else {
+      console.error('No user ID found in local storage');
     }
   };
 
-  //장바구니에 추가 + 장바구니로 이동
+  // 장바구니에 추가 + 장바구니로 이동
   const handlePurchaseClick = async () => {
-    const userId = 36; // 관리자 userid
-    try {
-      const response = await axios.post('/api/carts/add', {
-        userId,
-        productId: product.productId,
-        quantity,
-      });
-      if (response.status === 200) {
-        navigate('/shopping-basket');
-      } else {
-        console.error('Failed to add product to cart');
+    const userId = getUserIdFromLocalStorage();
+    if (userId) {
+      try {
+        const response = await axios.post('/api/carts/add', {
+          userId,
+          productId: product.productId,
+          quantity,
+        });
+        if (response.status === 200) {
+          navigate('/shopping-basket');
+        } else {
+          console.error('Failed to add product to cart');
+        }
+      } catch (error) {
+        console.error('Error adding product to cart', error);
       }
-    } catch (error) {
-      console.error('Error adding product to cart', error);
+    } else {
+      console.error('No user ID found in local storage');
     }
   };
+  // const handlePurchaseClick = async () => {
+  //   const userId = 36; // 관리자 userid
+  //   try {
+  //     const response = await axios.post('/api/carts/add', {
+  //       userId,
+  //       productId: product.productId,
+  //       quantity,
+  //     });
+  //     if (response.status === 200) {
+  //       navigate('/shopping-basket');
+  //     } else {
+  //       console.error('Failed to add product to cart');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error adding product to cart', error);
+  //   }
+  // };
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,

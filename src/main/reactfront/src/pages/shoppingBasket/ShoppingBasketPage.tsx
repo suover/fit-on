@@ -34,29 +34,87 @@ const ShoppingBasketPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const rowsPerPage = 5;
   const navigate = useNavigate();
-  const userId = 36; // 관리자userid
+  // const userId = 36; // 관리자userid
+  const [userId, setUserId] = useState<number | null>(null);
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openOrderDialog, setOpenOrderDialog] = useState(false);
 
+  // 로컬 스토리지에서 userId를 가져오기
+  const getUserIdFromLocalStorage = (): number | null => {
+    const storedUserId = localStorage.getItem('userId');
+    return storedUserId ? parseInt(storedUserId, 10) : null;
+  };
+
+  //장바구니 불러오기
+  // useEffect(() => {
+  //   const fetchCartItems = async () => {
+  //     try {
+  //       const response = await axios.get<CartItem[]>(
+  //         `/api/carts/${userId}/cartItems`,
+  //       );
+  //       if (response.status === 200) {
+  //         setItems(response.data);
+  //       } else {
+  //         console.error('Failed to fetch cart items');
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching cart items', error);
+  //     }
+  //   };
+  //
+  //   fetchCartItems();
+  // }, [userId]);
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
-        const response = await axios.get<CartItem[]>(
-          `/api/carts/${userId}/cartItems`,
-        );
-        if (response.status === 200) {
-          setItems(response.data);
+        const userId = getUserIdFromLocalStorage();
+        setUserId(userId);
+        if (userId) {
+          const response = await axios.get<CartItem[]>(
+              `/api/carts/${userId}/cartItems`,
+          );
+          if (response.status === 200) {
+            setItems(response.data);
+          } else {
+            console.error('Failed to fetch cart items');
+          }
         } else {
-          console.error('Failed to fetch cart items');
+          console.error('No user ID found in local storage');
         }
       } catch (error) {
         console.error('Error fetching cart items', error);
       }
     };
-
     fetchCartItems();
-  }, [userId]);
+  }, []);
+
+
+  // 상품 삭제 api
+  const deleteCartItems = async (productIds: number[]) => {
+    console.log("Attempting to delete items from cart: ", productIds);
+    if (userId) {
+      try {
+        await axios({
+          method: 'delete',
+          url: `/api/carts/${userId}/cartItems`,
+          data: productIds,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        console.log("Successfully deleted items from cart: ", productIds);
+        // 서버에서 삭제 성공 시, 프론트엔드 상태 반영
+        setItems((prevItems) => prevItems.filter((item) => !productIds.includes(item.productId)));
+        setSelectedItems([]);
+        setSelectAll(false);
+      } catch (error) {
+        console.error('Error deleting cart items', error);
+      }
+    } else {
+      console.error('No user ID found, cannot delete items');
+    }
+  };
 
   useEffect(() => {
     const totalAmount = selectedItems.reduce((acc, id) => {
@@ -90,10 +148,14 @@ const ShoppingBasketPage: React.FC = () => {
     }
   };
 
+  // const handleDeleteItems = () => {
+  //   setItems(items.filter((item) => !selectedItems.includes(item.productId)));
+  //   setSelectedItems([]);
+  //   setSelectAll(false);
+  //   setOpenDeleteDialog(false);
+  // };
   const handleDeleteItems = () => {
-    setItems(items.filter((item) => !selectedItems.includes(item.productId)));
-    setSelectedItems([]);
-    setSelectAll(false);
+    deleteCartItems(selectedItems);
     setOpenDeleteDialog(false);
   };
 

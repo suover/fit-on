@@ -1,5 +1,7 @@
 package com.spring.myapp.cart.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.List;
 
+import com.spring.myapp.cart.controller.CartController;
 import com.spring.myapp.cart.model.Cart;
 import com.spring.myapp.cart.model.CartItem;
 import com.spring.myapp.product.model.Product;
@@ -14,6 +17,8 @@ import com.spring.myapp.cart.repository.CartItemMapper;
 import com.spring.myapp.cart.repository.CartMapper;
 @Service
 public class CartService {
+	private static final Logger logger = LoggerFactory.getLogger(CartService.class);
+
 	@Autowired
 	private CartMapper cartMapper;
 
@@ -54,18 +59,17 @@ public class CartService {
 
 
 
-	public void removeCartItem(Long userId, Long productId) {
+	@Transactional
+	public void removeCartItems(Long userId, List<Long> productIds) {
 		Cart cart = cartMapper.findCartByUserId(userId);
-		CartItem cartItem = cartItemMapper.findByUserIdAndProductId(userId, productId);
-		if (cartItem != null) {
+		logger.info("Removing items from cart: userId={}, cartId={}, productIds={}", userId, cart.getCartId(), productIds);
+		for (Long productId : productIds) {
+			logger.info("Removing product from cart: cartId={}, productId={}", cart.getCartId(), productId);
 			cartItemMapper.deleteCartItemByProductId(cart.getCartId(), productId);
 		}
+		logger.info("Successfully removed items from cart: userId={}, productIds={}", userId, productIds);
 	}
 
-
-	public void removeAllCartItems(Long userId) {
-		cartMapper.deleteCart(userId);
-	}
 
 	// 장바구니 내 상품수량 수정
 	public void updateCartItemQuantity(Long userId, Long productId, Integer quantity) {
