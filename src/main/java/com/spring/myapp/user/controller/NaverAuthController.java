@@ -14,6 +14,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.spring.myapp.security.JwtAuthenticationResponse;
 import com.spring.myapp.user.service.NaverAuthService;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/api/auth")
 public class NaverAuthController {
@@ -25,16 +27,13 @@ public class NaverAuthController {
 	public ResponseEntity<Void> handleNaverCallback(
 		@RequestParam("code") String code,
 		@RequestParam("state") String state,
-		UriComponentsBuilder uriComponentsBuilder) {
+		UriComponentsBuilder uriComponentsBuilder,
+		HttpServletResponse response) {
 		try {
-			JwtAuthenticationResponse response = naverAuthService.processNaverLogin(code, state);
+			JwtAuthenticationResponse jwtResponse = naverAuthService.processNaverLogin(code, state, response);
 
-			String redirectUrl = uriComponentsBuilder.path("/login-success")
-				.queryParam("token", response.getToken())
-				.queryParam("roles", String.join(",", response.getRoles()))
-				.queryParam("nickname", response.getNickname())
-				.queryParam("userId", response.getUserId())
-				.queryParam("name", response.getName())
+			String redirectUrl = uriComponentsBuilder.scheme("http").host("localhost").port(3000).path("/login-success")
+				.queryParam("accessToken", jwtResponse.getAccessToken())
 				.build().toUriString();
 
 			HttpHeaders headers = new HttpHeaders();

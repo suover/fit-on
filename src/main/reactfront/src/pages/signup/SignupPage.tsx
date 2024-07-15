@@ -18,7 +18,7 @@ import {
   SignupButtons,
   SignupForm,
 } from '../../styles/signup/SignupPage.styles';
-import axios from '../../api/axiosConfig';
+import axios from 'axios';
 
 const SignupPage: React.FC = () => {
   const navigate = useNavigate();
@@ -317,10 +317,6 @@ const SignupPage: React.FC = () => {
       });
 
       if (response.status === 200) {
-        // JWT 토큰을 로컬 스토리지에 저장
-        const token = response.data.token;
-        localStorage.setItem('token', token);
-
         alert('회원가입이 완료되었습니다.');
         navigate('/sign-in');
       } else {

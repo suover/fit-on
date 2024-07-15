@@ -1,20 +1,18 @@
 package com.spring.myapp.security;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import javax.crypto.SecretKey;
-
-import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,64 +20,47 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-	private final UserDetailsService userDetailsService;
-	private final SecretKey secretKey;
-	private final List<String> excludedPaths;
+	private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
-	public JwtAuthenticationFilter(UserDetailsService userDetailsService,
-		@Value("${security.jwt.secret}") String base64Secret,
-		String[] excludedPaths) {
+	private final UserDetailsService userDetailsService;
+	private final JwtTokenProvider jwtTokenProvider;
+
+	public JwtAuthenticationFilter(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
 		this.userDetailsService = userDetailsService;
-		byte[] decodedKey = Base64.getDecoder().decode(base64Secret);
-		this.secretKey = Keys.hmacShaKeyFor(decodedKey);
-		this.excludedPaths = Arrays.asList(excludedPaths);
+		this.jwtTokenProvider = jwtTokenProvider;
 	}
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 		throws ServletException, IOException {
-		String requestURI = request.getRequestURI();
+		String jwt = jwtTokenProvider.getTokenFromRequest(request);
 
-		if (excludedPaths.contains(requestURI)) {
-			filterChain.doFilter(request, response);
-			return;
-		}
+		if (jwt != null) {
+			try {
+				if (jwtTokenProvider.validateToken(jwt)) {
+					String username = jwtTokenProvider.getUsernameFromToken(jwt);
+					List<String> roles = jwtTokenProvider.getRolesFromToken(jwt);
 
-		String jwt = extractJwtFromRequest(request);
+					var userDetails = userDetailsService.loadUserByUsername(username);
+					var authorities = roles.stream()
+						.map(role -> new SimpleGrantedAuthority(role.toUpperCase()))
+						.collect(Collectors.toList());
 
-		if (jwt != null && validateToken(jwt)) {
-			String username = getUsernameFromJWT(jwt);
+					var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
 
-			var userDetails = userDetailsService.loadUserByUsername(username);
-
-			var authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
-				userDetails.getAuthorities());
-
-			SecurityContextHolder.getContext().setAuthentication(authentication);
+					SecurityContextHolder.getContext().setAuthentication(authentication);
+				}
+			} catch (ExpiredJwtException e) {
+				logger.error("Token expired", e);
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				return;
+			} catch (Exception e) {
+				logger.error("Token validation error", e);
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				return;
+			}
 		}
 
 		filterChain.doFilter(request, response);
-	}
-
-	private String extractJwtFromRequest(HttpServletRequest request) {
-		String bearerToken = request.getHeader("Authorization");
-		if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-			return bearerToken.substring(7);
-		}
-		return null;
-	}
-
-	private boolean validateToken(String token) {
-		try {
-			Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
-
-	private String getUsernameFromJWT(String token) {
-		var claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
-		return claims.getSubject();
 	}
 }

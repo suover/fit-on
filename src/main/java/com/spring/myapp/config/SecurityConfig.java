@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.spring.myapp.security.JwtAuthenticationFilter;
+import com.spring.myapp.security.JwtTokenProvider;
 
 @Configuration
 @EnableWebSecurity
@@ -26,6 +28,9 @@ public class SecurityConfig {
 
 	@Autowired
 	private UserDetailsService userDetailsService;
+
+	@Autowired
+	private JwtTokenProvider jwtTokenProvider;
 
 	@Autowired
 	private Environment env;
@@ -37,10 +42,9 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		String[] excludedPaths = env.getProperty("spring.security.jwt.excluded-paths", "").split(",");
-		String[] permitAllPaths = env.getProperty("spring.security.jwt.permit-all-paths", "").split(",");
-		String[] authenticatedPaths = env.getProperty("spring.security.jwt.authenticated-paths", "").split(",");
-		String[] adminPaths = env.getProperty("spring.security.jwt.admin-paths", "").split(",");
+		String[] publicEndpoints = env.getProperty("spring.security.endpoints.public", String[].class);
+		String adminEndpoint = env.getProperty("spring.security.endpoints.admin");
+		String authenticatedEndpoint = env.getProperty("spring.security.endpoints.authenticated");
 
 		http
 			.csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화
@@ -49,24 +53,14 @@ public class SecurityConfig {
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션을 상태 비저장으로 설정
 			)
 			.authorizeHttpRequests(authorize -> authorize
-				.requestMatchers(permitAllPaths).permitAll()
-				.requestMatchers(authenticatedPaths).authenticated()
-				.requestMatchers(adminPaths).hasRole("ADMIN")
-				.anyRequest().permitAll()
-			)
-			.formLogin(form -> form
-				.loginPage("/sign-in")
-				.defaultSuccessUrl("/", true)
-				.permitAll()
-			)
-			.logout(logout -> logout
-				.logoutUrl("/logout")
-				.logoutSuccessUrl("/")
-				.permitAll()
+				.requestMatchers(publicEndpoints).permitAll() // 공용 엔드포인트 허용
+				.requestMatchers(adminEndpoint).hasRole("ADMIN") // 관리자 경로 설정
+				.requestMatchers(authenticatedEndpoint).authenticated() // 인증된 사용자만 접근
+				.requestMatchers(HttpMethod.GET).permitAll() // 모든 GET 요청 허용
+				.anyRequest().authenticated() // 나머지 모든 요청 인증 필요
 			)
 			.addFilterBefore(
-				new JwtAuthenticationFilter(userDetailsService, env.getProperty("spring.security.jwt.secret"),
-					excludedPaths),
+				new JwtAuthenticationFilter(userDetailsService, jwtTokenProvider),
 				UsernamePasswordAuthenticationFilter.class
 			);
 

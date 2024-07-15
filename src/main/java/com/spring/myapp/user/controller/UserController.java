@@ -1,16 +1,11 @@
 package com.spring.myapp.user.controller;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,12 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spring.myapp.security.AuthService;
 import com.spring.myapp.security.JwtAuthenticationResponse;
 import com.spring.myapp.security.JwtTokenProvider;
 import com.spring.myapp.user.model.LoginRequest;
 import com.spring.myapp.user.model.User;
 import com.spring.myapp.user.service.UserService;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 @RestController
@@ -41,42 +38,41 @@ public class UserController {
 	@Autowired
 	private JwtTokenProvider jwtTokenProvider;
 
+	@Autowired
+	private AuthService authService;
+
 	@PostMapping("/sign-up")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody User user) {
 		userService.register(user);
-
-		// JWT 토큰 생성
-		List<String> roles = userService.getUserRoles(user.getUserId());
-		String token = jwtTokenProvider.createToken(user.getEmail(), roles, user.getNickname(), user.getUserId(),
-			user.getName());
-
-		return ResponseEntity.ok(
-			new JwtAuthenticationResponse(token, roles, user.getNickname(), user.getUserId(), user.getName()));
+		return ResponseEntity.ok("User registered successfully");
 	}
 
 	@PostMapping("/auth/login")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest,
+		HttpServletResponse response) {
 		try {
-			Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(
-					loginRequest.getEmail(),
-					loginRequest.getPassword()
-				)
-			);
-
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-
-			User user = userService.findByEmail(loginRequest.getEmail());
-			List<String> roles = userService.getUserRoles(user.getUserId());
-			roles = roles.stream().map(role -> "ROLE_" + role).collect(Collectors.toList());
-			String jwt = jwtTokenProvider.createToken(authentication.getName(), roles, user.getNickname(),
-				user.getUserId(), user.getName());
-
-			return ResponseEntity.ok(
-				new JwtAuthenticationResponse(jwt, roles, user.getNickname(), user.getUserId(), user.getName()));
+			JwtAuthenticationResponse authResponse = authService.authenticateUser(loginRequest.getEmail(),
+				loginRequest.getPassword(), authenticationManager, response);
+			return ResponseEntity.ok(authResponse);
 		} catch (Exception e) {
 			logger.error("User authentication failed: {}", loginRequest.getEmail(), e);
 			return ResponseEntity.status(401).body("Authentication failed");
+		}
+	}
+
+	@PostMapping("/auth/logout")
+	public ResponseEntity<?> logoutUser(HttpServletResponse response) {
+		authService.removeRefreshTokenFromCookie(response);
+		return ResponseEntity.ok("Logged out successfully");
+	}
+
+	@PostMapping("/auth/refresh")
+	public ResponseEntity<?> refreshToken(@CookieValue("refreshToken") String refreshToken) {
+		try {
+			JwtAuthenticationResponse authResponse = authService.refreshToken(refreshToken);
+			return ResponseEntity.ok(authResponse);
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.status(401).body("Invalid refresh token");
 		}
 	}
 

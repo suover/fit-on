@@ -15,12 +15,15 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.spring.myapp.security.AuthService;
 import com.spring.myapp.security.JwtAuthenticationResponse;
 import com.spring.myapp.security.JwtTokenProvider;
 import com.spring.myapp.user.model.User;
 import com.spring.myapp.user.model.UserSocialLogin;
 import com.spring.myapp.user.repository.UserMapper;
 import com.spring.myapp.user.repository.UserSocialLoginMapper;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class GoogleAuthService {
@@ -37,7 +40,11 @@ public class GoogleAuthService {
 	@Autowired
 	private JwtTokenProvider jwtTokenProvider;
 
-	public ResponseEntity<JwtAuthenticationResponse> verifyGoogleToken(String token) throws Exception {
+	@Autowired
+	private AuthService authService;
+
+	public ResponseEntity<JwtAuthenticationResponse> verifyGoogleToken(String token,
+		HttpServletResponse response) throws Exception {
 		JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 		GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
 			GoogleNetHttpTransport.newTrustedTransport(), jsonFactory)
@@ -58,11 +65,16 @@ public class GoogleAuthService {
 		List<String> roles = userMapper.getUserRoles(user.getUserId()).stream()
 			.map(role -> "ROLE_" + role)
 			.collect(Collectors.toList());
-		String jwtToken = jwtTokenProvider.createToken(user.getEmail(), roles, user.getNickname(), user.getUserId(),
-			user.getName());
+		String accessToken = jwtTokenProvider.createAccessToken(user.getEmail(), roles, user.getNickname(),
+			user.getUserId(), user.getName());
+		String refreshToken = jwtTokenProvider.createRefreshToken(user.getEmail());
+
+		// 리프레시 토큰을 쿠키에 저장
+		authService.addRefreshTokenToCookie(refreshToken, response);
 
 		return ResponseEntity.ok(
-			new JwtAuthenticationResponse(jwtToken, roles, user.getNickname(), user.getUserId(), user.getName()));
+			new JwtAuthenticationResponse(accessToken, refreshToken, roles, user.getNickname(), user.getUserId(),
+				user.getName()));
 	}
 
 	private User getUser(String provider, String providerId, String email, String name) {
