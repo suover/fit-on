@@ -22,7 +22,7 @@ public class CommunityBoardService {
 
 		// 모든 게시글 조회
 		public List<CommunityBoardDTO> findAllPosts() {
-				return communityMapper.findAllPosts();  // MyBatis 매퍼 메서드 사용
+				return communityMapper.findAllPosts();
 		}
 
 		// 게시글 저장
@@ -53,6 +53,12 @@ public class CommunityBoardService {
 						throw new IllegalArgumentException("해당 게시글을 찾을 수 없습니다.");
 				}
 				return post;
+		}
+
+		// 조회수 증가 메서드
+		@Transactional
+		public void incrementViewCount(Long id) {
+				communityMapper.incrementViewCount(id);
 		}
 
 		// 게시글 업데이트

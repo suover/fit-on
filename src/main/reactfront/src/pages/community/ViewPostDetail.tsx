@@ -57,10 +57,12 @@ const ViewPostDetail = () => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
+  const [likes, setLikes] = useState<number>(0);
   const [open, setOpen] = useState(false); // Dialog open 상태 관리
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const { isAuthenticated } = useContext(AuthContext);
+  const { userId } = useContext(AuthContext);
 
   // 글 조회
   useEffect(() => {
@@ -122,20 +124,32 @@ const ViewPostDetail = () => {
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   }
 
+  //좋아요
   const handleLikeClick = async () => {
-    if (post) {
-      try {
-        if (isLiked) {
-          await axiosInstance.post(`/api/community/posts/${postId}/unlike`);
-          setLikeCount(likeCount - 1);
-        } else {
-          await axiosInstance.post(`/api/community/posts/${postId}/like`);
-          setLikeCount(likeCount + 1);
-        }
-        setIsLiked(!isLiked);
-      } catch (error) {
-        console.error('Error updating like:', error);
+    if (userId === null) {
+      alert('로그인 해주세요!');
+      navigate('/sign-in');
+      return;
+    }
+
+    try {
+      const res = await axiosInstance.post(
+        `/api/community/posts/${postId}/like`,
+        null,
+        {
+          params: { userId },
+        },
+      );
+
+      if (res.data === 'Liked') {
+        console.log(res.data);
+
+        setLikes((prevState) => prevState + 1);
+      } else {
+        setLikes((prevState) => prevState - 1);
       }
+    } catch (error) {
+      console.error('Error toggling like:', error);
     }
   };
 
@@ -169,66 +183,7 @@ const ViewPostDetail = () => {
     setOpen(false);
   };
 
-  //---------------------------댓글--------------------------------------
-
-  // // 댓글 추가
-  // const addComment = async (comment: Comment): Promise<void> => {
-  //   if (isSubmitting) return;
-  //   setIsSubmitting(true);
-
-  //   try {
-  //     const response = await axiosInstance.post<Comment>(
-  //       `/api/community/${postId}/newComments`,
-  //       comment,
-  //     );
-  //     const newComment = response.data;
-  //     console.log('* New Comment:', newComment); // 댓글 생성 후 반환된 데이터 로그
-  //     setComments((prevComments) => [...prevComments, newComment]);
-  //   } catch (error) {
-  //     console.error('*****Error adding comment:', error);
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
-
-  // // 댓글 삭제
-  // const deleteComment = async (commentId: number) => {
-  //   try {
-  //     await axiosInstance.delete(
-  //       `/api/community/${postId}/${commentId}/delete`,
-  //     );
-  //     setComments(
-  //       comments.filter(
-  //         (comment) =>
-  //           comment.commentId !== commentId &&
-  //           comment.parentCommentId !== commentId,
-  //       ),
-  //     );
-  //   } catch (error) {
-  //     console.error('*****Error deleting comment:', error);
-  //   }
-  // };
-
-  // // 댓글 업데이트 함수
-  // const updateComment = async (
-  //   commentId: number,
-  //   updatedContent: string,
-  // ): Promise<void> => {
-  //   try {
-  //     const response = await axiosInstance.put<Comment>(
-  //       `/api/community/${postId}/${commentId}/update`,
-  //       { content: updatedContent },
-  //     );
-  //     const updatedComment = response.data;
-  //     setComments((prevComments) =>
-  //       prevComments.map((comment) =>
-  //         comment.commentId === commentId ? updatedComment : comment,
-  //       ),
-  //     );
-  //   } catch (error) {
-  //     console.error('*****Error updating comment:', error);
-  //   }
-  // };
+  //---------------------댓글------------------------
 
   // 댓글 추가
   const addComment = (comment: Comment): void => {
@@ -353,9 +308,7 @@ const ViewPostDetail = () => {
         <Container sx={{ padding: '20px 0', position: 'relative' }}>
           <CommentList
             comments={comments} // 상태에서 가져온 댓글 목록을 전달
-            // route={`api/community/${postId || ''}`}
             route={`api/community/${postId}`}
-            // postId={postId || ''}
             postId={postId ? postId : ''}
             idName="communityId"
             addComment={addComment}

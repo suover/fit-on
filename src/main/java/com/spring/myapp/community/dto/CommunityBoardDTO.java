@@ -27,4 +27,5 @@ public class CommunityBoardDTO {
 		private int viewCount;
 		private String nickname;
 		private String categoryName;
+		private int likes;
 }

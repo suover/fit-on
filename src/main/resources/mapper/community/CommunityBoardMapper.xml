@@ -85,8 +85,12 @@
         WHERE community_id = #{id};
     </update>
 
-<!--    <delete id="deletePost" parameterType="long">-->
-<!--        DELETE FROM community WHERE community_id = #{id};-->
-<!--    </delete>-->
+    <!-- 조회수 증가 -->
+    <update id="incrementViewCount">
+        UPDATE community
+        SET view_count = view_count + 1
+        WHERE community_id = #{id}
+    </update>
+
 
 </mapper>
