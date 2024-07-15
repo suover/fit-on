@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   Container,
   Table,
@@ -26,6 +26,7 @@ import {
 import GenericButton from '../../components/common/genericButton/GenericButton';
 import axios from 'axios';
 import { CartItem } from '../../types/DataInterface';
+import AuthContext from "../../context/AuthContext";
 
 const ShoppingBasketPage: React.FC = () => {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -34,42 +35,18 @@ const ShoppingBasketPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const rowsPerPage = 5;
   const navigate = useNavigate();
-  // const userId = 36; // 관리자userid
-  const [userId, setUserId] = useState<number | null>(null);
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openOrderDialog, setOpenOrderDialog] = useState(false);
 
-  // 로컬 스토리지에서 userId를 가져오기
-  const getUserIdFromLocalStorage = (): number | null => {
-    const storedUserId = localStorage.getItem('userId');
-    return storedUserId ? parseInt(storedUserId, 10) : null;
-  };
+  // AuthContext 에서 유저 아이디 받아오기
+  const {userId} = useContext(AuthContext);
 
   //장바구니 불러오기
-  // useEffect(() => {
-  //   const fetchCartItems = async () => {
-  //     try {
-  //       const response = await axios.get<CartItem[]>(
-  //         `/api/carts/${userId}/cartItems`,
-  //       );
-  //       if (response.status === 200) {
-  //         setItems(response.data);
-  //       } else {
-  //         console.error('Failed to fetch cart items');
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching cart items', error);
-  //     }
-  //   };
-  //
-  //   fetchCartItems();
-  // }, [userId]);
+
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
-        const userId = getUserIdFromLocalStorage();
-        setUserId(userId);
         if (userId) {
           const response = await axios.get<CartItem[]>(
               `/api/carts/${userId}/cartItems`,
