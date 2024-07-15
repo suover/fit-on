@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { ProImg, MainImg, DetailImg, ImageModal } from './ImageDetail.styled';
 import { Product } from '../../types/DataInterface';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 
 interface ImageDetailProps {
   product: Product;
@@ -68,18 +68,6 @@ const ImgDetail: React.FC<ImageDetailProps> = ({ product }) => {
                 ))}
             </DetailImg>
         )}
-      {/*<DetailImg>*/}
-      {/*  {[...Array(4)].map((_, index) => (*/}
-      {/*    <img*/}
-      {/*      key={index}*/}
-      {/*      className="productImage"*/}
-      {/*      alt={product.name}*/}
-      {/*      src={product.imageUrl}*/}
-      {/*      style={{ width: '84px', height: '80px', margin: 8 }}*/}
-      {/*      onClick={() => openModal(product.imageUrl)}*/}
-      {/*    />*/}
-      {/*  ))}*/}
-      {/*</DetailImg>*/}
 
       {modalOpen && (
         <ImageModal onClick={closeModal}>

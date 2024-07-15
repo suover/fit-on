@@ -24,7 +24,7 @@ import {
   HeaderTableCell,
 } from '../../styles/shoppingBasket/ShoppingBasket.styles';
 import GenericButton from '../../components/common/genericButton/GenericButton';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 import { CartItem } from '../../types/DataInterface';
 import AuthContext from "../../context/AuthContext";
 
@@ -125,12 +125,6 @@ const ShoppingBasketPage: React.FC = () => {
     }
   };
 
-  // const handleDeleteItems = () => {
-  //   setItems(items.filter((item) => !selectedItems.includes(item.productId)));
-  //   setSelectedItems([]);
-  //   setSelectAll(false);
-  //   setOpenDeleteDialog(false);
-  // };
   const handleDeleteItems = () => {
     deleteCartItems(selectedItems);
     setOpenDeleteDialog(false);

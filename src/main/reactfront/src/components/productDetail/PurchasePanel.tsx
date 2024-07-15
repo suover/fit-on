@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import QuantityInput from './QuantityInput';
@@ -8,7 +8,7 @@ import { PurchasePanelBtn } from './PurchasePanelBtn';
 import { Snackbar, Alert } from '@mui/material';
 
 import { Product } from '../../types/DataInterface';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 import {
   StyledProductDetail,
   TopContainer,
@@ -17,6 +17,7 @@ import {
   ShippingContainer,
   Btns,
 } from './PurchasePanel.styles';
+import AuthContext from "../../context/AuthContext";
 
 interface PurchasePanelProps {
   product: Product;
@@ -28,6 +29,7 @@ const PurchasePanel: React.FC<PurchasePanelProps> = ({ product }) => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [open, setOpen] = useState(false); // 장바구니 추가 알림 상태
   const navigate = useNavigate();
+  const { userId} = useContext(AuthContext);
 
   //해야할 것 : product id 기반 리뷰 불러오기.
   // 장바구니 : 누를시 상품 수량에 맞춰 카트로 이동시키기.
@@ -43,15 +45,10 @@ const PurchasePanel: React.FC<PurchasePanelProps> = ({ product }) => {
     setSelection(event.target.value);
   };
 
-  //사용자정보 받아오기
-  const getUserIdFromLocalStorage = (): number | null => {
-    const storedUserId = localStorage.getItem('userId');
-    return storedUserId ? parseInt(storedUserId, 10) : null;
-  };
+
 
   // 장바구니 상품 추가
   const handleCartClick = async () => {
-    const userId = getUserIdFromLocalStorage();
     if (userId) {
       try {
         const response = await axios.post('/api/carts/add', {
@@ -74,7 +71,6 @@ const PurchasePanel: React.FC<PurchasePanelProps> = ({ product }) => {
 
   // 장바구니에 추가 + 장바구니로 이동
   const handlePurchaseClick = async () => {
-    const userId = getUserIdFromLocalStorage();
     if (userId) {
       try {
         const response = await axios.post('/api/carts/add', {
@@ -94,23 +90,7 @@ const PurchasePanel: React.FC<PurchasePanelProps> = ({ product }) => {
       console.error('No user ID found in local storage');
     }
   };
-  // const handlePurchaseClick = async () => {
-  //   const userId = 36; // 관리자 userid
-  //   try {
-  //     const response = await axios.post('/api/carts/add', {
-  //       userId,
-  //       productId: product.productId,
-  //       quantity,
-  //     });
-  //     if (response.status === 200) {
-  //       navigate('/shopping-basket');
-  //     } else {
-  //       console.error('Failed to add product to cart');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error adding product to cart', error);
-  //   }
-  // };
+
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,

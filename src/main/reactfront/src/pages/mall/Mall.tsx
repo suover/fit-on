@@ -59,11 +59,6 @@ const Mall: React.FC = () => {
       badge: cartItemCount,
     },
   ];
-  // // 로컬 스토리지에서 userId를 가져오기
-  // const getUserIdFromLocalStorage = (): number | null => {
-  //   const storedUserId = localStorage.getItem('userId');
-  //   return storedUserId ? parseInt(storedUserId, 10) : null;
-  // };
 
   // AuthContext 에서 유저 아이디 받아오기
   const {userId} = useContext(AuthContext);
@@ -97,7 +92,7 @@ const Mall: React.FC = () => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get<Product[]>(
-        'http://localhost:8080/api/products/with-images/active',
+        'api/products/with-images/active',
       );
       setProducts(response.data);
       setFilteredItems(response.data);
@@ -106,17 +101,15 @@ const Mall: React.FC = () => {
     }
   };
 
-  const handleSearch = (query: string) => {
-    const filtered = products.filter(
-      (product) =>
-        product.id.includes(query) ||
-        product.name.includes(query) ||
-        //         product.category.includes(query) ||
-        //         product.price.includes(query) ||
-        //         product.sales.toString().includes(query) ||
-        product.stock.toString().includes(query),
-    );
-    setFilteredItems(filtered);
+  const handleSearch = async (query: string) => {
+    try {
+      const response = await axios.get<Product[]>(
+          `api/products/search?query=${query}`,
+      );
+      setFilteredItems(response.data);
+    } catch (error) {
+      console.error('Failed to fetch search results:', error);
+    }
   };
 
   const handlePageChange = (

@@ -47,12 +47,7 @@ public class ProductController {
 		return productService.getProductById(id);
 	}
 	
-	//상품 생성
-	@PostMapping
-	public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-		Product savedProduct = productService.saveProduct(product);
-		return ResponseEntity.ok(savedProduct); 
-	}
+
 	@GetMapping("/with-images")
 	public ResponseEntity<List<Product>> getAllProductsWithMainImage() {
 		List<Product> products = productService.getAllProductsWithMainImage();
@@ -63,12 +58,29 @@ public class ProductController {
 		List<Product> products = productService.getAllActiveProductsWithMainImage();
 		return ResponseEntity.ok(products);
 	}
+	
+	//카테고리별 상품 분류
 	@GetMapping("/with-images/{category}/active")
 	public ResponseEntity<List<Product>> getAllActiveProductsWithMainImageByCategory(@PathVariable Long category) {
 		List<Product> products = productService.getAllActiveProductsWithMainImageByCategory(category);
 		return ResponseEntity.ok(products);
 	}
+	//상품 검색
+	@GetMapping("/search")
+	public ResponseEntity<List<Product>> searchProducts(@RequestParam(name = "query") String query) {
+		List<Product> products = productService.searchProducts(query);
+		return ResponseEntity.ok(products);
+	}
+	
 
+	//상품 생성
+	@PostMapping
+	public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+		Product savedProduct = productService.saveProduct(product);
+		return ResponseEntity.ok(savedProduct);
+	}
+
+	//상품 수정
 	@PutMapping("/update/{id}")
 	public ResponseEntity<Product> updateProduct(@PathVariable("id") Long id, @RequestBody Product product) {
 		product.setProductId(id);
@@ -76,6 +88,7 @@ public class ProductController {
 		return ResponseEntity.ok(product);
 	}
 
+	// 상품 삭제 처리
 	@PatchMapping("/{deleteId}/deactivate")
 	public ResponseEntity<Void> deactivateProduct(@PathVariable("deleteId") Long deleteId) {
 		try {
