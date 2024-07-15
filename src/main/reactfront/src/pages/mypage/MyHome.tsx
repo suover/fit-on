@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Typography,
   Box,
@@ -17,6 +17,8 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Calendar from '../../components/calendar/Calendar';
+import AuthContext from '../../context/AuthContext';
+import axios from '../../api/axiosConfig';
 
 const Item = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -27,6 +29,30 @@ const Item = styled(Box)(({ theme }) => ({
 }));
 
 const MyHome: React.FC = () => {
+  const { name, userId } = useContext(AuthContext);
+  const [statistics, setStatistics] = useState({
+    communityPostCount: 0,
+    communityCommentCount: 0,
+    communityLikeCount: 0,
+    routinePostCount: 0,
+    routineCommentCount: 0,
+    routineLikeCount: 0,
+    infoPostCount: 0,
+    infoCommentCount: 0,
+    infoLikeCount: 0,
+  });
+
+  useEffect(() => {
+    axios
+      .get(`/api/mypage/myhome/statistics/${userId}`)
+      .then((response) => {
+        setStatistics(response.data);
+      })
+      .catch((error) => {
+        console.error('데이터를 가져오는데 실패했습니다.', error);
+      });
+  }, [userId]);
+
   return (
     <Box sx={{ marginTop: 3, flexGrow: 1 }}>
       <Grid container spacing={3}>
@@ -51,7 +77,7 @@ const MyHome: React.FC = () => {
             >
               <Avatar sx={{ bgcolor: 'secondary.main' }}>U</Avatar>
               <Typography variant="h6" component="div" color="black">
-                홍길동님 안녕하세요.
+                {name}님 안녕하세요.
               </Typography>
               <Button
                 href="/mypage/user-info-login"
@@ -71,19 +97,25 @@ const MyHome: React.FC = () => {
               <Box textAlign="center" flex="1">
                 <Typography variant="subtitle1">글작성수</Typography>
                 <Typography variant="h6" color="black">
-                  10
+                  {statistics.communityPostCount +
+                    statistics.routinePostCount +
+                    statistics.infoPostCount}
                 </Typography>
               </Box>
               <Box textAlign="center" flex="1">
                 <Typography variant="subtitle1">댓글수</Typography>
                 <Typography variant="h6" color="black">
-                  5
+                  {statistics.communityCommentCount +
+                    statistics.routineCommentCount +
+                    statistics.infoCommentCount}
                 </Typography>
               </Box>
               <Box textAlign="center" flex="1">
                 <Typography variant="subtitle1">좋아요수</Typography>
                 <Typography variant="h6" color="black">
-                  20
+                  {statistics.communityLikeCount +
+                    statistics.routineLikeCount +
+                    statistics.infoLikeCount}
                 </Typography>
               </Box>
             </Box>
