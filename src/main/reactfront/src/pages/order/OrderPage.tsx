@@ -43,7 +43,7 @@ const OrderPage: React.FC = () => {
       setProducts(selectedProducts);
       const newTotalPrice = selectedProducts.reduce(
         (sum: number, product: Product) => {
-          return sum + product.price;
+          return sum + product.price *product.quantity;
         },
         0,
       );

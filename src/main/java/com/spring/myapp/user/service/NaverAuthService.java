@@ -14,12 +14,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.spring.myapp.security.AuthService;
 import com.spring.myapp.security.JwtAuthenticationResponse;
 import com.spring.myapp.security.JwtTokenProvider;
 import com.spring.myapp.user.model.User;
 import com.spring.myapp.user.model.UserSocialLogin;
 import com.spring.myapp.user.repository.UserMapper;
 import com.spring.myapp.user.repository.UserSocialLoginMapper;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class NaverAuthService {
@@ -42,7 +45,10 @@ public class NaverAuthService {
 	@Autowired
 	private JwtTokenProvider jwtTokenProvider;
 
-	public JwtAuthenticationResponse processNaverLogin(String code, String state) {
+	@Autowired
+	private AuthService authService;
+
+	public JwtAuthenticationResponse processNaverLogin(String code, String state, HttpServletResponse response) {
 		String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code"
 			+ "&client_id=" + clientId
 			+ "&client_secret=" + clientSecret
@@ -51,28 +57,33 @@ public class NaverAuthService {
 
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<Map> tokenResponse = restTemplate.exchange(tokenUrl, HttpMethod.GET, null, Map.class);
-		String accessToken = (String)tokenResponse.getBody().get("access_token");
+		String naverAccessToken = (String)tokenResponse.getBody().get("access_token");
 
 		// 사용자 정보 요청
 		String userInfoUrl = "https://openapi.naver.com/v1/nid/me";
 		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", "Bearer " + accessToken);
+		headers.set("Authorization", "Bearer " + naverAccessToken);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<Map> userInfoResponse = restTemplate.exchange(userInfoUrl, HttpMethod.GET, entity, Map.class);
 
-		Map<String, Object> response = (Map<String, Object>)userInfoResponse.getBody().get("response");
-		String email = (String)response.get("email");
-		String name = (String)response.get("name");
-		String providerId = (String)response.get("id");
+		Map<String, Object> responseBody = (Map<String, Object>)userInfoResponse.getBody().get("response");
+		String email = (String)responseBody.get("email");
+		String name = (String)responseBody.get("name");
+		String providerId = (String)responseBody.get("id");
 
 		User user = getUser("naver", providerId, email, name);
 		List<String> roles = userMapper.getUserRoles(user.getUserId()).stream()
 			.map(role -> "ROLE_" + role)
 			.collect(Collectors.toList());
-		String jwtToken = jwtTokenProvider.createToken(user.getEmail(), roles, user.getNickname(), user.getUserId(),
-			user.getName());
+		String accessToken = jwtTokenProvider.createAccessToken(user.getEmail(), roles, user.getNickname(),
+			user.getUserId(), user.getName());
+		String refreshToken = jwtTokenProvider.createRefreshToken(user.getEmail());
 
-		return new JwtAuthenticationResponse(jwtToken, roles, user.getNickname(), user.getUserId(), user.getName());
+		// 리프레시 토큰을 쿠키에 저장
+		authService.addRefreshTokenToCookie(refreshToken, response);
+
+		return new JwtAuthenticationResponse(accessToken, refreshToken, roles, user.getNickname(), user.getUserId(),
+			user.getName());
 	}
 
 	private User getUser(String provider, String providerId, String email, String name) {
