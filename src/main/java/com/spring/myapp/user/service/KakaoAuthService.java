@@ -24,6 +24,10 @@ import com.spring.myapp.user.repository.UserSocialLoginMapper;
 
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * 카카오 인증 서비스 클래스.
+ * 카카오 OAuth2를 통해 사용자 인증을 처리합니다.
+ */
 @Service
 public class KakaoAuthService {
 
@@ -42,6 +46,13 @@ public class KakaoAuthService {
 	@Autowired
 	private AuthService authService;
 
+	/**
+	 * 카카오 토큰을 검증하고 JWT 인증 응답을 반환합니다.
+	 *
+	 * @param kakaoAccessToken 카카오 액세스 토큰
+	 * @param response HTTP 응답 객체
+	 * @return JWT 인증 응답
+	 */
 	public ResponseEntity<JwtAuthenticationResponse> verifyKakaoToken(String kakaoAccessToken,
 		HttpServletResponse response) {
 		String userInfoUrl = "https://kapi.kakao.com/v2/user/me";
@@ -77,6 +88,11 @@ public class KakaoAuthService {
 				user.getName()));
 	}
 
+	/**
+	 * 카카오 사용자를 로그아웃합니다.
+	 *
+	 * @param kakaoAccessToken 카카오 액세스 토큰
+	 */
 	public void logoutKakaoUser(String kakaoAccessToken) {
 		String logoutUrl = "https://kapi.kakao.com/v1/user/logout";
 		HttpHeaders headers = new HttpHeaders();
@@ -87,10 +103,25 @@ public class KakaoAuthService {
 		restTemplate.exchange(logoutUrl, HttpMethod.POST, entity, Map.class);
 	}
 
+	/**
+	 * 임시 이메일을 생성합니다.
+	 *
+	 * @param providerId 제공자 ID
+	 * @return 임시 이메일
+	 */
 	private String generateTemporaryEmail(String providerId) {
 		return providerId + "@kakao.com";
 	}
 
+	/**
+	 * 소셜 로그인 사용자를 가져오거나 새 사용자로 등록합니다.
+	 *
+	 * @param provider 소셜 로그인 제공자
+	 * @param providerId 제공자 ID
+	 * @param email 사용자 이메일
+	 * @param nickname 사용자 닉네임
+	 * @return User 객체
+	 */
 	private User getUser(String provider, String providerId, String email, String nickname) {
 		UserSocialLogin userSocialLogin = userSocialLoginMapper.findByProviderAndProviderId(provider, providerId);
 		User user;
@@ -102,6 +133,15 @@ public class KakaoAuthService {
 		return user;
 	}
 
+	/**
+	 * 새로운 사용자를 생성합니다.
+	 *
+	 * @param email 사용자 이메일
+	 * @param nickname 사용자 닉네임
+	 * @param provider 소셜 로그인 제공자
+	 * @param providerId 제공자 ID
+	 * @return 생성된 User 객체
+	 */
 	private User createUser(String email, String nickname, String provider, String providerId) {
 		LocalDateTime now = LocalDateTime.now();
 		User newUser = new User();

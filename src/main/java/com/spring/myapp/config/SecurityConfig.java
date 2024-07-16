@@ -21,6 +21,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.spring.myapp.security.JwtAuthenticationFilter;
 import com.spring.myapp.security.JwtTokenProvider;
 
+/**
+ * Spring Security 설정 클래스.
+ * 이 클래스는 Spring Security 설정을 구성하는 클래스입니다.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -35,11 +39,23 @@ public class SecurityConfig {
 	@Autowired
 	private Environment env;
 
+	/**
+	 * 비밀번호 인코더 객체를 생성합니다.
+	 *
+	 * @return BCryptPasswordEncoder 객체
+	 */
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
+	/**
+	 * 보안 필터 체인을 설정합니다.
+	 *
+	 * @param http HttpSecurity 객체
+	 * @return SecurityFilterChain 객체
+	 * @throws Exception 설정 중 예외 발생 시
+	 */
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		String[] publicEndpoints = env.getProperty("spring.security.endpoints.public", String[].class);
@@ -67,6 +83,13 @@ public class SecurityConfig {
 		return http.build();
 	}
 
+	/**
+	 * 인증 관리자 객체를 생성합니다.
+	 *
+	 * @param http HttpSecurity 객체
+	 * @return AuthenticationManager 객체
+	 * @throws Exception 설정 중 예외 발생 시
+	 */
 	@Bean
 	public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
 		AuthenticationManagerBuilder authenticationManagerBuilder =
