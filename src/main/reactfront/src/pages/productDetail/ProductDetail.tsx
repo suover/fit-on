@@ -29,9 +29,6 @@ const StyledImageDetail = styled(ImageDetail)`
 `;
 
 function ProductDetail() {
-  // const location = useLocation();
-  // const product: Product = location.state.product;
-
   const location = useLocation();
   const { productId } = useParams<{ productId: string }>();
   const [product, setProduct] = useState<Product | null>(null);

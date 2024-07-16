@@ -30,7 +30,6 @@ export const Search = styled.div`
 
 const Mall: React.FC = () => {
   const [filteredItems, setFilteredItems] = useState<Product[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [cartItemCount, setCartItemCount] = useState(0);
@@ -38,7 +37,7 @@ const Mall: React.FC = () => {
 
 
 
-  // 장바구니만 route로 적용시키고, 나머지는 카테고리 필터링으로 변경
+
   const menuItems = [
     { route: '/mall', menuName: '쇼핑몰', icon: HomeIcon },
     {
@@ -80,7 +79,6 @@ const Mall: React.FC = () => {
   // 상품 정보 세팅
   useEffect(() => {
     fetchProducts();
-    // const userId = getUserIdFromLocalStorage();
     if (userId) {
       fetchCartItemCount(userId);
     } else {
@@ -94,7 +92,6 @@ const Mall: React.FC = () => {
       const response = await axios.get<Product[]>(
         'api/products/with-images/active',
       );
-      setProducts(response.data);
       setFilteredItems(response.data);
     } catch (error) {
       console.error('Failed to fetch products:', error);
