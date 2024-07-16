@@ -46,8 +46,11 @@ public class ProductService {
 		return productMapper.findAllActiveWithMainImage();
 	}
 	public List<Product> getAllActiveProductsWithMainImageByCategory(Long categoryId) {
-		System.out.println("서비스단 카테고리로 상품가져오기 시작");
 		return productMapper.findAllActiveWithMainImageByCategory(categoryId);
+	}
+	//상품 검색
+	public List<Product> searchProducts(String query) {
+		return productMapper.findByNameContainingIgnoreCase(query);
 	}
 
 

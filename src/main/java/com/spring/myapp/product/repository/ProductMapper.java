@@ -9,7 +9,7 @@ public interface ProductMapper {
 
 	List<Product> findAll();
 	List<Product> findAvailable();
-	Product findById(Long productId);
+	Product findById(@Param("productId")Long productId);
 	void save(Product product);
 
 	Long findMaxProductId();
@@ -20,4 +20,5 @@ public interface ProductMapper {
 	List<Product> findAllWithMainImage();
 	List<Product> findAllActiveWithMainImage();
 	List<Product> findAllActiveWithMainImageByCategory(@Param("categoryId")Long categoryId);
+	List<Product> findByNameContainingIgnoreCase(String query);
 }

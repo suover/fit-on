@@ -86,7 +86,7 @@ const App = () => {
               <Route path="food" element={<Food />} />
             </Route>
             <Route
-              path="/product-detail/:productNum"
+              path="/product-detail/:productId"
               element={<ProductDetail />}
             />
             <Route path="community" element={<Community />} />

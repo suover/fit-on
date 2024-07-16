@@ -11,5 +11,4 @@ import org.apache.ibatis.annotations.Mapper;
 public interface CartMapper {
 	Cart findCartByUserId(@Param("userId") Long userId);
 	void insertCart(Cart cart);
-
 }

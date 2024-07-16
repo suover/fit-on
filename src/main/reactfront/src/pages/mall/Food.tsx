@@ -12,7 +12,8 @@ import SidebarWrapper from '../../components/common/sidebar/SidebarWrapper';
 import { Container } from '@mui/material';
 import { Product } from '../../types/DataInterface';
 import ProductCardList from './ProductCardList';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
+import AuthContext from "../../context/AuthContext";
 
 export const Search = styled.div`
   display: flex;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   Container,
   Table,
@@ -24,8 +24,9 @@ import {
   HeaderTableCell,
 } from '../../styles/shoppingBasket/ShoppingBasket.styles';
 import GenericButton from '../../components/common/genericButton/GenericButton';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 import { CartItem } from '../../types/DataInterface';
+import AuthContext from "../../context/AuthContext";
 
 const ShoppingBasketPage: React.FC = () => {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -34,29 +35,63 @@ const ShoppingBasketPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const rowsPerPage = 5;
   const navigate = useNavigate();
-  const userId = 36; // 관리자userid
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openOrderDialog, setOpenOrderDialog] = useState(false);
 
+  // AuthContext 에서 유저 아이디 받아오기
+  const {userId} = useContext(AuthContext);
+
+  //장바구니 불러오기
+
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
-        const response = await axios.get<CartItem[]>(
-          `/api/carts/${userId}/cartItems`,
-        );
-        if (response.status === 200) {
-          setItems(response.data);
+        if (userId) {
+          const response = await axios.get<CartItem[]>(
+              `/api/carts/${userId}/cartItems`,
+          );
+          if (response.status === 200) {
+            setItems(response.data);
+          } else {
+            console.error('Failed to fetch cart items');
+          }
         } else {
-          console.error('Failed to fetch cart items');
+          console.error('No user ID found in local storage');
         }
       } catch (error) {
         console.error('Error fetching cart items', error);
       }
     };
-
     fetchCartItems();
-  }, [userId]);
+  }, []);
+
+
+  // 상품 삭제 api
+  const deleteCartItems = async (productIds: number[]) => {
+    console.log("Attempting to delete items from cart: ", productIds);
+    if (userId) {
+      try {
+        await axios({
+          method: 'delete',
+          url: `/api/carts/${userId}/cartItems`,
+          data: productIds,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        console.log("Successfully deleted items from cart: ", productIds);
+        // 서버에서 삭제 성공 시, 프론트엔드 상태 반영
+        setItems((prevItems) => prevItems.filter((item) => !productIds.includes(item.productId)));
+        setSelectedItems([]);
+        setSelectAll(false);
+      } catch (error) {
+        console.error('Error deleting cart items', error);
+      }
+    } else {
+      console.error('No user ID found, cannot delete items');
+    }
+  };
 
   useEffect(() => {
     const totalAmount = selectedItems.reduce((acc, id) => {
@@ -91,9 +126,7 @@ const ShoppingBasketPage: React.FC = () => {
   };
 
   const handleDeleteItems = () => {
-    setItems(items.filter((item) => !selectedItems.includes(item.productId)));
-    setSelectedItems([]);
-    setSelectAll(false);
+    deleteCartItems(selectedItems);
     setOpenDeleteDialog(false);
   };
 

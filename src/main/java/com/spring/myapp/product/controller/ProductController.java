@@ -1,10 +1,13 @@
 package com.spring.myapp.product.controller;
 
+import com.spring.myapp.cart.controller.CartController;
 import com.spring.myapp.product.model.Product;
 import com.spring.myapp.product.service.ProductService;
 import com.spring.myapp.product.service.S3Service;
 
 import org.apache.ibatis.annotations.Update;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +21,7 @@ import java.util.Map;
 @RequestMapping("/api/products")
 @Validated
 public class ProductController {
+	private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
 	@Autowired
 	private S3Service s3Service;
@@ -26,27 +30,33 @@ public class ProductController {
 	private ProductService productService;
 	
 	
-	//전체 상품
+	//전체 상품리스트
 	@GetMapping
 	public List<Product> getAllProducts() {
 		return productService.getAllProducts();
 	}
 
-	// 삭제처리 되지 않은 상품
+	// 삭제처리 되지 않은 전체상품 리스트
 	@GetMapping("/available")
 	public List<Product> getProducts() {
 		return productService.getProducts();
 	}
 
-	@GetMapping("/{id}")
-	public Product getProductById(@PathVariable Long id) {
-		return productService.getProductById(id);
+
+
+	//상품 가져오기
+	@GetMapping("/{id}/detail")
+	public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) {
+		logger.info("Fetching active product with ID: {}", id);
+		Product product = productService.getProductById(id);
+		if (product != null) {
+			return ResponseEntity.ok(product);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
 	}
-	@PostMapping
-	public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-		Product savedProduct = productService.saveProduct(product);
-		return ResponseEntity.ok(savedProduct); // 저장한 상품 정보 반환
-	}
+	
+
 	@GetMapping("/with-images")
 	public ResponseEntity<List<Product>> getAllProductsWithMainImage() {
 		List<Product> products = productService.getAllProductsWithMainImage();
@@ -57,21 +67,42 @@ public class ProductController {
 		List<Product> products = productService.getAllActiveProductsWithMainImage();
 		return ResponseEntity.ok(products);
 	}
-	@GetMapping("/with-images/{category}/active")
+
+	// 카테고리별 상품 조회
+	@GetMapping("/{category}/active")
 	public ResponseEntity<List<Product>> getAllActiveProductsWithMainImageByCategory(@PathVariable Long category) {
-		System.out.println("컨트롤러단 상품카테고리 밸류값 : "+category);
+		logger.info("Fetching active products with main image for category: {}", category);
 		List<Product> products = productService.getAllActiveProductsWithMainImageByCategory(category);
-		System.out.println("컨트롤러단 종료");
+		logger.info("Fetched {} products for category: {}", products.size(), category);
 		return ResponseEntity.ok(products);
 	}
 
-	@PutMapping("/{id}")
+	//상품 검색
+	@GetMapping("/search")
+	public ResponseEntity<List<Product>> searchProducts(@RequestParam(name = "query") String query) {
+		logger.info("Fetching active products with main image for query: {}", query);
+		List<Product> products = productService.searchProducts(query);
+		logger.info("Fetched {} products for query: {}", products.size(), query);
+		return ResponseEntity.ok(products);
+	}
+	
+
+	//상품 생성
+	@PostMapping
+	public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+		Product savedProduct = productService.saveProduct(product);
+		return ResponseEntity.ok(savedProduct);
+	}
+
+	//상품 수정
+	@PutMapping("/update/{id}")
 	public ResponseEntity<Product> updateProduct(@PathVariable("id") Long id, @RequestBody Product product) {
 		product.setProductId(id);
 		productService.updateProduct(product);
 		return ResponseEntity.ok(product);
 	}
 
+	// 상품 삭제 처리
 	@PatchMapping("/{deleteId}/deactivate")
 	public ResponseEntity<Void> deactivateProduct(@PathVariable("deleteId") Long deleteId) {
 		try {

@@ -8,7 +8,7 @@ import java.util.List;
 @Mapper
 public interface ProductImageMapper {
 	void saveImage(ProductImage productImage);
-	List<ProductImage> findProductImages(Long productId);
-	String getMainImgURL(Long productId);
-	String[] getSubImgURL(Long productId);
+	List<ProductImage> findProductImages(@Param("productId")Long productId);
+	String getMainImgURL(@Param("productId") Long productId);
+	String[] getSubImgURL(@Param("productId")Long productId);
 }
