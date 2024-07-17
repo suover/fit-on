@@ -27,6 +27,7 @@ public class ProductImageController {
 		productImage.setProductId(productId);
 		productImageService.saveProductImage(productImage);
 	}
+
 	@GetMapping("/{id}")
 	public ResponseEntity<List<ProductImage>> getProductImages(@PathVariable("id") Long id) {
 		logger.info("Fetching all images for product with ID: {}", id);

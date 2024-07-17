@@ -81,10 +81,11 @@ const App = () => {
             <Route path="/shopping-basket" element={<ShoppingBasketPage />} />
             <Route path="/mall" element={<Mall />}>
               {/* <Route index element={<Products />} /> */}
-              <Route path="fitness" element={<Fittness />} />
-              <Route path="supplement" element={<Supplement />} />
-              <Route path="food" element={<Food />} />
+
             </Route>
+            <Route path="/mall/fitness" element={<Fittness />} />
+            <Route path="/mall/supplement" element={<Supplement />} />
+            <Route path="/mall/food" element={<Food />} />
             <Route
               path="/product-detail/:productId"
               element={<ProductDetail />}

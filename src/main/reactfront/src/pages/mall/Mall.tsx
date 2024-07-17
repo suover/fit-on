@@ -1,4 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
+import {Outlet} from 'react-router-dom';
 import styled from 'styled-components';
 
 import SideNavbar from '../../components/layout/sideNavBar/SideNavbar';
@@ -29,6 +30,7 @@ export const Search = styled.div`
 `;
 
 const Mall: React.FC = () => {
+  const [products, setProducts] = useState<Product[]>([]);
   const [filteredItems, setFilteredItems] = useState<Product[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import styled from 'styled-components';
 import SideNavbar from '../../components/layout/sideNavBar/SideNavbar';
 import HomeIcon from '@mui/icons-material/Home';
@@ -9,7 +9,7 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 
 import SearchBox from '../../components/common/search/SearchBox';
 import SidebarWrapper from '../../components/common/sidebar/SidebarWrapper';
-import { Container } from '@mui/material';
+import {Box, Container, Pagination} from '@mui/material';
 import { Product } from '../../types/DataInterface';
 import ProductCardList from './ProductCardList';
 import axios from '../../api/axiosConfig';
@@ -29,39 +29,62 @@ export const Search = styled.div`
 const Fittness: React.FC = () => {
   const [filteredItems, setFilteredItems] = useState<Product[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [cartItemCount, setCartItemCount] = useState(0);
   const [categoryValue, setCategoryValue] = useState<number>(1);
 
-  // 장바구니만 route로 적용시키고, 나머지는 카테고리 필터링으로 변경
   const menuItems = [
     { route: '/mall', menuName: '쇼핑몰', icon: HomeIcon },
     {
-      route: 'fitness',
+      route: '/mall/fitness',
       menuName: '운동용품',
       icon: FitnessCenterIcon,
     },
     {
-      route: 'supplement',
+      route: '/mall/supplement',
       menuName: '보충제',
       icon: LocalPharmacyIcon,
     },
-    { route: 'food', menuName: '식품', icon: RestaurantIcon },
+    { route: '/mall/food', menuName: '식품', icon: RestaurantIcon },
     {
       route: '/shopping-basket',
       menuName: '장바구니',
       icon: ShoppingCartIcon,
-      badge: 3,
+      badge: cartItemCount,
     },
   ];
-  //상품 정보 세팅
+
+  // AuthContext 에서 유저 아이디 받아오기
+  const {userId} = useContext(AuthContext);
+
+  // 장바구니 상품 수량 가져오기
+  const fetchCartItemCount = async (userId: number) => {
+    try {
+      const response = await axios.get(`/api/carts/${userId}/cartItems`);
+      if (response.status === 200) {
+        setCartItemCount(response.data.length);
+      } else {
+        console.error('Failed to fetch cart items count');
+      }
+    } catch (error) {
+      console.error('Error fetching cart items count', error);
+    }
+  };
+
+  // 상품 정보 세팅
   useEffect(() => {
-    fetchProducts();
+    fetchCategoryProducts();
+    if (userId) {
+      fetchCartItemCount(userId);
+    } else {
+      console.error('No user ID found in local storage');
+    }
   }, []);
 
   //상품 정보 가져오기
-  const fetchProducts = async () => {
+  const fetchCategoryProducts = async () => {
     try {
       const response = await axios.get<Product[]>(
-        `/api/products/with-images/${categoryValue}/active`,
+        `/api/products/${categoryValue}/active`,
       );
       setProducts(response.data);
       setFilteredItems(response.data);
@@ -85,7 +108,7 @@ const Fittness: React.FC = () => {
 
   return (
     <>
-      <Container sx={{ paddingTop: '50px', paddingBottom: '100px' }}>
+      <Container sx={{ paddingTop: '50px', paddingBottom: '100px', minHeight: '800px' }}>
         <SidebarWrapper>
           <SideNavbar
             menuItems={menuItems}
@@ -96,7 +119,12 @@ const Fittness: React.FC = () => {
         <Search>
           <SearchBox onSearch={handleSearch} />
         </Search>
-        <ProductCardList products={filteredItems} />
+        <Box>
+          <ProductCardList products={filteredItems} />
+          <Box display="flex" justifyContent="center" mt={4}>
+
+          </Box>
+        </Box>
       </Container>
     </>
   );

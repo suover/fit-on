@@ -30,13 +30,13 @@ public class ProductController {
 	private ProductService productService;
 	
 	
-	//전체 상품리스트
+	//전체 상품리스트(이미지X)
 	@GetMapping
 	public List<Product> getAllProducts() {
 		return productService.getAllProducts();
 	}
 
-	// 삭제처리 되지 않은 전체상품 리스트
+	// 삭제처리 되지 않은 전체상품 리스트(이미지X)
 	@GetMapping("/available")
 	public List<Product> getProducts() {
 		return productService.getProducts();
@@ -57,27 +57,29 @@ public class ProductController {
 	}
 	
 
+	// 전체 상품 불러오기
 	@GetMapping("/with-images")
 	public ResponseEntity<List<Product>> getAllProductsWithMainImage() {
 		List<Product> products = productService.getAllProductsWithMainImage();
 		return ResponseEntity.ok(products);
 	}
+	// 판매 가능한 상품 전체 불러오기
 	@GetMapping("/with-images/active")
 	public ResponseEntity<List<Product>> getAllActiveProductsWithMainImage() {
 		List<Product> products = productService.getAllActiveProductsWithMainImage();
 		return ResponseEntity.ok(products);
 	}
 
-	// 카테고리별 상품 조회
-	@GetMapping("/{category}/active")
-	public ResponseEntity<List<Product>> getAllActiveProductsWithMainImageByCategory(@PathVariable Long category) {
-		logger.info("Fetching active products with main image for category: {}", category);
-		List<Product> products = productService.getAllActiveProductsWithMainImageByCategory(category);
-		logger.info("Fetched {} products for category: {}", products.size(), category);
+	// 카테고리별 판매 가능 상품 조회
+	@GetMapping("/{categoryId}/active")
+	public ResponseEntity<List<Product>> getAllActiveProductsWithMainImageByCategory(@PathVariable("categoryId") Long categoryId) {
+		logger.info("Fetching active products with main image for category: {}", categoryId);
+		List<Product> products = productService.getAllActiveProductsWithMainImageByCategory(categoryId);
+		logger.info("Fetched {} products for category: {}", products.size(), categoryId);
 		return ResponseEntity.ok(products);
 	}
 
-	//상품 검색
+	//판매 가능한 상품 검색
 	@GetMapping("/search")
 	public ResponseEntity<List<Product>> searchProducts(@RequestParam(name = "query") String query) {
 		logger.info("Fetching active products with main image for query: {}", query);
@@ -102,7 +104,7 @@ public class ProductController {
 		return ResponseEntity.ok(product);
 	}
 
-	// 상품 삭제 처리
+	// 상품 삭제 처리(비활성화)
 	@PatchMapping("/{deleteId}/deactivate")
 	public ResponseEntity<Void> deactivateProduct(@PathVariable("deleteId") Long deleteId) {
 		try {
