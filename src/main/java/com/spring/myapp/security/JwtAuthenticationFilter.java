@@ -18,6 +18,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * JWT 인증 필터 클래스.
+ * JWT 토큰을 검증하고 인증을 설정합니다.
+ */
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
@@ -25,11 +29,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private final UserDetailsService userDetailsService;
 	private final JwtTokenProvider jwtTokenProvider;
 
+	/**
+	 * JwtAuthenticationFilter 생성자.
+	 *
+	 * @param userDetailsService 사용자 상세 정보를 제공하는 서비스
+	 * @param jwtTokenProvider JWT 토큰을 관리하는 제공자
+	 */
 	public JwtAuthenticationFilter(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
 		this.userDetailsService = userDetailsService;
 		this.jwtTokenProvider = jwtTokenProvider;
 	}
 
+	/**
+	 * 요청에 대한 필터링을 수행합니다.
+	 *
+	 * @param request HTTP 요청
+	 * @param response HTTP 응답
+	 * @param filterChain 필터 체인
+	 * @throws ServletException 서블릿 예외 발생 시
+	 * @throws IOException 입출력 예외 발생 시
+	 */
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 		throws ServletException, IOException {
