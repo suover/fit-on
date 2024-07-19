@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {Box, CircularProgress, Container, Pagination, Typography} from '@mui/material';
-import { Product } from '../../types/DataInterface';
+import { Product,ProductPage } from '../../types/DataInterface';
 import ProductCardList from './ProductCardList';
 import axios from '../../api/axiosConfig';
 
@@ -9,25 +9,35 @@ const Fittness: React.FC = () => {
   const [filteredItems, setFilteredItems] = useState<Product[]>([]);
   const [categoryValue, setCategoryValue] = useState<number>(1);
 
+  const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(12);
+  const [totalPages, setTotalPages] = useState<number>(0);
+
+
   // 상품 정보 세팅
   useEffect(() => {
-    console.log('피트니스몰 페이지 이동:');
-    fetchCategoryProducts();
-  }, []);
+    fetchCategoryProducts(page, pageSize);
+  }, [page]);
 
-  //상품 정보 가져오기
-  const fetchCategoryProducts = async () => {
+
+  // 상품 정보 가져오기
+  const fetchCategoryProducts = async (page: number, pageSize: number) => {
     setLoading(true); // 로딩 시작
     try {
-      const response = await axios.get<Product[]>(
-        `/api/products/${categoryValue}/active`,
+      const response = await axios.get<ProductPage<Product>>(
+          `/api/products/${categoryValue}/active?page=${page}&size=${pageSize}`,
       );
-      setFilteredItems(response.data);
+      setFilteredItems(response.data.content);
+      setTotalPages(response.data.totalPages);
       setLoading(false);
     } catch (error) {
       console.error('Failed to fetch products:', error);
       setLoading(false);
     }
+  };
+
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
   };
 
   return (
@@ -44,7 +54,17 @@ const Fittness: React.FC = () => {
                 <Typography variant="h6">표시할 상품이 없습니다.</Typography>
               </Box>
           ) : ( // 상품이 있을 때 목록 표시
-              <ProductCardList products={filteredItems} />
+              <>
+                <ProductCardList products={filteredItems} />
+                <Box display="flex" justifyContent="center" mt={4}>
+                  <Pagination
+                      count={totalPages}
+                      page={page}
+                      onChange={handlePageChange}
+                      color="primary"
+                  />
+                </Box>
+              </>
           )}
         </Box>
       </Container>

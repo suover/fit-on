@@ -18,7 +18,17 @@ public interface ProductMapper {
 	void updateIsDeleted(@Param("productId")Long productId,@Param("isDeleted") Boolean isDeleted);
 
 	List<Product> findAllWithMainImage();
-	List<Product> findAllActiveWithMainImage();
-	List<Product> findAllActiveWithMainImageByCategory(@Param("categoryId")Long categoryId);
-	List<Product> findByNameContainingIgnoreCase(String query);
+
+//	List<Product> findAllActiveWithMainImage();
+//	List<Product> findAllActiveWithMainImageByCategory(@Param("categoryId")Long categoryId);
+//	List<Product> findByNameContainingIgnoreCase(String query);
+
+	List<Product> findAllActiveWithMainImage(@Param("pageSize") int pageSize, @Param("offset") int offset);
+	List<Product> findAllActiveWithMainImageByCategory(@Param("categoryId") Long categoryId, @Param("pageSize") int pageSize, @Param("offset") int offset);
+	List<Product> findByNameContainingIgnoreCase(@Param("query") String query, @Param("pageSize") int pageSize, @Param("offset") int offset);
+
+	long countAllActiveWithMainImage();
+	long countAllActiveWithMainImageByCategory(@Param("categoryId") Long categoryId);
+	long countByNameContainingIgnoreCase(@Param("query") String query);
+
 }

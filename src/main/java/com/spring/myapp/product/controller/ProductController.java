@@ -2,9 +2,14 @@ package com.spring.myapp.product.controller;
 
 import com.spring.myapp.cart.controller.CartController;
 import com.spring.myapp.product.model.Product;
+import com.spring.myapp.product.model.ProductPage;
 import com.spring.myapp.product.service.ProductService;
 import com.spring.myapp.product.service.S3Service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.apache.ibatis.annotations.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,28 +68,54 @@ public class ProductController {
 		List<Product> products = productService.getAllProductsWithMainImage();
 		return ResponseEntity.ok(products);
 	}
-	// 판매 가능한 상품 전체 불러오기
+//	// 판매 가능한 상품 전체 불러오기
+//	@GetMapping("/with-images/active")
+//	public ResponseEntity<List<Product>> getAllActiveProductsWithMainImage() {
+//		List<Product> products = productService.getAllActiveProductsWithMainImage();
+//		return ResponseEntity.ok(products);
+//	}
+//
+////	 카테고리별 판매 가능 상품 조회
+//	@GetMapping("/{categoryId}/active")
+//	public ResponseEntity<List<Product>> getAllActiveProductsWithMainImageByCategory(@PathVariable("categoryId") Long categoryId) {
+//		logger.info("Fetching active products with main image for category: {}", categoryId);
+//		List<Product> products = productService.getAllActiveProductsWithMainImageByCategory(categoryId);
+//		logger.info("Fetched {} products for category: {}", products.size(), categoryId);
+//		return ResponseEntity.ok(products);
+//	}
+//
+//	//판매 가능한 상품 검색
+//	@GetMapping("/search")
+//	public ResponseEntity<List<Product>> searchProducts(@RequestParam(name = "query") String query) {
+//		logger.info("Fetching active products with main image for query: {}", query);
+//		List<Product> products = productService.searchProducts(query);
+//		logger.info("Fetched {} products for query: {}", products.size(), query);
+//		return ResponseEntity.ok(products);
+//	}
+
 	@GetMapping("/with-images/active")
-	public ResponseEntity<List<Product>> getAllActiveProductsWithMainImage() {
-		List<Product> products = productService.getAllActiveProductsWithMainImage();
+	public ResponseEntity<ProductPage<Product>> getAllActiveProductsWithMainImage(
+			@RequestParam(name = "page",defaultValue = "0") int page,
+			@RequestParam(name = "size",defaultValue = "12") int size) {
+		ProductPage<Product> products = productService.getAllActiveProductsWithMainImage(page, size);
 		return ResponseEntity.ok(products);
 	}
 
-	// 카테고리별 판매 가능 상품 조회
 	@GetMapping("/{categoryId}/active")
-	public ResponseEntity<List<Product>> getAllActiveProductsWithMainImageByCategory(@PathVariable("categoryId") Long categoryId) {
-		logger.info("Fetching active products with main image for category: {}", categoryId);
-		List<Product> products = productService.getAllActiveProductsWithMainImageByCategory(categoryId);
-		logger.info("Fetched {} products for category: {}", products.size(), categoryId);
+	public ResponseEntity<ProductPage<Product>> getAllActiveProductsWithMainImageByCategory(
+			@PathVariable("categoryId") Long categoryId,
+			@RequestParam(name = "page",defaultValue = "0") int page,
+			@RequestParam(name = "size",defaultValue = "12") int size) {
+		ProductPage<Product> products = productService.getAllActiveProductsWithMainImageByCategory(categoryId, page, size);
 		return ResponseEntity.ok(products);
 	}
 
-	//판매 가능한 상품 검색
 	@GetMapping("/search")
-	public ResponseEntity<List<Product>> searchProducts(@RequestParam(name = "query") String query) {
-		logger.info("Fetching active products with main image for query: {}", query);
-		List<Product> products = productService.searchProducts(query);
-		logger.info("Fetched {} products for query: {}", products.size(), query);
+	public ResponseEntity<ProductPage<Product>> searchProducts(
+			@RequestParam(name = "query") String query,
+			@RequestParam(name = "page",defaultValue = "0") int page,
+			@RequestParam(name = "size",defaultValue = "12") int size) {
+		ProductPage<Product> products = productService.searchProducts(query, page, size);
 		return ResponseEntity.ok(products);
 	}
 	
@@ -115,8 +146,5 @@ public class ProductController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
-
-
-
 
 }

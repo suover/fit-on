@@ -12,8 +12,6 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 import SearchBox from '../../components/common/search/SearchBox';
 import SidebarWrapper from '../../components/common/sidebar/SidebarWrapper';
 import { Pagination, Container, Box } from '@mui/material';
-import { Product } from '../../types/DataInterface';
-import ProductCardList from './ProductCardList';
 import axios from '../../api/axiosConfig';
 import AuthContext from "../../context/AuthContext";
 
@@ -31,12 +29,7 @@ export const Search = styled.div`
 
 const Mall: React.FC = () => {
   const navigate = useNavigate();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [filteredItems, setFilteredItems] = useState<Product[]>([]);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
   const [cartItemCount, setCartItemCount] = useState(0);
-  const pageSize = 12;
 
   const menuItems = [
     { route: '/mall/main', menuName: '쇼핑몰', icon: HomeIcon },
@@ -85,18 +78,6 @@ const Mall: React.FC = () => {
     }
   }, []);
 
-  // //상품 정보 가져오기
-  // const fetchProducts = async () => {
-  //   try {
-  //     const response = await axios.get<Product[]>(
-  //       'api/products/with-images/active',
-  //     );
-  //     setFilteredItems(response.data);
-  //   } catch (error) {
-  //     console.error('Failed to fetch products:', error);
-  //   }
-  // };
-
   // 검색 처리 함수
   const handleSearch = async (query: string) => {
     try {
@@ -104,24 +85,6 @@ const Mall: React.FC = () => {
     } catch (error) {
       console.error('Failed to fetch search results:', error);
     }
-  };
-
-  // const handleSearch = async (query: string) => {
-  //   try {
-  //     const response = await axios.get<Product[]>(
-  //         `/api/products/search?query=${query}`,
-  //     );
-  //     setFilteredItems(response.data);
-  //   } catch (error) {
-  //     console.error('Failed to fetch search results:', error);
-  //   }
-  // };
-
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number,
-  ) => {
-    setPage(value);
   };
 
   return (
