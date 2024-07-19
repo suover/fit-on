@@ -1,6 +1,5 @@
 package com.spring.myapp.product.controller;
 
-import com.spring.myapp.cart.controller.CartController;
 import com.spring.myapp.product.model.Product;
 import com.spring.myapp.product.model.ProductPage;
 import com.spring.myapp.product.service.ProductService;
@@ -93,6 +92,7 @@ public class ProductController {
 //		return ResponseEntity.ok(products);
 //	}
 
+	//판매 가능한 전체 상품 페이징 처리
 	@GetMapping("/with-images/active")
 	public ResponseEntity<ProductPage<Product>> getAllActiveProductsWithMainImage(
 			@RequestParam(name = "page",defaultValue = "0") int page,
@@ -101,6 +101,7 @@ public class ProductController {
 		return ResponseEntity.ok(products);
 	}
 
+	//카테고리별 판매 가능 상품 조회 페이징 처리
 	@GetMapping("/{categoryId}/active")
 	public ResponseEntity<ProductPage<Product>> getAllActiveProductsWithMainImageByCategory(
 			@PathVariable("categoryId") Long categoryId,
@@ -110,6 +111,7 @@ public class ProductController {
 		return ResponseEntity.ok(products);
 	}
 
+	//판매 가능한 상품 검색 페이징 처리
 	@GetMapping("/search")
 	public ResponseEntity<ProductPage<Product>> searchProducts(
 			@RequestParam(name = "query") String query,

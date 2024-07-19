@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Box, CircularProgress, Container, Pagination, Typography} from '@mui/material';
 import { Product,ProductPage } from '../../types/DataInterface';
 import ProductCardList from './ProductCardList';
