@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {Outlet} from 'react-router-dom';
+import {Outlet, useNavigate} from 'react-router-dom';
 import styled from 'styled-components';
 
 import SideNavbar from '../../components/layout/sideNavBar/SideNavbar';
@@ -30,6 +30,7 @@ export const Search = styled.div`
 `;
 
 const Mall: React.FC = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredItems, setFilteredItems] = useState<Product[]>([]);
   const [page, setPage] = useState(1);
@@ -37,11 +38,8 @@ const Mall: React.FC = () => {
   const [cartItemCount, setCartItemCount] = useState(0);
   const pageSize = 12;
 
-
-
-
   const menuItems = [
-    { route: '/mall', menuName: '쇼핑몰', icon: HomeIcon },
+    { route: '/mall/main', menuName: '쇼핑몰', icon: HomeIcon },
     {
       route: '/mall/fitness',
       menuName: '운동용품',
@@ -80,7 +78,6 @@ const Mall: React.FC = () => {
 
   // 상품 정보 세팅
   useEffect(() => {
-    fetchProducts();
     if (userId) {
       fetchCartItemCount(userId);
     } else {
@@ -88,28 +85,37 @@ const Mall: React.FC = () => {
     }
   }, []);
 
-  //상품 정보 가져오기
-  const fetchProducts = async () => {
-    try {
-      const response = await axios.get<Product[]>(
-        'api/products/with-images/active',
-      );
-      setFilteredItems(response.data);
-    } catch (error) {
-      console.error('Failed to fetch products:', error);
-    }
-  };
+  // //상품 정보 가져오기
+  // const fetchProducts = async () => {
+  //   try {
+  //     const response = await axios.get<Product[]>(
+  //       'api/products/with-images/active',
+  //     );
+  //     setFilteredItems(response.data);
+  //   } catch (error) {
+  //     console.error('Failed to fetch products:', error);
+  //   }
+  // };
 
+  // 검색 처리 함수
   const handleSearch = async (query: string) => {
     try {
-      const response = await axios.get<Product[]>(
-          `api/products/search?query=${query}`,
-      );
-      setFilteredItems(response.data);
+      navigate(`/mall/main?query=${query}`);
     } catch (error) {
       console.error('Failed to fetch search results:', error);
     }
   };
+
+  // const handleSearch = async (query: string) => {
+  //   try {
+  //     const response = await axios.get<Product[]>(
+  //         `/api/products/search?query=${query}`,
+  //     );
+  //     setFilteredItems(response.data);
+  //   } catch (error) {
+  //     console.error('Failed to fetch search results:', error);
+  //   }
+  // };
 
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
@@ -119,6 +125,7 @@ const Mall: React.FC = () => {
   };
 
   return (
+
     <>
       <SidebarWrapper>
         <SideNavbar
@@ -127,24 +134,14 @@ const Mall: React.FC = () => {
           title="FitOn Mall"
         />
       </SidebarWrapper>
-
       <Container sx={{ paddingTop: '50px', paddingBottom: '100px' , minHeight: '800px' }}>
         <Search>
           <SearchBox onSearch={handleSearch} />
         </Search>
-        <Box>
-          <ProductCardList products={filteredItems} />
-          <Box display="flex" justifyContent="center" mt={4}>
-            <Pagination
-              count={totalPages}
-              page={page}
-              onChange={handlePageChange}
-              color="primary"
-            />
-          </Box>
-        </Box>
+      <Outlet/>
       </Container>
     </>
+
   );
 };
 
