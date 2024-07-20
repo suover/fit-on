@@ -15,11 +15,12 @@ const ProductCardList: React.FC<ProductCardListProps> = ({ products }) => {
       <Grid2
         container
         rowSpacing={3}
-        columnSpacing={{ xs: 1, sm: 2, md: 6.3 }}
+        // columnSpacing={{ xs: 1, sm: 2, md: 6.3 }}
+        columnSpacing={{ xs: 1, sm: 2, md: 3 }}
         sx={{ marginBottom: '30px' }}
       >
         {products.map((product) => (
-          <Grid2 key={product.productId}>
+          <Grid2 key={product.productId} xs={12} sm={6} md={3}>
             <ProductCard product={product} />
           </Grid2>
         ))}

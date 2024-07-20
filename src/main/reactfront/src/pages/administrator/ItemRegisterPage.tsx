@@ -5,7 +5,7 @@ import 'react-quill/dist/quill.snow.css';
 import noImage from '../../assets/itemRegister/noImage.jpeg';
 import { Link, useNavigate } from 'react-router-dom';
 import Editor from '../../components/common/Editor';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 
 interface FormValues {
   productName: string;
@@ -110,7 +110,7 @@ const ItemRegisterPage: React.FC = () => {
     };
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/products-image/${productId}/images`,
+        `/api/products-image/${productId}/images`,
         productImage,
         {
           headers: {
@@ -161,7 +161,7 @@ const ItemRegisterPage: React.FC = () => {
 
       // products 테이블 : 상품 정보 저장
       const productResponse = await axios.post(
-        'http://localhost:8080/api/products',
+        '/api/products',
         productData,
         {
           headers: {

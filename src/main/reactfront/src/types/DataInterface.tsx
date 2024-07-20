@@ -33,3 +33,11 @@ export interface CartItem {
   name: string;
   userId: number;
 }
+
+export interface ProductPage<T>{
+  content: T[];
+  pageNumber: number;
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
+}

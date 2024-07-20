@@ -57,7 +57,7 @@ const Header = () => {
           <Link to="/">FitOn</Link>
         </Logo>
         <Gnb>
-          <Link to="/mall">MALL</Link>
+          <Link to="/mall/main">MALL</Link>
           <Link to="/community">COMMUNITY</Link>
           <Link to="/routine">ROUTINE</Link>
           <Link to="/info">INFORMATION</Link>
