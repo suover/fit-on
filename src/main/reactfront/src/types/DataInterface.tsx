@@ -12,6 +12,8 @@ export interface Product {
   updatedAt: Date;
   isDeleted: boolean;
   imageUrl: string;
+
+  quantity: number;
 }
 
 export interface ProductImage {
@@ -32,4 +34,24 @@ export interface CartItem {
   discountRate: number;
   name: string;
   userId: number;
+}
+
+export interface ProductPage<T>{
+  content: T[];
+  pageNumber: number;
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
+}
+
+export interface OrderDetails {
+  customerName: string;
+  phoneNumber: string;
+  postcode:string;
+  add1: string;
+  add2:string;
+}
+
+export interface OrderInfoProps {
+  src: string; // src의 타입을 string으로 명시
 }

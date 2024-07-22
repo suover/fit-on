@@ -1,10 +1,14 @@
 package com.spring.myapp.product.controller;
 
-import com.spring.myapp.cart.controller.CartController;
 import com.spring.myapp.product.model.Product;
+import com.spring.myapp.product.model.ProductPage;
 import com.spring.myapp.product.service.ProductService;
 import com.spring.myapp.product.service.S3Service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.apache.ibatis.annotations.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,45 +34,102 @@ public class ProductController {
 	private ProductService productService;
 	
 	
-	//전체 상품리스트
+	//전체 상품리스트(이미지X)
 	@GetMapping
 	public List<Product> getAllProducts() {
 		return productService.getAllProducts();
 	}
 
-	// 삭제처리 되지 않은 전체상품 리스트
+	// 삭제처리 되지 않은 전체상품 리스트(이미지X)
 	@GetMapping("/available")
 	public List<Product> getProducts() {
 		return productService.getProducts();
 	}
 
-	@GetMapping("/{id}")
-	public Product getProductById(@PathVariable Long id) {
-		return productService.getProductById(id);
+
+
+	//상품 가져오기
+	@GetMapping("/{id}/detail")
+	public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) {
+		logger.info("Fetching active product with ID: {}", id);
+		Product product = productService.getProductById(id);
+		if (product != null) {
+			return ResponseEntity.ok(product);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
 	}
 	
 
+	// 전체 상품 불러오기
 	@GetMapping("/with-images")
 	public ResponseEntity<List<Product>> getAllProductsWithMainImage() {
 		List<Product> products = productService.getAllProductsWithMainImage();
 		return ResponseEntity.ok(products);
 	}
+//	// 판매 가능한 상품 전체 불러오기
+//	@GetMapping("/with-images/active")
+//	public ResponseEntity<List<Product>> getAllActiveProductsWithMainImage() {
+//		List<Product> products = productService.getAllActiveProductsWithMainImage();
+//		return ResponseEntity.ok(products);
+//	}
+//
+////	 카테고리별 판매 가능 상품 조회
+//	@GetMapping("/{categoryId}/active")
+//	public ResponseEntity<List<Product>> getAllActiveProductsWithMainImageByCategory(@PathVariable("categoryId") Long categoryId) {
+//		logger.info("Fetching active products with main image for category: {}", categoryId);
+//		List<Product> products = productService.getAllActiveProductsWithMainImageByCategory(categoryId);
+//		logger.info("Fetched {} products for category: {}", products.size(), categoryId);
+//		return ResponseEntity.ok(products);
+//	}
+//
+//	//판매 가능한 상품 검색
+//	@GetMapping("/search")
+//	public ResponseEntity<List<Product>> searchProducts(@RequestParam(name = "query") String query) {
+//		logger.info("Fetching active products with main image for query: {}", query);
+//		List<Product> products = productService.searchProducts(query);
+//		logger.info("Fetched {} products for query: {}", products.size(), query);
+//		return ResponseEntity.ok(products);
+//	}
+
+	//판매 가능한 전체 상품 페이징 처리
 	@GetMapping("/with-images/active")
-	public ResponseEntity<List<Product>> getAllActiveProductsWithMainImage() {
-		List<Product> products = productService.getAllActiveProductsWithMainImage();
+	public ResponseEntity<Page<Product>> getAllActiveProductsWithMainImage(
+			@PageableDefault( size = 12, sort = "productId") Pageable pageable) {
+		Page<Product> products = productService.getAllActiveProductsWithMainImage(pageable);
 		return ResponseEntity.ok(products);
 	}
-	
-	//카테고리별 상품 분류
-	@GetMapping("/with-images/{category}/active")
-	public ResponseEntity<List<Product>> getAllActiveProductsWithMainImageByCategory(@PathVariable Long category) {
-		List<Product> products = productService.getAllActiveProductsWithMainImageByCategory(category);
+
+	//카테고리별 판매 가능 상품 조회 페이징 처리
+	@GetMapping("/{categoryId}/active")
+	public ResponseEntity<Page<Product>> getAllActiveProductsWithMainImageByCategory(
+			@PathVariable("categoryId") Long categoryId,
+			@PageableDefault( size = 12, sort = "productId") Pageable pageable) {
+
+		logger.info("Fetching products for category: {}, page: {}, size: {}", categoryId, pageable.getPageNumber(), pageable.getPageSize());
+
+		Page<Product> products = productService.getAllActiveProductsWithMainImageByCategory(categoryId, pageable);
 		return ResponseEntity.ok(products);
 	}
-	//상품 검색
+
+//	//판매 가능한 상품 검색 페이징 처리
+//	@GetMapping("/search")
+//	public ResponseEntity<ProductPage<Product>> searchProducts(
+//			@RequestParam(name = "query") String query,
+//			@RequestParam(name = "page",defaultValue = "0") int page,
+//			@RequestParam(name = "size",defaultValue = "12") int size) {
+//		ProductPage<Product> products = productService.searchProducts(query, page, size);
+//		return ResponseEntity.ok(products);
+//	}
+
+	//판매 가능한 상품 검색 페이징 처리
 	@GetMapping("/search")
-	public ResponseEntity<List<Product>> searchProducts(@RequestParam(name = "query") String query) {
-		List<Product> products = productService.searchProducts(query);
+	public ResponseEntity<Page<Product>> searchProducts(
+			@RequestParam(name = "query") String query,
+			@PageableDefault( size = 12, sort = "productId") Pageable pageable) {
+		logger.info("Fetching products for query: {}, page: {}, size: {}", query, pageable.getPageNumber(), pageable.getPageSize());
+
+		Page<Product> products = productService.searchProducts(query,pageable);
 		return ResponseEntity.ok(products);
 	}
 	
@@ -88,7 +149,7 @@ public class ProductController {
 		return ResponseEntity.ok(product);
 	}
 
-	// 상품 삭제 처리
+	// 상품 삭제 처리(비활성화)
 	@PatchMapping("/{deleteId}/deactivate")
 	public ResponseEntity<Void> deactivateProduct(@PathVariable("deleteId") Long deleteId) {
 		try {
@@ -99,8 +160,5 @@ public class ProductController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
-
-
-
 
 }

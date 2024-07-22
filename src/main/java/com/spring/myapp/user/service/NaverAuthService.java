@@ -24,6 +24,10 @@ import com.spring.myapp.user.repository.UserSocialLoginMapper;
 
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * 네이버 인증 서비스 클래스.
+ * 네이버 OAuth2를 통해 사용자 인증을 처리합니다.
+ */
 @Service
 public class NaverAuthService {
 
@@ -48,6 +52,14 @@ public class NaverAuthService {
 	@Autowired
 	private AuthService authService;
 
+	/**
+	 * 네이버 로그인을 처리하고 JWT 인증 응답을 반환합니다.
+	 *
+	 * @param code 네이버 인증 코드
+	 * @param state 네이버 인증 상태
+	 * @param response HTTP 응답 객체
+	 * @return JWT 인증 응답
+	 */
 	public JwtAuthenticationResponse processNaverLogin(String code, String state, HttpServletResponse response) {
 		String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code"
 			+ "&client_id=" + clientId
@@ -86,6 +98,15 @@ public class NaverAuthService {
 			user.getName());
 	}
 
+	/**
+	 * 소셜 로그인 사용자를 가져오거나 새 사용자로 등록합니다.
+	 *
+	 * @param provider 소셜 로그인 제공자
+	 * @param providerId 제공자 ID
+	 * @param email 사용자 이메일
+	 * @param name 사용자 이름
+	 * @return User 객체
+	 */
 	private User getUser(String provider, String providerId, String email, String name) {
 		UserSocialLogin userSocialLogin = userSocialLoginMapper.findByProviderAndProviderId(provider, providerId);
 		User user;
@@ -97,6 +118,15 @@ public class NaverAuthService {
 		return user;
 	}
 
+	/**
+	 * 새로운 사용자를 생성합니다.
+	 *
+	 * @param email 사용자 이메일
+	 * @param name 사용자 이름
+	 * @param provider 소셜 로그인 제공자
+	 * @param providerId 제공자 ID
+	 * @return 생성된 User 객체
+	 */
 	private User createUser(String email, String name, String provider, String providerId) {
 		LocalDateTime now = LocalDateTime.now();
 		User newUser = new User();

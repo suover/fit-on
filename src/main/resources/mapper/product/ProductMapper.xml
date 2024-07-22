@@ -32,7 +32,10 @@
     </select>
 
     <select id="findById" resultMap="ProductResultMap">
-        SELECT * FROM products WHERE product_id = #{productId}
+        SELECT p.*, pi.image_url
+        FROM products p
+        LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.is_main_image = 1
+        WHERE p.is_deleted = false AND p.product_id = #{productId}
     </select>
 
     <insert id="save" parameterType="com.spring.myapp.product.model.Product">
@@ -66,25 +69,68 @@
         LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.is_main_image = 1
     </select>
 
+<!--    <select id="findAllActiveWithMainImage" resultMap="ProductResultMap">-->
+<!--        SELECT p.*, pi.image_url-->
+<!--        FROM products p-->
+<!--        LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.is_main_image = 1-->
+<!--        WHERE p.is_deleted = false-->
+<!--    </select>-->
+
+<!--    <select id="findAllActiveWithMainImageByCategory" resultMap="ProductResultMap">-->
+<!--        SELECT p.*, pi.image_url-->
+<!--        FROM products p-->
+<!--        LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.is_main_image = 1-->
+<!--        WHERE p.is_deleted = false AND category_id = #{categoryId}-->
+<!--    </select>-->
+
+<!--    <select id="findByNameContainingIgnoreCase" resultMap="ProductResultMap">-->
+<!--        SELECT p.*, pi.image_url-->
+<!--        FROM products p-->
+<!--        LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.is_main_image = 1-->
+<!--        WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', #{query}, '%'))-->
+<!--    </select>-->
+
     <select id="findAllActiveWithMainImage" resultMap="ProductResultMap">
         SELECT p.*, pi.image_url
         FROM products p
-        LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.is_main_image = 1
+                 LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.is_main_image = 1
         WHERE p.is_deleted = false
+            LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
     <select id="findAllActiveWithMainImageByCategory" resultMap="ProductResultMap">
         SELECT p.*, pi.image_url
         FROM products p
-        LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.is_main_image = 1
+                 LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.is_main_image = 1
         WHERE p.is_deleted = false AND category_id = #{categoryId}
+            LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
     <select id="findByNameContainingIgnoreCase" resultMap="ProductResultMap">
         SELECT p.*, pi.image_url
         FROM products p
-        LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.is_main_image = 1
+                 LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.is_main_image = 1
         WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', #{query}, '%'))
+            LIMIT #{pageSize} OFFSET #{offset}
     </select>
+
+    <select id="countAllActiveWithMainImage" resultType="long">
+        SELECT COUNT(*)
+        FROM products
+        WHERE is_deleted = false
+    </select>
+
+    <select id="countAllActiveWithMainImageByCategory" resultType="long">
+        SELECT COUNT(*)
+        FROM products
+        WHERE is_deleted = false AND category_id = #{categoryId}
+    </select>
+
+    <select id="countByNameContainingIgnoreCase" resultType="long">
+        SELECT COUNT(*)
+        FROM products
+        WHERE LOWER(name) LIKE LOWER(CONCAT('%', #{query}, '%')) AND is_deleted = false
+    </select>
+
 
 </mapper>
