@@ -52,7 +52,7 @@ public class RoutineBoardController {
 	@GetMapping("/list")
 	public ResponseEntity<Page<RoutineBoard>> getRoutinesWithPaging(
 		@RequestParam(value = "page", defaultValue = "0") int page,
-		@RequestParam(value = "size", defaultValue = "10") int size,
+		@RequestParam(value = "size", defaultValue = "12") int size,
 		@RequestParam(value = "query", required = false) String query) {
 		Pageable pageable = PageRequest.of(page, size);
 		Page<RoutineBoard> routines;

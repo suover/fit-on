@@ -227,6 +227,7 @@ const PostDetail = <T extends DataType>({
   return (
     <>
       <PostWrapper>
+        <h2>{title || '제목 없음'}</h2>
         {routineNo ? (
           <span>
             <ArrowForwardIosIcon />
@@ -235,7 +236,6 @@ const PostDetail = <T extends DataType>({
         ) : (
           ''
         )}
-        <h2>{title || '제목 없음'}</h2>
         <div className="postInfo">
           <span className="icon">
             <PersonIcon />
