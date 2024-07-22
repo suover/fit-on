@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 import ButtonLikePost from '../common/button/ButtonLikePost';
 import ButtonShare from '../common/button/ButtonShare';
 import { PostWrapper, BackBtn } from './PostDetail.styles';

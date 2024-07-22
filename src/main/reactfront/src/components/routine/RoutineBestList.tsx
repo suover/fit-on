@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import SwiperList from '../swiper/SwiperList';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 
 const RoutineBestList: React.FC = () => {
   const [routines, setRoutines] = useState<any[]>([]);

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 import { Container } from '@mui/material';
 import PostDetail from '../../components/postDetail/PostDetail';
 

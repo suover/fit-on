@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import CardLists from '../cardList/CardList';
 import ShareIcon from '@mui/icons-material/Share';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 import { Pagination, Box } from '@mui/material';
 
 const RoutineTotalList = ({ searchQuery }: { searchQuery: any }) => {
