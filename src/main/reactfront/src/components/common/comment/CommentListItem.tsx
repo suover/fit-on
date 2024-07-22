@@ -31,30 +31,36 @@ const CommentListItem: React.FC<{
 }> = ({ comment, route, postId, idName, deleteComment, updateComment }) => {
   const [showReplies, setShowReplies] = useState<boolean>(false);
   const [replies, setReplies] = useState<Comment[]>([]);
-  const [countReplies, setCountReplies] = useState<number>(0);
+  const [countReplies, setCountReplies] = useState<number>();
 
   useEffect(() => {
-    const fetchReplies = async () => {
+    // 대댓글 불러오기
+    const fetchComment = async () => {
       try {
         const res = await axiosInstance.get<Comment[]>(
-          `${route}/${comment.commentId}/replies`,
+          `${route}/${comment.commentId}`,
         );
         setReplies(res.data);
         setCountReplies(res.data.length);
       } catch (error) {
-        console.error('Error fetching replies:', error);
+        console.error('Error fetching post:', error);
       }
     };
 
-    fetchReplies();
-  }, [route, comment.commentId]);
+    fetchComment();
+  }, []);
 
-  const addedReplies = (reply: Comment) => {
-    setReplies([...replies, reply]);
+  useEffect(() => {
+    // prop 'comment'가 변경될 때마다 실행
+    setCountReplies(replies.length);
+  }, [replies]);
+
+  const addedReplies = (comment: Comment) => {
+    setReplies([...replies, comment]);
     setCountReplies((prevCount) => (prevCount || 0) + 1);
   };
 
-  const handleShowReply = () => {
+  const handleShowReply = (isShow: boolean): void => {
     setShowReplies((prevState) => !prevState);
   };
 
@@ -64,7 +70,7 @@ const CommentListItem: React.FC<{
         `${route}/${commentId}/delete`,
       );
       if (response.status === 200) {
-        deleteComment(commentId);
+        deleteComment(commentId); // 최상위 컴포넌트에 삭제 요청 -> UI 반영
         setReplies((prevReplies) =>
           prevReplies.filter((reply) => reply.commentId !== commentId),
         );
@@ -77,22 +83,14 @@ const CommentListItem: React.FC<{
     }
   };
 
-  const handleUpdate = async (commentId: number, content: string) => {
-    try {
-      const response = await axiosInstance.put(`${route}/${commentId}/update`, {
-        content,
-      });
-      if (response.status === 200) {
-        setReplies((prevReplies) =>
-          prevReplies.map((reply) =>
-            reply.commentId === commentId ? { ...reply, content } : reply,
-          ),
-        );
-        updateComment(commentId, content);
-      }
-    } catch (error) {
-      console.error('Error updating comment:', error);
-    }
+  const handleUpdate = (commentId: number, content: string) => {
+    updateComment(commentId, content);
+    //수정된 대댓글 표시
+    setReplies((prevReplies) =>
+      prevReplies.map((reply) =>
+        reply.commentId === commentId ? { ...reply, content: content } : reply,
+      ),
+    );
   };
 
   return (
@@ -115,17 +113,19 @@ const CommentListItem: React.FC<{
             commentId={comment.commentId}
             addComment={addedReplies}
           />
-          {replies.map((eachReply) => (
-            <StyledCommentItem
-              key={eachReply.commentId}
-              route={route}
-              comment={eachReply}
-              isReply={true}
-              clickReply={handleShowReply}
-              handleDelete={handleDelete}
-              handleUpdate={handleUpdate}
-            />
-          ))}
+          {replies
+            ? replies.map((eachreplies) => (
+                <StyledCommentItem
+                  route={route}
+                  key={eachreplies.commentId}
+                  comment={eachreplies}
+                  isReply={true}
+                  clickReply={handleShowReply}
+                  handleDelete={handleDelete}
+                  handleUpdate={handleUpdate}
+                />
+              ))
+            : ''}
         </ReplyWrapper>
       )}
     </CommentWrapper>
