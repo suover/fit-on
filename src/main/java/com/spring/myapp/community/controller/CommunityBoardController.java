@@ -1,6 +1,7 @@
 package com.spring.myapp.community.controller;
 
 
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import lombok.RequiredArgsConstructor;
 import com.spring.myapp.community.dto.CommunityBoardDTO;
 import com.spring.myapp.community.service.CommunityBoardService;
+import com.spring.myapp.community.service.CommunityBoardLikesService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,11 +18,17 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @RestController
 @RequestMapping("/api/community")
 @RequiredArgsConstructor
 public class CommunityBoardController {
 	private final CommunityBoardService communityBoardService;
+		private final CommunityBoardLikesService communityBoardLikesService;
+
+	private static Logger logger = LoggerFactory.getLogger(CommunityBoardController.class);
 
 		// 모든 게시글 가져오기
 		@GetMapping("/posts")
@@ -61,6 +69,26 @@ public class CommunityBoardController {
 		public ResponseEntity<Void> deletePost(@PathVariable("id") Long id) {
 				communityBoardService.deletePost(id);
 				return ResponseEntity.ok().build();
+		}
+
+		// 좋아요 처리
+		@PostMapping("/posts/{id}/like")
+		public ResponseEntity<?> likePost(@PathVariable("id") Long id,
+				@RequestParam("userId") Long userId) {
+
+				try {
+						boolean isLiked = communityBoardLikesService.toggleLike(id, userId);
+						if (isLiked) {
+								logger.info("User {} liked post {}", userId, id);
+								return ResponseEntity.ok("Liked");
+						} else {
+								logger.info("User {} unliked post {}", userId, id);
+								return ResponseEntity.ok("Unliked");
+						}
+				} catch (Exception e) {
+						logger.error("Error toggling like for post {} by user {}", id, userId, e);
+						return ResponseEntity.status(500).body("Error toggling like");
+				}
 		}
 
 }

@@ -1,6 +1,6 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState, FormEvent, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 import {
   Paper,
   Container,
@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import Editor from '../../components/common/Editor';
 import SelectBox from '../../components/common/SelectBox';
+import AuthContext from '../../context/AuthContext';
 
 const PostCategory = [
   { value: '1', label: '운동완료' },
@@ -43,6 +44,7 @@ export interface CommunityDTO {
 
 const NewPost: React.FC = () => {
   const navigate = useNavigate();
+  const { userId, isAuthenticated } = useContext(AuthContext);
   const [formData, setFormData] = useState<CommunityDTO>({
     categoryId: 1,
     title: '',
@@ -71,28 +73,19 @@ const NewPost: React.FC = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const token = localStorage.getItem('token'); // JWT 토큰을 가져옴
-    if (!token) {
+    const token = localStorage.getItem('accessToken');
+    if (!isAuthenticated || !token) {
       console.error('로그인 필요');
       return;
     }
 
-    const userId = localStorage.getItem('user_id'); // 로그인한 사용자의 ID를 localStorage에서 가져옴
-    if (userId) {
-      formData.userId = parseInt(userId, 10);
-    }
-
     try {
-      const response = await axios.post(
-        'http://localhost:8080/api/community/posts',
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
+      const response = await axios.post('/api/community/posts', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-      );
+      });
       console.log('Post created successfully: ', response.data); //로그
       navigate('/community');
     } catch (error) {

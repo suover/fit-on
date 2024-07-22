@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import instance from '../../api/axiosConfig';
 import {
   Container,
   Box,
@@ -17,7 +17,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PersonIcon from '@mui/icons-material/Person';
 import AuthContext from '../../context/AuthContext';
 import CommentList from '../../components/common/comment/CommentList';
-import ButtonLikePost from '../../components/common/button/ButtonLikePost';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import { PostDetailWrapper } from '../../styles/community/CommunityDetail.styles';
 import {
   PostWrapper,
@@ -25,13 +25,6 @@ import {
   RedBtn,
 } from '../../components/postDetail/PostDetail.styles';
 import { Comment } from '../../types/CommentTypes';
-
-const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
 
 interface Post {
   communityId: number;
@@ -69,7 +62,7 @@ const ViewPostDetail = () => {
     if (postId) {
       const fetchPost = async () => {
         try {
-          const response = await axiosInstance.get<Post>(
+          const response = await instance.get<Post>(
             `/api/community/posts/${postId}`,
           );
           console.log('#####Fetched post:', response.data); // API 응답 데이터 확인@@
@@ -95,7 +88,7 @@ const ViewPostDetail = () => {
   //댓글조회
   const fetchComments = async (communityId: number) => {
     try {
-      const response = await axiosInstance.get<Comment[]>(
+      const response = await instance.get<Comment[]>(
         `/api/community/${postId}/comments`,
       );
       setComments(
@@ -133,7 +126,7 @@ const ViewPostDetail = () => {
     }
 
     try {
-      const res = await axiosInstance.post(
+      const res = await instance.post(
         `/api/community/posts/${postId}/like`,
         null,
         {
@@ -146,7 +139,7 @@ const ViewPostDetail = () => {
 
         setLikes((prevState) => prevState + 1);
       } else {
-        setLikes((prevState) => prevState - 1);
+        setLikes((prevState) => Math.max(prevState - 1, 0)); // 음수로 내려가지 않도록 설정
       }
     } catch (error) {
       console.error('Error toggling like:', error);
@@ -165,7 +158,7 @@ const ViewPostDetail = () => {
     if (post && post.communityId) {
       console.log(`########## Deleting post with id: ${postId}`); // 로그 추가
       try {
-        await axiosInstance.delete(`/api/community/posts/${postId}`);
+        await instance.delete(`/api/community/posts/${postId}`);
         navigate('/community');
       } catch (error) {
         console.error('Error deleting post:', error);
@@ -182,8 +175,6 @@ const ViewPostDetail = () => {
   const handleClose = () => {
     setOpen(false);
   };
-
-  //---------------------댓글------------------------
 
   // 댓글 추가
   const addComment = (comment: Comment): void => {
@@ -282,11 +273,20 @@ const ViewPostDetail = () => {
               marginBottom: '50px',
             }}
           >
-            <ButtonLikePost
-              isLiked={isLiked}
-              likeNum={likeCount}
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<FavoriteIcon />}
+              sx={{
+                width: '80px',
+                height: '40px',
+                borderRadius: '20px',
+                padding: 'auto',
+              }}
               onClick={handleLikeClick}
-            />
+            >
+              {likes}
+            </Button>
           </Box>
         </PostWrapper>
         <Box

@@ -5,7 +5,7 @@ import SearchBox from '../common/search/SearchBox';
 import GenericTable from '../genericTable/GenericTable';
 import { TableData, TableRow } from '../genericTable/GenericTable.styles';
 import ButtonNewPost from '../common/button/ButtonNewPost';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 
 interface BoardProps {
   selectedCategory: string | number | null;
@@ -18,7 +18,8 @@ const Board: React.FC<BoardProps> = ({ selectedCategory }) => {
 
   const fetchPosts = () => {
     axios
-      .get('http://localhost:8080/api/community/posts')
+      // .get('http://localhost:8080/api/community/posts')
+      .get('/api/community/posts')
       .then((response) => {
         const transformedData = response.data.map((post: any) => ({
           ...post,
@@ -42,7 +43,8 @@ const Board: React.FC<BoardProps> = ({ selectedCategory }) => {
     userId: number;
   }) => {
     axios
-      .post('http://localhost:8080/api/community/posts', newPost)
+      // .post('http://localhost:8080/api/community/posts', newPost)
+      .post('/api/community/posts', newPost)
       .then(() => {
         fetchPosts(); // 새로운 글을 등록한 후 게시글 목록을 다시 가져옴
       })
