@@ -18,7 +18,7 @@ const MallMain: React.FC = () => {
 
     // 상품 정보 세팅
     useEffect(() => {
-        fetchProducts(page, pageSize);
+        fetchProducts(page - 1, pageSize);
     }, [query, page]);
 
     //
@@ -46,6 +46,7 @@ const MallMain: React.FC = () => {
         value: number,
     ) => {
         setPage(value);
+        window.scrollTo(0, 0);
     };
 
     return (
