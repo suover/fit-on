@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.spring.myapp.community.dto.CommunityBoardDTO;
 import com.spring.myapp.community.model.CommunityBoardUserDetails;
+import com.spring.myapp.community.repository.CommunityBoardCommentMapper;
 import com.spring.myapp.community.repository.CommunityBoardMapper;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,10 +18,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CommunityBoardService {
 		private final CommunityBoardMapper communityMapper;
+		private final CommunityBoardCommentMapper commentMapper;
 
 		// 모든 게시글 조회
 		public List<CommunityBoardDTO> findAllPosts() {
-				return communityMapper.findAllPosts();  // MyBatis 매퍼 메서드 사용
+				return communityMapper.findAllPosts();
 		}
 
 		// 게시글 저장
@@ -53,6 +55,12 @@ public class CommunityBoardService {
 				return post;
 		}
 
+		// 조회수 증가 메서드
+		@Transactional
+		public void incrementViewCount(Long id) {
+				communityMapper.incrementViewCount(id);
+		}
+
 		// 게시글 업데이트
 		@Transactional
 		public CommunityBoardDTO updatePost(Long id, CommunityBoardDTO communityBoardDTO) {
@@ -83,6 +91,9 @@ public class CommunityBoardService {
 				if (existingPost == null) {
 						throw new IllegalArgumentException("해당 게시글을 찾을 수 없습니다.");
 				}
+				// 댓글 소프트 삭제
+				commentMapper.deleteCommentsByCommunityId(id);
+				// 게시글 소프트 삭제
 				communityMapper.deletePost(id);
 		}
 

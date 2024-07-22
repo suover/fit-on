@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 import { Box, Container, TextField, Typography } from '@mui/material';
 import { BackBtn } from '../../components/postDetail/PostDetail.styles';
 import Editor from '../../components/common/Editor';
