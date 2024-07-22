@@ -66,7 +66,6 @@ const CommentList: React.FC<{
           updateComment={handleUpdateComment}
         />
       ))}
-
     </>
   );
 };
