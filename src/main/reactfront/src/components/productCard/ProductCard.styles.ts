@@ -18,6 +18,7 @@ export const Card = styled.article<{ bgImage: string }>`
   overflow: hidden;
   box-shadow: 2px 2px 5px 2px rgba(0, 0, 0, 0.1);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0, 1);
+  cursor: pointer;
 
   &:hover {
     box-shadow: 2px 2px 18px 2px rgba(0, 0, 0, 0.1);

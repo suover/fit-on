@@ -11,36 +11,25 @@ const Header = () => {
     useContext(AuthContext);
 
   const handleLogout = async () => {
-    const token = localStorage.getItem('token');
     const kakaoAccessToken = localStorage.getItem('kakaoAccessToken');
-    if (token) {
-      try {
-        if (loginType === 'kakao') {
-          await axios.post(
-            '/api/auth/kakao/logout',
-            {},
-            {
-              headers: { Authorization: `Bearer ${kakaoAccessToken}` },
-            },
-          );
-          handleKakaoLogout();
-          localStorage.removeItem('kakaoAccessToken'); // 카카오 액세스 토큰 제거
-          logout();
-          alert('로그아웃 되었습니다.');
-          window.location.href = '/';
-        } else {
-          logout();
-          alert('로그아웃 되었습니다.');
-          window.location.href = '/';
-        }
-      } catch (error) {
-        console.error('로그아웃 실패:', error);
-        alert('로그아웃 실패');
+    try {
+      if (loginType === 'kakao' && kakaoAccessToken) {
+        await axios.post(
+          '/api/auth/kakao/logout',
+          {},
+          {
+            headers: { Authorization: `Bearer ${kakaoAccessToken}` },
+          },
+        );
+        handleKakaoLogout();
+        localStorage.removeItem('kakaoAccessToken'); // 카카오 액세스 토큰 제거
       }
-    } else {
       logout();
       alert('로그아웃 되었습니다.');
       window.location.href = '/';
+    } catch (error) {
+      console.error('로그아웃 실패:', error);
+      alert('로그아웃 실패');
     }
   };
 
@@ -68,7 +57,7 @@ const Header = () => {
           <Link to="/">FitOn</Link>
         </Logo>
         <Gnb>
-          <Link to="/mall">MALL</Link>
+          <Link to="/mall/main">MALL</Link>
           <Link to="/community">COMMUNITY</Link>
           <Link to="/routine">ROUTINE</Link>
           <Link to="/info">INFORMATION</Link>

@@ -23,7 +23,12 @@
         SELECT image_url FROM product_images WHERE product_id = #{productId} AND is_main_image = true
     </select>
 
-    <select id="getSubImgURL" resultMap="ProductImageResultMap">
+    <select id="getSubImgURL" resultType="java.lang.String">
         SELECT image_url FROM product_images WHERE product_id = #{productId} AND is_main_image = false
     </select>
+
+<!--    <update id="updateImgURL" resultMap="ProductImageResultMap">-->
+<!--        UPDATE product_images-->
+<!--        SET-->
+<!--    </update>-->
 </mapper>

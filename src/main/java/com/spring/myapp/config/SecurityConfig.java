@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,7 +19,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.spring.myapp.security.JwtAuthenticationFilter;
+import com.spring.myapp.security.JwtTokenProvider;
 
+/**
+ * Spring Security 설정 클래스.
+ * 이 클래스는 Spring Security 설정을 구성하는 클래스입니다.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -28,19 +34,33 @@ public class SecurityConfig {
 	private UserDetailsService userDetailsService;
 
 	@Autowired
+	private JwtTokenProvider jwtTokenProvider;
+
+	@Autowired
 	private Environment env;
 
+	/**
+	 * 비밀번호 인코더 객체를 생성합니다.
+	 *
+	 * @return BCryptPasswordEncoder 객체
+	 */
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
+	/**
+	 * 보안 필터 체인을 설정합니다.
+	 *
+	 * @param http HttpSecurity 객체
+	 * @return SecurityFilterChain 객체
+	 * @throws Exception 설정 중 예외 발생 시
+	 */
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		String[] excludedPaths = env.getProperty("spring.security.jwt.excluded-paths", "").split(",");
-		String[] permitAllPaths = env.getProperty("spring.security.jwt.permit-all-paths", "").split(",");
-		String[] authenticatedPaths = env.getProperty("spring.security.jwt.authenticated-paths", "").split(",");
-		String[] adminPaths = env.getProperty("spring.security.jwt.admin-paths", "").split(",");
+		String[] publicEndpoints = env.getProperty("spring.security.endpoints.public", String[].class);
+		String adminEndpoint = env.getProperty("spring.security.endpoints.admin");
+		String authenticatedEndpoint = env.getProperty("spring.security.endpoints.authenticated");
 
 		http
 			.csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화
@@ -49,30 +69,27 @@ public class SecurityConfig {
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션을 상태 비저장으로 설정
 			)
 			.authorizeHttpRequests(authorize -> authorize
-				.requestMatchers(permitAllPaths).permitAll()
-				.requestMatchers(authenticatedPaths).authenticated()
-				.requestMatchers(adminPaths).hasRole("ADMIN")
-				.anyRequest().permitAll()
-			)
-			.formLogin(form -> form
-				.loginPage("/sign-in")
-				.defaultSuccessUrl("/", true)
-				.permitAll()
-			)
-			.logout(logout -> logout
-				.logoutUrl("/logout")
-				.logoutSuccessUrl("/")
-				.permitAll()
+				.requestMatchers(publicEndpoints).permitAll() // 공용 엔드포인트 허용
+				.requestMatchers(adminEndpoint).hasRole("ADMIN") // 관리자 경로 설정
+				.requestMatchers(authenticatedEndpoint).authenticated() // 인증된 사용자만 접근
+				.requestMatchers(HttpMethod.GET).permitAll() // 모든 GET 요청 허용
+				.anyRequest().authenticated() // 나머지 모든 요청 인증 필요
 			)
 			.addFilterBefore(
-				new JwtAuthenticationFilter(userDetailsService, env.getProperty("spring.security.jwt.secret"),
-					excludedPaths),
+				new JwtAuthenticationFilter(userDetailsService, jwtTokenProvider),
 				UsernamePasswordAuthenticationFilter.class
 			);
 
 		return http.build();
 	}
 
+	/**
+	 * 인증 관리자 객체를 생성합니다.
+	 *
+	 * @param http HttpSecurity 객체
+	 * @return AuthenticationManager 객체
+	 * @throws Exception 설정 중 예외 발생 시
+	 */
 	@Bean
 	public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
 		AuthenticationManagerBuilder authenticationManagerBuilder =

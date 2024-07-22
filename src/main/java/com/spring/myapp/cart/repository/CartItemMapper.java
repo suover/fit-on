@@ -15,4 +15,10 @@ import com.spring.myapp.cart.model.CartItem;
 public interface CartItemMapper {
 	void insertCartItem(CartItem cartItem);
 	List<CartItem> findCartItemsByCartId(@Param("cartId") Long cartId);
+
+	CartItem findByUserIdAndProductId(@Param("userId")Long userId,@Param("productId") Long productId);
+	CartItem findCartItemByCartIdAndProductId(@Param("cartId")Long cartId,@Param("productId") Long productId);
+	void updateCartItem(CartItem cartItem);
+	void deleteCartItemByProductId(@Param("cartId")Long cartId,@Param("productId")Long productId);
+
 }
