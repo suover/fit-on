@@ -94,30 +94,42 @@ public class ProductController {
 
 	//판매 가능한 전체 상품 페이징 처리
 	@GetMapping("/with-images/active")
-	public ResponseEntity<ProductPage<Product>> getAllActiveProductsWithMainImage(
-			@RequestParam(name = "page",defaultValue = "0") int page,
-			@RequestParam(name = "size",defaultValue = "12") int size) {
-		ProductPage<Product> products = productService.getAllActiveProductsWithMainImage(page, size);
+	public ResponseEntity<Page<Product>> getAllActiveProductsWithMainImage(
+			@PageableDefault( size = 12, sort = "productId") Pageable pageable) {
+		Page<Product> products = productService.getAllActiveProductsWithMainImage(pageable);
 		return ResponseEntity.ok(products);
 	}
 
 	//카테고리별 판매 가능 상품 조회 페이징 처리
 	@GetMapping("/{categoryId}/active")
-	public ResponseEntity<ProductPage<Product>> getAllActiveProductsWithMainImageByCategory(
+	public ResponseEntity<Page<Product>> getAllActiveProductsWithMainImageByCategory(
 			@PathVariable("categoryId") Long categoryId,
-			@RequestParam(name = "page",defaultValue = "0") int page,
-			@RequestParam(name = "size",defaultValue = "12") int size) {
-		ProductPage<Product> products = productService.getAllActiveProductsWithMainImageByCategory(categoryId, page, size);
+			@PageableDefault( size = 12, sort = "productId") Pageable pageable) {
+
+		logger.info("Fetching products for category: {}, page: {}, size: {}", categoryId, pageable.getPageNumber(), pageable.getPageSize());
+
+		Page<Product> products = productService.getAllActiveProductsWithMainImageByCategory(categoryId, pageable);
 		return ResponseEntity.ok(products);
 	}
 
+//	//판매 가능한 상품 검색 페이징 처리
+//	@GetMapping("/search")
+//	public ResponseEntity<ProductPage<Product>> searchProducts(
+//			@RequestParam(name = "query") String query,
+//			@RequestParam(name = "page",defaultValue = "0") int page,
+//			@RequestParam(name = "size",defaultValue = "12") int size) {
+//		ProductPage<Product> products = productService.searchProducts(query, page, size);
+//		return ResponseEntity.ok(products);
+//	}
+
 	//판매 가능한 상품 검색 페이징 처리
 	@GetMapping("/search")
-	public ResponseEntity<ProductPage<Product>> searchProducts(
+	public ResponseEntity<Page<Product>> searchProducts(
 			@RequestParam(name = "query") String query,
-			@RequestParam(name = "page",defaultValue = "0") int page,
-			@RequestParam(name = "size",defaultValue = "12") int size) {
-		ProductPage<Product> products = productService.searchProducts(query, page, size);
+			@PageableDefault( size = 12, sort = "productId") Pageable pageable) {
+		logger.info("Fetching products for query: {}, page: {}, size: {}", query, pageable.getPageNumber(), pageable.getPageSize());
+
+		Page<Product> products = productService.searchProducts(query,pageable);
 		return ResponseEntity.ok(products);
 	}
 	

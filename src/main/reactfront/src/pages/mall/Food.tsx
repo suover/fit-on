@@ -13,10 +13,9 @@ const Fittness: React.FC = () => {
   const [pageSize, setPageSize] = useState<number>(12);
   const [totalPages, setTotalPages] = useState<number>(0);
 
-
   // 상품 정보 세팅
   useEffect(() => {
-    fetchCategoryProducts(page, pageSize);
+    fetchCategoryProducts(page - 1, pageSize); // page - 1로 수정
   }, [page]);
 
 
@@ -38,6 +37,7 @@ const Fittness: React.FC = () => {
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
+    window.scrollTo(0, 0);
   };
 
   return (
