@@ -17,10 +17,14 @@ import {
   ButtonContainer,
   Btn,
 } from '../../styles/order/Order.Styles';
-import { OrderDetails, Product } from '../../types/OrderInterface';
+import { OrderDetails, Product } from '../../types/DataInterface';
 import OrderInformation from '../../components/order/OrderInfoProps';
 import RadioButtonsGroup from '../../components/order/Radio';
 import SelectCard from '../../components/order/SelectCard';
+import axios from '../../api/axiosConfig';
+import DaumPostcode from 'react-daum-postcode'; //npm install react-daum-postcode
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
 
 const OrderPage: React.FC = () => {
   const location = useLocation();
@@ -29,8 +33,11 @@ const OrderPage: React.FC = () => {
   const [orderDetails, setOrderDetails] = useState<OrderDetails>({
     customerName: '',
     phoneNumber: '',
-    address: '',
+    postcode:'',
+    add1: '',
+    add2:'',
   });
+  const [isOpen, setIsOpen] = useState<boolean>(false); //주소Modal
 
   const [products, setProducts] = useState<Product[]>([]);
   const [paymentMethod, setPaymentMethod] = useState<string>('hd');
@@ -64,6 +71,20 @@ const OrderPage: React.FC = () => {
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setPaymentMethod(event.target.value);
   };
+
+  const completeHandler = (data:any) =>{
+    console.log(data)
+    setOrderDetails({
+      ...orderDetails,
+      postcode:data.zonecode,
+      add1: data.address
+    });
+    setIsOpen(false); //추가
+  }
+  // 검색 클릭
+  const handleAddressSearch = () =>{
+    setIsOpen(!isOpen);
+  }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -102,13 +123,35 @@ const OrderPage: React.FC = () => {
         <InfoRow>
           <InputLabel htmlFor="address">배송지 주소</InputLabel>
           <InputInfo
-            id="address"
-            name="address"
-            value={orderDetails.address}
+            id="postcode"
+            name="postcode"
+            value={orderDetails.postcode}
             onChange={handleInputChange}
             placeholder="우편번호 검색을 클릭하여 정확한 주소를 입력해주세요."
+            readOnly
           />
-          <Btn type="submit">우편번호 검색</Btn>
+          <Btn type="button" onClick={handleAddressSearch}>우편번호 검색</Btn>
+        </InfoRow>
+        <InfoRow>
+          <InputLabel></InputLabel>
+          <InputInfo
+              id="add1"
+              name="add1"
+              value={orderDetails.add1}
+              onChange={handleInputChange}
+              placeholder="우편번호 검색을 클릭하여 정확한 주소를 입력해주세요."
+              readOnly
+          />
+        </InfoRow>
+        <InfoRow>
+          <InputLabel></InputLabel>
+          <InputInfo
+              id="add2"
+              name="add2"
+              value={orderDetails.add2}
+              onChange={handleInputChange}
+              placeholder="상세 주소를 입력해주세요."
+          />
         </InfoRow>
         <LightDivider />
         <h2>결제 상품 정보</h2>
@@ -156,6 +199,16 @@ const OrderPage: React.FC = () => {
           <Button type="submit">결제하기</Button>
         </ButtonContainer>
       </FormContainer>
+      <Modal
+          open={isOpen}
+          onClose={() => setIsOpen(false)}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+      >
+        <Box sx={{ width: '400px', height: '500px', margin: 'auto', marginTop: '10%', backgroundColor: 'white', padding: '20px', boxShadow: 24 }}>
+          <DaumPostcode onComplete={completeHandler} />
+        </Box>
+      </Modal>
     </PageContainer>
   );
 };
