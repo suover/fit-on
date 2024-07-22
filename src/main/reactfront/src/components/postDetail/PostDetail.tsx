@@ -82,12 +82,14 @@ const PostDetail = <T extends DataType>({
 
   useEffect(() => {
     const checkLikeStatus = async () => {
+      console.log(`Checking like status for routineNo: ${routineNo}`);
       try {
         const response = await axios.get(`/api/routine/${routineNo}/likes`, {
           params: { userId: currentUserId },
         });
         setIsLiked(response.data.liked);
         setLikeCount(response.data.count);
+        console.log('Like status:', response.data);
       } catch (error) {
         console.error('Error checking like status:', error);
       }
@@ -103,6 +105,9 @@ const PostDetail = <T extends DataType>({
       return;
     }
 
+    console.log(
+      `Toggling like for routineNo: ${routineNo}, currentUserId: ${currentUserId}`,
+    );
     try {
       if (isLiked) {
         await axios.post(`/api/routine/${routineNo}/unlike`, null, {
@@ -117,6 +122,7 @@ const PostDetail = <T extends DataType>({
         setIsLiked(true);
         setLikeCount((prevCount) => prevCount + 1);
       }
+      console.log(`Like status changed to: ${!isLiked}`);
     } catch (error) {
       console.error('Error toggling like:', error);
       alert('좋아요 처리 중 오류가 발생했습니다.');
@@ -124,6 +130,7 @@ const PostDetail = <T extends DataType>({
   };
 
   const handleShareClick = () => {
+    console.log('Sharing post');
     if (data) {
       setIsShared(!isShared);
     }
@@ -141,6 +148,7 @@ const PostDetail = <T extends DataType>({
           params: { userId: currentUserId },
         });
         alert('게시글이 삭제되었습니다.');
+        console.log(`Post deleted, routineNo: ${routineNo}`);
         navigate(`/${pageURL}`);
       } catch (error) {
         alert('게시글 삭제에 실패했습니다.');
@@ -155,14 +163,23 @@ const PostDetail = <T extends DataType>({
       return;
     }
 
+    console.log('Editing post');
     navigate(`/routine/new-routine`, { state: { routine: contentData } });
   };
 
   useEffect(() => {
     const fetchComments = async () => {
+      console.log(`Fetching comments for routineNo: ${routineNo}`);
       try {
-        const response = await axios.get(`/api/routine/${routineNo}/comments`);
-        setRoutineComments(response.data);
+        const response = await axios.get<Comment[]>(
+          `/api/routine/${routineNo}/comments`,
+        );
+        const commentsWithReplies = response.data.map((comment) => ({
+          ...comment,
+          replies: [],
+        }));
+        setRoutineComments(commentsWithReplies);
+        console.log('Fetched comments with replies:', commentsWithReplies);
       } catch (error) {
         console.error('Error fetching comments:', error);
       }
@@ -172,7 +189,8 @@ const PostDetail = <T extends DataType>({
   }, [routineNo]);
 
   const addComment = (comment: Comment): void => {
-    setRoutineComments((prevComments) => [...prevComments, comment]);
+    setRoutineComments([...routineComments, comment]);
+    console.log('Added comment:', comment);
   };
 
   const deleteComment = (commentId: number) => {
@@ -183,6 +201,7 @@ const PostDetail = <T extends DataType>({
           comment.parentCommentId !== commentId,
       ),
     );
+    console.log('Deleted comment ID:', commentId);
   };
 
   const updateComment = (commentId: number, updatedContent: string): void => {
@@ -192,6 +211,12 @@ const PostDetail = <T extends DataType>({
           ? { ...comment, content: updatedContent }
           : comment,
       ),
+    );
+    console.log(
+      'Updated comment ID:',
+      commentId,
+      'New content:',
+      updatedContent,
     );
   };
 

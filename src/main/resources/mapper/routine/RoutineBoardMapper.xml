@@ -45,13 +45,13 @@
         #{goalId}, #{levelId}, #{partId}, #{imageUrl})
     </insert>
 
-    <select id="findBestRoutines" resultMap="RoutineBoardResultMap">
+    <select id="findBestRoutines" parameterType="int" resultMap="RoutineBoardResultMap">
         SELECT r.*, u.nickname
         FROM routines r
         JOIN users u ON r.user_id = u.user_id
         WHERE r.is_deleted = 0
         ORDER BY r.view_count DESC
-        LIMIT 10
+        LIMIT #{limit}
     </select>
 
     <update id="updateRoutineBoard" parameterType="com.spring.myapp.routineBoard.model.RoutineBoard">
@@ -81,25 +81,13 @@
         SELECT part_name FROM routine_parts WHERE part_id = #{partId}
     </select>
 
-    <select id="findAllRoutineGoals" resultType="com.spring.myapp.routineBoard.model.RoutineGoal">
-        SELECT * FROM routine_goals
-    </select>
-
-    <select id="findAllRoutineLevels" resultType="com.spring.myapp.routineBoard.model.RoutineLevel">
-        SELECT * FROM routine_levels
-    </select>
-
-    <select id="findAllRoutineParts" resultType="com.spring.myapp.routineBoard.model.RoutinePart">
-        SELECT * FROM routine_parts
-    </select>
-
     <select id="findAllWithPaging" resultMap="RoutineBoardResultMap">
         SELECT r.*, u.nickname
         FROM routines r
         JOIN users u ON r.user_id = u.user_id
         WHERE r.is_deleted = 0
         ORDER BY r.created_at DESC
-        LIMIT #{offset}, #{size}
+        LIMIT #{size} OFFSET #{offset}
     </select>
 
     <select id="findAllWithPagingAndSearch" resultMap="RoutineBoardResultMap">
@@ -108,8 +96,9 @@
         JOIN users u ON r.user_id = u.user_id
         WHERE r.is_deleted = 0 AND r.title LIKE CONCAT('%', #{query}, '%')
         ORDER BY r.created_at DESC
-        LIMIT #{offset}, #{size}
+        LIMIT #{size} OFFSET #{offset}
     </select>
+
 
     <select id="countRoutinesWithSearch" resultType="long">
         SELECT COUNT(*) FROM routines WHERE is_deleted = 0 AND title LIKE CONCAT('%', #{query}, '%')

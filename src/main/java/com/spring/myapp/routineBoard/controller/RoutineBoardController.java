@@ -9,6 +9,9 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,51 +50,29 @@ public class RoutineBoardController {
 	private RoutineLikesService routineLikesService;
 
 	@GetMapping("/list")
-	public ResponseEntity<List<RoutineBoard>> getRoutinesWithPaging(
-		@RequestParam(value = "page") int page,
-		@RequestParam(value = "size") int size,
+	public ResponseEntity<Page<RoutineBoard>> getRoutinesWithPaging(
+		@RequestParam(value = "page", defaultValue = "0") int page,
+		@RequestParam(value = "size", defaultValue = "10") int size,
 		@RequestParam(value = "query", required = false) String query) {
-		try {
-			int offset = page * size;
-			List<RoutineBoard> routines;
-			if (query != null && !query.isEmpty()) {
-				routines = routineBoardService.getRoutinesWithPagingAndSearch(offset, size, query);
-				logger.info("@@@@@@@Fetched routines with search query '{}' for page: {} with size: {}@@@@@@@@@@",
-					query, page, size);
-			} else {
-				routines = routineBoardService.getRoutinesWithPaging(offset, size);
-				logger.info("@@@@@@@@@Fetched routines for page: {} with size: {}@@@@@@@@@@@", page, size);
-			}
-
-			// 좋아요 수 포함
-			routines.forEach(routine -> {
-				int likes = routineLikesService.getLikesCount(routine.getRoutineId());
-				routine.setLikes(likes);
-			});
-
-			return ResponseEntity.ok(routines);
-		} catch (Exception e) {
-			logger.error("@@@@@@@@@Error getting routines with paging@@@@@@@", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		Pageable pageable = PageRequest.of(page, size);
+		Page<RoutineBoard> routines;
+		if (query != null && !query.isEmpty()) {
+			routines = routineBoardService.getRoutinesWithPagingAndSearch(query, pageable);
+		} else {
+			routines = routineBoardService.getRoutinesWithPaging(pageable);
 		}
+		return ResponseEntity.ok(routines);
 	}
 
 	@GetMapping("/count")
 	public ResponseEntity<Long> getRoutineCount(@RequestParam(value = "query", required = false) String query) {
-		try {
-			long count;
-			if (query != null && !query.isEmpty()) {
-				count = routineBoardService.getRoutineCountWithSearch(query);
-				logger.info("@@@@@@@@@@Fetched routine count with search query '{}': {}@@@@@@@@@", query, count);
-			} else {
-				count = routineBoardService.getRoutineCount();
-				logger.info("@@@@@@@@@@Fetched routine count: {}@@@@@@@@", count);
-			}
-			return ResponseEntity.ok(count);
-		} catch (Exception e) {
-			logger.error("@@@@@@@@@Error getting routine count@@@@@@@@", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		long count;
+		if (query != null && !query.isEmpty()) {
+			count = routineBoardService.getRoutineCountWithSearch(query);
+		} else {
+			count = routineBoardService.getRoutineCount();
 		}
+		return ResponseEntity.ok(count);
 	}
 
 	//게시글 생성
@@ -238,9 +219,10 @@ public class RoutineBoardController {
 
 	//베스트 루틴
 	@GetMapping("/best")
-	public ResponseEntity<List<RoutineBoard>> getBestRoutines() {
+	public ResponseEntity<List<RoutineBoard>> getBestRoutines(
+		@RequestParam(value = "limit", defaultValue = "10") int limit) {
 		try {
-			List<RoutineBoard> bestRoutines = routineBoardService.getBestRoutines();
+			List<RoutineBoard> bestRoutines = routineBoardService.getBestRoutines(limit);
 			logger.info("Fetched best routines");
 
 			// 좋아요 수 포함

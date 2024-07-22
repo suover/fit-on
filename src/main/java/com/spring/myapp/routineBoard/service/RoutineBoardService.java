@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.spring.myapp.routineBoard.model.RoutineBoard;
@@ -14,6 +17,33 @@ public class RoutineBoardService {
 
 	@Autowired
 	private RoutineBoardMapper routineBoardMapper;
+
+	@Autowired
+	private RoutineLikesService routineLikesService;
+
+	public Page<RoutineBoard> getRoutinesWithPaging(Pageable pageable) {
+		int offset = (int)pageable.getOffset();
+		int size = pageable.getPageSize();
+		List<RoutineBoard> routines = routineBoardMapper.findAllWithPaging(offset, size);
+		long total = routineBoardMapper.countRoutines();
+		routines.forEach(routine -> {
+			int likes = routineLikesService.getLikesCount(routine.getRoutineId());
+			routine.setLikes(likes);
+		});
+		return new PageImpl<>(routines, pageable, total);
+	}
+
+	public Page<RoutineBoard> getRoutinesWithPagingAndSearch(String query, Pageable pageable) {
+		int offset = (int)pageable.getOffset();
+		int size = pageable.getPageSize();
+		List<RoutineBoard> routines = routineBoardMapper.findAllWithPagingAndSearch(offset, size, query);
+		long total = routineBoardMapper.countRoutinesWithSearch(query);
+		routines.forEach(routine -> {
+			int likes = routineLikesService.getLikesCount(routine.getRoutineId());
+			routine.setLikes(likes);
+		});
+		return new PageImpl<>(routines, pageable, total);
+	}
 
 	public List<RoutineBoard> getAllRoutines() {
 		return routineBoardMapper.findAll();
@@ -76,20 +106,12 @@ public class RoutineBoardService {
 		return routineBoardMapper.findPartNameById(partId);
 	}
 
-	public List<RoutineBoard> getRoutinesWithPaging(int offset, int size) {
-		return routineBoardMapper.findAllWithPaging(offset, size);
-	}
-
 	public long getRoutineCount() {
 		return routineBoardMapper.countRoutines();
 	}
 
-	public List<RoutineBoard> getBestRoutines() {
-		return routineBoardMapper.findBestRoutines();
-	}
-
-	public List<RoutineBoard> getRoutinesWithPagingAndSearch(int offset, int size, String query) {
-		return routineBoardMapper.findAllWithPagingAndSearch(offset, size, query);
+	public List<RoutineBoard> getBestRoutines(int limit) {
+		return routineBoardMapper.findBestRoutines(limit);
 	}
 
 	public long getRoutineCountWithSearch(String query) {

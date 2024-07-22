@@ -18,28 +18,27 @@
     </resultMap>
 
     <select id="getUserNicknameById" resultType="string" parameterType="long">
-        SELECT nickname FROM users WHERE user_id = #{userId}
+        SELECT nickname
+        FROM users u
+        WHERE u.user_id = #{userId}
     </select>
 
     <select id="getAllRoutineComments" parameterType="long" resultMap="routineCommentResultMap">
-        SELECT rc.*, u.nickname
-        FROM routine_comments rc
-        JOIN users u ON rc.user_id = u.user_id
-        WHERE rc.routine_id = #{routineId} AND rc.is_deleted = 0
+        SELECT * FROM routine_comments
+        WHERE routine_id = #{routineId} AND is_deleted = 0 AND parent_comment_id is null
+        ORDER BY created_at ASC
     </select>
 
     <select id="getRoutineCommentById" parameterType="long" resultMap="routineCommentResultMap">
-        SELECT rc.*, u.nickname
-        FROM routine_comments rc
-        JOIN users u ON rc.user_id = u.user_id
-        WHERE rc.comment_id = #{commentId} AND rc.is_deleted = 0
+        SELECT *
+        FROM routine_comments
+        WHERE comment_id = #{commentId}
     </select>
 
     <select id="getRoutineRepliesById" parameterType="long" resultMap="routineCommentResultMap">
-        SELECT rc.*, u.nickname
-        FROM routine_comments rc
-        JOIN users u ON rc.user_id = u.user_id
-        WHERE rc.parent_comment_id = #{commentId} AND rc.is_deleted = 0
+        SELECT *
+        FROM routine_comments
+        WHERE parent_comment_id = #{commentId} AND is_deleted = 0
     </select>
 
     <insert id="writeNewRoutineComment" useGeneratedKeys="true" keyProperty="commentId" keyColumn="comment_id">

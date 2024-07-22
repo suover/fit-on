@@ -31,36 +31,30 @@ const CommentListItem: React.FC<{
 }> = ({ comment, route, postId, idName, deleteComment, updateComment }) => {
   const [showReplies, setShowReplies] = useState<boolean>(false);
   const [replies, setReplies] = useState<Comment[]>([]);
-  const [countReplies, setCountReplies] = useState<number>();
+  const [countReplies, setCountReplies] = useState<number>(0);
 
   useEffect(() => {
-    // 대댓글 불러오기
-    const fetchComment = async () => {
+    const fetchReplies = async () => {
       try {
         const res = await axiosInstance.get<Comment[]>(
-          `${route}/${comment.commentId}`,
+          `${route}/${comment.commentId}/replies`,
         );
         setReplies(res.data);
         setCountReplies(res.data.length);
       } catch (error) {
-        console.error('Error fetching post:', error);
+        console.error('Error fetching replies:', error);
       }
     };
 
-    fetchComment();
-  }, []);
+    fetchReplies();
+  }, [route, comment.commentId]);
 
-  useEffect(() => {
-    // prop 'comment'가 변경될 때마다 실행
-    setCountReplies(replies.length);
-  }, [replies]);
-
-  const addedReplies = (comment: Comment) => {
-    setReplies([...replies, comment]);
+  const addedReplies = (reply: Comment) => {
+    setReplies([...replies, reply]);
     setCountReplies((prevCount) => (prevCount || 0) + 1);
   };
 
-  const handleShowReply = (isShow: boolean): void => {
+  const handleShowReply = () => {
     setShowReplies((prevState) => !prevState);
   };
 
@@ -70,7 +64,7 @@ const CommentListItem: React.FC<{
         `${route}/${commentId}/delete`,
       );
       if (response.status === 200) {
-        deleteComment(commentId); // 최상위 컴포넌트에 삭제 요청 -> UI 반영
+        deleteComment(commentId);
         setReplies((prevReplies) =>
           prevReplies.filter((reply) => reply.commentId !== commentId),
         );
@@ -83,8 +77,22 @@ const CommentListItem: React.FC<{
     }
   };
 
-  const handleUpdate = (commentId: number, content: string) => {
-    updateComment(commentId, content);
+  const handleUpdate = async (commentId: number, content: string) => {
+    try {
+      const response = await axiosInstance.put(`${route}/${commentId}/update`, {
+        content,
+      });
+      if (response.status === 200) {
+        setReplies((prevReplies) =>
+          prevReplies.map((reply) =>
+            reply.commentId === commentId ? { ...reply, content } : reply,
+          ),
+        );
+        updateComment(commentId, content);
+      }
+    } catch (error) {
+      console.error('Error updating comment:', error);
+    }
   };
 
   return (
@@ -107,19 +115,17 @@ const CommentListItem: React.FC<{
             commentId={comment.commentId}
             addComment={addedReplies}
           />
-          {replies
-            ? replies.map((eachreplies) => (
-                <StyledCommentItem
-                  route={route}
-                  key={eachreplies.commentId}
-                  comment={eachreplies}
-                  isReply={true}
-                  clickReply={handleShowReply}
-                  handleDelete={handleDelete}
-                  handleUpdate={handleUpdate}
-                />
-              ))
-            : ''}
+          {replies.map((eachReply) => (
+            <StyledCommentItem
+              key={eachReply.commentId}
+              route={route}
+              comment={eachReply}
+              isReply={true}
+              clickReply={handleShowReply}
+              handleDelete={handleDelete}
+              handleUpdate={handleUpdate}
+            />
+          ))}
         </ReplyWrapper>
       )}
     </CommentWrapper>

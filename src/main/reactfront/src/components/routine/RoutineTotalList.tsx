@@ -16,17 +16,14 @@ const RoutineTotalList = ({ searchQuery }: { searchQuery: any }) => {
         const response = await axios.get('/api/routine/list', {
           params: { page: page - 1, size: pageSize, query: searchQuery },
         });
-        const transformedData = response.data.map((info: any) => ({
+        const { content, totalPages } = response.data;
+        const transformedData = content.map((info: any) => ({
           ...info,
           id: info.routineId,
           likes: info.likes, // 좋아요 수 포함
         }));
         setRoutines(transformedData);
-
-        const countResponse = await axios.get('/api/routine/count', {
-          params: { query: searchQuery },
-        });
-        setTotalPages(Math.ceil(countResponse.data / pageSize));
+        setTotalPages(totalPages);
       } catch (error) {
         console.error('Failed to fetch routines:', error);
       }

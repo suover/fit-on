@@ -192,7 +192,7 @@ const NewRoutine = () => {
       if (routineId) {
         // 기존 게시글 수정
         const response = await axios.put(
-          `http://localhost:8080/api/routine/${routineId}`,
+          `/api/routine/${routineId}`,
           formData,
           {
             headers: {
@@ -204,7 +204,7 @@ const NewRoutine = () => {
       } else {
         // 새 게시글 생성
         const response = await axios.post(
-          'http://localhost:8080/api/routine/new-routine',
+          '/api/routine/new-routine',
           formData,
           {
             headers: {
