@@ -66,7 +66,7 @@ const CommentListItem: React.FC<{
 
   const handleDelete = async (commentId: number) => {
     try {
-      const response = await axiosInstance.delete(
+      const response = await axiosInstance.put(
         `${route}/${commentId}/delete`,
       );
       if (response.status === 200) {
@@ -83,7 +83,22 @@ const CommentListItem: React.FC<{
     }
   };
 
-  const handleUpdate = (commentId: number, content: string) => {
+  const handleUpdate = (
+    commentId: number,
+    content: string,
+    isReply?: boolean,
+  ) => {
+    if (isReply) {
+      setReplies((prevComments) =>
+        prevComments.map((comment) =>
+          comment.commentId === commentId
+            ? { ...comment, content: content }
+            : comment,
+        ),
+      );
+      return;
+    }
+
     updateComment(commentId, content);
   };
 

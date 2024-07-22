@@ -1,6 +1,7 @@
 package com.spring.myapp.informationBoard.repository;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -11,10 +12,10 @@ import com.spring.myapp.informationBoard.model.Information;
 public interface InfoMapper {
 
 	List<Information> findAll();
-	
+
 	List<Information> keywordInfoList(InfoPaging<?> infoPaging);
 
-	int countKeywordInfoList(String keyword);
+	int countKeywordInfoList(Map<String, String> keywords);
 
 	void writeNewInfo(Information info);
 

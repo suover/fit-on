@@ -6,6 +6,7 @@ const InputField = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 30px;
+  padding-top: 5px;
 
   textarea {
     width: 90%;

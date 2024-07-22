@@ -1,6 +1,7 @@
 package com.spring.myapp.informationBoard.service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,21 @@ public class InfoService {
 		return infoMapper.findAll();
 	}
 
-	public Page<Information> infoListPaging(String keyword, Pageable pageable) {
+	public Page<Information> infoListPaging(String filterKeyword, String searchKeyword, Pageable pageable) {
 
-		InfoPaging<?> requestList = InfoPaging.builder().infoData(keyword).pageable(pageable).build();
+		HashMap<String, String> keywords = new HashMap<>();
+		keywords.put("filterKeyword", filterKeyword);
+		keywords.put("searchKeyword", searchKeyword);
+
+		System.out.println("-----------------------");
+		System.out.println(keywords);
+		System.out.println("-----------------------");
+
+		InfoPaging<?> requestList = InfoPaging.builder().infoData(keywords).pageable(pageable).build();
 
 		List<Information> infoList = infoMapper.keywordInfoList(requestList);
-		int total = infoMapper.countKeywordInfoList(keyword);
-		
+		int total = infoMapper.countKeywordInfoList(keywords);
+
 		return new PageImpl<>(infoList, pageable, total);
 	}
 
