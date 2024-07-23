@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.myapp.mypage.repository.UserInfoRepository">
+    <select id="getPasswordByUserId" resultType="string">
+        SELECT password FROM users WHERE user_id = #{userId}
+    </select>
+
+    <select id="getUserInfoById" resultType="com.spring.myapp.mypage.model.UserInfo">
+        SELECT
+        u.user_id AS userId,
+        u.email,
+        u.name,
+        u.nickname,
+        u.phone,
+        u.birth_date AS birthday,
+        u.join_date AS joinDate,
+        ua.gender,
+        ua.occupation,
+        ua.bench_press AS benchPress,
+        ua.squat,
+        ua.deadlift
+        FROM users u
+        LEFT JOIN user_additional_info ua ON u.user_id = ua.user_id
+        WHERE u.user_id = #{userId}
+    </select>
+
+    <select id="checkAdditionalInfoExists" resultType="int">
+        SELECT COUNT(*) FROM user_additional_info WHERE user_id = #{userId}
+    </select>
+
+    <insert id="insertAdditionalInfo">
+        INSERT INTO user_additional_info (user_id, gender, occupation, bench_press, squat, deadlift)
+        VALUES (#{userId}, #{gender}, #{occupation}, #{benchPress}, #{squat}, #{deadlift})
+    </insert>
+
+    <update id="updateMainInfo">
+        UPDATE users
+        SET
+        email = #{email},
+        name = #{name},
+        nickname = #{nickname},
+        phone = #{phone},
+        birth_date = #{birthday}
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="updateAdditionalInfo">
+        UPDATE user_additional_info
+        SET
+        gender = #{gender},
+        occupation = #{occupation},
+        bench_press = #{benchPress},
+        squat = #{squat},
+        deadlift = #{deadlift}
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="updatePassword">
+        UPDATE users
+        SET password = #{password}
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="deactivateAccount">
+        UPDATE users
+        SET is_active = FALSE
+        WHERE user_id = #{userId}
+    </update>
+</mapper>

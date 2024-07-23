@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Button,
@@ -9,23 +9,40 @@ import {
   Grid,
   Paper,
 } from '@mui/material';
-
-const TEMP_PASSWORD = '1234'; // 임시 비밀번호
+import axios from '../../api/axiosConfig';
+import AuthContext from '../../context/AuthContext';
 
 const UserInfoLoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { userId } = useContext(AuthContext);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
 
-  const handleLoginClick = () => {
-    if (password === TEMP_PASSWORD) {
-      navigate('/mypage/user-info');
-    } else {
-      setError('비밀번호가 잘못되었습니다.');
+  const handleLoginClick = async () => {
+    try {
+      const response = await axios.post('/api/mypage/userinfo/check-password', {
+        userId: userId,
+        password,
+      });
+
+      if (response.data) {
+        navigate('/mypage/user-info');
+      } else {
+        setError('비밀번호가 잘못되었습니다.');
+      }
+    } catch (error) {
+      console.error('로그인 요청 실패:', error);
+      setError('로그인 요청에 실패했습니다.');
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleLoginClick();
     }
   };
 
@@ -46,6 +63,7 @@ const UserInfoLoginPage: React.FC = () => {
               fullWidth
               value={password}
               onChange={handleInputChange}
+              onKeyPress={handleKeyPress}
               error={Boolean(error)}
               helperText={error ? '비밀번호가 잘못되었습니다.' : ' '}
               FormHelperTextProps={{ style: { height: '20px' } }}

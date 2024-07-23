@@ -19,7 +19,7 @@ import Divider from '@mui/material/Divider';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 import { NavbarItem } from './NavbarItem';
-import StyledAvatar from './StyledAvatar';
+import StyledPersonIcon from './StyledPersonIcon';
 import AuthContext from '../../../context/AuthContext';
 
 interface SideNavbarProps {
@@ -195,7 +195,7 @@ const SideNavbar: React.FC<SideNavbarProps> = ({
             }}
           >
             {isAuthenticated ? (
-              <StyledAvatar />
+              <StyledPersonIcon />
             ) : (
               <AccountCircleIcon sx={{ fontSize: '36px' }} />
             )}
