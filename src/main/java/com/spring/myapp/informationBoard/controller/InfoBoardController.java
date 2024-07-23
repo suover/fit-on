@@ -59,10 +59,6 @@ public class InfoBoardController {
 		@RequestParam(value = "searchKeyword", required = false, defaultValue = "") String searchKeyword,
 		@PageableDefault(page = 0, size = 12, sort = "created_at", direction = Sort.Direction.DESC) Pageable pageable) {
 
-		System.out.println("-----------------");
-		System.out.println(searchKeyword);
-		System.out.println("-----------------");
-
 		try {
 			logger.info("Keyword received: {}", filterKeyword);
 			Page<?> paging = infoService.infoListPaging(filterKeyword, searchKeyword, pageable);

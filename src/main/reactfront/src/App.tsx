@@ -11,7 +11,7 @@ import Main from './pages/main/Main'; // 메인
 import SigninPage from './pages/signin/SigninPage'; // 로그인
 import SignupPage from './pages/signup/SignupPage'; // 회원가입
 import Mall from './pages/mall/Mall'; // 쇼핑몰
-//import MallMain from './pages/mall/MallMain'
+import MallMain from './pages/mall/MallMain';
 // import Products from './pages/mall/ProductCardList';
 import ProductDetail from './pages/productDetail/ProductDetail';
 import Fittness from './pages/mall/Fittness';
@@ -81,7 +81,7 @@ const App = () => {
             <Route path="order-page" element={<OrderPage />} />
             <Route path="/shopping-basket" element={<ShoppingBasketPage />} />
             <Route path="/mall" element={<Mall />}>
-              {/* <Route path="main" element={<MallMain />} /> */}
+              <Route path="main" element={<MallMain />} />
               <Route path="fitness" element={<Fittness />} />
               <Route path="supplement" element={<Supplement />} />
               <Route path="food" element={<Food />} />
@@ -100,7 +100,7 @@ const App = () => {
             <Route path="routine" element={<RoutineMain />} />
             <Route path="routine/:routineNo" element={<ViewRoutineDetail />} />
             <Route path="routine/new-routine" element={<NewRoutine />} />
-            <Route path="info" element={<Info />} />
+            <Route path="info/search" element={<Info />} />
             <Route path="info/:infoId" element={<InfoDetail />} />
             <Route path="info/update/:infoId" element={<PostRegisterPage />} />
             <Route path="service" element={<Service />}>

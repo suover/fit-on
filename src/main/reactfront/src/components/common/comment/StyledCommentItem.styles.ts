@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const CommentItem = styled.div<{ $isReply: boolean; $isExpand: boolean }>`
-  padding: 10px 10px;
+  padding: 10px 0;
   border-top: 1px solid #f1f1f1;
 
   &:last-of-type {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
+import axios from '../../../api/axiosConfig';
 
 import { Comment } from './CommentList';
 import StyledCommentItem from './StyledCommentItem';
@@ -13,13 +13,6 @@ const CommentWrapper = styled.div`
 const ReplyWrapper = styled.div`
   padding-left: 60px;
 `;
-
-const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
 
 const CommentListItem: React.FC<{
   comment: Comment;
@@ -37,7 +30,7 @@ const CommentListItem: React.FC<{
     // 대댓글 불러오기
     const fetchComment = async () => {
       try {
-        const res = await axiosInstance.get<Comment[]>(
+        const res = await axios.get<Comment[]>(
           `${route}/${comment.commentId}`,
         );
         setReplies(res.data);
@@ -66,7 +59,7 @@ const CommentListItem: React.FC<{
 
   const handleDelete = async (commentId: number) => {
     try {
-      const response = await axiosInstance.put(
+      const response = await axios.put(
         `${route}/${commentId}/delete`,
       );
       if (response.status === 200) {
@@ -100,12 +93,6 @@ const CommentListItem: React.FC<{
     }
 
     updateComment(commentId, content);
-    //수정된 대댓글 표시
-    setReplies((prevReplies) =>
-      prevReplies.map((reply) =>
-        reply.commentId === commentId ? { ...reply, content: content } : reply,
-      ),
-    );
   };
 
   return (

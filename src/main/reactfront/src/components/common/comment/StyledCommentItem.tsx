@@ -84,7 +84,7 @@ const StyledCommentItem: React.FC<{
         )}
         {comment.nickname === nickname ? (
           <>
-            <span onClick={handleEdit}>수정</span>
+            <span onClick={handleEdit}>{isEditing ? '취소' : '수정'}</span>
             <span onClick={() => handleDelete(comment.commentId)}>삭제</span>
           </>
         ) : (

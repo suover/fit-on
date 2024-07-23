@@ -34,17 +34,18 @@ const Info: React.FC = () => {
   const [totalPages, setTotalPage] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(true);
-  const [selectedTab, setSelectedTab] = useState<String>('전체');
-  const [searchKeyword, setSearchKeyword] = useState<String>("");
+  const [selectedTab, setSelectedTab] = useState<string>('전체');
+  const [searchKeyword, setSearchKeyword] = useState<string>('');
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
+      let filterKeyword = encodeURIComponent(selectedTab);
 
       try {
-        const res = await axios.get(`api/info/search`, {
-          params: { filterKeyword: selectedTab, searchKeyword: searchKeyword, page: currentPage - 1 },
-        });
+        const res = await axios.get(
+          `/api/info/search?filterKeyword=${filterKeyword}&searchKeyword=${searchKeyword}&page=${currentPage - 1}`,
+        );
         const data: Information[] = res.data.content;
         const transformedData = data.map((info: any) => ({
           ...info,
@@ -68,7 +69,7 @@ const Info: React.FC = () => {
     let seleted = target.innerText;
 
     setSelectedTab(seleted);
-    setSearchKeyword("");
+    setSearchKeyword('');
     setCurrentPage(1);
   };
 
@@ -81,7 +82,7 @@ const Info: React.FC = () => {
 
   const handleSearch = (query: string): void => {
     setSearchKeyword(query);
-  }
+  };
 
   return (
     <InfoSection>
@@ -107,7 +108,7 @@ const Info: React.FC = () => {
               {tab}
             </button>
           ))}
-          <SearchBox onSearch={handleSearch} styleProps={{width: '250px'}} />
+          <SearchBox onSearch={handleSearch} styleProps={{ width: '250px' }} />
         </TabBtns>
         {infoList.length !== 0 && !loading ? (
           <CardList

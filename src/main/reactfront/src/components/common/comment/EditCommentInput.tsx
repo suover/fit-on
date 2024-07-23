@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../../../api/axiosConfig';
 
 import InputField from './CommentInputField.styles';
 import { Comment } from './CommentList';
+import styled from 'styled-components';
 
-const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+const EditInputWrapper = styled.div`
+  width: 100%;
+  padding-left: 50px;
+  box-sizing: border-box;
+`;
 
 const EditCommentInput: React.FC<{
   comment: Comment;
@@ -34,7 +34,7 @@ const EditCommentInput: React.FC<{
     try {
       if (commentId) {
         // Update comment
-        const response = await axiosInstance.put(
+        const response = await axios.put(
           `${route}/${commentId}/update`,
           editComment,
         );
@@ -48,15 +48,17 @@ const EditCommentInput: React.FC<{
   };
 
   return (
-    <InputField>
-      <textarea
-        name="comment"
-        id="comment"
-        onChange={(e) => setContent(e.target.value)}
-        value={content}
-      />
-      <button onClick={handleCommentSubmit}>등록</button>
-    </InputField>
+    <EditInputWrapper>
+      <InputField>
+        <textarea
+          name="comment"
+          id="comment"
+          onChange={(e) => setContent(e.target.value)}
+          value={content}
+        />
+        <button onClick={handleCommentSubmit}>등록</button>
+      </InputField>
+    </EditInputWrapper>
   );
 };
 
