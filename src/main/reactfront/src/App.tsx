@@ -11,7 +11,7 @@ import Main from './pages/main/Main'; // 메인
 import SigninPage from './pages/signin/SigninPage'; // 로그인
 import SignupPage from './pages/signup/SignupPage'; // 회원가입
 import Mall from './pages/mall/Mall'; // 쇼핑몰
-import MallMain from './pages/mall/MallMain'
+import MallMain from './pages/mall/MallMain';
 // import Products from './pages/mall/ProductCardList';
 import ProductDetail from './pages/productDetail/ProductDetail';
 import Fittness from './pages/mall/Fittness';
@@ -92,11 +92,13 @@ const App = () => {
             />
             <Route path="community" element={<Community />} />
             <Route path="community/:postId" element={<ViewPostDetail />} />
-            <Route path="community/new-post" element={<NewPost />} />
-            <Route
-              path="/community/edit/:postId"
-              element={<CommunityPostEdit />}
-            />
+            <Route element={<PrivateRoute />}>
+              <Route path="community/new-post" element={<NewPost />} />
+              <Route
+                path="/community/edit/:postId"
+                element={<CommunityPostEdit />}
+              />
+            </Route>
             <Route path="routine" element={<RoutineMain />} />
             <Route path="routine/:routineNo" element={<ViewRoutineDetail />} />
             <Route path="routine/new-routine" element={<NewRoutine />} />

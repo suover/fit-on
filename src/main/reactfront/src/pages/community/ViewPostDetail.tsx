@@ -65,7 +65,6 @@ const ViewPostDetail = () => {
           const response = await instance.get<Post>(
             `/api/community/posts/${postId}`,
           );
-          console.log('#####Fetched post:', response.data); // API 응답 데이터 확인@@
           setPost(response.data);
           setLikeCount(response.data.likes);
           await fetchComments(response.data.communityId);
@@ -156,7 +155,6 @@ const ViewPostDetail = () => {
   //글 삭제
   const handleDeleteClick = async () => {
     if (post && post.communityId) {
-      console.log(`########## Deleting post with id: ${postId}`); // 로그 추가
       try {
         await instance.delete(`/api/community/posts/${postId}`);
         navigate('/community');
