@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.myapp.routineBoard.repository.RoutineShareMapper">
+
+    <resultMap id="RoutineShareResultMap" type="com.spring.myapp.routineBoard.model.RoutineShare">
+        <id column="share_id" property="shareId"/>
+        <result column="routine_id" property="routineId"/>
+        <result column="user_id" property="userId"/>
+        <result column="shared_at" property="sharedAt"/>
+    </resultMap>
+
+    <insert id="insertShare" parameterType="com.spring.myapp.routineBoard.model.RoutineShare">
+        INSERT INTO routine_shares (share_id, routine_id, user_id, shared_at)
+        VALUES (#{shareId}, #{routineId}, #{userId}, #{sharedAt})
+    </insert>
+
+    <select id="findByShareId" parameterType="long" resultMap="RoutineShareResultMap">
+        SELECT * FROM routine_shares WHERE share_id = #{shareId}
+    </select>
+
+    <select id="findByUserId" parameterType="long" resultMap="RoutineShareResultMap">
+        SELECT * FROM routine_shares WHERE user_id = #{userId}
+    </select>
+
+</mapper>

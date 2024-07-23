@@ -1,6 +1,6 @@
-import React, { useState, useEffect, FormEvent } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useEffect, FormEvent, useContext } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import axios from '../../api/axiosConfig';
 import {
   Paper,
   Container,
@@ -14,9 +14,10 @@ import {
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
-
 import SelectBox from '../../components/common/SelectBox';
 import Editor from '../../components/common/Editor';
+import noImage from '../../assets/itemRegister/noImage.jpeg';
+import AuthContext from '../../context/AuthContext';
 
 const Goal = [
   { value: '1', label: '근력 증가' },
@@ -36,7 +37,64 @@ const Part = [
   { value: '4', label: 'None' },
 ];
 
+interface ImageUploadProps {
+  onImageChange: (file: File) => void;
+}
+
+const ImageUpload: React.FC<ImageUploadProps> = ({ onImageChange }) => {
+  const [preview, setPreview] = useState<string | null>(null);
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (reader.result) {
+          setPreview(reader.result as string);
+          onImageChange(file);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  return (
+    <Box
+      sx={{
+        border: '1px solid black',
+        width: '100%',
+        height: 400,
+        mb: 2,
+        cursor: 'pointer',
+        position: 'relative',
+      }}
+      onClick={() => document.getElementById('fileInput')?.click()}
+    >
+      <input
+        type="file"
+        accept="image/*"
+        hidden
+        id="fileInput"
+        onChange={handleImageChange}
+      />
+      <Box
+        component="img"
+        src={preview || noImage}
+        alt="thumbnail"
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+        }}
+      />
+    </Box>
+  );
+};
+
 const NewRoutine = () => {
+  const { userId, nickname } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -47,13 +105,20 @@ const NewRoutine = () => {
   const [content, setContent] = useState('');
   const [routineId, setRoutineId] = useState<number | null>(null);
 
-  const [routineItem, setRoutineItem] = useState(''); // 루틴 목록 입력 상태
-  const [lists, setLists] = useState<string[]>([]); // 루틴 리스트 상태
+  const [routineItem, setRoutineItem] = useState('');
+  const [lists, setLists] = useState<string[]>([]);
+  const [image, setImage] = useState<File | null>(null);
 
   // 게시글 공개/비공개 상태를 관리하는 상태 변수
   const [isPublic, setIsPublic] = useState(true);
 
   useEffect(() => {
+    if (!userId) {
+      alert('로그인 후 게시글 작성이 가능합니다.');
+      navigate('/sign-in');
+      return;
+    }
+
     if (location.state && location.state.routine) {
       const {
         title,
@@ -92,38 +157,69 @@ const NewRoutine = () => {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const routineData = {
-      userId: 30, // 로그인된 사용자 ID로 교체 필요
-      title,
-      content,
-      goalId: parseInt(purpose || '0', 10), // 선택된 목적 값 설정
-      levelId: parseInt(level || '0', 10), // 선택된 난이도 값 설정
-      partId: parseInt(target || '0', 10), // 선택된 부위 값 설정
-      isPublic,
-      routineItems: lists,
-    };
-
-    console.log('Submitting routine data:', routineData);
+    if (!image) {
+      alert('이미지를 업로드해주세요.');
+      return;
+    } else if (!title) {
+      alert('제목을 입력해주세요.');
+      return;
+    } else if (!purpose) {
+      alert('운동 목적을 체크해주세요.');
+      return;
+    } else if (!level) {
+      alert('난이도를 체크해주세요.');
+      return;
+    } else if (!target) {
+      alert('운동 부위를 체크해주세요.');
+      return;
+    } else if (!content) {
+      alert('루틴 내용을 작성해주세요');
+      return;
+    }
 
     try {
+      const formData = new FormData();
+      formData.append('file', image);
+      formData.append('title', title);
+      formData.append('content', content);
+      formData.append('goalId', purpose!.toString());
+      formData.append('levelId', level!.toString());
+      formData.append('partId', target!.toString());
+      formData.append('isPublic', isPublic.toString());
+      formData.append('userId', userId!.toString());
+      formData.append('nickname', nickname!);
+
       if (routineId) {
         // 기존 게시글 수정
         const response = await axios.put(
-          `http://localhost:8080/api/routine/${routineId}`,
-          routineData,
+          `/api/routine/${routineId}`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          },
         );
         console.log('Routine updated:', response.data);
       } else {
         // 새 게시글 생성
         const response = await axios.post(
-          'http://localhost:8080/api/routine/new-routine',
-          routineData,
+          '/api/routine/new-routine',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          },
         );
         console.log('Routine created:', response.data);
       }
       navigate('/routine'); // 페이지 이동
     } catch (error) {
-      console.error('There was an error creating/updating the routine!', error);
+      console.error(
+        'There was an error uploading the image or creating/updating the routine!',
+        error,
+      );
     }
   };
 
@@ -153,87 +249,96 @@ const NewRoutine = () => {
               label={isPublic ? 'Public' : 'Private'}
             />
           </Box>
-          <TextField
-            label="제목"
-            fullWidth
-            variant="outlined"
-            sx={{ mb: 2 }}
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <Box sx={{ display: 'flex' }}>
-            <SelectBox
-              label="운동 목적"
-              options={Goal}
-              helperText="원하는 운동 목적을 선택하세요."
-              onChange={setPurpose}
-            />
-            <SelectBox
-              label="난이도"
-              options={Level}
-              helperText="난이도를 선택하세요."
-              onChange={setLevel}
-            />
-            <SelectBox
-              label="운동 부위"
-              options={Part}
-              helperText="타겟 부위를 선택하세요."
-              onChange={setTarget}
-            />
-          </Box>
-
-          <Grid container spacing={1} alignItems="center">
-            <Grid item xs={11}>
-              <TextField
-                label="루틴 목록 추가"
-                fullWidth
-                variant="outlined"
-                value={routineItem}
-                onChange={(e) => setRoutineItem(e.target.value)}
-                onKeyPress={(event) => {
-                  if (event.key === 'Enter') {
-                    event.preventDefault();
-                    handleAddRoutineItem();
-                  }
-                }}
-              />
-            </Grid>
-            <Grid item xs={1}>
-              <Button
-                onClick={handleAddRoutineItem}
-                variant="contained"
-                color="primary"
-                sx={{ height: '54px' }}
-              >
-                <PlaylistAddIcon />
-              </Button>
-            </Grid>
-          </Grid>
           <Box
             sx={{
-              borderColor: 'primary.main',
-              display: 'flex',
-              flexDirection: 'column',
-              flexWrap: 'wrap',
-              gap: 1,
-              mt: 0,
-              mb: 1,
-              minHeight: '50px',
-              alignItems: 'flex-start',
-              padding: '8px',
+              display: 'grid',
+              gridTemplateColumns: '0.5fr 1fr',
+              columnGap: '10px',
             }}
           >
-            {lists.map((item, index) => (
-              <Chip
-                color="primary"
+            <ImageUpload onImageChange={setImage} />
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              <TextField
+                label="제목"
+                fullWidth
                 variant="outlined"
-                label={item}
-                key={index}
-                onDelete={() => {
-                  setLists(lists.filter((_, idx) => idx !== index));
-                }}
+                sx={{ mb: 2 }}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
               />
-            ))}
+              <Box sx={{ display: 'flex' }}>
+                <SelectBox
+                  label="운동 목적"
+                  options={Goal}
+                  helperText="원하는 운동 목적을 선택하세요."
+                  onChange={setPurpose}
+                />
+                <SelectBox
+                  label="난이도"
+                  options={Level}
+                  helperText="난이도를 선택하세요."
+                  onChange={setLevel}
+                />
+                <SelectBox
+                  label="운동 부위"
+                  options={Part}
+                  helperText="타겟 부위를 선택하세요."
+                  onChange={setTarget}
+                />
+              </Box>
+              <Grid container spacing={1} alignItems="center">
+                <Grid item xs={11}>
+                  <TextField
+                    label="루틴 목록 추가"
+                    fullWidth
+                    variant="outlined"
+                    value={routineItem}
+                    onChange={(e) => setRoutineItem(e.target.value)}
+                    onKeyPress={(event) => {
+                      if (event.key === 'Enter') {
+                        event.preventDefault();
+                        handleAddRoutineItem();
+                      }
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={1}>
+                  <Button
+                    onClick={handleAddRoutineItem}
+                    variant="contained"
+                    color="primary"
+                    sx={{ height: '54px' }}
+                  >
+                    <PlaylistAddIcon />
+                  </Button>
+                </Grid>
+              </Grid>
+              <Box
+                sx={{
+                  borderColor: 'primary.main',
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: 1,
+                  mt: 0,
+                  mb: 1,
+                  minHeight: '50px',
+                  alignItems: 'flex-start',
+                  padding: '8px',
+                }}
+              >
+                {lists.map((item, index) => (
+                  <Chip
+                    color="primary"
+                    variant="outlined"
+                    label={item}
+                    key={index}
+                    onDelete={() => {
+                      setLists(lists.filter((_, idx) => idx !== index));
+                    }}
+                  />
+                ))}
+              </Box>
+            </Box>
           </Box>
 
           <Box sx={{ mb: 2, minHeight: 500 }}>

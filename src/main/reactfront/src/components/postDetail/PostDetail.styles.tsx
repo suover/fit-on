@@ -4,15 +4,13 @@ const PostWrapper = styled.div`
   width: 100%;
 
   span {
-    font-size: 0.875rem;
-
+    font-size: 1rem;
     svg {
       font-size: 0.75rem;
       position: relative;
       top: 1px;
     }
   }
-
   h2 {
     font-size: 1.875rem;
     font-weight: bold;
@@ -21,14 +19,13 @@ const PostWrapper = styled.div`
 
   div.postInfo {
     display: flex;
-    justyfy-content: space-between;
     align-items: center;
     padding: 0 5px 10px;
     padding-bottom: 10px;
     border-bottom: 1px solid #999;
     margin-bottom: 10px;
 
-    span:nth-of-type(1) {
+    .icon {
       display: inline-block;
       width: 40px;
       height: 40px;
@@ -36,22 +33,18 @@ const PostWrapper = styled.div`
       text-align: center;
       background: #f1f1f1;
       margin-right: 10px;
-
+      margin-top: 15px;
       svg {
         font-size: 2.25rem;
       }
     }
-
-    span:nth-of-type(2) {
-      font-size: 1.25rem;
-    }
-
-    span:nth-of-type(3) {
-      margin-left: auto;
-      margin-right: 20px;
-    }
   }
-
+  .infos {
+    display: flex;
+    margin-left: auto;
+    font-weight: bold;
+    gap: 15px;
+  }
   div.content {
     padding: 10px;
     word-break: normal;

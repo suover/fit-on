@@ -1,17 +1,10 @@
 import React, { useContext, useState } from 'react';
-import axios from 'axios';
+import axios from '../../../api/axiosConfig';
 
 import AuthContext from '../../../context/AuthContext';
 import InputField from './CommentInputField.styles';
 import { Comment } from './CommentList';
 import { useNavigate } from 'react-router-dom';
-
-const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
 
 const CommentInputField: React.FC<{
   route: string;
@@ -48,10 +41,7 @@ const CommentInputField: React.FC<{
     };
 
     try {
-      const response = await axiosInstance.post(
-        `${route}/newComments`,
-        comment,
-      );
+      const response = await axios.post(`${route}/newComments`, comment);
       if (response.status === 200) {
         setContent('');
         const savedComment = response.data;
@@ -60,6 +50,7 @@ const CommentInputField: React.FC<{
       }
     } catch (error) {
       console.error('Error adding comment:', error);
+      setIsDisable(false); // 오류 발생 시에도 버튼을 다시 활성화합니다.
     }
   };
 
@@ -71,7 +62,7 @@ const CommentInputField: React.FC<{
         onChange={(e) => setContent(e.target.value)}
         value={content}
       />
-      <button onClick={handleCommentSubmit} disabled={isDisable ? true : false}>
+      <button onClick={handleCommentSubmit} disabled={isDisable}>
         등록
       </button>
     </InputField>
