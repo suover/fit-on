@@ -1,7 +1,6 @@
 package com.spring.myapp.product.controller;
 
 import com.spring.myapp.product.model.Product;
-import com.spring.myapp.product.model.ProductPage;
 import com.spring.myapp.product.service.ProductService;
 import com.spring.myapp.product.service.S3Service;
 
