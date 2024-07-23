@@ -43,12 +43,7 @@ public class RoutineCommentsService {
 		return routineCommentsMapper.getRoutineCommentById(newComment.getCommentId());
 	}
 
-	public RoutineComments getCommentById(Long commentId) {
-		return routineCommentsMapper.getRoutineCommentById(commentId);
-	}
-
-	// 특정 댓글의 답글 조회
-	public List<RoutineComments> getRepliesById(Long commentId) {
+	public List<RoutineComments> getAllRoutineReplies(Long commentId) {
 		return routineCommentsMapper.getRoutineRepliesById(commentId);
 	}
 

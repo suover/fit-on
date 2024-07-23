@@ -24,9 +24,7 @@ const RoutineTotalList = ({ searchQuery }: { searchQuery: any }) => {
         }));
         setRoutines(transformedData);
         setTotalPages(totalPages);
-      } catch (error) {
-        console.error('Failed to fetch routines:', error);
-      }
+      } catch (error) {}
     };
 
     fetchRoutines();

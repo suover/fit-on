@@ -97,9 +97,12 @@ const App = () => {
               path="/community/edit/:postId"
               element={<CommunityPostEdit />}
             />
+
             <Route path="routine" element={<RoutineMain />} />
             <Route path="routine/:routineNo" element={<ViewRoutineDetail />} />
-            <Route path="routine/new-routine" element={<NewRoutine />} />
+            <Route element={<PrivateRoute />}>
+              <Route path="routine/new-routine" element={<NewRoutine />} />
+            </Route>
             <Route path="info" element={<Info />} />
             <Route path="info/:infoId" element={<InfoDetail />} />
             <Route path="info/update/:infoId" element={<PostRegisterPage />} />

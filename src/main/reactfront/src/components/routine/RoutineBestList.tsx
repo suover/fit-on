@@ -19,9 +19,7 @@ const RoutineBestList: React.FC = () => {
           likes: info.likes, // 좋아요 수 포함
         }));
         setRoutines(transformedData);
-      } catch (error) {
-        console.error('Failed to fetch top routines:', error);
-      }
+      } catch (error) {}
     };
 
     fetchTopRoutines();

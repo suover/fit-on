@@ -82,17 +82,13 @@ const PostDetail = <T extends DataType>({
 
   useEffect(() => {
     const checkLikeStatus = async () => {
-      console.log(`Checking like status for routineNo: ${routineNo}`);
       try {
         const response = await axios.get(`/api/routine/${routineNo}/likes`, {
           params: { userId: currentUserId },
         });
         setIsLiked(response.data.liked);
         setLikeCount(response.data.count);
-        console.log('Like status:', response.data);
-      } catch (error) {
-        console.error('Error checking like status:', error);
-      }
+      } catch (error) {}
     };
 
     checkLikeStatus();
@@ -104,10 +100,6 @@ const PostDetail = <T extends DataType>({
       navigate('/sign-in');
       return;
     }
-
-    console.log(
-      `Toggling like for routineNo: ${routineNo}, currentUserId: ${currentUserId}`,
-    );
     try {
       if (isLiked) {
         await axios.post(`/api/routine/${routineNo}/unlike`, null, {
@@ -122,9 +114,7 @@ const PostDetail = <T extends DataType>({
         setIsLiked(true);
         setLikeCount((prevCount) => prevCount + 1);
       }
-      console.log(`Like status changed to: ${!isLiked}`);
     } catch (error) {
-      console.error('Error toggling like:', error);
       alert('좋아요 처리 중 오류가 발생했습니다.');
     }
   };
@@ -148,11 +138,9 @@ const PostDetail = <T extends DataType>({
           params: { userId: currentUserId },
         });
         alert('게시글이 삭제되었습니다.');
-        console.log(`Post deleted, routineNo: ${routineNo}`);
         navigate(`/${pageURL}`);
       } catch (error) {
         alert('게시글 삭제에 실패했습니다.');
-        console.error('Error deleting post:', error);
       }
     }
   };
@@ -169,7 +157,6 @@ const PostDetail = <T extends DataType>({
 
   useEffect(() => {
     const fetchComments = async () => {
-      console.log(`Fetching comments for routineNo: ${routineNo}`);
       try {
         const response = await axios.get<Comment[]>(
           `/api/routine/${routineNo}/comments`,
@@ -179,10 +166,7 @@ const PostDetail = <T extends DataType>({
           replies: [],
         }));
         setComments(commentsWithReplies);
-        console.log('Fetched comments with replies:', commentsWithReplies);
-      } catch (error) {
-        console.error('Error fetching comments:', error);
-      }
+      } catch (error) {}
     };
 
     fetchComments();
@@ -211,12 +195,6 @@ const PostDetail = <T extends DataType>({
           ? { ...comment, content: updatedContent }
           : comment,
       ),
-    );
-    console.log(
-      'Updated comment ID:',
-      commentId,
-      'New content:',
-      updatedContent,
     );
   };
 
@@ -280,19 +258,25 @@ const PostDetail = <T extends DataType>({
         />
       </Container>
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Box>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={handleDeleteClick}
-            sx={{ marginRight: 1 }}
-          >
-            삭제
-          </Button>
-          <Button variant="contained" color="primary" onClick={handleEditClick}>
-            수정
-          </Button>
-        </Box>
+        {currentUserId === userId && (
+          <Box>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={handleDeleteClick}
+              sx={{ marginRight: 1 }}
+            >
+              삭제
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleEditClick}
+            >
+              수정
+            </Button>
+          </Box>
+        )}
         <BackBtn
           onClick={() => navigate(`/${pageURL}`)}
           style={{ marginLeft: 'auto' }}

@@ -1,15 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
+import axios from '../../../api/axiosConfig';
 
 import InputField from './CommentInputField.styles';
 import { Comment } from './CommentList';
-
-const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
 
 const EditCommentInput: React.FC<{
   comment: Comment;
@@ -34,7 +27,7 @@ const EditCommentInput: React.FC<{
     try {
       if (commentId) {
         // Update comment
-        const response = await axiosInstance.put(
+        const response = await axios.put(
           `${route}/${commentId}/update`,
           editComment,
         );

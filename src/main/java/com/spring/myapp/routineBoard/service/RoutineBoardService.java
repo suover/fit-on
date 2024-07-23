@@ -61,7 +61,6 @@ public class RoutineBoardService {
 		try {
 			routineBoardMapper.insertRoutineBoard(routineBoard);
 		} catch (Exception e) {
-			System.out.println("Error inserting routine board: " + e.getMessage());
 			throw e;
 		}
 
@@ -73,7 +72,6 @@ public class RoutineBoardService {
 			routineBoardMapper.updateIsDeletedById(id);
 			return true;
 		} catch (Exception e) {
-			System.out.println("Error updating isDeleted flag: " + e.getMessage());
 			return false;
 		}
 	}

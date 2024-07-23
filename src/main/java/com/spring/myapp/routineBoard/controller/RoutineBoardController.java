@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,8 +38,6 @@ public class RoutineBoardController {
 
 	@Autowired
 	private ObjectMapper objectMapper;
-
-	private static final Logger logger = LoggerFactory.getLogger(RoutineBoardController.class);
 
 	@Autowired
 	private RoutineBoardService routineBoardService;
@@ -104,10 +100,8 @@ public class RoutineBoardController {
 			RoutineBoard savedRoutine = routineBoardService.createRoutineBoard(routineBoard, userId, nickname);
 			return ResponseEntity.ok(savedRoutine);
 		} catch (IOException e) {
-			logger.error("@@@@@@@@Error uploading image@@@@@@", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		} catch (Exception e) {
-			logger.error("@@@@@@Error creating routine@@@@@@@", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
 	}
@@ -130,7 +124,6 @@ public class RoutineBoardController {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 			}
 		} catch (Exception e) {
-			logger.error("@@@@@@@@@@Error getting routine by ID@@@@@@@@@", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
 	}
@@ -155,7 +148,6 @@ public class RoutineBoardController {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 			}
 		} catch (Exception e) {
-			logger.error("@@@@@@@@Error deleting routine@@@@@@@@@", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
@@ -197,10 +189,8 @@ public class RoutineBoardController {
 			RoutineBoard updatedRoutine = routineBoardService.updateRoutine(id, routineBoard);
 			return ResponseEntity.ok(updatedRoutine);
 		} catch (IOException e) {
-			logger.error("@@@@@@@@Error uploading image@@@@@@", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		} catch (Exception e) {
-			logger.error("@@@@@@Error updating routine@@@@@@@", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
 	}
@@ -212,7 +202,6 @@ public class RoutineBoardController {
 			routineBoardService.incrementViewCount(id);
 			return ResponseEntity.ok().build();
 		} catch (Exception e) {
-			logger.error("@@@@@@@Error incrementing view count@@@@@@@", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
@@ -223,7 +212,6 @@ public class RoutineBoardController {
 		@RequestParam(value = "limit", defaultValue = "10") int limit) {
 		try {
 			List<RoutineBoard> bestRoutines = routineBoardService.getBestRoutines(limit);
-			logger.info("Fetched best routines");
 
 			// 좋아요 수 포함
 			bestRoutines.forEach(routine -> {
@@ -232,7 +220,6 @@ public class RoutineBoardController {
 			});
 			return ResponseEntity.ok(bestRoutines);
 		} catch (Exception e) {
-			logger.error("Error getting best routines", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
 	}
@@ -249,7 +236,6 @@ public class RoutineBoardController {
 				return ResponseEntity.status(HttpStatus.CONFLICT).build();
 			}
 		} catch (Exception e) {
-			logger.error("@@@@@@@Error liking routine@@@@@@@", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
@@ -266,7 +252,6 @@ public class RoutineBoardController {
 				return ResponseEntity.status(HttpStatus.CONFLICT).build();
 			}
 		} catch (Exception e) {
-			logger.error("@@@@@@@Error unliking routine@@@@@@@", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
@@ -282,7 +267,6 @@ public class RoutineBoardController {
 			response.put("liked", liked);
 			return ResponseEntity.ok(response);
 		} catch (Exception e) {
-			logger.error("@@@@@@@Error getting likes count@@@@@@@", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
 	}

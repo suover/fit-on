@@ -1,6 +1,5 @@
 package com.spring.myapp.routineBoard.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -35,16 +34,8 @@ public class RoutineCommentController {
 	public ResponseEntity<List<RoutineComments>> getAllComments(@PathVariable("routineNo") Long routineNo) {
 		try {
 			List<RoutineComments> allComments = routineCommentsService.getAllComments(routineNo);
-			logger.info("Fetched comments: {}", allComments);
-			System.out.println("---------------------------------------------------------");
-			System.out.println("Fetched comments: " + allComments);
-			System.out.println("---------------------------------------------------------");
 			return new ResponseEntity<>(allComments, HttpStatus.OK);
 		} catch (Exception e) {
-			logger.error("Error fetching comments for routineNo: {}", routineNo, e);
-			System.out.println("---------------------------------------------------------");
-			System.out.println("Error fetching comments for routineNo: " + routineNo);
-			System.out.println("---------------------------------------------------------");
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
@@ -57,46 +48,18 @@ public class RoutineCommentController {
 		try {
 			comment.setRoutineId(routineNo);
 			comment.setIsDeleted(false); // 기본값 설정
-			logger.info("Received new comment post request for routineNo: {}, comment: {}", routineNo, comment);
-			System.out.println("---------------------------------------------------------");
-			System.out.println(
-				"Received new comment post request for routineNo: " + routineNo + ", comment: " + comment);
-			System.out.println("---------------------------------------------------------");
 			RoutineComments newComment = routineCommentsService.writeNewComment(comment);
 			return ResponseEntity.ok(newComment);
 		} catch (Exception e) {
-			logger.error("Error while creating new comment for routineNo: {}", routineNo, e);
-			System.out.println("---------------------------------------------------------");
-			System.out.println("Error while creating new comment for routineNo: " + routineNo);
-			System.out.println("---------------------------------------------------------");
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
 	}
 
-	// 특정 댓글 조회
 	@GetMapping("/{commentId}")
-	public ResponseEntity<RoutineComments> getCommentById(@PathVariable("commentId") Long commentId) {
-		try {
-			RoutineComments comment = routineCommentsService.getCommentById(commentId);
-			return new ResponseEntity<>(comment, HttpStatus.OK);
-		} catch (Exception e) {
-			logger.error("Error fetching comment by id: {}", commentId, e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		}
-	}
-
-	// 특정 댓글의 답글 조회
-	@GetMapping("/{commentId}/replies")
-	public ResponseEntity<List<RoutineComments>> getRepliesById(
-		@PathVariable("commentId") Long commentId) {
-		try {
-			List<RoutineComments> replies = routineCommentsService.getRepliesById(commentId);
-			return new ResponseEntity<>(replies, HttpStatus.OK);
-		} catch (Exception e) {
-			logger.error("Error fetching replies for commentId: {}", commentId, e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>()); // 에러 시에도 빈 배열 반환
-		}
+	public ResponseEntity<List<RoutineComments>> getAllReplies(@PathVariable("commentId") Long commentId) {
+		List<RoutineComments> allReplies = routineCommentsService.getAllRoutineReplies(commentId);
+		return new ResponseEntity<>(allReplies, HttpStatus.OK);
 	}
 
 	// 댓글 삭제
@@ -105,15 +68,8 @@ public class RoutineCommentController {
 		try {
 			routineCommentsService.deleteComment(commentId);
 			logger.info("Deleted comment with id: {}", commentId);
-			System.out.println("---------------------------------------------------------");
-			System.out.println("Deleted comment with id: " + commentId);
-			System.out.println("---------------------------------------------------------");
 			return ResponseEntity.ok("Comment deleted successfully");
 		} catch (Exception e) {
-			logger.error("Error while deleting comment id: {}", commentId, e);
-			System.out.println("---------------------------------------------------------");
-			System.out.println("Error while deleting comment id: " + commentId);
-			System.out.println("---------------------------------------------------------");
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while deleting comment");
 		}
@@ -127,7 +83,6 @@ public class RoutineCommentController {
 			routineCommentsService.updateComment(commentId, updatedComment.getContent());
 			return ResponseEntity.ok("Comment updated successfully");
 		} catch (Exception e) {
-			logger.error("Error while updating comment id: {}, routineNo: {}", commentId, e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
 	}
