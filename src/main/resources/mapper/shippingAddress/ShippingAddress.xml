@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.myapp.shipping.repository.ShippingAddressMapper">
+    <resultMap id="ShippingAddressResultMap" type="com.spring.myapp.shipping.model.ShippingAddress">
+        <id property="addressId" column="address_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="recipientName" column="recipient_name"/>
+        <result property="contact" column="contact"/>
+        <result property="postcode" column="postcode"/>
+        <result property="address" column="address"/>
+        <result property="addressDetail" column="address_detail"/>
+        <result property="addressName" column="address_name"/>
+        <result property="isDefault" column="is_default"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+
+    <select id="findDefaultAdd" resultMap="ShippingAddressResultMap">
+        SELECT * FROM shipping_addresses WHERE user_id = #{userid} AND is_default = true
+    </select>
+
+    <select id="findAllAdd" resultMap="ShippingAddressResultMap">
+        SELECT * FROM shipping_addresses WHERE user_id = #{userid}
+    </select>
+
+
+</mapper>

@@ -23,9 +23,7 @@ const ContentCard = <T extends ContentType>({
   boardType,
   Icon,
 }: ContentCardProps<T>) => {
-  const { title, views, likes, imageUrl, nickname, routineParts } = content;
-
-  let additionalText = boardType === 'info' ? nickname : routineParts;
+  const { title, views, likes, imageUrl, nickname } = content;
 
   return (
     <Card>
@@ -35,9 +33,9 @@ const ContentCard = <T extends ContentType>({
       <TextBox>
         <h3>{title}</h3>
         <p>
-          <span>{additionalText}</span>
+          <span>{nickname}</span>
           <span>
-            <ThumbUpOutlinedIcon /> {likes}
+            <ThumbUpOutlinedIcon /> {likes ? likes : 0}
           </span>
           <span>
             {Icon ? <Icon /> : <ThumbUpOutlinedIcon />} {views ? views : 0}

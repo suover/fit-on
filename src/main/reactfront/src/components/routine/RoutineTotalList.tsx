@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import CardLists from '../cardList/CardList';
 import ShareIcon from '@mui/icons-material/Share';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 import { Pagination, Box } from '@mui/material';
 
-interface RoutineTotalListProps {
-  searchQuery: string;
-}
-
-const RoutineTotalList: React.FC<RoutineTotalListProps> = ({ searchQuery }) => {
-  const [routines, setRoutines] = useState([]);
+const RoutineTotalList = ({ searchQuery }: { searchQuery: any }) => {
+  const [routines, setRoutines] = useState<any[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const pageSize = 12;
@@ -20,28 +16,21 @@ const RoutineTotalList: React.FC<RoutineTotalListProps> = ({ searchQuery }) => {
         const response = await axios.get('/api/routine/list', {
           params: { page: page - 1, size: pageSize, query: searchQuery },
         });
-        const transformedData = response.data.map((info: any) => ({
+        const { content, totalPages } = response.data;
+        const transformedData = content.map((info: any) => ({
           ...info,
-          id: info.routineId, // routineId를 id로 변환
+          id: info.routineId,
+          likes: info.likes, // 좋아요 수 포함
         }));
         setRoutines(transformedData);
-
-        const countResponse = await axios.get('/api/routine/count', {
-          params: { query: searchQuery },
-        });
-        setTotalPages(Math.ceil(countResponse.data / pageSize));
-      } catch (error) {
-        console.error('Failed to fetch routines:', error);
-      }
+        setTotalPages(totalPages);
+      } catch (error) {}
     };
 
     fetchRoutines();
   }, [page, searchQuery]);
 
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number,
-  ) => {
+  const handlePageChange = (event: any, value: any) => {
     setPage(value);
   };
 
