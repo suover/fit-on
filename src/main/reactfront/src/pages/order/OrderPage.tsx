@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { useLocation } from 'react-router-dom';
 import {
   PageContainer,
@@ -17,14 +17,16 @@ import {
   ButtonContainer,
   Btn,
 } from '../../styles/order/Order.Styles';
-import { OrderDetails, Product } from '../../types/DataInterface';
+import { OrderDetails, Product, ShippingAddress } from '../../types/DataInterface';
 import OrderInformation from '../../components/order/OrderInfoProps';
 import RadioButtonsGroup from '../../components/order/Radio';
 import SelectCard from '../../components/order/SelectCard';
 import axios from '../../api/axiosConfig';
+import AuthContext from "../../context/AuthContext";
 import DaumPostcode from 'react-daum-postcode'; //npm install react-daum-postcode
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
+import styled from 'styled-components';
 
 const OrderPage: React.FC = () => {
   const location = useLocation();
@@ -45,7 +47,71 @@ const OrderPage: React.FC = () => {
   const [totalDeliveryFee, setTotalDeliveryFee] = useState<number>(0);
   const [paymentType, setPaymentType] = useState<string>('card');
 
+  const [addresses, setAddresses] = useState<ShippingAddress[]>([]);
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState<boolean>(false);
+
+
+  // AuthContext 에서 유저 아이디 받아오기
+  const {userId} = useContext(AuthContext);
+
+  // 사용자 기본 설정 배송지 정보 가져오기
+  const fetchUserDefaultAddress = async (userId: number) => {
+    try {
+      const response = await axios.get(`/api/shipadd/${userId}/default`);
+      if (response.status === 200 && response.data) {
+        const defaultAddress = response.data;
+        setOrderDetails({
+          customerName: defaultAddress.recipientName,
+          phoneNumber: defaultAddress.contact,
+          postcode: defaultAddress.postcode,
+          add1: defaultAddress.address,
+          add2: defaultAddress.addressDetail,
+        });
+      } else {
+        console.error('Failed to fetch user default address');
+      }
+    } catch (error) {
+      console.error('Error fetching user default address', error);
+    }
+  };
+
+  // 사용자 배송지들 불러오기
+  const fetchUserAddresses = async (userId: number) => {
+    try {
+      const response = await axios.get(`/api/shipadd/${userId}/all`);
+      if (response.status === 200) {
+        setAddresses(response.data);
+      } else {
+        console.error('Failed to fetch user addresses');
+      }
+    } catch (error) {
+      console.error('Error fetching user addresses', error);
+    }
+  };
+
+  //배송지 목록 중 선택
+  const handleAddressSelect = (address: ShippingAddress) => {
+    setOrderDetails({
+      customerName: address.recipientName,
+      phoneNumber: address.contact,
+      postcode: address.postcode,
+      add1: address.address,
+      add2: address.addressDetail,
+    });
+    setIsAddressModalOpen(false);
+  };
+
+  const openAddressModal = () => {
+    if(userId){
+      fetchUserAddresses(userId);
+    }
+    setIsAddressModalOpen(true);
+  };
+
   useEffect(() => {
+    if (userId) {
+      fetchUserDefaultAddress(userId);
+    }
     if (selectedProducts) {
       setProducts(selectedProducts);
       const newTotalPrice = selectedProducts.reduce(
@@ -94,6 +160,32 @@ const OrderPage: React.FC = () => {
     alert('주문서가 제출되었습니다.');
   };
 
+  const AddressItem = styled.li`
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #ccc;
+      cursor: pointer;
+    }
+  `;
+
+  const AddressBox = styled.div`
+    flex: none;
+    width: 70px;
+    white-space: nowrap;
+`;
+
+  const AddressContent = styled.div`
+  flex: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
   return (
     <PageContainer>
       <h1>주문서 작성</h1>
@@ -109,6 +201,7 @@ const OrderPage: React.FC = () => {
             onChange={handleInputChange}
             placeholder="수령인 성함 (예: 홍길동)"
           />
+          <Btn type="button" onClick={openAddressModal}>나의 배송지 목록</Btn>
         </InfoRow>
         <InfoRow>
           <InputLabel htmlFor="phoneNumber">연락처</InputLabel>
@@ -207,6 +300,28 @@ const OrderPage: React.FC = () => {
       >
         <Box sx={{ width: '400px', height: '500px', margin: 'auto', marginTop: '10%', backgroundColor: 'white', padding: '20px', boxShadow: 24 }}>
           <DaumPostcode onComplete={completeHandler} />
+        </Box>
+      </Modal>
+      <Modal
+          open={isAddressModalOpen}
+          onClose={() => setIsAddressModalOpen(false)}
+          aria-labelledby="modal-title"
+          aria-describedby="modal-description"
+      >
+        <Box sx={{ width: '400px', height: '500px', margin: 'auto', marginTop: '10%', backgroundColor: 'white', padding: '20px', boxShadow: 24 }}>
+          <Box sx={{mb: 2}}><h2 id="modal-title">배송지 목록</h2></Box>
+          {addresses.length === 0 ? (
+              <p>등록된 배송지 목록이 없습니다.</p>
+          ) : (
+              <ul>
+                {addresses.map((address, index) => (
+                    <AddressItem key={index} onClick={() => handleAddressSelect(address)}>
+                      <AddressBox>{address.addressName}</AddressBox>
+                      <AddressContent>:  {address.address} {address.addressDetail} </AddressContent>
+                    </AddressItem>
+                ))}
+              </ul>
+          )}
         </Box>
       </Modal>
     </PageContainer>

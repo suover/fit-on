@@ -55,3 +55,17 @@ export interface OrderDetails {
 export interface OrderInfoProps {
   src: string; // src의 타입을 string으로 명시
 }
+
+export interface ShippingAddress{
+  addressId: number;
+  userId: number;
+  recipientName: string; // 수령자 이름
+  contact: string; // 연락처
+  postcode: string; // 우편번호
+  address: string; // 주소
+  addressDetail: string; // 상세주소
+  addressName: string; // 사용자 지정 주소명칭
+  isDefault: boolean; // 기본 배송지 여부
+  createdAt: Date;
+  updatedAt: Date;
+}
