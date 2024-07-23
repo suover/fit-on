@@ -42,17 +42,17 @@ const OrderPage: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false); //주소Modal
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [paymentMethod, setPaymentMethod] = useState<string>('hd');
+
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [totalDeliveryFee, setTotalDeliveryFee] = useState<number>(0);
+
+  const [paymentMethod, setPaymentMethod] = useState<string>('hd');
   const [paymentType, setPaymentType] = useState<string>('card');
 
   const [addresses, setAddresses] = useState<ShippingAddress[]>([]);
   const [isAddressModalOpen, setIsAddressModalOpen] = useState<boolean>(false);
-
-
-  // AuthContext 에서 유저 아이디 받아오기
-  const {userId} = useContext(AuthContext);
+  // AuthContext 에서 유저 아이디 및 이름 받아오기
+  const { userId, name } = useContext(AuthContext);
 
   // 사용자 기본 설정 배송지 정보 가져오기
   const fetchUserDefaultAddress = async (userId: number) => {
@@ -69,9 +69,21 @@ const OrderPage: React.FC = () => {
         });
       } else {
         console.error('Failed to fetch user default address');
+        console.error('Failed to fetch user default address');
+        // 기본 배송지가 없을 경우
+        setOrderDetails((prevState) => ({
+          ...prevState,
+          customerName: name || '', // AuthContext의 name을 설정
+        }));
       }
     } catch (error) {
       console.error('Error fetching user default address', error);
+      console.error('Failed to fetch user default address');
+      // 기본 배송지가 없을 경우
+      setOrderDetails((prevState) => ({
+        ...prevState,
+        customerName: name || '', // AuthContext의 name을 설정
+      }));
     }
   };
 
