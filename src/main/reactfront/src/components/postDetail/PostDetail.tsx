@@ -75,7 +75,7 @@ const PostDetail = <T extends DataType>({
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(likes);
   const [isShared, setIsShared] = useState(false);
-  const [routineComments, setRoutineComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
   const { routineNo } = useParams<{ routineNo: string }>();
   const navigate = useNavigate();
   const { userId: currentUserId, isAuthenticated } = useContext(AuthContext);
@@ -178,7 +178,7 @@ const PostDetail = <T extends DataType>({
           ...comment,
           replies: [],
         }));
-        setRoutineComments(commentsWithReplies);
+        setComments(commentsWithReplies);
         console.log('Fetched comments with replies:', commentsWithReplies);
       } catch (error) {
         console.error('Error fetching comments:', error);
@@ -189,13 +189,13 @@ const PostDetail = <T extends DataType>({
   }, [routineNo]);
 
   const addComment = (comment: Comment): void => {
-    setRoutineComments([...routineComments, comment]);
+    setComments([...comments, comment]);
     console.log('Added comment:', comment);
   };
 
   const deleteComment = (commentId: number) => {
-    setRoutineComments(
-      routineComments.filter(
+    setComments(
+      comments.filter(
         (comment) =>
           comment.commentId !== commentId &&
           comment.parentCommentId !== commentId,
@@ -205,7 +205,7 @@ const PostDetail = <T extends DataType>({
   };
 
   const updateComment = (commentId: number, updatedContent: string): void => {
-    setRoutineComments((prevComments) =>
+    setComments((prevComments) =>
       prevComments.map((comment) =>
         comment.commentId === commentId
           ? { ...comment, content: updatedContent }
@@ -270,7 +270,7 @@ const PostDetail = <T extends DataType>({
       </PostWrapper>
       <Container sx={{ padding: '20px 0', position: 'relative' }}>
         <CommentList
-          comments={routineComments}
+          comments={comments}
           route={`/api/routine/${routineNo}`}
           postId={routineNo ? routineNo : ''}
           idName="routineNo"
