@@ -30,10 +30,6 @@ public class InfoService {
 		keywords.put("filterKeyword", filterKeyword);
 		keywords.put("searchKeyword", searchKeyword);
 
-		System.out.println("-----------------------");
-		System.out.println(keywords);
-		System.out.println("-----------------------");
-
 		InfoPaging<?> requestList = InfoPaging.builder().infoData(keywords).pageable(pageable).build();
 
 		List<Information> infoList = infoMapper.keywordInfoList(requestList);
