@@ -53,11 +53,6 @@ export const UserInfo = styled.div`
   width: 100%;
 `;
 
-export const UserImage = styled.img`
-  width: 100px;
-  border-radius: 50%;
-`;
-
 export const FormLabel = styled.label`
   display: block;
   margin-top: 10px;
