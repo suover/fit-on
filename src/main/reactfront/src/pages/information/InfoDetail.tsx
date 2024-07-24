@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import DOMPurify from 'dompurify';
 
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams, Link, useLocation } from 'react-router-dom';
 
 import axios from '../../api/axiosConfig';
 
@@ -24,12 +24,12 @@ import AuthContext from '../../context/AuthContext';
 const InfoDetail: React.FC = () => {
   const { infoId } = useParams<{ infoId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const [info, setInfo] = useState<Information>();
   const [noContent, setNoContent] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [infoComments, setInfoComments] = useState<Comment[]>([]);
   const [infolikes, setInfoLikes] = useState<number>(0);
-  // const [isLike, setIsLike] = useState<boolean>(false);
   const { userRole, userId } = useContext(AuthContext);
   const sanitizedContent = info ? DOMPurify.sanitize(info.content) : '';
   const createdDate = info?.createdAt.split('T')[0];
@@ -113,8 +113,6 @@ const InfoDetail: React.FC = () => {
       });
 
       if (res.data === 'Liked') {
-        console.log(res.data);
-
         setInfoLikes((prevState) => prevState + 1);
       } else {
         setInfoLikes((prevState) => prevState - 1);
@@ -139,6 +137,19 @@ const InfoDetail: React.FC = () => {
         console.error('Error deleting info:', error);
       }
     }
+  };
+
+  // ------------------------목록으로----------------------------
+  const goToBack = () => {
+    const params = new URLSearchParams(location.search);
+    const filterKeyword = params.get('keyword');
+    const searchKeyword = params.get('search');
+    const pageParam = params.get('page');
+    const page = pageParam ? parseInt(pageParam) : 1;
+
+    navigate(
+      `/info/search?filterKeyword=${filterKeyword}&searchKeyword=${searchKeyword}&page=${page}`,
+    );
   };
 
   // 로딩 중일때
@@ -219,7 +230,7 @@ const InfoDetail: React.FC = () => {
             <button onClick={handleDelete}>삭제</button>
           </>
         )}
-        <button onClick={() => navigate('/info')}>목록</button>
+        <button onClick={goToBack}>목록</button>
       </ControllBtns>
     </InfoWrapper>
   );
