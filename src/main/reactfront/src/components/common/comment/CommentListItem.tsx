@@ -30,7 +30,9 @@ const CommentListItem: React.FC<{
     // 대댓글 불러오기
     const fetchComment = async () => {
       try {
-        const res = await axios.get<Comment[]>(`${route}/${comment.commentId}`);
+        const res = await axios.get<Comment[]>(
+          `${route}/${comment.commentId}`,
+        );
         setReplies(res.data);
         setCountReplies(res.data.length);
       } catch (error) {
@@ -57,7 +59,9 @@ const CommentListItem: React.FC<{
 
   const handleDelete = async (commentId: number) => {
     try {
-      const response = await axios.delete(`${route}/${commentId}/delete`);
+      const response = await axios.put(
+        `${route}/${commentId}/delete`,
+      );
       if (response.status === 200) {
         deleteComment(commentId); // 최상위 컴포넌트에 삭제 요청 -> UI 반영
         setReplies((prevReplies) =>
@@ -72,14 +76,23 @@ const CommentListItem: React.FC<{
     }
   };
 
-  const handleUpdate = (commentId: number, content: string) => {
+  const handleUpdate = (
+    commentId: number,
+    content: string,
+    isReply?: boolean,
+  ) => {
+    if (isReply) {
+      setReplies((prevComments) =>
+        prevComments.map((comment) =>
+          comment.commentId === commentId
+            ? { ...comment, content: content }
+            : comment,
+        ),
+      );
+      return;
+    }
+
     updateComment(commentId, content);
-    //수정된 대댓글 표시
-    setReplies((prevReplies) =>
-      prevReplies.map((reply) =>
-        reply.commentId === commentId ? { ...reply, content: content } : reply,
-      ),
-    );
   };
 
   return (

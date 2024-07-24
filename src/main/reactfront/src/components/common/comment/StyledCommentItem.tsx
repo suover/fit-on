@@ -16,7 +16,7 @@ const StyledCommentItem: React.FC<{
   cntReplies?: number;
   clickReply: (isShow: boolean) => void;
   handleDelete: (commentId: number) => void;
-  handleUpdate: (commentId: number, content: string) => void;
+  handleUpdate: (commentId: number, content: string, isReply?: boolean) => void;
 }> = ({
   comment,
   route,
@@ -41,6 +41,11 @@ const StyledCommentItem: React.FC<{
   };
 
   const handleUpdateComment = (commentId: number, content: string) => {
+    if (comment.parentCommentId !== null) {
+      handleUpdate(commentId, content, true);
+      setIsEditing(false);
+      return;
+    }
     handleUpdate(commentId, content);
     setIsEditing(false);
   };
@@ -79,7 +84,7 @@ const StyledCommentItem: React.FC<{
         )}
         {comment.nickname === nickname ? (
           <>
-            <span onClick={handleEdit}>수정</span>
+            <span onClick={handleEdit}>{isEditing ? '취소' : '수정'}</span>
             <span onClick={() => handleDelete(comment.commentId)}>삭제</span>
           </>
         ) : (

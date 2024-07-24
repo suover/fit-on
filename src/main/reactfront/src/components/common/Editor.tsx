@@ -23,6 +23,7 @@ const Editor: React.FC<EditorProps> = ({ placeholder, value, onChange }) => {
   const quillRef = useRef<ReactQuill>(null);
 
   const handleChange = (html: string) => {
+    console.log(html);
     onChange(html);
   };
 
