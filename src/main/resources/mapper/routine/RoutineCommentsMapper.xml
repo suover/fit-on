@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.myapp.routineBoard.repository.RoutineCommentsMapper">
+
+    <resultMap id="routineCommentResultMap" type="com.spring.myapp.routineBoard.model.RoutineComments">
+        <id property="commentId" column="comment_id"/>
+        <result property="routineId" column="routine_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="parentCommentId" column="parent_comment_id"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <association property="nickname" column="user_id" select="getUserNicknameById"/>
+    </resultMap>
+
+    <select id="getUserNicknameById" resultType="string" parameterType="long">
+        SELECT nickname
+        FROM users u
+        WHERE u.user_id = #{userId}
+    </select>
+
+    <select id="getAllRoutineComments" parameterType="long" resultMap="routineCommentResultMap">
+        SELECT * FROM routine_comments
+        WHERE routine_id = #{routineId} AND is_deleted = 0 AND parent_comment_id is null
+        ORDER BY created_at ASC
+    </select>
+
+    <select id="getRoutineCommentById" parameterType="long" resultMap="routineCommentResultMap">
+        SELECT *
+        FROM routine_comments
+        WHERE comment_id = #{commentId}
+    </select>
+
+    <select id="getRoutineRepliesById" parameterType="long" resultMap="routineCommentResultMap">
+        SELECT *
+        FROM routine_comments
+        WHERE parent_comment_id = #{commentId} AND is_deleted = 0
+    </select>
+
+    <insert id="writeNewRoutineComment" useGeneratedKeys="true" keyProperty="commentId" keyColumn="comment_id">
+        INSERT INTO routine_comments (routine_id, user_id, content, parent_comment_id, created_at, is_deleted)
+        VALUES (#{routineId}, #{userId}, #{content}, #{parentCommentId}, #{createdAt}, #{isDeleted})
+    </insert>
+
+    <update id="updateRoutineComment" parameterType="map">
+        UPDATE routine_comments
+        SET content = #{content}, updated_at = NOW()
+        WHERE comment_id = #{commentId} AND is_deleted = 0
+    </update>
+
+    <update id="deleteRoutineComment" parameterType="long">
+        UPDATE routine_comments
+        SET is_deleted = 1
+        WHERE comment_id = #{commentId} OR parent_comment_id = #{commentId}
+    </update>
+
+</mapper>

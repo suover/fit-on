@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 import { Container } from '@mui/material';
 import PostDetail from '../../components/postDetail/PostDetail';
 
@@ -36,11 +36,37 @@ const ViewRoutineDetail = () => {
   }, [routineNo]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          fontWeight: 'bold',
+          fontSize: '50px',
+          height: '500px',
+        }}
+      >
+        로딩중🔥🔥🔥🔥🔥🔥
+      </div>
+    );
   }
 
   if (!routineData) {
-    return <div>No routine found</div>;
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          fontWeight: 'bold',
+          fontSize: '50px',
+          height: '500px',
+        }}
+      >
+        찾으시는 페이지가 없습니다😅
+      </div>
+    );
   }
 
   return (

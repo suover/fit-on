@@ -53,7 +53,7 @@ const TabBtns = styled.div`
   gap: 5px;
   margin-bottom: 25px;
 
-  button {
+  button.tabBtn {
     padding: 5px 15px;
     border-radius: 8px;
     background: #f1f1f1;
@@ -65,6 +65,11 @@ const TabBtns = styled.div`
       background: #555;
       color: #fff;
     }
+  }
+
+  & > div {
+    margin-left: auto;
+    
   }
 `;
 

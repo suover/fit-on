@@ -20,13 +20,25 @@ interface CardListsProps<T> {
   contents: T[];
   pageURL: string;
   Icon?: React.ElementType<SvgIconProps>;
+  keyword?: string;
+  search?: string;
+  page?: number;
 }
 
 const CardLists = <T extends ContentsType>({
   contents,
   pageURL,
   Icon,
+  keyword,
+  search,
+  page,
 }: CardListsProps<T>) => {
+  let additionalUrl: string = '';
+
+  if (keyword !== undefined) {
+    additionalUrl = `keyword=${keyword}&search=${search}&page=${page}`;
+  }
+
   return (
     <>
       <Grid2
@@ -37,7 +49,13 @@ const CardLists = <T extends ContentsType>({
       >
         {contents.map((content) => (
           <Grid2 key={content.id}>
-            <Link to={`/${pageURL}/${content.id}`}>
+            <Link
+              to={
+                keyword === undefined
+                  ? `/${pageURL}/${content.id}`
+                  : `/${pageURL}/${content.id}?${additionalUrl}`
+              }
+            >
               <ContentCard content={content} Icon={Icon} boardType={pageURL} />
             </Link>
           </Grid2>

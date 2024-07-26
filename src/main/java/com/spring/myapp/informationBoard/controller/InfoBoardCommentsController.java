@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,7 +59,7 @@ public class InfoBoardCommentsController {
 		return new ResponseEntity<>(allReplies, HttpStatus.OK);
 	}
 
-	@DeleteMapping("/{infoId}/{commentId}/delete")
+	@PutMapping("/{infoId}/{commentId}/delete")
 	public ResponseEntity<?> deleteComment(@PathVariable("commentId") Long commentId) {
 		try {
 			infoCommentsService.deleteComment(commentId);

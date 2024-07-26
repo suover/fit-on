@@ -60,7 +60,9 @@ const Header = () => {
           <Link to="/mall/main">MALL</Link>
           <Link to="/community">COMMUNITY</Link>
           <Link to="/routine">ROUTINE</Link>
-          <Link to="/info">INFORMATION</Link>
+          <Link to="/info/search?filterKeyword=전체&searchKeyword=&page=1">
+            INFORMATION
+          </Link>
         </Gnb>
         <Tnb>
           {isAuthenticated ? (

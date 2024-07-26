@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { styled, Theme } from '@mui/material/styles';
-import Avatar from '@mui/material/Avatar';
 import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
+import PersonIcon from '@mui/icons-material/Person';
 
 const StyledBadge = styled(Badge)(({ theme }: { theme: Theme }) => ({
   '& .MuiBadge-badge': {
@@ -34,7 +34,7 @@ const StyledBadge = styled(Badge)(({ theme }: { theme: Theme }) => ({
   },
 }));
 
-const StyledAvatar: React.FC = () => {
+const StyledPersonIcon: React.FC = () => {
   return (
     <Box>
       <StyledBadge
@@ -42,12 +42,10 @@ const StyledAvatar: React.FC = () => {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         variant="dot"
       >
-        <Avatar alt="user" sx={{ width: 32, height: 32 }}>
-          U
-        </Avatar>
+        <PersonIcon sx={{ width: 32, height: 32 }} />
       </StyledBadge>
     </Box>
   );
 };
 
-export default StyledAvatar;
+export default StyledPersonIcon;

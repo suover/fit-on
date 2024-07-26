@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 
 import {
   InfoSection,
@@ -10,6 +11,7 @@ import {
 } from '../../styles/information/Info.styles';
 
 import CardList from '../../components/cardList/CardList';
+import SearchBox from '../../components/common/search/SearchBox';
 import { Container, Stack, Pagination } from '@mui/material';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
@@ -28,52 +30,70 @@ export interface Information {
   likes: number;
 }
 
-const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
 const Info: React.FC = () => {
   const [infoList, setInfoList] = useState<Information[]>([]);
   const [totalPages, setTotalPage] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(true);
-  const [selectedTab, setSelectedTab] = useState<String>('전체');
+  const [selectedTab, setSelectedTab] = useState<string>('');
+  const [searchKeyword, setSearchKeyword] = useState<string>('');
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const fetchData = async (keyword: string, search: string, page: number) => {
+    setLoading(true);
+
+    let filterKeyword = encodeURIComponent(keyword);
+
+    try {
+      const res = await axios.get(
+        `/api/info/search?filterKeyword=${filterKeyword}&searchKeyword=${search}&page=${page - 1}`,
+      );
+      const data: Information[] = res.data.content;
+      const transformedData = data.map((info: any) => ({
+        ...info,
+        id: info.infoId, // infoId를 id로 변환
+        views: info.viewCount,
+      }));
+      setInfoList(transformedData);
+      setTotalPage(res.data.totalPages);
+    } catch (error) {
+      console.error('Error fetching information:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
+    setLoading(true);
+    const params = new URLSearchParams(location.search);
+    const keyword = params.get('filterKeyword') || '전체';
+    const search = params.get('searchKeyword') || '';
+    const pageParam = params.get('page');
+    const page = pageParam ? parseInt(pageParam) : 1;
 
-      try {
-        const res = await axiosInstance.get(`/info/search`, {
-          params: { keyword: selectedTab, page: currentPage - 1 },
-        });
-        const data: Information[] = res.data.content;
-        const transformedData = data.map((info: any) => ({
-          ...info,
-          id: info.infoId, // infoId를 id로 변환
-          views: info.viewCount,
-        }));
-        setInfoList(transformedData);
-        setTotalPage(res.data.totalPages);
-      } catch (error) {
-        console.error('Error fetching information:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    setSelectedTab(keyword);
+    setSearchKeyword(search);
+    setCurrentPage(page);
 
-    fetchData();
-  }, [selectedTab, currentPage]);
+    fetchData(keyword, search, page);
+  }, [location.search]);
+
+  const updatePath = (keyword: string, search: string, page: number) => {
+    navigate(
+      `/info/search?filterKeyword=${encodeURIComponent(keyword)}&searchKeyword=${search}&page=${page}`,
+    );
+  };
 
   const handleClickTab = (event: React.MouseEvent) => {
     let target = event.target as HTMLElement;
-    let seleted = target.innerText;
+    let selected = target.innerText;
 
-    setSelectedTab(seleted);
+    setSelectedTab(selected);
+    setSearchKeyword('');
     setCurrentPage(1);
+
+    updatePath(selected, '', 1);
   };
 
   const handlePageChange = (
@@ -81,6 +101,12 @@ const Info: React.FC = () => {
     value: number,
   ): void => {
     setCurrentPage(value);
+    updatePath(selectedTab, searchKeyword, value);
+  };
+
+  const handleSearch = (query: string): void => {
+    setSearchKeyword(query);
+    updatePath(selectedTab, query, currentPage);
   };
 
   return (
@@ -101,18 +127,22 @@ const Info: React.FC = () => {
           ].map((tab, idx) => (
             <button
               key={tab + idx}
-              className={selectedTab === tab ? 'active' : ''}
+              className={selectedTab === tab ? 'tabBtn active' : 'tabBtn'}
               onClick={handleClickTab}
             >
               {tab}
             </button>
           ))}
+          <SearchBox onSearch={handleSearch} styleProps={{ width: '250px' }} />
         </TabBtns>
         {infoList.length !== 0 && !loading ? (
           <CardList
             contents={infoList}
             pageURL="info"
             Icon={VisibilityOutlinedIcon}
+            keyword={selectedTab}
+            search={searchKeyword}
+            page={currentPage}
           />
         ) : (
           <NoContentWrapper>
@@ -120,7 +150,7 @@ const Info: React.FC = () => {
           </NoContentWrapper>
         )}
       </Container>
-      {infoList.length > 0 && (
+      {!loading && infoList.length > 0 && (
         <Stack spacing={2} sx={{ alignItems: 'center' }}>
           <Pagination
             count={totalPages}

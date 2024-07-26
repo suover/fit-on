@@ -11,10 +11,10 @@ import {
   TableRow,
   Paper,
   Button,
-  Avatar,
   Link,
   Divider,
 } from '@mui/material';
+import PersonIcon from '@mui/icons-material/Person';
 import { styled } from '@mui/material/styles';
 import Calendar from '../../components/calendar/Calendar';
 import AuthContext from '../../context/AuthContext';
@@ -75,7 +75,7 @@ const MyHome: React.FC = () => {
               flexGrow={1}
               justifyContent={'space-around'}
             >
-              <Avatar sx={{ bgcolor: 'secondary.main' }}>U</Avatar>
+              <PersonIcon sx={{ width: 52, height: 52 }}></PersonIcon>
               <Typography variant="h6" component="div" color="black">
                 {name}님 안녕하세요.
               </Typography>
