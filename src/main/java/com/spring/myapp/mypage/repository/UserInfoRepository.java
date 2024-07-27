@@ -103,4 +103,13 @@ public interface UserInfoRepository {
 	 * @param userId 비활성화할 사용자 ID
 	 */
 	void deactivateAccount(@Param("userId") int userId);
+
+	/**
+	 * 사용자 프로필 이미지 URL을 업데이트합니다.
+	 *
+	 * @param userId 사용자 ID
+	 * @param profilePictureUrl 프로필 이미지 URL
+	 */
+	void updateProfilePictureUrl(@Param("userId") int userId, @Param("profilePictureUrl") String profilePictureUrl);
+
 }

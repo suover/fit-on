@@ -24,4 +24,5 @@ public class UserInfo {
 	private int benchPress;
 	private int squat;
 	private int deadlift;
+	private String profilePictureUrl;
 }

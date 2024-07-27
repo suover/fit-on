@@ -20,8 +20,8 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import { Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import CircularProgress from '@mui/material/CircularProgress';
 import { styled } from '@mui/material';
-import PersonIcon from '@mui/icons-material/Person';
 import axios from '../../api/axiosConfig';
 import AuthContext from '../../context/AuthContext';
 import {
@@ -36,6 +36,7 @@ import {
 } from '../../styles/mypage/UserInfoPage.styles';
 import StyledTypography from '../../styles/mypage/StyledTypography';
 import { useNavigate } from 'react-router-dom';
+import ProfileImage from '../../components/common/profileImage/ProfileImage';
 
 const StyledTypographyWithMargin = styled(StyledTypography)({
   marginLeft: '20px',
@@ -54,6 +55,24 @@ const FloatingActionButton = styled(Fab)({
   height: 36,
 });
 
+const ProfileImagePreview = styled('div')<{
+  backgroundImage: string;
+  size?: number;
+}>`
+  border-radius: 50%;
+  width: ${({ size }) => size || 100}px;
+  height: ${({ size }) => size || 100}px;
+  background-size: cover;
+  background-position: center;
+  background-image: ${({ backgroundImage }) => backgroundImage};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #ccc;
+  border: 1px solid #ccc;
+`;
+
 const UserInfoPage: React.FC = () => {
   const { userId, logout, updateAuthState } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -63,6 +82,8 @@ const UserInfoPage: React.FC = () => {
   const [isEditMainModalOpen, setIsEditMainModalOpen] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [isProfileImageModalOpen, setIsProfileImageModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [deletePassword, setDeletePassword] = useState('');
   const [deletePasswordMessage, setDeletePasswordMessage] = useState('');
@@ -106,6 +127,8 @@ const UserInfoPage: React.FC = () => {
   const [isPasswordValid, setIsPasswordValid] = useState<boolean>(true);
   const [isPasswordConfirmValid, setIsPasswordConfirmValid] =
     useState<boolean>(true);
+
+  const [profileImage, setProfileImage] = useState<string | null>(null);
 
   const jobOptions = [
     '미선택',
@@ -161,6 +184,8 @@ const UserInfoPage: React.FC = () => {
           squat: userData.squat || '',
           deadlift: userData.deadlift || '',
         });
+
+        setProfileImage(userData.profileImage || null);
       } catch (error) {
         console.error('Failed to fetch user info', error);
       }
@@ -275,6 +300,11 @@ const UserInfoPage: React.FC = () => {
     setIsDeleteModalOpen(false);
     setDeletePassword('');
     setDeletePasswordMessage('');
+  };
+
+  const closeProfileImageModal = () => {
+    setIsProfileImageModalOpen(false);
+    setProfileImage(null);
   };
 
   const handleSaveEditInfo = async () => {
@@ -473,6 +503,66 @@ const UserInfoPage: React.FC = () => {
     [setTempMainInfo, setIsPhoneNumberValid, setPhoneNumberMessage],
   );
 
+  const handleProfileImageChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setProfileImage(null);
+    }
+  };
+
+  const handleSaveProfileImage = async () => {
+    setIsLoading(true);
+
+    const formData = new FormData();
+    const fileInput = document.getElementById(
+      'profile-image-upload',
+    ) as HTMLInputElement;
+    if (fileInput.files?.[0]) {
+      formData.append('file', fileInput.files[0]);
+    }
+
+    try {
+      const response = await axios.post(
+        '/api/mypage/userinfo/profile-image',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          params: {
+            userId,
+          },
+        },
+      );
+      const profileImageUrl = response.data;
+      setProfileImage(profileImageUrl || null);
+    } catch (error) {
+      console.error('Failed to upload or delete profile image', error);
+    }
+
+    setIsProfileImageModalOpen(false);
+    setIsLoading(false);
+    window.location.reload(); // 페이지 새로고침
+  };
+
+  const handleProfileImageDelete = async () => {
+    setProfileImage(null);
+    const fileInput = document.getElementById(
+      'profile-image-upload',
+    ) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  };
+
   return (
     <Container>
       <StyledTypographyWithMargin>회원 정보</StyledTypographyWithMargin>
@@ -483,8 +573,11 @@ const UserInfoPage: React.FC = () => {
               <CardBody>
                 <UserInfo>
                   <FabContainer>
-                    <PersonIcon sx={{ width: 100, height: 100 }}></PersonIcon>
-                    <FloatingActionButton color="primary">
+                    <ProfileImage size={100} />
+                    <FloatingActionButton
+                      color="primary"
+                      onClick={() => setIsProfileImageModalOpen(true)}
+                    >
                       <AddIcon />
                     </FloatingActionButton>
                   </FabContainer>
@@ -609,7 +702,13 @@ const UserInfoPage: React.FC = () => {
         </Row>
       </MainBody>
 
-      <Dialog open={isEditInfoModalOpen} onClose={closeEditInfoModal}>
+      <Dialog
+        open={isEditInfoModalOpen}
+        onClose={closeEditInfoModal}
+        disableEnforceFocus
+        disableAutoFocus
+        disableRestoreFocus
+      >
         <DialogTitle style={{ marginBottom: '16px' }}>
           추가정보 수정
         </DialogTitle>
@@ -691,7 +790,13 @@ const UserInfoPage: React.FC = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={isEditMainModalOpen} onClose={closeEditMainModal}>
+      <Dialog
+        open={isEditMainModalOpen}
+        onClose={closeEditMainModal}
+        disableEnforceFocus
+        disableAutoFocus
+        disableRestoreFocus
+      >
         <DialogTitle>내 정보 수정</DialogTitle>
         <DialogContent>
           <div style={{ marginBottom: '16px' }}></div>
@@ -787,7 +892,13 @@ const UserInfoPage: React.FC = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={isPasswordModalOpen} onClose={closePasswordModal}>
+      <Dialog
+        open={isPasswordModalOpen}
+        onClose={closePasswordModal}
+        disableEnforceFocus
+        disableAutoFocus
+        disableRestoreFocus
+      >
         <DialogTitle>비밀번호 변경</DialogTitle>
         <DialogContent>
           <div style={{ marginBottom: '16px' }}></div>
@@ -840,7 +951,13 @@ const UserInfoPage: React.FC = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={isDeleteModalOpen} onClose={closeDeleteModal}>
+      <Dialog
+        open={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        disableEnforceFocus
+        disableAutoFocus
+        disableRestoreFocus
+      >
         <DialogTitle>회원 탈퇴</DialogTitle>
         <DialogContent style={{ width: '400px', height: '100px' }}>
           <Typography style={{ marginBottom: '20px' }}>
@@ -876,6 +993,9 @@ const UserInfoPage: React.FC = () => {
       <Dialog
         open={isDeleteConfirmOpen}
         onClose={() => setIsDeleteConfirmOpen(false)}
+        disableEnforceFocus
+        disableAutoFocus
+        disableRestoreFocus
       >
         <DialogTitle>회원 탈퇴 확인</DialogTitle>
         <DialogContent style={{ width: '300px', height: '30px' }}>
@@ -892,6 +1012,91 @@ const UserInfoPage: React.FC = () => {
             확인
           </Button>
         </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={isProfileImageModalOpen}
+        onClose={closeProfileImageModal}
+        disableEnforceFocus
+        disableAutoFocus
+        disableRestoreFocus
+      >
+        <DialogTitle>프로필 이미지 업로드</DialogTitle>
+        <DialogContent
+          style={{
+            width: '300px',
+            height: '220px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Typography
+            variant="body2"
+            color="textSecondary"
+            style={{ marginBottom: '25px' }}
+          >
+            비어있는 상태로 저장하시면 기본 프로필 이미지로 저장됩니다.
+          </Typography>
+          <ProfileImagePreview
+            size={100}
+            backgroundImage={profileImage ? `url(${profileImage})` : 'none'}
+          >
+            {!profileImage && '미리보기'}
+          </ProfileImagePreview>
+          <div>
+            <input
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+              id="profile-image-upload"
+              onChange={handleProfileImageChange}
+            />
+            <label htmlFor="profile-image-upload">
+              <Button
+                color="secondary"
+                component="span"
+                style={{ marginTop: '8px' }}
+              >
+                파일 첨부
+              </Button>
+            </label>
+            {profileImage && (
+              <Button
+                onClick={handleProfileImageDelete}
+                color="secondary"
+                style={{ marginTop: '8px', marginLeft: '8px' }}
+              >
+                이미지 삭제
+              </Button>
+            )}
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeProfileImageModal} color="secondary">
+            취소
+          </Button>
+          <Button onClick={handleSaveProfileImage} color="primary">
+            저장
+          </Button>
+        </DialogActions>
+        {isLoading && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              background: 'rgba(255, 255, 255, 0.8)',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <CircularProgress />
+          </div>
+        )}
       </Dialog>
     </Container>
   );
