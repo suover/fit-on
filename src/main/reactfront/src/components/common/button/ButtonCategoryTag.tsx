@@ -77,7 +77,7 @@ const ButtonCategoryTag: React.FC<ButtonCategoryTagProps> = ({
   const fetchPosts = async (categoryId: number | null) => {
     try {
       const response =
-        categoryId === 14 // '인기글'의 categoryId가 14로 가정
+        categoryId === 1 // '인기글'의 categoryId
           ? await axios.get('/posts/popular')
           : await axios.get('/posts', { params: { categoryId } });
       setPosts(response.data);

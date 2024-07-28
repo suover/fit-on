@@ -85,11 +85,8 @@ const NewPost: React.FC = () => {
           'Content-Type': 'application/json',
         },
       });
-      console.log('Post created successfully: ', response.data); //로그
       navigate('/community');
-    } catch (error) {
-      console.error('There was an error creating the post!', error); //로그
-    }
+    } catch (error) {}
   };
 
   return (
