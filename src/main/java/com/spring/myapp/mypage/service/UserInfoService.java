@@ -1,9 +1,15 @@
 package com.spring.myapp.mypage.service;
 
+import java.io.IOException;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.spring.myapp.mypage.dto.PasswordUpdateDTO;
 import com.spring.myapp.mypage.dto.UserInfoAdditionalUpdateDTO;
 import com.spring.myapp.mypage.dto.UserInfoUpdateDTO;
@@ -21,6 +27,12 @@ public class UserInfoService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+
+	@Autowired
+	private AmazonS3Client amazonS3Client;
+
+	private static final String BUCKET_NAME = "fiton-bucket";
+	private static final String PROFILE_IMAGE_DIR = "user-additional-info/";
 
 	/**
 	 * 주어진 사용자 ID와 비밀번호를 검증합니다.
@@ -92,5 +104,71 @@ public class UserInfoService {
 	 */
 	public void deactivateAccount(int userId) {
 		userInfoRepository.deactivateAccount(userId);
+	}
+
+	/**
+	 * 사용자 프로필 이미지를 업로드하거나 삭제합니다.
+	 *
+	 * @param userId 사용자 ID
+	 * @param file 업로드할 파일 (삭제 시 비어 있음)
+	 * @return 업로드된 프로필 이미지 URL 또는 null
+	 */
+	public String handleProfileImage(int userId, MultipartFile file) {
+		UserInfo userInfo = userInfoRepository.getUserInfoById(userId);
+
+		// 기존 이미지 삭제
+		if (userInfo.getProfilePictureUrl() != null && !userInfo.getProfilePictureUrl().isEmpty()) {
+			deleteProfileImage(userInfo.getProfilePictureUrl());
+		}
+
+		if (file == null || file.isEmpty()) {
+			// 이미지 삭제 요청인 경우
+			userInfoRepository.updateProfilePictureUrl(userId, null);
+			return null;
+		} else {
+			// 이미지 업로드 요청인 경우
+			String newImageUrl = uploadProfileImage(file);
+			userInfoRepository.updateProfilePictureUrl(userId, newImageUrl);
+			return newImageUrl;
+		}
+	}
+
+	/**
+	 * 프로필 이미지를 S3에 업로드합니다.
+	 *
+	 * @param file 업로드할 파일
+	 * @return 업로드된 이미지의 URL
+	 */
+	private String uploadProfileImage(MultipartFile file) {
+		String fileName = PROFILE_IMAGE_DIR + UUID.randomUUID() + "-" + file.getOriginalFilename();
+		try {
+			ObjectMetadata metadata = new ObjectMetadata();
+			metadata.setContentType(file.getContentType());
+			amazonS3Client.putObject(BUCKET_NAME, fileName, file.getInputStream(), metadata);
+		} catch (IOException e) {
+			throw new RuntimeException("프로필 이미지 업로드 실패", e);
+		}
+		return amazonS3Client.getUrl(BUCKET_NAME, fileName).toString();
+	}
+
+	/**
+	 * S3에서 프로필 이미지를 삭제합니다.
+	 *
+	 * @param imageUrl 삭제할 이미지의 URL
+	 */
+	private void deleteProfileImage(String imageUrl) {
+		String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+		amazonS3Client.deleteObject(BUCKET_NAME, PROFILE_IMAGE_DIR + fileName);
+	}
+
+	/**
+	 * 사용자 프로필 이미지 URL을 가져옵니다.
+	 *
+	 * @param userId 사용자 ID
+	 * @return 프로필 이미지 URL 또는 null
+	 */
+	public String getProfileImageUrl(int userId) {
+		UserInfo userInfo = userInfoRepository.getUserInfoById(userId);
+		return userInfo.getProfilePictureUrl();
 	}
 }

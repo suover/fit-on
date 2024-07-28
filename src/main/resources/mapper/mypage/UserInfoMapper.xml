@@ -21,7 +21,8 @@
         ua.occupation,
         ua.bench_press AS benchPress,
         ua.squat,
-        ua.deadlift
+        ua.deadlift,
+        ua.profile_picture_url AS profilePictureUrl
         FROM users u
         LEFT JOIN user_additional_info ua ON u.user_id = ua.user_id
         WHERE u.user_id = #{userId}
@@ -67,6 +68,12 @@
     <update id="deactivateAccount">
         UPDATE users
         SET is_active = FALSE
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="updateProfilePictureUrl">
+        UPDATE user_additional_info
+        SET profile_picture_url = #{profilePictureUrl}
         WHERE user_id = #{userId}
     </update>
 </mapper>
