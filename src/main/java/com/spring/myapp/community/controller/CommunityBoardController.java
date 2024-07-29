@@ -65,7 +65,7 @@ public class CommunityBoardController {
 		}
 
 		// 게시글 삭제
-		@DeleteMapping("/posts/{id}")
+		@PutMapping("/posts/{id}/delete")
 		public ResponseEntity<Void> deletePost(@PathVariable("id") Long id) {
 				communityBoardService.deletePost(id);
 				return ResponseEntity.ok().build();

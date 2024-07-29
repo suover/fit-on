@@ -5,6 +5,35 @@ import { Box, Container, TextField, Typography } from '@mui/material';
 import { BackBtn } from '../../components/postDetail/PostDetail.styles';
 import Editor from '../../components/common/Editor';
 import UseAuth from '../../context/UseAuth';
+import SelectBox from '../../components/common/SelectBox';
+
+const PostCategory = [
+  { value: '2', label: '식단' },
+  { value: '3', label: '보충제' },
+  { value: '4', label: '닭가슴살' },
+  { value: '5', label: '재활운동' },
+  { value: '6', label: '상체운동' },
+  { value: '7', label: '하체운동' },
+  { value: '8', label: '전신운동' },
+  { value: '9', label: '맨몸운동' },
+  { value: '10', label: '유산소' },
+  { value: '11', label: '스트레칭' },
+  { value: '12', label: '건강' },
+  { value: '13', label: '이슈' },
+  { value: '14', label: '운동완료' },
+];
+
+export interface CommunityDTO {
+  communityId?: number;
+  userId?: number;
+  categoryId: number;
+  title: string;
+  content: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  isDeleted: boolean;
+  viewCount: number;
+}
 
 const CommunityPostEdit = () => {
   const { postId } = useParams<{ postId: string }>();
@@ -15,18 +44,24 @@ const CommunityPostEdit = () => {
   const [loading, setLoading] = useState(true); // 로딩 상태
   const navigate = useNavigate();
   const { isAuthenticated } = UseAuth();
+  const [formData, setFormData] = useState<CommunityDTO>({
+    categoryId: 1,
+    title: '',
+    content: '',
+    isDeleted: false,
+    viewCount: 0,
+  });
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8080/api/community/posts/${postId}`,
-        );
+        const response = await axios.get(`/api/community/posts/${postId}`);
         const post = response.data;
         setTitle(post.title);
         setContent(post.content);
         setUserId(post.userId);
         setCategoryId(post.categoryId);
+        setFormData({ ...formData, categoryId: post.categoryId }); // formData에도 categoryId 반영
       } catch (error) {
         console.error('Error fetching post:', error);
       } finally {
@@ -39,22 +74,35 @@ const CommunityPostEdit = () => {
     }
   }, [postId]);
 
+  //제목 수정
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
   };
 
+  //카테고리 수정
+  const handleCategoryChange = (value: string | null) => {
+    if (value !== null) {
+      const categoryId = parseInt(value, 10);
+      setCategoryId(categoryId); // categoryId 상태 업데이트
+      setFormData({ ...formData, categoryId });
+    }
+  };
+
+  //내용 수정
   const handleContentChange = (value: string) => {
     setContent(value);
   };
 
+  //글 저장
   const handleSave = async () => {
     try {
-      await axios.put(`http://localhost:8080/api/community/posts/${postId}`, {
+      await axios.put(`/api/community/posts/${postId}`, {
         title,
         content,
         userId,
-        categoryId,
+        categoryId: formData.categoryId,
       });
+
       navigate(`/community/${postId}`);
     } catch (error) {
       console.error('Error saving post:', error);
@@ -96,6 +144,14 @@ const CommunityPostEdit = () => {
           fullWidth
         />
       </Box>
+      <SelectBox
+        label="카테고리"
+        options={PostCategory}
+        helperText=""
+        value={categoryId ? categoryId.toString() : ''}
+        onChange={handleCategoryChange}
+        style={{ width: '100%' }}
+      />
       <Box mb={2}>
         <Editor
           placeholder="글을 입력하세요."

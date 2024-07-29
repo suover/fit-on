@@ -14,20 +14,19 @@ import SelectBox from '../../components/common/SelectBox';
 import AuthContext from '../../context/AuthContext';
 
 const PostCategory = [
-  { value: '1', label: '운동완료' },
-  { value: '2', label: '식단' },
-  { value: '3', label: '보충제' },
-  { value: '4', label: '자세' },
-  { value: '5', label: '재활운동' },
-  { value: '6', label: '상체운동' },
-  { value: '7', label: '하체운동' },
-  { value: '8', label: '전신운동' },
-  { value: '9', label: '맨몸운동' },
-  { value: '10', label: '유산소' },
-  { value: '11', label: '스트레칭' },
-  { value: '12', label: '건강' },
-  { value: '13', label: '이슈' },
-  { value: '14', label: '인기글' },
+  { value: '1', label: '식단' },
+  { value: '2', label: '보충제' },
+  { value: '3', label: '닭가슴살' },
+  { value: '4', label: '상체운동' },
+  { value: '5', label: '하체운동' },
+  { value: '6', label: '전신운동' },
+  { value: '7', label: '맨몸운동' },
+  { value: '8', label: '유산소' },
+  { value: '9', label: '재활운동' },
+  { value: '10', label: '스트레칭' },
+  { value: '11', label: '건강' },
+  { value: '12', label: '이슈' },
+  { value: '13', label: '운동완료' },
 ];
 
 export interface CommunityDTO {
@@ -86,11 +85,8 @@ const NewPost: React.FC = () => {
           'Content-Type': 'application/json',
         },
       });
-      console.log('Post created successfully: ', response.data); //로그
       navigate('/community');
-    } catch (error) {
-      console.error('There was an error creating the post!', error); //로그
-    }
+    } catch (error) {}
   };
 
   return (

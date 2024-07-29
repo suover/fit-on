@@ -16,6 +16,7 @@ type SelectProps = {
   options: Option[];
   helperText: string;
   onChange: (value: string | null) => void;
+  value?: string | null;
   allowNull?: boolean;
   style?: CSSProperties;
 };
@@ -25,15 +26,22 @@ const SelectBox = ({
   options,
   helperText,
   onChange,
+  value = '', //추가
   allowNull = false,
   style,
 }: SelectProps) => {
-  const [selectedValue, setSelectedValue] = React.useState<string | null>('');
+  const [selectedValue, setSelectedValue] = React.useState<string | null>(
+    value || '',
+  ); // 수정: 초기 상태를 props에서 받은 값으로 설정
   const handleChange = (event: SelectChangeEvent) => {
     const newValue = event.target.value;
     setSelectedValue(newValue);
     onChange(newValue === '' ? null : newValue);
   };
+
+  React.useEffect(() => {
+    setSelectedValue(value); // 추가: props의 value가 변경될 때마다 내부 상태 업데이트
+  }, [value]);
 
   return (
     <div>

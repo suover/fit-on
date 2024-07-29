@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import instance from '../../api/axiosConfig';
+import axios from '../../api/axiosConfig';
 import {
   Container,
   Box,
@@ -44,14 +44,14 @@ interface Post {
 }
 
 const ViewPostDetail = () => {
-  const { postId } = useParams<{ postId: string }>(); // URL 파라미터에서 postId 가져오기
+  const { postId } = useParams<{ postId: string }>();
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [likes, setLikes] = useState<number>(0);
-  const [open, setOpen] = useState(false); // Dialog open 상태 관리
+  const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const { isAuthenticated } = useContext(AuthContext);
@@ -62,13 +62,11 @@ const ViewPostDetail = () => {
     if (postId) {
       const fetchPost = async () => {
         try {
-          const response = await instance.get<Post>(
+          const response = await axios.get<Post>(
             `/api/community/posts/${postId}`,
           );
-          console.log('#####Fetched post:', response.data); // API 응답 데이터 확인@@
           setPost(response.data);
           setLikeCount(response.data.likes);
-          await fetchComments(response.data.communityId);
         } catch (error) {
           console.error(
             'Error fetching post: 게시물 가져오는 중 오류 발생',
@@ -86,21 +84,20 @@ const ViewPostDetail = () => {
   }, [postId]);
 
   //댓글조회
-  const fetchComments = async (communityId: number) => {
-    try {
-      const response = await instance.get<Comment[]>(
-        `/api/community/${postId}/comments`,
-      );
-      setComments(
-        response.data.map((comment) => ({
-          ...comment,
-          isDeleted: comment.isDeleted || false, // 기본값 설정
-        })),
-      );
-    } catch (error) {
-      console.error('Error fetching comments:', error);
-    }
-  };
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const response = await axios.get<Comment[]>(
+          `/api/community/${postId}/comments`,
+        );
+        setComments(response.data);
+      } catch (error) {
+        console.error('Error fetching comments:', error);
+      }
+    };
+
+    fetchComments();
+  }, [postId]);
 
   function formatDate(dateString: string): string {
     const date = new Date(dateString);
@@ -126,7 +123,7 @@ const ViewPostDetail = () => {
     }
 
     try {
-      const res = await instance.post(
+      const res = await axios.post(
         `/api/community/posts/${postId}/like`,
         null,
         {
@@ -156,9 +153,8 @@ const ViewPostDetail = () => {
   //글 삭제
   const handleDeleteClick = async () => {
     if (post && post.communityId) {
-      console.log(`########## Deleting post with id: ${postId}`); // 로그 추가
       try {
-        await instance.delete(`/api/community/posts/${postId}`);
+        await axios.put(`/api/community/posts/${postId}/delete`);
         navigate('/community');
       } catch (error) {
         console.error('Error deleting post:', error);
@@ -179,7 +175,6 @@ const ViewPostDetail = () => {
   // 댓글 추가
   const addComment = (comment: Comment): void => {
     setComments([...comments, comment]);
-    console.log(comment);
   };
 
   // 댓글 삭제
@@ -307,8 +302,8 @@ const ViewPostDetail = () => {
         </Box>
         <Container sx={{ padding: '20px 0', position: 'relative' }}>
           <CommentList
-            comments={comments} // 상태에서 가져온 댓글 목록을 전달
-            route={`api/community/${postId}`}
+            comments={comments}
+            route={`/api/community/${postId}`}
             postId={postId ? postId : ''}
             idName="communityId"
             addComment={addComment}
