@@ -164,12 +164,31 @@ const OrderPage: React.FC = () => {
     setIsOpen(!isOpen);
   }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log('Order Details:', orderDetails);
     console.log('Products:', products);
     console.log('Payment Method:', paymentMethod);
-    alert('주문서가 제출되었습니다.');
+
+    try {
+      const response = await axios.post('/api/order', {
+        userId,
+        orderDetails,
+        products,
+        total: totalPrice,
+        shippingFee: totalDeliveryFee,
+      });
+
+      if (response.status === 200) {
+        alert('주문이 성공적으로 완료되었습니다.');
+        // 추가적으로 주문 완료 후 동작 (예: 페이지 이동, 상태 초기화 등)
+      } else {
+        alert('주문 처리 중 문제가 발생했습니다.');
+      }
+    } catch (error) {
+      console.error('주문 처리 중 오류 발생:', error);
+      alert('주문 처리 중 오류가 발생했습니다.');
+    }
   };
 
   const AddressItem = styled.li`

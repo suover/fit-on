@@ -23,4 +23,6 @@ public class Product {
 	private Date updatedAt;
 	private Long categoryId;
 	private String imageUrl;
+
+	private Integer quantity;
 }
