@@ -49,6 +49,7 @@ const DetailTitle = styled.div`
     font-size: 1rem;
     display: flex;
     align-items: center;
+    margin-bottom: 3px;
 
     div {
       margin-right: 8px;
