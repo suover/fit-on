@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import DOMPurify from 'dompurify';
 
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams, Link, useLocation } from 'react-router-dom';
 
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 
 import { Information } from './Info';
 import { Comment } from '../../components/common/comment/CommentList';
@@ -21,22 +21,15 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import AuthContext from '../../context/AuthContext';
 
-const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/api/info',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
 const InfoDetail: React.FC = () => {
   const { infoId } = useParams<{ infoId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const [info, setInfo] = useState<Information>();
   const [noContent, setNoContent] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [infoComments, setInfoComments] = useState<Comment[]>([]);
   const [infolikes, setInfoLikes] = useState<number>(0);
-  // const [isLike, setIsLike] = useState<boolean>(false);
   const { userRole, userId } = useContext(AuthContext);
   const sanitizedContent = info ? DOMPurify.sanitize(info.content) : '';
   const createdDate = info?.createdAt.split('T')[0];
@@ -45,7 +38,7 @@ const InfoDetail: React.FC = () => {
     // 디테일 데이터 불러오기
     const fetchPost = async () => {
       try {
-        const res = await axiosInstance.get<Information>(`${infoId}`);
+        const res = await axios.get<Information>(`/api/info/${infoId}`);
 
         if (res.data) {
           setInfo(res.data);
@@ -69,7 +62,7 @@ const InfoDetail: React.FC = () => {
   useEffect(() => {
     const fetchComment = async () => {
       try {
-        const res = await axiosInstance.get<Comment[]>(`${infoId}/comments`);
+        const res = await axios.get<Comment[]>(`/api/info/${infoId}/comments`);
         setInfoComments(res.data);
       } catch (error) {
         console.error('Error fetching post:', error);
@@ -82,7 +75,6 @@ const InfoDetail: React.FC = () => {
   // 댓글 추가
   const addComment = (comment: Comment): void => {
     setInfoComments([...infoComments, comment]);
-    console.log(comment);
   };
 
   // 댓글 삭제
@@ -116,13 +108,11 @@ const InfoDetail: React.FC = () => {
     }
 
     try {
-      const res = await axiosInstance.put(`${infoId}/like`, null, {
+      const res = await axios.put(`/api/info/${infoId}/like`, null, {
         params: { userId },
       });
 
       if (res.data === 'Liked') {
-        console.log(res.data);
-
         setInfoLikes((prevState) => prevState + 1);
       } else {
         setInfoLikes((prevState) => prevState - 1);
@@ -139,7 +129,7 @@ const InfoDetail: React.FC = () => {
 
     if (confirmDelete) {
       try {
-        const res = await axiosInstance.put(`delete/${infoId}`);
+        const res = await axios.put(`/api/info/delete/${infoId}`);
         console.log('Response:', res.data);
         alert('삭제 되었습니다.');
         navigate('/info'); // 삭제 후 이동할 경로
@@ -147,6 +137,19 @@ const InfoDetail: React.FC = () => {
         console.error('Error deleting info:', error);
       }
     }
+  };
+
+  // ------------------------목록으로----------------------------
+  const goToBack = () => {
+    const params = new URLSearchParams(location.search);
+    const filterKeyword = params.get('keyword');
+    const searchKeyword = params.get('search');
+    const pageParam = params.get('page');
+    const page = pageParam ? parseInt(pageParam) : 1;
+
+    navigate(
+      `/info/search?filterKeyword=${filterKeyword}&searchKeyword=${searchKeyword}&page=${page}`,
+    );
   };
 
   // 로딩 중일때
@@ -210,7 +213,7 @@ const InfoDetail: React.FC = () => {
       <Container sx={{ padding: '20px 0', position: 'relative' }}>
         <CommentList
           comments={infoComments}
-          route={`api/info/${infoId}`}
+          route={`/api/info/${infoId}`}
           postId={infoId ? infoId : ''}
           idName="infoId"
           addComment={addComment}
@@ -227,7 +230,7 @@ const InfoDetail: React.FC = () => {
             <button onClick={handleDelete}>삭제</button>
           </>
         )}
-        <button onClick={() => navigate('/info')}>목록</button>
+        <button onClick={goToBack}>목록</button>
       </ControllBtns>
     </InfoWrapper>
   );

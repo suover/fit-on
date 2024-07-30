@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.spring.myapp.routineBoard.model.RoutineBoard;
@@ -15,6 +18,33 @@ public class RoutineBoardService {
 	@Autowired
 	private RoutineBoardMapper routineBoardMapper;
 
+	@Autowired
+	private RoutineLikesService routineLikesService;
+
+	public Page<RoutineBoard> getRoutinesWithPaging(Pageable pageable) {
+		int offset = (int)pageable.getOffset();
+		int size = pageable.getPageSize();
+		List<RoutineBoard> routines = routineBoardMapper.findAllWithPaging(offset, size);
+		long total = routineBoardMapper.countRoutines();
+		routines.forEach(routine -> {
+			int likes = routineLikesService.getLikesCount(routine.getRoutineId());
+			routine.setLikes(likes);
+		});
+		return new PageImpl<>(routines, pageable, total);
+	}
+
+	public Page<RoutineBoard> getRoutinesWithPagingAndSearch(String query, Pageable pageable) {
+		int offset = (int)pageable.getOffset();
+		int size = pageable.getPageSize();
+		List<RoutineBoard> routines = routineBoardMapper.findAllWithPagingAndSearch(offset, size, query);
+		long total = routineBoardMapper.countRoutinesWithSearch(query);
+		routines.forEach(routine -> {
+			int likes = routineLikesService.getLikesCount(routine.getRoutineId());
+			routine.setLikes(likes);
+		});
+		return new PageImpl<>(routines, pageable, total);
+	}
+
 	public List<RoutineBoard> getAllRoutines() {
 		return routineBoardMapper.findAll();
 	}
@@ -23,14 +53,14 @@ public class RoutineBoardService {
 		return routineBoardMapper.findById(id);
 	}
 
-	public RoutineBoard createRoutineBoard(RoutineBoard routineBoard) {
-		routineBoard.setUserId(30);
+	public RoutineBoard createRoutineBoard(RoutineBoard routineBoard, Long userId, String nickname) {
+		routineBoard.setUserId(userId);
+		routineBoard.setNickname(nickname);
 		routineBoard.setCreatedAt(LocalDateTime.now());
 
 		try {
 			routineBoardMapper.insertRoutineBoard(routineBoard);
 		} catch (Exception e) {
-			System.out.println("Error inserting routine board: " + e.getMessage());
 			throw e;
 		}
 
@@ -42,7 +72,6 @@ public class RoutineBoardService {
 			routineBoardMapper.updateIsDeletedById(id);
 			return true;
 		} catch (Exception e) {
-			System.out.println("Error updating isDeleted flag: " + e.getMessage());
 			return false;
 		}
 	}
@@ -75,21 +104,12 @@ public class RoutineBoardService {
 		return routineBoardMapper.findPartNameById(partId);
 	}
 
-	public List<RoutineBoard> getRoutinesWithPaging(int page, int size) {
-		int offset = page * size;
-		return routineBoardMapper.findAllWithPaging(offset, size);
-	}
-
 	public long getRoutineCount() {
 		return routineBoardMapper.countRoutines();
 	}
 
-	public List<RoutineBoard> getBestRoutines() {
-		return routineBoardMapper.findBestRoutines();
-	}
-
-	public List<RoutineBoard> getRoutinesWithPagingAndSearch(int offset, int size, String query) {
-		return routineBoardMapper.findAllWithPagingAndSearch(offset, size, query);
+	public List<RoutineBoard> getBestRoutines(int limit) {
+		return routineBoardMapper.findBestRoutines(limit);
 	}
 
 	public long getRoutineCountWithSearch(String query) {

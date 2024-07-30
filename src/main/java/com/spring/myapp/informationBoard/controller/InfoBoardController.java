@@ -55,16 +55,17 @@ public class InfoBoardController {
 
 	@GetMapping("/info/search")// 카테고리 이름 넘기고 카테고리 이름에서 카테고리 번호 조회 -> 번호가 같은 글 조회하는 방식
 	public ResponseEntity<?> getInfoList(
-		@RequestParam("keyword") String keyword,
+		@RequestParam(value = "filterKeyword") String filterKeyword,
+		@RequestParam(value = "searchKeyword", required = false, defaultValue = "") String searchKeyword,
 		@PageableDefault(page = 0, size = 12, sort = "created_at", direction = Sort.Direction.DESC) Pageable pageable) {
 
 		try {
-			logger.info("Keyword received: {}", keyword);
-			Page<?> paging = infoService.infoListPaging(keyword, pageable);
+			logger.info("Keyword received: {}", filterKeyword);
+			Page<?> paging = infoService.infoListPaging(filterKeyword, searchKeyword, pageable);
 			logger.info("result : {}", paging);
 			return new ResponseEntity<>(paging, HttpStatus.OK);
 		} catch (Exception e) {
-			logger.error("Error occurred while fetching information list for keyword: {}", keyword, e);
+			logger.error("Error occurred while fetching information list for keyword: {}", filterKeyword, e);
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

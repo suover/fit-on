@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +30,7 @@ public class CommunityBoardCommentController {
 
 		// 댓글 목록 불러오기:
 		@GetMapping("/{communityId}/comments")
-		public ResponseEntity<?> getAllInfoList(@PathVariable("communityId") Long communityId) {
+		public ResponseEntity<?> getAllList(@PathVariable("communityId") Long communityId) {
 				try {
 						List<CommunityBoardComments> allComments = communityBoardCommentService.getAllComments(communityId);
 						return new ResponseEntity<>(allComments, HttpStatus.OK);
@@ -44,7 +43,7 @@ public class CommunityBoardCommentController {
 
 		//새로운 댓글 추가:
 		@PostMapping("/{communityId}/newComments")
-		public ResponseEntity<?> newCommunityComment(@RequestBody CommunityBoardComments comment) { // 새 정보글 등록
+		public ResponseEntity<?> newCommunityComment(@RequestBody CommunityBoardComments comment) {
 				try {
 						logger.info("Received new communityboard content post request: {}", comment);
 						CommunityBoardComments savedComment = communityBoardCommentService.writeNewComment(comment);
@@ -57,6 +56,7 @@ public class CommunityBoardCommentController {
 				}
 		}
 
+
 		// 특정 댓글의 모든 답글 불러오기
 		@GetMapping("/{communityId}/{commentId}")
 		public ResponseEntity<List<CommunityBoardComments>> getAllReplies(@PathVariable("commentId") Long commentId) {
@@ -65,7 +65,7 @@ public class CommunityBoardCommentController {
 		}
 
 		// 댓글 삭제
-		@DeleteMapping("/{communityId}/{commentId}/delete")
+		@PutMapping("/{communityId}/{commentId}/delete")
 		public ResponseEntity<?> deleteComment(@PathVariable("commentId") Long commentId) {
 				try {
 						communityBoardCommentService.deleteComment(commentId);

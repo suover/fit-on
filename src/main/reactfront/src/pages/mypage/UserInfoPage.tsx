@@ -1,13 +1,16 @@
-import React, { useState, useMemo } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useMemo,
+  useCallback,
+} from 'react';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -17,7 +20,10 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import { Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import CircularProgress from '@mui/material/CircularProgress';
 import { styled } from '@mui/material';
+import axios from '../../api/axiosConfig';
+import AuthContext from '../../context/AuthContext';
 import {
   Container,
   MainBody,
@@ -25,11 +31,12 @@ import {
   Col,
   Card,
   CardBody,
-  UserImage,
   UserInfo,
   ButtonPrimary,
 } from '../../styles/mypage/UserInfoPage.styles';
 import StyledTypography from '../../styles/mypage/StyledTypography';
+import { useNavigate } from 'react-router-dom';
+import ProfileImage from '../../components/common/profileImage/ProfileImage';
 
 const StyledTypographyWithMargin = styled(StyledTypography)({
   marginLeft: '20px',
@@ -48,30 +55,83 @@ const FloatingActionButton = styled(Fab)({
   height: 36,
 });
 
+const ProfileImagePreview = styled('div')<{
+  backgroundImage: string;
+  size?: number;
+}>`
+  border-radius: 50%;
+  width: ${({ size }) => size || 100}px;
+  height: ${({ size }) => size || 100}px;
+  background-size: cover;
+  background-position: center;
+  background-image: ${({ backgroundImage }) => backgroundImage};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #ccc;
+  border: 1px solid #ccc;
+`;
+
 const UserInfoPage: React.FC = () => {
+  const { userId, logout, updateAuthState } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditInfoModalOpen, setIsEditInfoModalOpen] = useState(false);
   const [isEditMainModalOpen, setIsEditMainModalOpen] = useState(false);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [isProfileImageModalOpen, setIsProfileImageModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [deletePassword, setDeletePassword] = useState('');
+  const [deletePasswordMessage, setDeletePasswordMessage] = useState('');
 
   const [additionalInfo, setAdditionalInfo] = useState({
-    gender: 'male',
-    job: '헬스트레이너',
-    benchPress: '150',
-    squat: '100',
-    deadlift: '30',
+    gender: '',
+    occupation: '',
+    benchPress: '',
+    squat: '',
+    deadlift: '',
   });
 
   const [mainInfo, setMainInfo] = useState({
-    email: 'example@domain.com',
-    name: '홍길동',
-    password: '',
-    passwordConfirm: '',
-    nickname: 'nickname',
-    phone: '010-1111-1111',
-    birthday: '1990-01-01',
+    email: '',
+    name: '',
+    nickname: '',
+    phone: '',
+    birthday: '',
+    joinDate: '',
   });
 
+  const [tempAdditionalInfo, setTempAdditionalInfo] = useState({
+    ...additionalInfo,
+  });
+  const [tempMainInfo, setTempMainInfo] = useState({ ...mainInfo });
+  const [passwordInfo, setPasswordInfo] = useState({
+    password: '',
+    passwordConfirm: '',
+  });
+
+  const [nicknameMessage, setNicknameMessage] = useState<string>('');
+  const [phoneNumberMessage, setPhoneNumberMessage] = useState<string>('');
+  const [passwordMessage, setPasswordMessage] = useState<string>('');
+  const [passwordConfirmMessage, setPasswordConfirmMessage] =
+    useState<string>('');
+
+  const [isNicknameValid, setIsNicknameValid] = useState<boolean | null>(true);
+  const [isPhoneNumberValid, setIsPhoneNumberValid] = useState<boolean | null>(
+    true,
+  );
+  const [isPasswordValid, setIsPasswordValid] = useState<boolean>(true);
+  const [isPasswordConfirmValid, setIsPasswordConfirmValid] =
+    useState<boolean>(true);
+
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+
   const jobOptions = [
+    '미선택',
     '회사원',
     '의사',
     '변호사',
@@ -91,25 +151,111 @@ const UserInfoPage: React.FC = () => {
     '기타',
   ];
 
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await axios.get('/api/mypage/userinfo/get-user-info', {
+          params: { userId },
+        });
+        const userData = response.data;
+
+        const formatDate = (dateString: string) => {
+          if (!dateString) return '';
+          const date = new Date(dateString);
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          return `${year}-${month}-${day}`;
+        };
+
+        setMainInfo({
+          email: userData.email,
+          name: userData.name,
+          nickname: userData.nickname,
+          phone: userData.phone,
+          birthday: formatDate(userData.birthday),
+          joinDate: formatDate(userData.joinDate),
+        });
+
+        setAdditionalInfo({
+          gender: userData.gender || '',
+          occupation: userData.occupation || '',
+          benchPress: userData.benchPress || '',
+          squat: userData.squat || '',
+          deadlift: userData.deadlift || '',
+        });
+
+        setProfileImage(userData.profileImage || null);
+      } catch (error) {
+        console.error('Failed to fetch user info', error);
+      }
+    };
+
+    fetchUserInfo();
+  }, [userId]);
+
   const handleSelectChange = (event: SelectChangeEvent<string>) => {
     const { name, value } = event.target;
-    setAdditionalInfo({ ...additionalInfo, [name]: value });
+    setTempAdditionalInfo({ ...tempAdditionalInfo, [name]: value });
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setAdditionalInfo({ ...additionalInfo, [name]: value });
+    setTempAdditionalInfo({ ...tempAdditionalInfo, [name]: value });
   };
 
   const handleMainInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { name, value } = event.target;
-    setMainInfo({ ...mainInfo, [name]: value });
+    setTempMainInfo({ ...tempMainInfo, [name]: value });
   };
 
-  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAdditionalInfo({ ...additionalInfo, gender: event.target.value });
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setPasswordInfo({ ...passwordInfo, [name]: value });
+
+    if (name === 'password') {
+      const regex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*\W).{8,}$/;
+      if (value === '') {
+        setPasswordMessage('');
+        setIsPasswordValid(true);
+        if (passwordInfo.passwordConfirm === '') {
+          setPasswordConfirmMessage('');
+          setIsPasswordConfirmValid(true);
+        }
+      } else if (!regex.test(value)) {
+        setPasswordMessage(
+          '비밀번호는 8자 이상이며, 영문, 숫자, 특수문자를 포함해야 합니다.',
+        );
+        setIsPasswordValid(false);
+      } else {
+        setPasswordMessage('');
+        setIsPasswordValid(true);
+        if (value === passwordInfo.passwordConfirm) {
+          setPasswordConfirmMessage('');
+          setIsPasswordConfirmValid(true);
+        } else if (passwordInfo.passwordConfirm !== '') {
+          setPasswordConfirmMessage('비밀번호가 일치하지 않습니다.');
+          setIsPasswordConfirmValid(false);
+        }
+      }
+    } else if (name === 'passwordConfirm') {
+      if (value === '') {
+        setPasswordConfirmMessage('');
+        setIsPasswordConfirmValid(true);
+        if (passwordInfo.password === '') {
+          setPasswordMessage('');
+          setIsPasswordValid(true);
+        }
+      } else if (value === passwordInfo.password) {
+        setPasswordConfirmMessage('');
+        setIsPasswordConfirmValid(true);
+      } else {
+        setPasswordConfirmMessage('비밀번호가 일치하지 않습니다.');
+        setIsPasswordConfirmValid(false);
+      }
+    }
   };
 
   const handleDeleteClick = () => {
@@ -117,11 +263,25 @@ const UserInfoPage: React.FC = () => {
   };
 
   const handleEditInfoClick = () => {
+    setTempAdditionalInfo({ ...additionalInfo });
     setIsEditInfoModalOpen(true);
   };
 
   const handleEditMainInfoClick = () => {
+    setTempMainInfo({ ...mainInfo });
+    setNicknameMessage('');
+    setPhoneNumberMessage('');
+    setIsNicknameValid(true);
+    setIsPhoneNumberValid(true);
     setIsEditMainModalOpen(true);
+  };
+
+  const handlePasswordChangeClick = () => {
+    setPasswordInfo({
+      password: '',
+      passwordConfirm: '',
+    });
+    setIsPasswordModalOpen(true);
   };
 
   const closeEditInfoModal = () => {
@@ -132,16 +292,126 @@ const UserInfoPage: React.FC = () => {
     setIsEditMainModalOpen(false);
   };
 
-  const handleSaveEditInfo = () => {
-    setIsEditInfoModalOpen(false);
+  const closePasswordModal = () => {
+    setIsPasswordModalOpen(false);
   };
 
-  const handleSaveMainInfo = () => {
-    if (mainInfo.password !== mainInfo.passwordConfirm) {
-      alert('비밀번호가 일치하지 않습니다.');
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setDeletePassword('');
+    setDeletePasswordMessage('');
+  };
+
+  const closeProfileImageModal = () => {
+    setIsProfileImageModalOpen(false);
+    setProfileImage(null);
+  };
+
+  const handleSaveEditInfo = async () => {
+    try {
+      await axios.put('/api/mypage/userinfo/update-additional-info', {
+        userId,
+        gender: tempAdditionalInfo.gender || null,
+        occupation: tempAdditionalInfo.occupation || null,
+        benchPress: tempAdditionalInfo.benchPress,
+        squat: tempAdditionalInfo.squat,
+        deadlift: tempAdditionalInfo.deadlift,
+      });
+      setAdditionalInfo(tempAdditionalInfo);
+      setIsEditInfoModalOpen(false);
+    } catch (error) {
+      console.error('Failed to update additional info', error);
+    }
+  };
+
+  const handleSaveMainInfo = async () => {
+    if (!isNicknameValid || !isPhoneNumberValid || !tempMainInfo.birthday) {
+      alert('유효한 정보를 입력하세요.');
       return;
     }
-    setIsEditMainModalOpen(false);
+
+    if (
+      tempMainInfo.nickname !== mainInfo.nickname &&
+      !nicknameMessage.includes('사용 가능한 닉네임입니다.')
+    ) {
+      alert('닉네임 중복 확인을 해주세요.');
+      return;
+    }
+
+    try {
+      await axios.put('/api/mypage/userinfo/update-main-info', {
+        userId,
+        email: tempMainInfo.email,
+        name: tempMainInfo.name,
+        nickname: tempMainInfo.nickname,
+        phone: tempMainInfo.phone,
+        birthday: tempMainInfo.birthday,
+      });
+
+      // 업데이트된 사용자 정보 반영
+      setMainInfo(tempMainInfo);
+
+      // 기존 액세스토큰 삭제
+      localStorage.removeItem('accessToken');
+
+      // 새로운 액세스토큰 요청
+      const refreshResponse = await axios.post('/api/auth/refresh');
+      const newAccessToken = refreshResponse.data.accessToken;
+      localStorage.setItem('accessToken', newAccessToken);
+
+      // 상태 업데이트 호출
+      updateAuthState();
+
+      setIsEditMainModalOpen(false);
+    } catch (error) {
+      console.error('Failed to update main info', error);
+    }
+  };
+
+  const handleSavePassword = async () => {
+    if (!isPasswordValid || !isPasswordConfirmValid) {
+      alert('유효한 비밀번호를 입력하세요.');
+      return;
+    }
+
+    try {
+      await axios.put('/api/mypage/userinfo/update-password', {
+        userId,
+        newPassword: passwordInfo.password,
+      });
+      setIsPasswordModalOpen(false);
+      alert('비밀번호가 변경되었습니다.');
+    } catch (error) {
+      console.error('Failed to update password', error);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      const response = await axios.post('/api/mypage/userinfo/check-password', {
+        userId,
+        password: deletePassword,
+      });
+      if (!response.data) {
+        setDeletePasswordMessage('비밀번호가 틀렸습니다.');
+        return;
+      }
+      setIsDeleteConfirmOpen(true);
+    } catch (error) {
+      console.error('Failed to check password', error);
+    }
+  };
+
+  const confirmDeleteAccount = async () => {
+    try {
+      await axios.put('/api/mypage/userinfo/deactivate-account', {
+        userId,
+      });
+      await logout();
+      navigate('/');
+    } catch (error) {
+      console.error('Failed to delete account', error);
+    }
   };
 
   const calculateTotalLift = useMemo(() => {
@@ -155,6 +425,144 @@ const UserInfoPage: React.FC = () => {
     additionalInfo.deadlift,
   ]);
 
+  // 닉네임 유효성 검사
+  const handleChangeNickname = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      const regex = /^[가-힣a-zA-Z0-9]{2,10}$/;
+
+      setTempMainInfo((prev) => ({ ...prev, nickname: value }));
+
+      if (value === '') {
+        setNicknameMessage('');
+        setIsNicknameValid(false);
+      } else if (!regex.test(value)) {
+        setNicknameMessage(
+          '한글, 영어, 숫자를 포함한 2자 이상 10자 미만으로 입력해주세요',
+        );
+        setIsNicknameValid(false);
+      } else {
+        setNicknameMessage('');
+        setIsNicknameValid(true);
+      }
+    },
+    [setTempMainInfo, setIsNicknameValid, setNicknameMessage],
+  );
+
+  // 닉네임 중복 검사
+  const handleCheckNicknameDuplicate = async () => {
+    if (tempMainInfo.nickname === mainInfo.nickname) {
+      setNicknameMessage(
+        '현재 사용 중인 닉네임입니다. 새로운 닉네임을 입력하세요.',
+      );
+      setIsNicknameValid(false);
+      return;
+    }
+
+    if (!tempMainInfo.nickname || !isNicknameValid) {
+      setNicknameMessage('올바른 닉네임을 입력하세요.');
+      setIsNicknameValid(false);
+      return;
+    }
+
+    try {
+      const response = await axios.get('/api/check-nickname', {
+        params: { nickname: tempMainInfo.nickname },
+      });
+      if (response.data) {
+        setNicknameMessage('이미 사용 중인 닉네임입니다.');
+        setIsNicknameValid(false);
+      } else {
+        setNicknameMessage('사용 가능한 닉네임입니다.');
+        setIsNicknameValid(true);
+      }
+    } catch (error) {
+      console.error('닉네임 중복 확인 중 오류 발생:', error);
+    }
+  };
+
+  // 휴대전화 번호 유효성 검사
+  const handleChangePhoneNumber = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      const regex = /^01[016789][0-9]{7,8}$/;
+
+      const formattedValue = value.replace(/-/g, '');
+      setTempMainInfo((prev) => ({ ...prev, phone: formattedValue }));
+
+      if (!regex.test(formattedValue)) {
+        setPhoneNumberMessage(
+          '올바른 휴대전화 번호 형식이 아닙니다. 예: 01012345678',
+        );
+        setIsPhoneNumberValid(false);
+      } else {
+        setPhoneNumberMessage('');
+        setIsPhoneNumberValid(true);
+      }
+    },
+    [setTempMainInfo, setIsPhoneNumberValid, setPhoneNumberMessage],
+  );
+
+  const handleProfileImageChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setProfileImage(null);
+    }
+  };
+
+  const handleSaveProfileImage = async () => {
+    setIsLoading(true);
+
+    const formData = new FormData();
+    const fileInput = document.getElementById(
+      'profile-image-upload',
+    ) as HTMLInputElement;
+    if (fileInput.files?.[0]) {
+      formData.append('file', fileInput.files[0]);
+    }
+
+    try {
+      const response = await axios.post(
+        '/api/mypage/userinfo/profile-image',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          params: {
+            userId,
+          },
+        },
+      );
+      const profileImageUrl = response.data;
+      setProfileImage(profileImageUrl || null);
+    } catch (error) {
+      console.error('Failed to upload or delete profile image', error);
+    }
+
+    setIsProfileImageModalOpen(false);
+    setIsLoading(false);
+    window.location.reload(); // 페이지 새로고침
+  };
+
+  const handleProfileImageDelete = async () => {
+    setProfileImage(null);
+    const fileInput = document.getElementById(
+      'profile-image-upload',
+    ) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  };
+
   return (
     <Container>
       <StyledTypographyWithMargin>회원 정보</StyledTypographyWithMargin>
@@ -165,18 +573,19 @@ const UserInfoPage: React.FC = () => {
               <CardBody>
                 <UserInfo>
                   <FabContainer>
-                    <UserImage
-                      src="https://bootdey.com/img/Content/avatar/avatar7.png"
-                      alt="Admin"
-                    />
-                    <FloatingActionButton color="primary">
+                    <ProfileImage size={100} />
+                    <FloatingActionButton
+                      color="primary"
+                      onClick={() => setIsProfileImageModalOpen(true)}
+                    >
                       <AddIcon />
                     </FloatingActionButton>
                   </FabContainer>
                   <div>
-                    <p>홍길동</p>
-                    <p className="text-secondary mb-1">example@domain.com</p>
-                    <p className="text-muted font-size-sm">nickname</p>
+                    <p>{mainInfo.name + '님' || '-'}</p>
+                    <p className="text-muted font-size-sm">
+                      {mainInfo.nickname || '-'}
+                    </p>
                   </div>
                 </UserInfo>
               </CardBody>
@@ -190,9 +599,21 @@ const UserInfoPage: React.FC = () => {
                 {[
                   {
                     label: '성별',
-                    value: additionalInfo.gender === 'male' ? '남성' : '여성',
+                    value:
+                      additionalInfo.gender === 'M'
+                        ? '남성'
+                        : additionalInfo.gender === 'F'
+                          ? '여성'
+                          : '-',
                   },
-                  { label: '직업', value: additionalInfo.job || '-' },
+                  {
+                    label: '직업',
+                    value:
+                      additionalInfo.occupation === '미선택' ||
+                      additionalInfo.occupation === ''
+                        ? '-'
+                        : additionalInfo.occupation,
+                  },
                   {
                     label: '벤치프레스',
                     value: additionalInfo.benchPress || '-',
@@ -217,7 +638,7 @@ const UserInfoPage: React.FC = () => {
                 ))}
                 <Grid container justifyContent="flex-end">
                   <ButtonPrimary onClick={handleEditInfoClick}>
-                    수정
+                    추가정보 수정
                   </ButtonPrimary>
                 </Grid>
               </CardBody>
@@ -231,13 +652,12 @@ const UserInfoPage: React.FC = () => {
                   내 정보
                 </Typography>
                 {[
-                  { label: '이메일', value: mainInfo.email },
-                  { label: '이름', value: mainInfo.name },
-                  { label: '비밀번호', value: '**********' },
-                  { label: '닉네임', value: mainInfo.nickname },
-                  { label: '핸드폰', value: mainInfo.phone },
-                  { label: '생년월일', value: mainInfo.birthday },
-                  { label: '가입일', value: '2022-01-01' },
+                  { label: '이메일', value: mainInfo.email || '-' },
+                  { label: '이름', value: mainInfo.name || '-' },
+                  { label: '닉네임', value: mainInfo.nickname || '-' },
+                  { label: '핸드폰', value: mainInfo.phone || '-' },
+                  { label: '생년월일', value: mainInfo.birthday || '-' },
+                  { label: '가입일', value: mainInfo.joinDate || '-' },
                 ].map((item, index) => (
                   <div key={index}>
                     <Row>
@@ -258,7 +678,15 @@ const UserInfoPage: React.FC = () => {
                     onClick={handleEditMainInfoClick}
                     style={{ marginRight: '10px' }}
                   >
-                    수정
+                    정보 수정
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    onClick={handlePasswordChangeClick}
+                    style={{ marginRight: '10px' }}
+                  >
+                    비밀번호 변경
                   </Button>
                   <Button
                     variant="contained"
@@ -274,38 +702,48 @@ const UserInfoPage: React.FC = () => {
         </Row>
       </MainBody>
 
-      <Dialog open={isEditInfoModalOpen} onClose={closeEditInfoModal}>
-        <DialogTitle>추가 정보 수정</DialogTitle>
+      <Dialog
+        open={isEditInfoModalOpen}
+        onClose={closeEditInfoModal}
+        disableEnforceFocus
+        disableAutoFocus
+        disableRestoreFocus
+      >
+        <DialogTitle style={{ marginBottom: '16px' }}>
+          추가정보 수정
+        </DialogTitle>
         <DialogContent>
-          <Grid container spacing={2}>
+          <Grid container spacing={5}>
             <Grid item xs={12}>
-              <Typography>성별</Typography>
-              <RadioGroup
-                row
-                value={additionalInfo.gender}
-                onChange={handleRadioChange}
-              >
-                <FormControlLabel
-                  value="male"
-                  control={<Radio />}
-                  label="남성"
-                />
-                <FormControlLabel
-                  value="female"
-                  control={<Radio />}
-                  label="여성"
-                />
-              </RadioGroup>
+              <FormControl fullWidth style={{ marginTop: '8px' }}>
+                <InputLabel>성별</InputLabel>
+                <Select
+                  name="gender"
+                  label="성별"
+                  value={tempAdditionalInfo.gender}
+                  onChange={handleSelectChange}
+                >
+                  <MenuItem value="">
+                    <em>미선택</em>
+                  </MenuItem>
+                  <MenuItem value="M">남성</MenuItem>
+                  <MenuItem value="F">여성</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item xs={12}>
               <FormControl fullWidth>
                 <InputLabel>직업</InputLabel>
                 <Select
-                  name="job"
-                  value={additionalInfo.job}
+                  name="occupation"
+                  label="직업"
+                  value={tempAdditionalInfo.occupation}
                   onChange={handleSelectChange}
                 >
-                  {jobOptions.map((job, index) => (
+                  <MenuItem value="">
+                    <em>미선택</em>
+                  </MenuItem>
+                  {jobOptions.slice(1).map((job, index) => (
                     <MenuItem key={index} value={job}>
                       {job}
                     </MenuItem>
@@ -317,7 +755,7 @@ const UserInfoPage: React.FC = () => {
               <TextField
                 label="벤치프레스 (kg)"
                 name="benchPress"
-                value={additionalInfo.benchPress}
+                value={tempAdditionalInfo.benchPress}
                 onChange={handleInputChange}
                 fullWidth
               />
@@ -326,7 +764,7 @@ const UserInfoPage: React.FC = () => {
               <TextField
                 label="스쿼트 (kg)"
                 name="squat"
-                value={additionalInfo.squat}
+                value={tempAdditionalInfo.squat}
                 onChange={handleInputChange}
                 fullWidth
               />
@@ -335,7 +773,7 @@ const UserInfoPage: React.FC = () => {
               <TextField
                 label="데드리프트 (kg)"
                 name="deadlift"
-                value={additionalInfo.deadlift}
+                value={tempAdditionalInfo.deadlift}
                 onChange={handleInputChange}
                 fullWidth
               />
@@ -352,17 +790,22 @@ const UserInfoPage: React.FC = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={isEditMainModalOpen} onClose={closeEditMainModal}>
+      <Dialog
+        open={isEditMainModalOpen}
+        onClose={closeEditMainModal}
+        disableEnforceFocus
+        disableAutoFocus
+        disableRestoreFocus
+      >
         <DialogTitle>내 정보 수정</DialogTitle>
         <DialogContent>
-          <div style={{ marginBottom: '16px' }}></div>{' '}
-          <Grid container spacing={3}>
-            {' '}
+          <div style={{ marginBottom: '16px' }}></div>
+          <Grid container spacing={5}>
             <Grid item xs={12}>
               <TextField
                 label="이메일"
                 name="email"
-                value={mainInfo.email}
+                value={tempMainInfo.email}
                 onChange={handleMainInputChange}
                 fullWidth
                 disabled
@@ -372,30 +815,10 @@ const UserInfoPage: React.FC = () => {
               <TextField
                 label="이름"
                 name="name"
-                value={mainInfo.name}
+                value={tempMainInfo.name}
                 onChange={handleMainInputChange}
                 fullWidth
                 disabled
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="새 비밀번호"
-                name="password"
-                type="password"
-                value={mainInfo.password}
-                onChange={handleMainInputChange}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="비밀번호 확인"
-                name="passwordConfirm"
-                type="password"
-                value={mainInfo.passwordConfirm}
-                onChange={handleMainInputChange}
-                fullWidth
               />
             </Grid>
             <Grid item xs={12}>
@@ -404,9 +827,17 @@ const UserInfoPage: React.FC = () => {
                   <TextField
                     label="닉네임"
                     name="nickname"
-                    value={mainInfo.nickname}
-                    onChange={handleMainInputChange}
+                    value={tempMainInfo.nickname}
+                    onChange={handleChangeNickname}
                     fullWidth
+                    helperText={nicknameMessage}
+                    FormHelperTextProps={{
+                      style: {
+                        color: isNicknameValid === false ? 'red' : 'blue',
+                        position: 'absolute',
+                        bottom: '-20px',
+                      },
+                    }}
                   />
                 </Grid>
                 <Grid item>
@@ -414,6 +845,7 @@ const UserInfoPage: React.FC = () => {
                     variant="contained"
                     color="primary"
                     style={{ height: '56px' }}
+                    onClick={handleCheckNicknameDuplicate}
                   >
                     중복 확인
                   </Button>
@@ -424,9 +856,17 @@ const UserInfoPage: React.FC = () => {
               <TextField
                 label="핸드폰"
                 name="phone"
-                value={mainInfo.phone}
-                onChange={handleMainInputChange}
+                value={tempMainInfo.phone}
+                onChange={handleChangePhoneNumber}
                 fullWidth
+                helperText={phoneNumberMessage}
+                FormHelperTextProps={{
+                  style: {
+                    color: isPhoneNumberValid === false ? 'red' : 'black',
+                    position: 'absolute',
+                    bottom: '-20px',
+                  },
+                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -434,7 +874,7 @@ const UserInfoPage: React.FC = () => {
                 label="생년월일"
                 name="birthday"
                 type="date"
-                value={mainInfo.birthday}
+                value={tempMainInfo.birthday}
                 onChange={handleMainInputChange}
                 fullWidth
                 InputLabelProps={{ shrink: true }}
@@ -450,6 +890,213 @@ const UserInfoPage: React.FC = () => {
             저장
           </Button>
         </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={isPasswordModalOpen}
+        onClose={closePasswordModal}
+        disableEnforceFocus
+        disableAutoFocus
+        disableRestoreFocus
+      >
+        <DialogTitle>비밀번호 변경</DialogTitle>
+        <DialogContent>
+          <div style={{ marginBottom: '16px' }}></div>
+          <Grid container spacing={5}>
+            <Grid item xs={12}>
+              <TextField
+                label="새 비밀번호"
+                name="password"
+                type="password"
+                value={passwordInfo.password}
+                onChange={handlePasswordChange}
+                fullWidth
+                helperText={passwordMessage}
+                FormHelperTextProps={{
+                  style: {
+                    color: 'red',
+                    position: 'absolute',
+                    bottom: '-20px',
+                  },
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="비밀번호 확인"
+                name="passwordConfirm"
+                type="password"
+                value={passwordInfo.passwordConfirm}
+                onChange={handlePasswordChange}
+                fullWidth
+                helperText={passwordConfirmMessage}
+                FormHelperTextProps={{
+                  style: {
+                    color: 'red',
+                    position: 'absolute',
+                    bottom: '-20px',
+                  },
+                }}
+              />
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closePasswordModal} color="secondary">
+            취소
+          </Button>
+          <Button onClick={handleSavePassword} color="primary">
+            저장
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        disableEnforceFocus
+        disableAutoFocus
+        disableRestoreFocus
+      >
+        <DialogTitle>회원 탈퇴</DialogTitle>
+        <DialogContent style={{ width: '400px', height: '100px' }}>
+          <Typography style={{ marginBottom: '20px' }}>
+            회원 탈퇴를 원하시면 비밀번호를 입력하세요.
+          </Typography>
+          <TextField
+            label="비밀번호"
+            name="deletePassword"
+            type="password"
+            value={deletePassword}
+            onChange={(e) => setDeletePassword(e.target.value)}
+            fullWidth
+            helperText={deletePasswordMessage}
+            FormHelperTextProps={{
+              style: {
+                color: 'red',
+                position: 'absolute',
+                bottom: '-20px',
+              },
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeDeleteModal} color="secondary">
+            취소
+          </Button>
+          <Button onClick={handleDeleteAccount} color="primary">
+            회원탈퇴
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={isDeleteConfirmOpen}
+        onClose={() => setIsDeleteConfirmOpen(false)}
+        disableEnforceFocus
+        disableAutoFocus
+        disableRestoreFocus
+      >
+        <DialogTitle>회원 탈퇴 확인</DialogTitle>
+        <DialogContent style={{ width: '300px', height: '30px' }}>
+          <Typography>정말로 탈퇴하시겠습니까?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setIsDeleteConfirmOpen(false)}
+            color="secondary"
+          >
+            취소
+          </Button>
+          <Button onClick={confirmDeleteAccount} color="primary">
+            확인
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={isProfileImageModalOpen}
+        onClose={closeProfileImageModal}
+        disableEnforceFocus
+        disableAutoFocus
+        disableRestoreFocus
+      >
+        <DialogTitle>프로필 이미지 업로드</DialogTitle>
+        <DialogContent
+          style={{
+            width: '300px',
+            height: '220px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Typography
+            variant="body2"
+            color="textSecondary"
+            style={{ marginBottom: '25px' }}
+          >
+            비어있는 상태로 저장하시면 기본 프로필 이미지로 저장됩니다.
+          </Typography>
+          <ProfileImagePreview
+            size={100}
+            backgroundImage={profileImage ? `url(${profileImage})` : 'none'}
+          >
+            {!profileImage && '미리보기'}
+          </ProfileImagePreview>
+          <div>
+            <input
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+              id="profile-image-upload"
+              onChange={handleProfileImageChange}
+            />
+            <label htmlFor="profile-image-upload">
+              <Button
+                color="secondary"
+                component="span"
+                style={{ marginTop: '8px' }}
+              >
+                파일 첨부
+              </Button>
+            </label>
+            {profileImage && (
+              <Button
+                onClick={handleProfileImageDelete}
+                color="secondary"
+                style={{ marginTop: '8px', marginLeft: '8px' }}
+              >
+                이미지 삭제
+              </Button>
+            )}
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeProfileImageModal} color="secondary">
+            취소
+          </Button>
+          <Button onClick={handleSaveProfileImage} color="primary">
+            저장
+          </Button>
+        </DialogActions>
+        {isLoading && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              background: 'rgba(255, 255, 255, 0.8)',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <CircularProgress />
+          </div>
+        )}
       </Dialog>
     </Container>
   );

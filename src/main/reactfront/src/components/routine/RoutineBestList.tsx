@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import SwiperList from '../swiper/SwiperList';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 
-const RoutineBestList = () => {
-  const [routines, setRoutines] = useState([]);
+const RoutineBestList: React.FC = () => {
+  const [routines, setRoutines] = useState<any[]>([]);
   const limit = 10; // 가져올 루틴의 개수
 
   useEffect(() => {
@@ -14,13 +14,12 @@ const RoutineBestList = () => {
         });
         const transformedData = response.data.map((info: any) => ({
           ...info,
-          id: info.routineId, // routineId를 id로 변환
+          id: info.routineId,
           views: info.viewCount,
+          likes: info.likes, // 좋아요 수 포함
         }));
         setRoutines(transformedData);
-      } catch (error) {
-        console.error('Failed to fetch top routines:', error);
-      }
+      } catch (error) {}
     };
 
     fetchTopRoutines();

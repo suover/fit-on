@@ -11,7 +11,6 @@ import {
   TableRow,
   Paper,
   Button,
-  Avatar,
   Link,
   Divider,
 } from '@mui/material';
@@ -19,6 +18,7 @@ import { styled } from '@mui/material/styles';
 import Calendar from '../../components/calendar/Calendar';
 import AuthContext from '../../context/AuthContext';
 import axios from '../../api/axiosConfig';
+import ProfileImage from '../../components/common/profileImage/ProfileImage';
 
 const Item = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -75,7 +75,7 @@ const MyHome: React.FC = () => {
               flexGrow={1}
               justifyContent={'space-around'}
             >
-              <Avatar sx={{ bgcolor: 'secondary.main' }}>U</Avatar>
+              <ProfileImage size={52} />
               <Typography variant="h6" component="div" color="black">
                 {name}님 안녕하세요.
               </Typography>

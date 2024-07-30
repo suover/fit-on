@@ -17,6 +17,7 @@ interface DecodedToken {
   nickname: string;
   userId: number;
   name: string;
+  email: string;
 }
 
 interface AuthContextProps {
@@ -25,6 +26,7 @@ interface AuthContextProps {
   nickname: string | null;
   userId: number | null;
   name: string | null;
+  email: string | null;
   login: (accessToken: string, loginType: string) => void;
   logout: () => void;
   loginType: string | null;
@@ -38,6 +40,7 @@ const AuthContext = createContext<AuthContextProps>({
   nickname: null,
   userId: null,
   name: null,
+  email: null,
   login: () => {},
   logout: () => {},
   loginType: null,
@@ -54,6 +57,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [loginType, setLoginType] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
   const [name, setName] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const login = (accessToken: string, loginType: string) => {
@@ -66,6 +70,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     setLoginType(loginType);
     setUserId(decodedToken.userId);
     setName(decodedToken.name);
+    setEmail(decodedToken.sub);
     customAxios.defaults.headers.common['Authorization'] =
       `Bearer ${accessToken}`;
   };
@@ -86,6 +91,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setLoginType(null);
       setUserId(null);
       setName(null);
+      setEmail(null);
       delete customAxios.defaults.headers.common['Authorization'];
     } catch (error) {
       console.error('Logout failed', error);
@@ -107,6 +113,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         setLoginType(storedLoginType);
         setUserId(decodedToken.userId);
         setName(decodedToken.name);
+        setEmail(decodedToken.sub);
         customAxios.defaults.headers.common['Authorization'] =
           `Bearer ${accessToken}`;
       } catch (error) {
@@ -140,6 +147,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         nickname,
         userId,
         name,
+        email,
         login,
         logout,
         loginType,

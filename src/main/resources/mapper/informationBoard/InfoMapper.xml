@@ -30,7 +30,7 @@
         WHERE is_deleted = 0
         ORDER BY created_at DESC
     </select>
-    
+
     <select id="keywordInfoList" parameterType="com.spring.myapp.informationBoard.model.InfoPaging"
             resultMap="infoResultMap">
         <![CDATA[
@@ -39,8 +39,15 @@
             JOIN info_categories c ON i.category_id = c.category_id
         ]]>
         <where>
-            <if test="infoData != null and infoData != '전체'">
-                c.category_name = #{infoData}
+            <if test="infoData.filterKeyword != null and infoData.filterKeyword != '전체' and infoData.searchKeyword == ''">
+                c.category_name = #{infoData.filterKeyword}
+            </if>
+            <if test="infoData.filterKeyword != null and infoData.filterKeyword != '전체' and infoData.searchKeyword != ''">
+                c.category_name = #{infoData.filterKeyword}
+                AND i.title LIKE CONCAT('%', #{infoData.searchKeyword}, '%')
+            </if>
+            <if test="infoData.filterKeyword == '전체' and infoData.searchKeyword != ''">
+                i.title LIKE CONCAT('%', #{infoData.searchKeyword}, '%')
             </if>
             AND is_deleted = 0
         </where>
@@ -62,8 +69,15 @@
             JOIN info_categories c ON i.category_id = c.category_id
         ]]>
         <where>
-            <if test="infoData != null and infoData != '전체'">
-                c.category_name = #{infoData}
+            <if test="filterKeyword != null and filterKeyword != '전체' and searchKeyword == ''">
+                c.category_name = #{filterKeyword}
+            </if>
+            <if test="filterKeyword != null and filterKeyword != '전체' and searchKeyword != ''">
+                c.category_name = #{filterKeyword}
+                AND i.title LIKE CONCAT('%', #{searchKeyword}, '%')
+            </if>
+            <if test="filterKeyword == '전체' and searchKeyword != ''">
+                i.title LIKE CONCAT('%', #{searchKeyword}, '%')
             </if>
             AND is_deleted = 0
         </where>

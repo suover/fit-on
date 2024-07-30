@@ -1,17 +1,10 @@
 import React, { useContext, useState } from 'react';
-import axios from 'axios';
+import axios from '../../../api/axiosConfig';
 
 import AuthContext from '../../../context/AuthContext';
 import InputField from './CommentInputField.styles';
 import { Comment } from './CommentList';
 import { useNavigate } from 'react-router-dom';
-
-const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
 
 const CommentInputField: React.FC<{
   route: string;
@@ -48,7 +41,7 @@ const CommentInputField: React.FC<{
     };
 
     try {
-      const response = await axiosInstance.post(
+      const response = await axios.post(
         `${route}/newComments`,
         comment,
       );
