@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom';
 const QuickBtns: React.FC = () => {
   return (
     <Btns>
-      <Link to="/info">
+      <Link to="/info/search">
         <QuickBtn btnName={'운동정보'}>
           <MedicalInformationIcon />
         </QuickBtn>

@@ -154,7 +154,7 @@ const Board: React.FC<BoardProps> = ({ selectedCategory }) => {
 
 export default Board;
 
-type Post = {
+export type Post = {
   id: string;
   communityId: string;
   userId: string;
@@ -167,5 +167,5 @@ type Post = {
   updatedAt: Date;
   viewCount: number;
   like: number;
-  comments: Comment[];
+  // comments: Comment[];
 };

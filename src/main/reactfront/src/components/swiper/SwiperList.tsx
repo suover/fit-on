@@ -66,7 +66,7 @@ const SwiperList = <T extends SwiperDataType>({
     <StyledSwiper>
       <StyledSwiperWrapper {...swiperSetting}>
         {swiperData.map((data) => (
-          <SwiperSlide key={data.id}>
+          <SwiperSlide key={data.id + data.title}>
             <Link to={`/${pageURL}/${data.id}`}>
               <ContentCard
                 content={data}

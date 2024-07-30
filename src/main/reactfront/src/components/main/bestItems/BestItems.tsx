@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { Product } from '../../../types/MainDummyData';
-import { products } from '../../../types/MainDummyData';
+import axios from '../../../api/axiosConfig';
+
 import Item from '../../productItem/ProductItem';
 import { Items, PrevBtn, NextBtn } from './BestItems.styles';
 
@@ -17,16 +17,34 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 const BestItems: React.FC<{ selectedCategory: string }> = ({
   selectedCategory,
 }) => {
-  const [bestItems, setBestItems] = useState<Product[]>(
-    products[selectedCategory],
-  );
+  const [bestItems, setBestItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const swiperRef = useRef<SwiperCore | null>(null);
   const prevBtnRef = useRef<HTMLButtonElement>(null);
   const nextBtnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    setBestItems(products[selectedCategory]);
+    const fetchInfoData = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get('/api/main/product', {
+          params: { category: selectedCategory },
+        });
+        const productData = res.data;
+        console.log(productData);
+        setBestItems(productData);
+      } catch (error) {
+        console.error('Error fetching post:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchInfoData();
   }, [selectedCategory]);
+
+  const loadingInfo = (
+    <p className="text">{loading ? 'Loading...' : '등록된 상품이 없습니다.'}</p>
+  );
 
   return (
     <Items>
@@ -39,11 +57,13 @@ const BestItems: React.FC<{ selectedCategory: string }> = ({
         onBeforeInit={(swiper: SwiperCore) => (swiperRef.current = swiper)}
         key={selectedCategory}
       >
-        {bestItems.map((item) => (
-          <SwiperSlide key={item.id}>
-            <Item product={item} $imgHeight={300} />
-          </SwiperSlide>
-        ))}
+        {bestItems.length > 0
+          ? bestItems.map((item, idx) => (
+              <SwiperSlide key={idx}>
+                <Item product={item} $imgHeight={250} />
+              </SwiperSlide>
+            ))
+          : loadingInfo}
       </Swiper>
       <PrevBtn ref={prevBtnRef} onClick={() => swiperRef.current?.slidePrev()}>
         <ArrowBackIosIcon />
