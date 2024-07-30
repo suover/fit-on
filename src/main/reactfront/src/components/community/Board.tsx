@@ -14,11 +14,10 @@ interface BoardProps {
 const Board: React.FC<BoardProps> = ({ selectedCategory }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [posts, setPosts] = useState<Post[]>([]);
-  const navigate = useNavigate(); // useNavigate 훅 사용
+  const navigate = useNavigate();
 
   const fetchPosts = () => {
     axios
-      // .get('http://localhost:8080/api/community/posts')
       .get('/api/community/posts')
       .then((response) => {
         const transformedData = response.data.map((post: any) => ({
@@ -43,10 +42,9 @@ const Board: React.FC<BoardProps> = ({ selectedCategory }) => {
     userId: number;
   }) => {
     axios
-      // .post('http://localhost:8080/api/community/posts', newPost)
       .post('/api/community/posts', newPost)
       .then(() => {
-        fetchPosts(); // 새로운 글을 등록한 후 게시글 목록을 다시 가져옴
+        fetchPosts();
       })
       .catch((error) => {
         console.error('Error creating post:', error);

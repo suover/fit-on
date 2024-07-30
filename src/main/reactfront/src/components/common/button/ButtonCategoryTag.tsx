@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from '../../../api/axiosConfig';
 import Box from '@mui/system/Box';
 import Grid from '@mui/system/Unstable_Grid';
 import { styled } from '@mui/system';
@@ -8,31 +9,35 @@ import { Typography } from '@mui/material';
 type Category = {
   no: number; //댓글 분류번호
   name: string;
-  cnt: number; //카테고리에 해당하는 글 개수
+  categoryId: number;
 };
-function createCategoryData(no: number, name: string, cnt: number): Category {
+function createCategoryData(
+  no: number,
+  name: string,
+  categoryId: number,
+): Category {
   return {
     no,
     name,
-    cnt,
+    categoryId,
   };
 }
-//더미 카테고리 리스트
+//카테고리 리스트
 const exampleCategory: Category[] = [
-  createCategoryData(1, '베스트', 100),
-  createCategoryData(2, '운동완료', 100),
-  createCategoryData(3, '식단', 100),
-  createCategoryData(4, '보충제', 100),
-  createCategoryData(5, '닭가슴살', 100),
-  createCategoryData(6, '상체운동', 100),
-  createCategoryData(7, '하체운동', 100),
-  createCategoryData(8, '전신운동', 100),
-  createCategoryData(9, '맨몸운동', 100),
-  createCategoryData(10, '유산소', 100),
-  createCategoryData(11, '재활운동', 100),
-  createCategoryData(12, '스트레칭', 100),
-  createCategoryData(13, '건강', 100),
-  createCategoryData(14, '이슈', 100),
+  createCategoryData(1, '인기글', 1),
+  createCategoryData(2, '식단', 2),
+  createCategoryData(3, '보충제', 3),
+  createCategoryData(4, '닭가슴살', 4),
+  createCategoryData(5, '이슈', 5),
+  createCategoryData(6, '상체운동', 6),
+  createCategoryData(7, '하체운동', 7),
+  createCategoryData(8, '전신운동', 8),
+  createCategoryData(9, '맨몸운동', 9),
+  createCategoryData(10, '유산소', 10),
+  createCategoryData(11, '재활운동', 11),
+  createCategoryData(12, '스트레칭', 12),
+  createCategoryData(13, '건강', 13),
+  createCategoryData(14, '운동완료', 14),
 ];
 
 // 카테고리 스타일
@@ -49,18 +54,45 @@ const Item = styled('div')(({ theme }) => ({
   cursor: 'pointer',
 }));
 
+type Post = {
+  id: number;
+  title: string;
+  content: string;
+  categoryId: number;
+  viewCount: number;
+};
+
 type ButtonCategoryTagProps = {
-  onCategorySelect: (category: string) => void;
+  onCategorySelect: (category: number) => void;
 };
 
 const ButtonCategoryTag: React.FC<ButtonCategoryTagProps> = ({
   onCategorySelect,
 }) => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
+    null,
+  );
+  const [posts, setPosts] = useState<Post[]>([]);
 
-  const handleCategoryClick = (category: string) => {
-    setSelectedCategory(category); // 클릭된 카테고리로 상태 업데이트
-    onCategorySelect(category); // 상위 컴포넌트에 선택된 카테고리를 전달
+  const fetchPosts = async (categoryId: number | null) => {
+    try {
+      const response =
+        categoryId === 1 // '인기글'의 categoryId
+          ? await axios.get('/posts/popular')
+          : await axios.get('/posts', { params: { categoryId } });
+      setPosts(response.data);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPosts(selectedCategoryId);
+  }, [selectedCategoryId]);
+
+  const handleCategoryClick = (categoryId: number) => {
+    setSelectedCategoryId(categoryId);
+    onCategorySelect(categoryId); // 상위 컴포넌트에 선택된 카테고리를 전달
   };
 
   return (
@@ -78,9 +110,9 @@ const ButtonCategoryTag: React.FC<ButtonCategoryTagProps> = ({
       >
         {exampleCategory.map((category) => (
           <Grid xs={2} sm={2} key={category.no}>
-            <Item onClick={() => handleCategoryClick(category.name)}>
+            <Item onClick={() => handleCategoryClick(category.categoryId)}>
               #{category.name}
-              <br />({category.cnt})
+              <br />
             </Item>
           </Grid>
         ))}
