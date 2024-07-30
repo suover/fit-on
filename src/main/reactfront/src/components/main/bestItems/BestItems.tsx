@@ -31,7 +31,7 @@ const BestItems: React.FC<{ selectedCategory: string }> = ({
           params: { category: selectedCategory },
         });
         const productData = res.data;
-        console.log(productData);
+
         setBestItems(productData);
       } catch (error) {
         console.error('Error fetching post:', error);
