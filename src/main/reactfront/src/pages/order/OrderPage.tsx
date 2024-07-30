@@ -16,6 +16,9 @@ import {
   Button,
   ButtonContainer,
   Btn,
+  AddressItem,
+  AddressBox,
+  AddressContent,
 } from '../../styles/order/Order.Styles';
 import { OrderDetails, Product, ShippingAddress } from '../../types/DataInterface';
 import OrderInformation from '../../components/order/OrderInfoProps';
@@ -26,12 +29,11 @@ import AuthContext from "../../context/AuthContext";
 import DaumPostcode from 'react-daum-postcode'; //npm install react-daum-postcode
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-import styled from 'styled-components';
 
 const OrderPage: React.FC = () => {
   const location = useLocation();
   const { selectedProducts }: { selectedProducts?: Product[] } =
-    location.state || {};
+  location.state || {};
   const [orderDetails, setOrderDetails] = useState<OrderDetails>({
     customerName: '',
     phoneNumber: '',
@@ -39,20 +41,29 @@ const OrderPage: React.FC = () => {
     add1: '',
     add2:'',
   });
+  const [addresses, setAddresses] = useState<ShippingAddress[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false); //주소Modal
-
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState<boolean>(false);
   const [products, setProducts] = useState<Product[]>([]);
-
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [totalDeliveryFee, setTotalDeliveryFee] = useState<number>(0);
 
-  const [paymentMethod, setPaymentMethod] = useState<string>('hd');
-  const [paymentType, setPaymentType] = useState<string>('card');
-
-  const [addresses, setAddresses] = useState<ShippingAddress[]>([]);
-  const [isAddressModalOpen, setIsAddressModalOpen] = useState<boolean>(false);
   // AuthContext 에서 유저 아이디 및 이름 받아오기
   const { userId, name } = useContext(AuthContext);
+
+
+  useEffect(() => {
+    const jquery = document.createElement("script");
+    jquery.src = "https://code.jquery.com/jquery-1.12.4.min.js";
+    const iamport = document.createElement("script");
+    iamport.src = "https://cdn.iamport.kr/js/iamport.payment-1.1.7.js";
+    document.head.appendChild(jquery);
+    document.head.appendChild(iamport);
+    return () => {
+      document.head.removeChild(jquery);
+      document.head.removeChild(iamport);
+    };
+  }, []);
 
   // 사용자 기본 설정 배송지 정보 가져오기
   const fetchUserDefaultAddress = async (userId: number) => {
@@ -69,20 +80,16 @@ const OrderPage: React.FC = () => {
         });
       } else {
         console.error('Failed to fetch user default address');
-        console.error('Failed to fetch user default address');
-        // 기본 배송지가 없을 경우
         setOrderDetails((prevState) => ({
           ...prevState,
-          customerName: name || '', // AuthContext의 name을 설정
+          customerName: name || '',
         }));
       }
     } catch (error) {
       console.error('Error fetching user default address', error);
-      console.error('Failed to fetch user default address');
-      // 기본 배송지가 없을 경우
       setOrderDetails((prevState) => ({
         ...prevState,
-        customerName: name || '', // AuthContext의 name을 설정
+        customerName: name || '',
       }));
     }
   };
@@ -127,10 +134,10 @@ const OrderPage: React.FC = () => {
     if (selectedProducts) {
       setProducts(selectedProducts);
       const newTotalPrice = selectedProducts.reduce(
-        (sum: number, product: Product) => {
-          return sum + product.price *product.quantity;
-        },
-        0,
+          (sum: number, product: Product) => {
+            return sum + product.price *product.quantity;
+          },
+          0,
       );
       setTotalPrice(newTotalPrice);
 
@@ -146,10 +153,6 @@ const OrderPage: React.FC = () => {
     });
   };
 
-  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setPaymentMethod(event.target.value);
-  };
-
   const completeHandler = (data:any) =>{
     console.log(data)
     setOrderDetails({
@@ -157,19 +160,46 @@ const OrderPage: React.FC = () => {
       postcode:data.zonecode,
       add1: data.address
     });
-    setIsOpen(false); //추가
+    setIsOpen(false);
   }
-  // 검색 클릭
+
+  //주소 검색
   const handleAddressSearch = () =>{
     setIsOpen(!isOpen);
   }
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log('Order Details:', orderDetails);
-    console.log('Products:', products);
-    console.log('Payment Method:', paymentMethod);
+  const requestINICIS = () => {
+    const { IMP } = window as any;
+    if (!IMP) {
+      alert("결제 모듈이 로드되지 않았습니다.");
+      return;
+    }
+    IMP.init('imp87866800');
 
+    const productName = products.length > 1 ? `${products[0].name} 외 ${products.length - 1}개` : products[0].name;
+
+    IMP.request_pay({
+      pg: 'html5_inicis',
+      pay_method: 'card',
+      merchant_uid: `mid_${new Date().getTime()}`,
+      name: productName,
+      amount: totalPrice + totalDeliveryFee,
+      buyer_email: 'test@naver.com',
+      buyer_name: orderDetails.customerName,
+      buyer_tel: orderDetails.phoneNumber,
+      buyer_addr: `${orderDetails.add1} ${orderDetails.add2}`,
+      buyer_postcode: orderDetails.postcode,
+    }, async (rsp: any) => {
+      if (rsp.success) {
+        await handleOrderSuccess(rsp);
+      } else {
+        alert(`결제 실패: ${rsp.error_msg}`);
+      }
+    });
+  };
+
+  // 결제 성공 시 처리 함수
+  const handleOrderSuccess = async (paymentData :any) => {
     try {
       const response = await axios.post('/api/order', {
         userId,
@@ -177,11 +207,11 @@ const OrderPage: React.FC = () => {
         products,
         total: totalPrice,
         shippingFee: totalDeliveryFee,
+        paymentData,
       });
 
       if (response.status === 200) {
         alert('주문이 성공적으로 완료되었습니다.');
-        // 추가적으로 주문 완료 후 동작 (예: 페이지 이동, 상태 초기화 등)
       } else {
         alert('주문 처리 중 문제가 발생했습니다.');
       }
@@ -191,171 +221,132 @@ const OrderPage: React.FC = () => {
     }
   };
 
-  const AddressItem = styled.li`
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    padding: 10px;
-    cursor: pointer;
-
-    &:hover {
-      background-color: #ccc;
-      cursor: pointer;
-    }
-  `;
-
-  const AddressBox = styled.div`
-    flex: none;
-    width: 70px;
-    white-space: nowrap;
-`;
-
-  const AddressContent = styled.div`
-  flex: 2;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
-
   return (
-    <PageContainer>
-      <h1>주문서 작성</h1>
-      <Divider />
-      <h2>배송 정보</h2>
-      <FormContainer onSubmit={handleSubmit}>
-        <InfoRow>
-          <InputLabel htmlFor="customerName">받으실 분</InputLabel>
-          <InputInfo
-            id="customerName"
-            name="customerName"
-            value={orderDetails.customerName}
-            onChange={handleInputChange}
-            placeholder="수령인 성함 (예: 홍길동)"
-          />
-          <Btn type="button" onClick={openAddressModal}>나의 배송지 목록</Btn>
-        </InfoRow>
-        <InfoRow>
-          <InputLabel htmlFor="phoneNumber">연락처</InputLabel>
-          <InputInfo
-            id="phoneNumber"
-            name="phoneNumber"
-            value={orderDetails.phoneNumber}
-            onChange={handleInputChange}
-            placeholder="연락처 (예: 01012345678)"
-          />
-        </InfoRow>
-        <InfoRow>
-          <InputLabel htmlFor="address">배송지 주소</InputLabel>
-          <InputInfo
-            id="postcode"
-            name="postcode"
-            value={orderDetails.postcode}
-            onChange={handleInputChange}
-            placeholder="우편번호 검색을 클릭하여 정확한 주소를 입력해주세요."
-            readOnly
-          />
-          <Btn type="button" onClick={handleAddressSearch}>우편번호 검색</Btn>
-        </InfoRow>
-        <InfoRow>
-          <InputLabel></InputLabel>
-          <InputInfo
-              id="add1"
-              name="add1"
-              value={orderDetails.add1}
-              onChange={handleInputChange}
-              placeholder="우편번호 검색을 클릭하여 정확한 주소를 입력해주세요."
-              readOnly
-          />
-        </InfoRow>
-        <InfoRow>
-          <InputLabel></InputLabel>
-          <InputInfo
-              id="add2"
-              name="add2"
-              value={orderDetails.add2}
-              onChange={handleInputChange}
-              placeholder="상세 주소를 입력해주세요."
-          />
-        </InfoRow>
-        <LightDivider />
-        <h2>결제 상품 정보</h2>
-        {products.map((product, index) => (
-          <div
-            key={index}
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-start',
-              alignItems: 'center',
-              marginBottom: '10px',
-            }}
-          >
-            <OrderInformation src={product.imageUrl} />
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <OrderInfoRow key={index}>
-                <div>상품명: {product.name}</div>
-                <div>수량: {product.quantity}개</div>
-                <div>가격: {product.price.toLocaleString()}원</div>
-              </OrderInfoRow>
-            </div>
-          </div>
-        ))}
-        <PriceRow>
-          <StrongText>총 결제 금액</StrongText>
-          <TotalPriceTxt>
-            {(totalPrice + totalDeliveryFee).toLocaleString()}원
-          </TotalPriceTxt>
-        </PriceRow>
-        <LightDivider />
-        <h2>결제 수단</h2>
-        <PaymentMethods>
-          <RadioButtonsGroup
-            paymentType={paymentType}
-            setPaymentType={setPaymentType}
-          />
-          {paymentType === 'card' && (
-            <SelectCard
-              paymentMethod={paymentMethod}
-              handleSelectChange={handleSelectChange}
+      <PageContainer>
+        <h1>주문서 작성</h1>
+        <Divider />
+        <h2>배송 정보</h2>
+        <FormContainer onSubmit={(e) => e.preventDefault()}>
+          <InfoRow>
+            <InputLabel htmlFor="customerName">받으실 분</InputLabel>
+            <InputInfo
+                id="customerName"
+                name="customerName"
+                value={orderDetails.customerName}
+                onChange={handleInputChange}
+                placeholder="수령인 성함 (예: 홍길동)"
             />
-          )}
-        </PaymentMethods>
-        <ButtonContainer>
-          <Button type="submit">결제하기</Button>
-        </ButtonContainer>
-      </FormContainer>
-      <Modal
-          open={isOpen}
-          onClose={() => setIsOpen(false)}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-      >
-        <Box sx={{ width: '400px', height: '500px', margin: 'auto', marginTop: '10%', backgroundColor: 'white', padding: '20px', boxShadow: 24 }}>
-          <DaumPostcode onComplete={completeHandler} />
-        </Box>
-      </Modal>
-      <Modal
-          open={isAddressModalOpen}
-          onClose={() => setIsAddressModalOpen(false)}
-          aria-labelledby="modal-title"
-          aria-describedby="modal-description"
-      >
-        <Box sx={{ width: '400px', height: '500px', margin: 'auto', marginTop: '10%', backgroundColor: 'white', padding: '20px', boxShadow: 24 }}>
-          <Box sx={{mb: 2}}><h2 id="modal-title">배송지 목록</h2></Box>
-          {addresses.length === 0 ? (
-              <p>등록된 배송지 목록이 없습니다.</p>
-          ) : (
-              <ul>
-                {addresses.map((address, index) => (
-                    <AddressItem key={index} onClick={() => handleAddressSelect(address)}>
-                      <AddressBox>{address.addressName}</AddressBox>
-                      <AddressContent>:  {address.address} {address.addressDetail} </AddressContent>
-                    </AddressItem>
-                ))}
-              </ul>
-          )}
-        </Box>
-      </Modal>
-    </PageContainer>
+            <Btn type="button" onClick={openAddressModal}>나의 배송지 목록</Btn>
+          </InfoRow>
+          <InfoRow>
+            <InputLabel htmlFor="phoneNumber">연락처</InputLabel>
+            <InputInfo
+                id="phoneNumber"
+                name="phoneNumber"
+                value={orderDetails.phoneNumber}
+                onChange={handleInputChange}
+                placeholder="연락처 (예: 01012345678)"
+            />
+          </InfoRow>
+          <InfoRow>
+            <InputLabel htmlFor="address">배송지 주소</InputLabel>
+            <InputInfo
+                id="postcode"
+                name="postcode"
+                value={orderDetails.postcode}
+                onChange={handleInputChange}
+                placeholder="우편번호 검색을 클릭하여 정확한 주소를 입력해주세요."
+                readOnly
+            />
+            <Btn type="button" onClick={handleAddressSearch}>우편번호 검색</Btn>
+          </InfoRow>
+          <InfoRow>
+            <InputLabel></InputLabel>
+            <InputInfo
+                id="add1"
+                name="add1"
+                value={orderDetails.add1}
+                onChange={handleInputChange}
+                placeholder="우편번호 검색을 클릭하여 정확한 주소를 입력해주세요."
+                readOnly
+            />
+          </InfoRow>
+          <InfoRow>
+            <InputLabel></InputLabel>
+            <InputInfo
+                id="add2"
+                name="add2"
+                value={orderDetails.add2}
+                onChange={handleInputChange}
+                placeholder="상세 주소를 입력해주세요."
+            />
+          </InfoRow>
+          <LightDivider />
+          <h2>결제 상품 정보</h2>
+          {products.map((product, index) => (
+              <div
+                  key={index}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                    marginBottom: '10px',
+                  }}
+              >
+                <OrderInformation src={product.imageUrl} />
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <OrderInfoRow key={index}>
+                    <div>상품명: {product.name}</div>
+                    <div>수량: {product.quantity}개</div>
+                    <div>가격: {product.price.toLocaleString()}원</div>
+                  </OrderInfoRow>
+                </div>
+              </div>
+          ))}
+          <PriceRow>
+            <StrongText>총 결제 금액</StrongText>
+            <TotalPriceTxt>
+              {(totalPrice + totalDeliveryFee).toLocaleString()}원
+            </TotalPriceTxt>
+          </PriceRow>
+          <LightDivider />
+          <ButtonContainer>
+            <Button type="button" onClick={requestINICIS}>결제하기</Button>
+          </ButtonContainer>
+        </FormContainer>
+        <Modal
+            open={isOpen}
+            onClose={() => setIsOpen(false)}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+        >
+          <Box sx={{ width: '400px', height: '500px', margin: 'auto', marginTop: '10%', backgroundColor: 'white', padding: '20px', boxShadow: 24 }}>
+            <DaumPostcode onComplete={completeHandler} />
+          </Box>
+        </Modal>
+        <Modal
+            open={isAddressModalOpen}
+            onClose={() => setIsAddressModalOpen(false)}
+            aria-labelledby="modal-title"
+            aria-describedby="modal-description"
+        >
+          <Box sx={{ width: '400px', height: '500px', margin: 'auto', marginTop: '10%', backgroundColor: 'white', padding: '20px', boxShadow: 24 }}>
+            <Box sx={{mb: 2}}><h2 id="modal-title">배송지 목록</h2></Box>
+            {addresses.length === 0 ? (
+                <p>등록된 배송지 목록이 없습니다.</p>
+            ) : (
+                <ul>
+                  {addresses.map((address, index) => (
+                      <AddressItem key={index} onClick={() => handleAddressSelect(address)}>
+                        <AddressBox>{address.addressName}</AddressBox>
+                        <AddressContent>:  {address.address} {address.addressDetail} </AddressContent>
+                      </AddressItem>
+                  ))}
+                </ul>
+            )}
+          </Box>
+        </Modal>
+      </PageContainer>
   );
 };
 
