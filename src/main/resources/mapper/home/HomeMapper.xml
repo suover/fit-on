@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.myapp.home.repository.HomeMapper">
+    <!--커뮤니티 resultMap 확장 사용-->
+    <resultMap id="extendedCommunityResultMap" type="com.spring.myapp.community.dto.CommunityBoardDTO"
+               extends="com.spring.myapp.community.repository.CommunityBoardMapper.CommunityBoardMap">
+        <association property="likes" column="community_id" select="findLikesForCommunity"/>
+    </resultMap>
+
+    <!--루틴 resultMap 확장 사용-->
+    <resultMap id="extendedRoutineResultMap" type="com.spring.myapp.routineBoard.model.RoutineBoard"
+               extends="com.spring.myapp.routineBoard.repository.RoutineBoardMapper.RoutineBoardResultMap">
+        <association property="likes" column="routine_id" select="findLikesForRoutine"/>
+    </resultMap>
+
+    <resultMap id="extendedProductResultMap" type="com.spring.myapp.product.model.Product"
+               extends="com.spring.myapp.product.repository.ProductMapper.ProductResultMap">
+        <association property="imageUrl" column="product_id" select="findImageForProduct"/>
+    </resultMap>
+
+    <!--조회수 기준 상위 10개 정보글-->
+    <select id="findTopInfoList" resultMap="com.spring.myapp.informationBoard.repository.InfoMapper.infoResultMap">
+        SELECT *
+        FROM info
+        WHERE is_deleted = 0
+        ORDER BY view_count DESC
+        LIMIT 10
+    </select>
+
+    <!--조회수 기준 상위 10개 커뮤니티글-->
+    <select id="findTopCommunityList"
+            resultMap="extendedCommunityResultMap">
+        SELECT c.*, u.nickname
+        FROM community c JOIN users u ON c.user_id = u.user_id
+        WHERE c.is_deleted = false
+        ORDER BY c.view_count DESC
+        LIMIT 10
+    </select>
+
+    <!--커뮤니티글 좋아요 조회-->
+    <select id="findLikesForCommunity" resultType="int">
+        SELECT COUNT(community_id)
+        FROM community_likes
+        WHERE community_id = #{community_id}
+    </select>
+
+    <!--조회수 기준 상위 3개 루틴-->
+    <select id="findTopRoutineList"
+            resultMap="extendedRoutineResultMap">
+        SELECT r.*, u.nickname
+        FROM routines r JOIN users u ON r.user_id = u.user_id
+        WHERE r.is_deleted = 0
+        ORDER BY r.view_count DESC
+        LIMIT 3
+    </select>
+
+    <!--루틴글 좋아요 조회-->
+    <select id="findLikesForRoutine" resultType="int">
+        SELECT COUNT(routine_id)
+        FROM routine_likes
+        WHERE routine_id = #{routine_id}
+    </select>
+
+    <!--상위 8개의 상품 조회-->
+    <select id="findTopGoods" resultMap="extendedProductResultMap">
+        SELECT *
+        FROM products
+        WHERE is_deleted = 0
+        AND category_id = 1
+        ORDER BY price DESC
+        LIMIT 8
+    </select>
+
+    <select id="findTopSupplements" resultMap="extendedProductResultMap">
+        SELECT *
+        FROM products
+        WHERE is_deleted = 0
+        AND category_id = 2
+        ORDER BY price DESC
+        LIMIT 8
+    </select>
+
+    <select id="findTopFoods" resultMap="extendedProductResultMap">
+        SELECT *
+        FROM products
+        WHERE is_deleted = 0
+        AND category_id = 4
+        ORDER BY price DESC
+        LIMIT 8
+    </select>
+
+    <!--상품 메인이미지 조회-->
+    <select id="findImageForProduct" resultType="String">
+        SELECT image_url
+        FROM product_images
+        WHERE product_id = #{product_id}
+        AND is_main_image = 1
+    </select>
+    
+</mapper>

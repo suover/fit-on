@@ -4,14 +4,15 @@ import { Link } from 'react-router-dom';
 import { ProductItem, ItemImgWrapper, TextBox } from './ProductItem.styles';
 
 interface Product {
-  id: number;
+  productId: number;
   name: string;
   price: number;
   discountRate?: number;
   description: string;
   sales?: number;
-  likes: number;
+  likes?: number;
   imageUrl: string;
+  stock?: number;
 }
 
 interface ItemProps {
@@ -20,14 +21,14 @@ interface ItemProps {
 }
 
 const Item: React.FC<ItemProps> = ({ product, $imgHeight }) => {
-  const { id, name, price, discountRate, description, sales, imageUrl } =
+  const { productId, name, price, discountRate, description, imageUrl, stock } =
     product;
 
   const priceFormat: string = price.toLocaleString('ko-KR');
 
   return (
     <ProductItem>
-      <Link to={`/product/${id}`}>
+      <Link to={`/product-detail/${productId}`}>
         <ItemImgWrapper $imgHeight={$imgHeight}>
           <img src={imageUrl} alt="상품이미지" />
         </ItemImgWrapper>
@@ -37,7 +38,7 @@ const Item: React.FC<ItemProps> = ({ product, $imgHeight }) => {
           <p>
             <span>{discountRate}%</span>
             <span>{priceFormat}원</span>
-            <span>{sales} 판매</span>
+            <span>재고 {stock}개</span>
           </p>
         </TextBox>
       </Link>
