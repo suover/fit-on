@@ -12,7 +12,6 @@ import {
   OrderInfoRow,
   StrongText,
   TotalPriceTxt,
-  PaymentMethods,
   Button,
   ButtonContainer,
   Btn,
@@ -22,8 +21,6 @@ import {
 } from '../../styles/order/Order.Styles';
 import { OrderDetails, Product, ShippingAddress } from '../../types/DataInterface';
 import OrderInformation from '../../components/order/OrderInfoProps';
-import RadioButtonsGroup from '../../components/order/Radio';
-import SelectCard from '../../components/order/SelectCard';
 import axios from '../../api/axiosConfig';
 import AuthContext from "../../context/AuthContext";
 import DaumPostcode from 'react-daum-postcode'; //npm install react-daum-postcode
