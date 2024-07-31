@@ -91,4 +91,10 @@ public class CommunityBoardController {
 				}
 		}
 
+		//TOP 10 인기글
+		@GetMapping("/posts/popular")
+		public List<CommunityBoardDTO> getTop10PopularPosts(@RequestParam(name = "limit", defaultValue = "10") int limit) {
+				return communityBoardService.getTop10PopularPosts(limit);
+		}
+
 }
