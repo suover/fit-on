@@ -41,9 +41,9 @@ const Fittness: React.FC = () => {
   };
 
   return (
-    <>
-      <Container sx={{ paddingTop: '50px', paddingBottom: '100px', minHeight: '800px' }}>
-        <Box>
+      <>
+        <Box sx={{paddingTop: '50px'}}></Box>
+        <Box sx={{ maxWidth: '1200px', width: '100%' }}>
           {loading ? ( // 로딩 상태일 때 로딩 아이콘 표시
               <Box display="flex" justifyContent="center" mt={4}>
                 <Typography variant="h6">상품 목록을 불러오는 중입니다.</Typography>
@@ -51,9 +51,9 @@ const Fittness: React.FC = () => {
               </Box>
           ) : filteredItems.length === 0 ? ( // 상품이 없을 때 메시지 표시
               <Box display="flex" justifyContent="center" mt={4}>
-                <Typography variant="h6">표시할 상품이 없습니다.</Typography>
+                <Typography variant="h6">상품이 없습니다.</Typography>
               </Box>
-          ) : ( // 상품이 있을 때 목록 표시
+          ) : (
               <>
                 <ProductCardList products={filteredItems} />
                 <Box display="flex" justifyContent="center" mt={4}>
@@ -67,8 +67,7 @@ const Fittness: React.FC = () => {
               </>
           )}
         </Box>
-      </Container>
-    </>
+      </>
   );
 };
 
