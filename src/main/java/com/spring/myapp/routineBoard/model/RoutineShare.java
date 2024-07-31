@@ -9,10 +9,10 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-
 public class RoutineShare {
 	private Long shareId;
 	private Long routineId;
 	private Long userId;
 	private LocalDateTime sharedAt;
 }
+

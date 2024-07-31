@@ -6,13 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,7 @@ import com.spring.myapp.routineBoard.model.RoutineBoard;
 import com.spring.myapp.routineBoard.service.RoutineBoardService;
 import com.spring.myapp.routineBoard.service.RoutineLikesService;
 import com.spring.myapp.routineBoard.service.RoutineS3Service;
+import com.spring.myapp.routineBoard.service.RoutineShareService;
 
 @RestController
 @RequestMapping("/api/routine")
@@ -44,6 +46,11 @@ public class RoutineBoardController {
 
 	@Autowired
 	private RoutineLikesService routineLikesService;
+
+	@Autowired
+	private RoutineShareService routineShareService;
+
+	private static final Logger logger = LoggerFactory.getLogger(RoutineBoardController.class);
 
 	@GetMapping("/list")
 	public ResponseEntity<Page<RoutineBoard>> getRoutinesWithPaging(
@@ -80,7 +87,6 @@ public class RoutineBoardController {
 		@RequestParam("goalId") Integer goalId,
 		@RequestParam("levelId") Integer levelId,
 		@RequestParam("partId") Integer partId,
-		@RequestParam("isPublic") boolean isPublic,
 		@RequestParam("userId") Long userId,
 		@RequestParam("nickname") String nickname) {
 		try {
@@ -92,7 +98,7 @@ public class RoutineBoardController {
 			routineBoard.setGoalId(goalId);
 			routineBoard.setLevelId(levelId);
 			routineBoard.setPartId(partId);
-			routineBoard.setPublic(isPublic);
+			routineBoard.setPublic(true);
 			routineBoard.setUserId(userId);
 			routineBoard.setNickname(nickname);
 			routineBoard.setImageUrl(imageUrl);
@@ -128,8 +134,8 @@ public class RoutineBoardController {
 		}
 	}
 
-	//게시글 삭제
-	@DeleteMapping("/{id}")
+	// 게시글 삭제
+	@PutMapping("/delete/{id}")
 	public ResponseEntity<Void> deleteRoutine(@PathVariable("id") Long id, @RequestParam("userId") Long userId) {
 		try {
 			RoutineBoard routineBoard = routineBoardService.getRoutineById(id);
@@ -152,8 +158,8 @@ public class RoutineBoardController {
 		}
 	}
 
-	//게시글 수정
-	@PutMapping("/{id}")
+	// 게시글 수정
+	@PutMapping("/update/{id}")
 	public ResponseEntity<RoutineBoard> updateRoutine(@PathVariable("id") Long id,
 		@RequestPart(value = "file", required = false) MultipartFile file,
 		@RequestParam("title") String title,
@@ -161,7 +167,6 @@ public class RoutineBoardController {
 		@RequestParam("goalId") Integer goalId,
 		@RequestParam("levelId") Integer levelId,
 		@RequestParam("partId") Integer partId,
-		@RequestParam("isPublic") boolean isPublic,
 		@RequestParam("nickname") String nickname,
 		@RequestParam("userId") Long userId) {
 		try {
@@ -183,7 +188,7 @@ public class RoutineBoardController {
 			routineBoard.setGoalId(goalId);
 			routineBoard.setLevelId(levelId);
 			routineBoard.setPartId(partId);
-			routineBoard.setPublic(isPublic);
+			routineBoard.setPublic(true);
 			routineBoard.setNickname(nickname);
 
 			RoutineBoard updatedRoutine = routineBoardService.updateRoutine(id, routineBoard);
@@ -271,4 +276,73 @@ public class RoutineBoardController {
 		}
 	}
 
+	@GetMapping("/user/{userId}")
+	public ResponseEntity<List<RoutineBoard>> getRoutinesByUserId(@PathVariable("userId") Long userId) {
+		try {
+			List<RoutineBoard> routines = routineBoardService.getRoutinesByUserId(userId);
+			return new ResponseEntity<>(routines, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("@@@@@@@Error fetching routines for userId: @@@@@@@" + userId, e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
+	}
+
+	@GetMapping("/shares")
+	public ResponseEntity<List<RoutineBoard>> getSharedRoutinesByUserId(@RequestParam("userId") Long userId) {
+		try {
+			logger.info("@@@@@Fetching shared routines for userId: {}@@@@@", userId);
+			List<RoutineBoard> sharedRoutines = routineShareService.getSharedRoutinesByUserId(userId);
+			return ResponseEntity.ok(sharedRoutines);
+		} catch (Exception e) {
+			logger.error("@@@@@Error fetching shared routines for userId: {}@@@@@", userId, e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
+	}
+
+	@GetMapping("/{id}/shares")
+	public ResponseEntity<Map<String, Object>> getSharesCount(@PathVariable("id") Long routineId,
+		@RequestParam(value = "userId", required = false) Long userId) {
+		try {
+			int count = routineShareService.getSharesCount(routineId);
+			boolean shared = (userId != null) && routineShareService.isShared(routineId, userId);
+			Map<String, Object> response = new HashMap<>();
+			response.put("count", count);
+			response.put("shared", shared);
+			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
+	}
+
+	@PostMapping("/{id}/share")
+	public ResponseEntity<Void> shareRoutine(@PathVariable("id") Long routineNo,
+		@RequestParam("userId") Long userId) {
+		try {
+			logger.info("@@@@@Received request to share routine {} for userId: {}@@@@@", routineNo, userId);
+			if (routineShareService.isShared(routineNo, userId)) {
+				return ResponseEntity.status(HttpStatus.CONFLICT).build();
+			}
+			routineShareService.createShare(routineNo, userId);
+			return ResponseEntity.ok().build();
+		} catch (Exception e) {
+			logger.error("@@@@@Error sharing routine {} for userId: {}@@@@@", routineNo, userId, e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	@PostMapping("/{id}/unshare")
+	public ResponseEntity<Void> unshareRoutine(@PathVariable("id") Long routineNo,
+		@RequestParam("userId") Long userId) {
+		try {
+			logger.info("@@@@@Received request to unshare routine {} for userId: {}@@@@@", routineNo, userId);
+			if (!routineShareService.isShared(routineNo, userId)) {
+				return ResponseEntity.status(HttpStatus.CONFLICT).build();
+			}
+			routineShareService.deleteShare(routineNo, userId);
+			return ResponseEntity.ok().build();
+		} catch (Exception e) {
+			logger.error("@@@@@Error unsharing routine {} for userId: {}@@@@@", routineNo, userId, e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
 }

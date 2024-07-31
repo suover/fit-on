@@ -7,6 +7,7 @@ type ContentType = {
   title: string;
   nickname?: string;
   views?: number;
+  shares?: number;
   likes: number;
   imageUrl: string;
   routineParts?: string | string[];
@@ -23,7 +24,7 @@ const ContentCard = <T extends ContentType>({
   boardType,
   Icon,
 }: ContentCardProps<T>) => {
-  const { title, views, likes, imageUrl, nickname } = content;
+  const { title, views, likes, shares, imageUrl, nickname } = content;
 
   return (
     <Card>
@@ -38,7 +39,7 @@ const ContentCard = <T extends ContentType>({
             <ThumbUpOutlinedIcon /> {likes ? likes : 0}
           </span>
           <span>
-            {Icon ? <Icon /> : <ThumbUpOutlinedIcon />} {views ? views : 0}
+            {Icon ? <Icon /> : <ThumbUpOutlinedIcon />} {views ? views : shares}
           </span>
         </p>
       </TextBox>

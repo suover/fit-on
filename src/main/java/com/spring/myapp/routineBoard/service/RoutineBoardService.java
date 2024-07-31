@@ -115,4 +115,8 @@ public class RoutineBoardService {
 	public long getRoutineCountWithSearch(String query) {
 		return routineBoardMapper.countRoutinesWithSearch(query);
 	}
+
+	public List<RoutineBoard> getRoutinesByUserId(Long userId) {
+		return routineBoardMapper.findByUserId(userId);
+	}
 }

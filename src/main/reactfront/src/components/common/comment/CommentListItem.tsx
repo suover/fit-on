@@ -30,9 +30,7 @@ const CommentListItem: React.FC<{
     // 대댓글 불러오기
     const fetchComment = async () => {
       try {
-        const res = await axios.get<Comment[]>(
-          `${route}/${comment.commentId}`,
-        );
+        const res = await axios.get<Comment[]>(`${route}/${comment.commentId}`);
         setReplies(res.data);
         setCountReplies(res.data.length);
       } catch (error) {
@@ -59,9 +57,7 @@ const CommentListItem: React.FC<{
 
   const handleDelete = async (commentId: number) => {
     try {
-      const response = await axios.put(
-        `${route}/${commentId}/delete`,
-      );
+      const response = await axios.put(`${route}/${commentId}/delete`);
       if (response.status === 200) {
         deleteComment(commentId); // 최상위 컴포넌트에 삭제 요청 -> UI 반영
         setReplies((prevReplies) =>

@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import axios from '../../api/axiosConfig';
 import ButtonLikePost from '../common/button/ButtonLikePost';
 import ButtonShare from '../common/button/ButtonShare';
 import { PostWrapper, BackBtn } from './PostDetail.styles';
-import { Box, Button, Container } from '@mui/material';
+import { Box, Button, Container, Snackbar, Alert } from '@mui/material'; // Snackbar와 Alert 추가
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PersonIcon from '@mui/icons-material/Person';
 import AuthContext from '../../context/AuthContext';
@@ -37,9 +37,11 @@ export type DataType = {
   userId: number;
   title: string;
   content: string;
+  nickname: string;
   createdAt: string;
   comments: Comment[];
   viewCount: number;
+  shares: number;
   likes: number;
 };
 
@@ -66,6 +68,8 @@ const PostDetail = <T extends DataType>({
     content,
     createdAt,
     viewCount,
+    shares,
+    nickname,
     likes,
     partId,
     levelId,
@@ -75,9 +79,11 @@ const PostDetail = <T extends DataType>({
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(likes);
   const [isShared, setIsShared] = useState(false);
+  const [shareCount, setShareCount] = useState(shares);
   const [comments, setComments] = useState<Comment[]>([]);
   const { routineNo } = useParams<{ routineNo: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { userId: currentUserId, isAuthenticated } = useContext(AuthContext);
 
   useEffect(() => {
@@ -91,7 +97,18 @@ const PostDetail = <T extends DataType>({
       } catch (error) {}
     };
 
+    const checkShareStatus = async () => {
+      try {
+        const response = await axios.get(`/api/routine/${routineNo}/shares`, {
+          params: { userId: currentUserId },
+        });
+        setIsShared(response.data.shared);
+        setShareCount(response.data.count);
+      } catch (error) {}
+    };
+
     checkLikeStatus();
+    checkShareStatus();
   }, [routineNo, currentUserId, isAuthenticated]);
 
   const handleLikeClick = async () => {
@@ -119,10 +136,30 @@ const PostDetail = <T extends DataType>({
     }
   };
 
-  const handleShareClick = () => {
-    console.log('Sharing post');
-    if (data) {
-      setIsShared(!isShared);
+  const handleShareClick = async () => {
+    if (!isAuthenticated) {
+      alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
+      navigate('/sign-in');
+      return;
+    }
+    try {
+      if (isShared) {
+        await axios.post(`/api/routine/${routineNo}/unshare`, null, {
+          params: { userId: currentUserId },
+        });
+        alert('공유가 취소되었습니다.');
+        setIsShared(false);
+        setShareCount((prevCount) => prevCount - 1);
+      } else {
+        await axios.post(`/api/routine/${routineNo}/share`, null, {
+          params: { userId: currentUserId },
+        });
+        alert('게시글이 공유되었습니다.');
+        setIsShared(true);
+        setShareCount((prevCount) => prevCount + 1);
+      }
+    } catch (error) {
+      alert('공유 처리 중 오류가 발생했습니다.');
     }
   };
 
@@ -132,9 +169,9 @@ const PostDetail = <T extends DataType>({
       return;
     }
 
-    if (window.confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
+    if (window.confirm('게시글을 삭제하시겠습니까?')) {
       try {
-        await axios.delete(`/api/routine/${routineNo}`, {
+        await axios.put(`/api/routine/delete/${routineNo}`, null, {
           params: { userId: currentUserId },
         });
         alert('게시글이 삭제되었습니다.');
@@ -146,12 +183,6 @@ const PostDetail = <T extends DataType>({
   };
 
   const handleEditClick = () => {
-    if (currentUserId !== userId) {
-      alert('본인 게시글만 수정 할 수 있습니다.');
-      return;
-    }
-
-    console.log('Editing post');
     navigate(`/routine/new-routine`, { state: { routine: contentData } });
   };
 
@@ -218,9 +249,10 @@ const PostDetail = <T extends DataType>({
           <span className="icon">
             <PersonIcon />
           </span>
-          <span>{userId}</span>
+          <span>{nickname}</span>
           <div className="infos">
             <span>작성일 : {formatDate(createdAt)}</span>
+            <span>{`공유 : ${shareCount || 0}`}</span>
             <span>{`좋아요 : ${likeCount || 0} `}</span>
             <span>{`조회수 : ${viewCount || 0}`}</span>
           </div>
@@ -243,20 +275,26 @@ const PostDetail = <T extends DataType>({
             likeNum={likeCount}
             onClick={handleLikeClick}
           />
-          <ButtonShare isShared={isShared} onClick={handleShareClick} />
+          {currentUserId !== userId ? (
+            <ButtonShare
+              isShared={isShared}
+              shareNum={shareCount}
+              onClick={handleShareClick}
+            />
+          ) : null}
         </Box>
       </PostWrapper>
-      <Container sx={{ padding: '20px 0', position: 'relative' }}>
-        <CommentList
-          comments={comments}
-          route={`/api/routine/${routineNo}`}
-          postId={routineNo ? routineNo : ''}
-          idName="routineNo"
-          addComment={addComment}
-          deleteComment={deleteComment}
-          updateComment={updateComment}
-        />
-      </Container>
+
+      <CommentList
+        comments={comments}
+        route={`/api/routine/${routineNo}`}
+        postId={routineNo ? routineNo : ''}
+        idName="routineNo"
+        addComment={addComment}
+        deleteComment={deleteComment}
+        updateComment={updateComment}
+      />
+
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         {currentUserId === userId && (
           <Box>
@@ -278,7 +316,7 @@ const PostDetail = <T extends DataType>({
           </Box>
         )}
         <BackBtn
-          onClick={() => navigate(`/${pageURL}`)}
+          onClick={() => navigate(location.state?.from || `/${pageURL}`)}
           style={{ marginLeft: 'auto' }}
         >
           목록
