@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { useState, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -19,7 +18,7 @@ import Divider from '@mui/material/Divider';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 import { NavbarItem } from './NavbarItem';
-import StyledPersonIcon from './StyledPersonIcon';
+import StyledProfileImage from './StyledProfileImage';
 import AuthContext from '../../../context/AuthContext';
 
 interface SideNavbarProps {
@@ -195,7 +194,7 @@ const SideNavbar: React.FC<SideNavbarProps> = ({
             }}
           >
             {isAuthenticated ? (
-              <StyledPersonIcon />
+              <StyledProfileImage />
             ) : (
               <AccountCircleIcon sx={{ fontSize: '36px' }} />
             )}

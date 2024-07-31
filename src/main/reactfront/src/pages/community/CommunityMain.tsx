@@ -5,11 +5,11 @@ import { Container, Box } from '@mui/material';
 import ButtonCategoryTag from '../../components/common/button/ButtonCategoryTag';
 
 const CommunityMain = () => {
-  const [selectedCategory, setSelectedCategory] = React.useState<string | null>(
+  const [selectedCategory, setSelectedCategory] = React.useState<number | null>(
     null,
   );
 
-  const handleCategorySelect = (category: string) => {
+  const handleCategorySelect = (category: number) => {
     setSelectedCategory(category);
   };
 

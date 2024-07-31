@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.myapp.order.repository.OrderItemMapper">
+
+    <resultMap id="OrderItemResultMap" type="com.spring.myapp.order.model.OrderItems">
+        <id property="orderItemId" column="order_item_id" />
+        <result property="orderId" column="order_id" />
+        <result property="productId" column="product_id" />
+        <result property="quantity" column="quantity" />
+        <result property="price" column="price" />
+        <result property="discountRate" column="discount_rate" />
+    </resultMap>
+
+    <insert id="insertOrderItem" parameterType="com.spring.myapp.order.model.OrderItems" useGeneratedKeys="true" keyProperty="orderItemId">
+        INSERT INTO order_items (order_id, product_id, quantity, price, discount_rate)
+        VALUES (#{orderId}, #{productId}, #{quantity}, #{price}, #{discountRate});
+    </insert>
+
+</mapper>
+
+

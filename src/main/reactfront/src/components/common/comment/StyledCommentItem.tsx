@@ -4,9 +4,9 @@ import { Comment } from './CommentList';
 import AuthContext from '../../../context/AuthContext';
 import CommentItem from './StyledCommentItem.styles';
 import EditCommentInput from './EditCommentInput';
+import ProfileImage from '../profileImage/ProfileImage';
 
 import PersonIcon from '@mui/icons-material/Person';
-//import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const StyledCommentItem: React.FC<{
@@ -54,7 +54,7 @@ const StyledCommentItem: React.FC<{
     <CommentItem $isReply={isReply} $isExpand={isExpand}>
       <div className="commentInfo">
         <span>
-          <PersonIcon />
+          <ProfileImage />
         </span>
         <span>{comment.nickname}</span>
         <span>{createdDate}</span>

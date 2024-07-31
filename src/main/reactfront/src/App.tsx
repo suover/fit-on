@@ -92,11 +92,13 @@ const App = () => {
             />
             <Route path="community" element={<Community />} />
             <Route path="community/:postId" element={<ViewPostDetail />} />
-            <Route path="community/new-post" element={<NewPost />} />
-            <Route
-              path="/community/edit/:postId"
-              element={<CommunityPostEdit />}
-            />
+            <Route element={<PrivateRoute />}>
+              <Route path="community/new-post" element={<NewPost />} />
+              <Route
+                path="/community/edit/:postId"
+                element={<CommunityPostEdit />}
+              />
+            </Route>
             <Route path="routine" element={<RoutineMain />} />
             <Route path="routine/:routineNo" element={<ViewRoutineDetail />} />
             <Route element={<PrivateRoute />}>

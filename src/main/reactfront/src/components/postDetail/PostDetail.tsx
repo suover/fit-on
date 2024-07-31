@@ -11,25 +11,25 @@ import AuthContext from '../../context/AuthContext';
 import { Comment } from '../../components/common/comment/CommentList';
 import CommentList from '../../components/common/comment/CommentList';
 
-const partIdToNameMap: { [key: number]: string } = {
+export const partIdToNameMap: { [key: number]: string } = {
   1: '전신',
   2: '상체',
   3: '하체',
   4: 'None',
 };
-const levelIdToNameMap: { [key: number]: string } = {
+export const levelIdToNameMap: { [key: number]: string } = {
   1: '상',
   2: '중',
   3: '하',
 };
-const goalIdToNameMap: { [key: number]: string } = {
+export const goalIdToNameMap: { [key: number]: string } = {
   1: '근력 증가',
   2: '다이어트',
   3: '유연성 개선',
   4: '체력 개선',
 };
 
-type DataType = {
+export type DataType = {
   postId: number | string;
   partId: number;
   levelId: number;

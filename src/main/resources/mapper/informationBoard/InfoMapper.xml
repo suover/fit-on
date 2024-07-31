@@ -35,8 +35,7 @@
             resultMap="infoResultMap">
         <![CDATA[
             SELECT i.*
-            FROM info i
-            JOIN info_categories c ON i.category_id = c.category_id
+            FROM info i JOIN info_categories c ON i.category_id = c.category_id
         ]]>
         <where>
             <if test="infoData.filterKeyword != null and infoData.filterKeyword != '전체' and infoData.searchKeyword == ''">
@@ -65,8 +64,7 @@
     <select id="countKeywordInfoList" parameterType="String" resultType="Integer">
         <![CDATA[
             SELECT COUNT(*)
-            FROM info i
-            JOIN info_categories c ON i.category_id = c.category_id
+            FROM info i JOIN info_categories c ON i.category_id = c.category_id
         ]]>
         <where>
             <if test="filterKeyword != null and filterKeyword != '전체' and searchKeyword == ''">
@@ -98,7 +96,7 @@
     <select id="findLikesForInfo" resultType="Integer">
         SELECT COUNT(user_id)
         FROM info_likes
-        WHERE info_id = #{infoId}
+        WHERE info_id = #{info_id}
     </select>
 
     <select id="findByInfoId" parameterType="Long" resultMap="infoResultMap">

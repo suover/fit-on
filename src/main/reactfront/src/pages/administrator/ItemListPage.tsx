@@ -26,7 +26,7 @@ import GenericButton from '../../components/common/genericButton/GenericButton';
 import DeleteIcon from '../../components/icons/DeleteIcon';
 import EditIcon from '@mui/icons-material/Edit';
 
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 
 const categoryMap: { [key: number]: string } = {
   1: '피트니스',
@@ -95,7 +95,7 @@ const ItemListPage: React.FC = () => {
     if (selectedProductId) {
       try {
         await axios.patch(
-          `http://localhost:8080/api/products/${selectedProductId}/deactivate`,
+          `/api/products/${selectedProductId}/deactivate`,
           { isDeleted: true },
         );
 

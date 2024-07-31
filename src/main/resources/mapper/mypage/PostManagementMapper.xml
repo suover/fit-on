@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.myapp.mypage.repository.PostManagementRepository">
+
+    <select id="findCommunityPostsByUser" resultType="com.spring.myapp.mypage.dto.PostManagementDto">
+        SELECT
+        community_id AS id,
+        title,
+        view_count AS views,
+        (SELECT COUNT(*)
+        FROM community_comments
+        WHERE community_comments.community_id = community.community_id
+        AND community_comments.is_deleted = FALSE) AS comments,
+        created_at AS date
+        FROM community
+        WHERE user_id = #{userId}
+        AND is_deleted = FALSE
+        <if test="search != null and search != ''">
+            AND title LIKE CONCAT('%', #{search}, '%')
+        </if>
+        ORDER BY created_at DESC
+        LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
+    </select>
+
+    <select id="findRoutinePostsByUser" resultType="com.spring.myapp.mypage.dto.PostManagementDto">
+        SELECT
+        routine_id AS id,
+        title,
+        view_count AS views,
+        (SELECT COUNT(*)
+        FROM routine_comments
+        WHERE routine_comments.routine_id = routines.routine_id
+        AND routine_comments.is_deleted = FALSE) AS comments,
+        created_at AS date
+        FROM routines
+        WHERE user_id = #{userId}
+        AND is_deleted = FALSE
+        <if test="search != null and search != ''">
+            AND title LIKE CONCAT('%', #{search}, '%')
+        </if>
+        ORDER BY created_at DESC
+        LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
+    </select>
+
+    <select id="countCommunityPostsByUser" resultType="int">
+        SELECT COUNT(*)
+        FROM community
+        WHERE user_id = #{userId}
+        AND is_deleted = FALSE
+        <if test="search != null and search != ''">
+            AND title LIKE CONCAT('%', #{search}, '%')
+        </if>
+    </select>
+
+    <select id="countRoutinePostsByUser" resultType="int">
+        SELECT COUNT(*)
+        FROM routines
+        WHERE user_id = #{userId}
+        AND is_deleted = FALSE
+        <if test="search != null and search != ''">
+            AND title LIKE CONCAT('%', #{search}, '%')
+        </if>
+    </select>
+</mapper>

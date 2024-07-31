@@ -3,30 +3,32 @@ import styled from 'styled-components';
 const CardWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  box-shadow: 3px 3px 5px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
 
   &:hover img {
-    transform: scale(1.05);
-  }
-
-  img {
-    width: 100%;
-    height: 100%;
-    transform: scale(1);
-    transition: all 0.4s;
+    transform: scale(1.02);
   }
 `;
 
 const RoutineImgCard = styled.div`
   width: 350px;
   height: 300px;
-  border-radius: 8px;
   overflow: hidden;
   background: #f2f2f2;
+
+  img {
+    width: 100%;
+    height: auto;
+    transform: scale(1);
+    transition: all 0.4s;
+  }
 `;
 
 const TextBox = styled.div`
   width: 100%;
-  padding: 5px 5px 0 5px;
+  padding: 10px;
   box-sizing: border-box;
 
   div {
@@ -42,19 +44,17 @@ const TextBox = styled.div`
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    span {
-      display: flex;
-      align-items: center;
-      gap: 3px;
-
-      svg:nth-of-type(1) {
-        color: crimson;
-      }
+    svg {
+      color: crimson;
+      position: relative;
+      top: 4px;
+      margin-right: 3px;
     }
   }
 
   p:last-of-type {
     font-size: 0.875rem;
+    color: #999;
   }
 `;
 

@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.myapp.mypage.dto.DeactivateAccountDTO;
 import com.spring.myapp.mypage.dto.PasswordUpdateDTO;
@@ -122,5 +124,35 @@ public class UserInfoController {
 		@Valid @RequestBody DeactivateAccountDTO deactivateAccountDTO) {
 		userInfoService.deactivateAccount(deactivateAccountDTO.getUserId());
 		return ResponseEntity.ok().build();
+	}
+
+	/**
+	 * 프로필 이미지를 업로드 또는 삭제합니다.
+	 *
+	 * @param userId 사용자 ID
+	 * @param file 업로드할 파일 (삭제 시 비어 있음)
+	 * @return 업로드된 프로필 이미지 URL 또는 null
+	 */
+	@Operation(summary = "프로필 이미지 업로드/삭제", description = "사용자 프로필 이미지를 업로드하거나 삭제합니다.")
+	@PostMapping("/profile-image")
+	public ResponseEntity<String> handleProfileImage(
+		@Parameter(description = "사용자 ID", required = true) @RequestParam("userId") int userId,
+		@Parameter(description = "업로드할 파일 (삭제 시 비어 있음)") @RequestPart(value = "file", required = false) MultipartFile file) {
+		String imageUrl = userInfoService.handleProfileImage(userId, file);
+		return ResponseEntity.ok(imageUrl);
+	}
+
+	/**
+	 * 프로필 이미지를 가져옵니다.
+	 *
+	 * @param userId 사용자 ID
+	 * @return 프로필 이미지 URL 또는 null
+	 */
+	@Operation(summary = "프로필 이미지 가져오기", description = "사용자 ID를 통해 프로필 이미지를 가져옵니다.")
+	@GetMapping("/get-profile-image")
+	public ResponseEntity<String> getProfileImage(
+		@Parameter(description = "사용자 ID", required = true) @RequestParam("userId") int userId) {
+		String profileImageUrl = userInfoService.getProfileImageUrl(userId);
+		return ResponseEntity.ok(profileImageUrl);
 	}
 }

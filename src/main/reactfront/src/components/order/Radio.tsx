@@ -62,6 +62,15 @@ export default function RadioButtonsGroup({
           }
         />
         <StyledFormControlLabel
+            value="kakao"
+            control={<Radio />}
+            label={
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                카카오페이
+              </div>
+            }
+        />
+        <StyledFormControlLabel
           value="account"
           control={<Radio />}
           label={

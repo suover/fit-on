@@ -72,7 +72,6 @@ public class CommunityBoardService {
 				// 사용자 ID와 카테고리 ID를 기존 게시글에서 가져와 설정
 				communityBoardDTO.setCommunityId(id);
 				communityBoardDTO.setUserId(existingPost.getUserId());
-				communityBoardDTO.setCategoryId(existingPost.getCategoryId());
 
 				// createdAt 필드를 기존 게시글의 값으로 설정
 				communityBoardDTO.setCreatedAt(existingPost.getCreatedAt());
@@ -80,6 +79,11 @@ public class CommunityBoardService {
 				// updatedAt 필드를 현재 시간으로 설정
 				communityBoardDTO.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
+				//수정한 categoryId 반영
+				if (communityBoardDTO.getCategoryId() == null) {
+						communityBoardDTO.setCategoryId(existingPost.getCategoryId());
+				}
+				
 				communityMapper.updatePost(communityBoardDTO);
 				return communityBoardDTO;
 		}

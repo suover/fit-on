@@ -28,12 +28,11 @@ export interface RoutineData {
   userId: string;
   title: string;
   diet: string;
-  nickname: string;
+  exerciseType: string;
   hours: number;
   targetArea: string;
   likes: number;
-  views: number;
-  imageUrl: string;
+  nickname: string;
 }
 
 export interface Product {

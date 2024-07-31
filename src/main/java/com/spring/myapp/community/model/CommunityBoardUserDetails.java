@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class CommunityBoardUserDetails implements UserDetails {
 		private static final long serialVersionUID = 1L;
 
-		private Long userId; // 사용자 ID
+		private Long userId;
 		private String username;
 		private String password;
 		private Collection<? extends GrantedAuthority> authorities;

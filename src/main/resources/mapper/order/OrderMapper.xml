@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.myapp.order.repository.OrderMapper">
+
+    <resultMap id="OrderResultMap" type="com.spring.myapp.order.model.Order">
+        <id property="orderId" column="order_id" />
+        <result property="userId" column="user_id" />
+        <result property="orderDate" column="order_date" />
+        <result property="statusId" column="status_id" />
+        <result property="total" column="total" />
+        <result property="shippingFee" column="shipping_fee" />
+    </resultMap>
+
+    <insert id="insertOrder" parameterType="com.spring.myapp.order.model.Order" useGeneratedKeys="true" keyProperty="orderId">
+        INSERT INTO orders (user_id, order_date, status_id, total, shipping_fee)
+        VALUES (#{userId}, #{orderDate}, #{statusId}, #{total}, #{shippingFee});
+    </insert>
+</mapper>
