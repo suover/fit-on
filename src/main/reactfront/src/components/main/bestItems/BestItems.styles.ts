@@ -1,10 +1,18 @@
 import styled from 'styled-components';
 
 const Items = styled.div`
+  min-height: 375px;
   display: flex;
   justify-content: space-between;
   align-items: start;
   position: relative;
+
+  p.text {
+    width: 100%;
+    height: 100%;
+    padding-top: 150px;
+    font-weight: bold;
+  }
 `;
 
 const CustomBtn = styled.button`

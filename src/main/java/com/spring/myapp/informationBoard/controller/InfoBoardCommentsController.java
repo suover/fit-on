@@ -28,7 +28,7 @@ public class InfoBoardCommentsController {
 	InfoCommentsService infoCommentsService;
 
 	@GetMapping("/{infoId}/comments")
-	public ResponseEntity<?> getAllInfoList(@PathVariable("infoId") Long infoId) {
+	public ResponseEntity<?> getAllInfoCommentList(@PathVariable("infoId") Long infoId) {
 		try {
 			List<Comments> allComments = infoCommentsService.getAllComments(infoId);
 			return new ResponseEntity<>(allComments, HttpStatus.OK);
@@ -40,7 +40,7 @@ public class InfoBoardCommentsController {
 	}
 
 	@PostMapping("/{infoId}/newComments")
-	public ResponseEntity<?> newInfoComment(@RequestBody Comments comment) { // 새 정보글 등록
+	public ResponseEntity<?> newInfoComment(@RequestBody Comments comment) {
 		try {
 			logger.info("Received new information post request: {}", comment);
 			Comments savedComment = infoCommentsService.writeNewComment(comment);

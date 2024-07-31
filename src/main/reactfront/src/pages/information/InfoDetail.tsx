@@ -15,6 +15,7 @@ import {
   ControllBtns,
 } from '../../styles/information/InfoDetail.styles';
 import CommentList from '../../components/common/comment/CommentList';
+import ProfileImage from '../../components/common/profileImage/ProfileImage';
 
 import { Container, Box, Button } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -147,6 +148,11 @@ const InfoDetail: React.FC = () => {
     const pageParam = params.get('page');
     const page = pageParam ? parseInt(pageParam) : 1;
 
+    if (filterKeyword === null) {
+      navigate('/info/search');
+      return;
+    }
+
     navigate(
       `/info/search?filterKeyword=${filterKeyword}&searchKeyword=${searchKeyword}&page=${page}`,
     );
@@ -180,11 +186,12 @@ const InfoDetail: React.FC = () => {
             {info?.categoryName}
           </span>
           <h2>{info?.title}</h2>
-          <p>
+          <div>
+            <ProfileImage />
             <span>{info?.nickname}</span>
             <span>조회수 {info?.viewCount}</span>
             <span>작성일 {createdDate}</span>
-          </p>
+          </div>
         </DetailTitle>
         <Content dangerouslySetInnerHTML={{ __html: sanitizedContent }} />
         <Box

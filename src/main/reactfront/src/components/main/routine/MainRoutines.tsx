@@ -1,21 +1,43 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { routines } from '../../../types/MainDummyData';
+import axios from '../../../api/axiosConfig';
+
 import RoutineLists from './MainRoutines.styles';
 import RoutineList from './RoutineList';
-import routineImg1 from '../../../assets/img/main/routine1.jpg';
-import routineImg2 from '../../../assets/img/main/routine2.jpg';
-import routineImg3 from '../../../assets/img/main/routine3.jpg';
 
 const MainRoutines: React.FC = () => {
+  const [routineList, setRoutineList] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchInfoData = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get('/api/main/routine');
+        setRoutineList(res.data);
+      } catch (error) {
+        console.error('Error fetching post:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInfoData();
+  }, []);
+
   return (
     <RoutineLists>
-      {/* {routines.map((routine) => (
-        <RoutineList key={routine.id} routine={routine} />
-      ))} */}
-      <RoutineList routine={routines[0]} img={routineImg1} />
-      <RoutineList routine={routines[1]} img={routineImg2} />
-      <RoutineList routine={routines[2]} img={routineImg3} />
+      {loading ? (
+        <p className="text">Loading...</p>
+      ) : (
+        routineList.map((routine) => (
+          <RoutineList
+            key={routine.routineId}
+            routine={routine}
+            imageUrl={routine.imageUrl}
+          />
+        ))
+      )}
     </RoutineLists>
   );
 };

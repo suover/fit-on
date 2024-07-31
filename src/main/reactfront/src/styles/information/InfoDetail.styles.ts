@@ -43,13 +43,17 @@ const DetailTitle = styled.div`
   h2 {
     font-size: 1.875rem;
     font-weight: bold;
-    margin-bottom: 5px;
   }
 
-  p {
+  & > div {
     font-size: 1rem;
     display: flex;
-    align-item: center;
+    align-items: center;
+    margin-bottom: 3px;
+
+    div {
+      margin-right: 8px;
+    }
 
     span:nth-of-type(2) {
       margin-left: auto;
