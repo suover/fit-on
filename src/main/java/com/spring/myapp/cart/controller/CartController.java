@@ -41,10 +41,13 @@ public class CartController {
 		return cartItems;
 	}
 
-	//장바구니 상품 변경
+	//장바구니 상품 수량 변경
 	@PutMapping("/{userId}/cartItems/{productId}")
-	public void updateCartItemQuantity(@PathVariable("userId") Long userId, @PathVariable Long productId, @RequestBody Integer quantity) {
-		cartService.updateCartItemQuantity(userId, productId, quantity);
+	public void updateCartItemQuantity(
+			@PathVariable("userId") Long userId,
+			@PathVariable("productId") Long productId,
+			@RequestBody CartItem cartItem) {
+		cartService.updateCartItemQuantity(userId, productId, cartItem.getQuantity());
 	}
 
 	//장바구니 상품 삭제

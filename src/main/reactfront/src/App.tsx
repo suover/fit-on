@@ -52,6 +52,7 @@ import MyRoutinesPage from './pages/mypage/MyRoutinesPage';
 import AdminPage from './pages/administrator/AdminPage'; // 관리자 페이지
 import MemberListPage from './pages/administrator/MemberListPage';
 import ItemListPage from './pages/administrator/ItemListPage';
+import OrderManagementPage from "./pages/administrator/OrderManagementPage";
 import CommunityListPage from './pages/administrator/CommunityListPage';
 import PostListPage from './pages/administrator/PostListPage';
 import ReviewListPage from './pages/administrator/ReviewListPage';
@@ -160,6 +161,7 @@ const App = () => {
                 <Route index element={<MemberListPage />} />
                 <Route path="member-list" element={<MemberListPage />} />
                 <Route path="item-list" element={<ItemListPage />} />
+                <Route path="order-list" element={<OrderManagementPage />} />
                 <Route path="post-list" element={<PostListPage />} />
                 <Route path="community-list" element={<CommunityListPage />} />
                 <Route path="review-list" element={<ReviewListPage />} />
