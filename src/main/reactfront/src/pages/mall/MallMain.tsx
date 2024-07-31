@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Pagination, Container, Box, CircularProgress, Typography} from '@mui/material';
+import {Pagination, Box, CircularProgress, Typography} from '@mui/material';
 import { Product,ProductPage } from '../../types/DataInterface';
 import ProductCardList from './ProductCardList';
 import axios from '../../api/axiosConfig';
