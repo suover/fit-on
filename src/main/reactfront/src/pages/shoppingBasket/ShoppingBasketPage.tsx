@@ -17,7 +17,10 @@ import {
   DialogContentText,
   DialogTitle,
   Button,
+  TextField,
+  IconButton,
 } from '@mui/material';
+import { Add, Remove } from '@mui/icons-material';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   ButtonGroups,
@@ -66,6 +69,27 @@ const ShoppingBasketPage: React.FC = () => {
     fetchCartItems();
   }, []);
 
+
+  // 상품 수량 변경 api
+  const updateCartItemQuantity = async (productId: number, quantity: number) => {
+    try {
+      if (userId) {
+        const cartItem = items.find(item => item.productId === productId);
+        if (cartItem) {
+          await axios.put(`/api/carts/${userId}/cartItems/${productId}`, { ...cartItem, quantity });
+          setItems((prevItems) =>
+              prevItems.map((item) =>
+                  item.productId === productId ? { ...item, quantity } : item
+              )
+          );
+        }
+      } else {
+        console.error('No user ID found, cannot update quantity');
+      }
+    } catch (error) {
+      console.error('Error updating cart item quantity', error);
+    }
+  };
 
   // 상품 삭제 api
   const deleteCartItems = async (productIds: number[]) => {
@@ -137,6 +161,13 @@ const ShoppingBasketPage: React.FC = () => {
     navigate('/order-page', { state: { selectedProducts } });
     setOpenOrderDialog(false);
   };
+
+  const handleQuantityChange = (productId: number, quantity: number) => {
+    if (quantity >= 1) {
+      updateCartItemQuantity(productId, quantity);
+    }
+  };
+
 
   const handleChangePage = (
     event: React.ChangeEvent<unknown>,
@@ -214,7 +245,20 @@ const ShoppingBasketPage: React.FC = () => {
                   />
                   {item.name || ''}
                 </TableCell>
-                <TableCell align="center">{item.quantity}</TableCell>
+                <TableCell align="center">
+                  <Box display="flex" alignItems="center" justifyContent="center">
+                  <IconButton
+                      onClick={() => handleQuantityChange(item.productId, Math.max(1, item.quantity - 1))}
+                      disabled={item.quantity <= 1}
+                  >
+                    <Remove />
+                  </IconButton>
+                  <Typography style={{ margin: '0 10px' }}>{item.quantity}</Typography>
+                  <IconButton onClick={() => handleQuantityChange(item.productId, item.quantity + 1)}>
+                    <Add />
+                  </IconButton>
+                </Box>
+                </TableCell>
                 <TableCell align="center">
                   {item.price.toLocaleString() || 0} 원
                 </TableCell>
