@@ -132,8 +132,6 @@ const ViewPostDetail = () => {
       );
 
       if (res.data === 'Liked') {
-        console.log(res.data);
-
         setLikes((prevState) => prevState + 1);
       } else {
         setLikes((prevState) => Math.max(prevState - 1, 0)); // 음수로 내려가지 않도록 설정
@@ -239,6 +237,7 @@ const ViewPostDetail = () => {
         sx={{ minHeight: '700px', padding: '50px 0 100px' }}
       >
         <PostWrapper>
+          <h2>{post.title || '제목 없음'}</h2>
           {post.categoryName ? (
             <span>
               <ArrowForwardIosIcon />
@@ -247,14 +246,15 @@ const ViewPostDetail = () => {
           ) : (
             ''
           )}
-          <h2>{post.title || '제목 없음'}</h2>
           <div className="postInfo">
-            <span>
+            <span className="icon">
               <PersonIcon />
             </span>
             <span>{post.nickname}</span>
-            <span>{formatDate(post.createdAt)}</span>
-            <span>{`조회수: ${post.viewCount || 1}`}</span>
+            <div className="post-meta">
+              <span>{formatDate(post.createdAt)}</span>
+              <span>{`조회수: ${post.viewCount}`}</span>
+            </div>
           </div>
           <div className="content">
             <Box dangerouslySetInnerHTML={{ __html: post.content }} />
@@ -292,7 +292,7 @@ const ViewPostDetail = () => {
             gap: 1,
           }}
         >
-          {isAuthenticated && (
+          {isAuthenticated && post.userId === userId && (
             <>
               <BackBtn onClick={handleEditClick}>수정</BackBtn>
               <RedBtn onClick={handleClickOpen}>삭제</RedBtn>
@@ -300,7 +300,7 @@ const ViewPostDetail = () => {
           )}
           <BackBtn onClick={() => navigate('/community')}>목록</BackBtn>
         </Box>
-        <Container sx={{ padding: '20px 0', position: 'relative' }}>
+        <Container sx={{ position: 'relative' }}>
           <CommentList
             comments={comments}
             route={`/api/community/${postId}`}

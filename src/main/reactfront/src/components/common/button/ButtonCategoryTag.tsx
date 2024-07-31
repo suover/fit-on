@@ -63,7 +63,7 @@ type Post = {
 };
 
 type ButtonCategoryTagProps = {
-  onCategorySelect: (category: number) => void;
+  onCategorySelect: (category: string | number) => void;
 };
 
 const ButtonCategoryTag: React.FC<ButtonCategoryTagProps> = ({
@@ -78,8 +78,10 @@ const ButtonCategoryTag: React.FC<ButtonCategoryTagProps> = ({
     try {
       const response =
         categoryId === 1 // '인기글'의 categoryId
-          ? await axios.get('/posts/popular')
-          : await axios.get('/posts', { params: { categoryId } });
+          ? await axios.get('/api/community/posts/popular', {
+              params: { limit: 10 },
+            })
+          : await axios.get('/api/community/posts', { params: { categoryId } });
       setPosts(response.data);
     } catch (error) {
       console.error('Error fetching posts:', error);
