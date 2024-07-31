@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button, TextField, Select, MenuItem } from '@mui/material';
+import {Box, Typography, Button, TextField, Select, MenuItem, Checkbox} from '@mui/material';
 import GenericTable from '../../components/genericTable/GenericTable';
 import { TableRow, TableData } from '../../components/genericTable/GenericTable.styles';
 import GenericButton from '../../components/common/genericButton/GenericButton';
@@ -117,7 +117,12 @@ const OrderManagementPage: React.FC = () => {
                 data={orders}
                 renderRow={(order: Order) => (
                     <TableRow key={order.id}>
-                        <TableData></TableData>
+                        <TableData>
+                            <Checkbox
+                                // checked={selectedItems.includes(item.productId)}
+                                // onChange={() => handleSelectItem(item.productId)}
+                            />
+                        </TableData>
                         <TableData>{order.orderDate}</TableData>
                         <TableData>{order.orderNumber}</TableData>
                         <TableData>{order.customerName}</TableData>

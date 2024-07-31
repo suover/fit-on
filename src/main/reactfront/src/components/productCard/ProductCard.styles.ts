@@ -3,6 +3,7 @@ import styled from 'styled-components';
 // 기본적인 카드 컨테이너 스타일
 export const Cards = styled.section`
   width: 100%;
+    //min-width: 250px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -11,22 +12,20 @@ export const Cards = styled.section`
 // 각 카드 스타일
 export const Card = styled.article<{ bgImage: string }>`
   background-color: #fff;
-  /* width: 100%; */
-  width: 250px;
+  width: 250px; // 베스트 아이템과 동일한 너비로 설정
   position: relative;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 2px 2px 5px 2px rgba(0, 0, 0, 0.1);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0, 1);
   cursor: pointer;
+  margin: 0 15px 30px 15px; // 좌우 간격 추가, 아래쪽 간격 추가
 
   &:hover {
     box-shadow: 2px 2px 18px 2px rgba(0, 0, 0, 0.1);
     transform: scale(1.02, 1.02);
   }
-  &:last-child {
-    margin-right: 0;
-  }
+  
   .card__img,
   .card__img--hover {
     background-image: url(${(props) => props.bgImage});

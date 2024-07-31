@@ -52,32 +52,31 @@ const MallMain: React.FC = () => {
     return (
 
         <>
-            <Container sx={{ paddingTop: '50px', paddingBottom: '100px' , minHeight: '800px' }}>
-                <Box>
-                    {loading ? ( // 로딩 상태일 때 로딩 아이콘 표시
+            <Box sx={{paddingTop: '50px'}}/>
+            <Box sx={{ maxWidth: '1200px', width: '100%' }}>
+                {loading ? ( // 로딩 상태일 때 로딩 아이콘 표시
+                    <Box display="flex" justifyContent="center" mt={4}>
+                        <Typography variant="h6">상품 목록을 불러오는 중입니다.</Typography>
+                        <Box display="flex" justifyContent="center" ml={2}> <CircularProgress /> </Box>
+                    </Box>
+                ) : filteredItems.length === 0 ? ( // 상품이 없을 때 메시지 표시
+                    <Box display="flex" justifyContent="center" mt={4}>
+                        <Typography variant="h6">상품이 없습니다.</Typography>
+                    </Box>
+                ) : (
+                    <>
+                        <ProductCardList products={filteredItems} />
                         <Box display="flex" justifyContent="center" mt={4}>
-                            <Typography variant="h6">상품 목록을 불러오는 중입니다.</Typography>
-                            <Box display="flex" justifyContent="center" ml={2}> <CircularProgress /> </Box>
+                            <Pagination
+                                count={totalPages}
+                                page={page}
+                                onChange={handlePageChange}
+                                color="primary"
+                            />
                         </Box>
-                    ) : filteredItems.length === 0 ? ( // 상품이 없을 때 메시지 표시
-                        <Box display="flex" justifyContent="center" mt={4}>
-                            <Typography variant="h6">상품이 없습니다.</Typography>
-                        </Box>
-                    ) : (
-                        <>
-                            <ProductCardList products={filteredItems} />
-                            <Box display="flex" justifyContent="center" mt={4}>
-                                <Pagination
-                                    count={totalPages}
-                                    page={page}
-                                    onChange={handlePageChange}
-                                    color="primary"
-                                />
-                            </Box>
-                        </>
-                    )}
-                </Box>
-            </Container>
+                    </>
+                )}
+            </Box>
         </>
 
     );
