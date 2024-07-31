@@ -23,10 +23,6 @@ const ButtonGroup = styled.div`
 `;
 
 const MyRoutinePage: React.FC = () => {
-  const location = useLocation();
-  const isMyRoutinesPage =
-    location.pathname === '/mypage/my-routine/my-routines';
-
   return (
     <>
       <ButtonGroup>
@@ -34,15 +30,12 @@ const MyRoutinePage: React.FC = () => {
           <Button sx={{ color: 'black', fontSize: '1rem' }}>나의 루틴</Button>
         </Link>
         <Link to="shared-routine">
-          <Button sx={{ color: 'black', fontSize: '1rem' }}>
-            공유받은 루틴
-          </Button>
+          <Button sx={{ color: 'black', fontSize: '1rem' }}>공유 루틴</Button>
         </Link>
-        {isMyRoutinesPage && (
-          <Link to="/routine/new-routine" style={{ marginLeft: 'auto' }}>
-            <GenericButton>루틴 작성</GenericButton>
-          </Link>
-        )}
+
+        <Link to="/routine/new-routine" style={{ marginLeft: 'auto' }}>
+          <GenericButton>루틴 작성</GenericButton>
+        </Link>
       </ButtonGroup>
       <Outlet />
     </>

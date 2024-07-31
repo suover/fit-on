@@ -11,6 +11,7 @@ type ContentsType = {
   title: string;
   nickname?: string;
   views?: number;
+  shares?: number;
   likes: number;
   imageUrl: string;
   routineParts?: string | string[];

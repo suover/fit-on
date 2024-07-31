@@ -4,10 +4,15 @@ import ShareIcon from '@mui/icons-material/Share';
 
 interface ButtonShareProps {
   isShared: boolean;
+  shareNum: number;
   onClick: () => void;
 }
 
-const ButtonShare: React.FC<ButtonShareProps> = ({ isShared, onClick }) => {
+const ButtonShare: React.FC<ButtonShareProps> = ({
+  isShared,
+  shareNum,
+  onClick,
+}) => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const handleShareClick = () => {
@@ -37,12 +42,13 @@ const ButtonShare: React.FC<ButtonShareProps> = ({ isShared, onClick }) => {
             backgroundColor: isShared ? 'darkred' : 'primary.dark',
           },
         }}
-      ></Button>
+      >
+        {shareNum}
+      </Button>
       <Snackbar
         open={openSnackbar}
-        autoHideDuration={6000}
+        autoHideDuration={1}
         onClose={handleCloseSnackbar}
-        message="공유되었습니다."
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       />
     </>

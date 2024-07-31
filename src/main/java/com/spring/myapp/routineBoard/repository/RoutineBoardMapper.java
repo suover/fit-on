@@ -39,6 +39,8 @@ public interface RoutineBoardMapper {
 		@Param("query") String query);
 
 	long countRoutinesWithSearch(@Param("query") String query);
+
+	List<RoutineBoard> findByUserId(@Param("userId") Long userId);
 }
 
 
