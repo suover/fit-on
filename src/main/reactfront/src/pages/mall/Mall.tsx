@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useContext} from 'react';
-import {Outlet, useNavigate} from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import SideNavbar from '../../components/layout/sideNavBar/SideNavbar';
@@ -13,8 +13,7 @@ import SearchBox from '../../components/common/search/SearchBox';
 import SidebarWrapper from '../../components/common/sidebar/SidebarWrapper';
 import { Pagination, Container, Box } from '@mui/material';
 import axios from '../../api/axiosConfig';
-import AuthContext from "../../context/AuthContext";
-
+import AuthContext from '../../context/AuthContext';
 
 export const Search = styled.div`
   display: flex;
@@ -53,7 +52,7 @@ const Mall: React.FC = () => {
   ];
 
   // AuthContext 에서 유저 아이디 받아오기
-  const {userId} = useContext(AuthContext);
+  const { userId } = useContext(AuthContext);
 
   // 장바구니 상품 수량 가져오기
   const fetchCartItemCount = async (userId: number) => {
@@ -88,7 +87,6 @@ const Mall: React.FC = () => {
   };
 
   return (
-
     <>
       <SidebarWrapper>
         <SideNavbar
@@ -97,16 +95,16 @@ const Mall: React.FC = () => {
           title="FitOn Mall"
         />
       </SidebarWrapper>
-      <Container sx={{ paddingTop: '50px', paddingBottom: '100px' , minHeight: '800px' }}>
+      <Container
+        sx={{ paddingTop: '50px', paddingBottom: '100px', minHeight: '800px' }}
+      >
         <Search>
           <SearchBox onSearch={handleSearch} />
         </Search>
-      <Outlet/>
+        <Outlet />
       </Container>
     </>
-
   );
 };
 
 export default Mall;
-
