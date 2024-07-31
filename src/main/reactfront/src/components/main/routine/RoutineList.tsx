@@ -1,23 +1,21 @@
 import React from 'react';
-
 import { RoutineData } from '../../../types/MainDummyData';
-
 import { CardWrapper, RoutineImgCard, TextBox } from './RoutineList.styles';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 interface RoutineListProps {
   routine: RoutineData;
-  img: string;
 }
 
 const RoutineList: React.FC<RoutineListProps> = (props) => {
-  const { title, userId, exerciseType, likes } = props.routine;
+  const { title, userId, nickname, likes, views, imageUrl } = props.routine;
 
   return (
     <CardWrapper>
       <a href="/">
         <RoutineImgCard>
-          <img src={props.img} alt="루틴이미지" />
+          <img src={imageUrl} alt="루틴이미지" />
         </RoutineImgCard>
         <TextBox>
           <div>
@@ -26,9 +24,12 @@ const RoutineList: React.FC<RoutineListProps> = (props) => {
               <FavoriteIcon fontSize="small" />
               {likes}
             </span>
+            <span>
+              <VisibilityIcon fontSize="small" />
+              {views}
+            </span>
           </div>
-          <p>{userId}</p>
-          <p>{exerciseType}</p>
+          <p>{nickname}</p>
         </TextBox>
       </a>
     </CardWrapper>

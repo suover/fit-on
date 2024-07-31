@@ -17,14 +17,17 @@ const RoutineTotalList = ({ searchQuery }: { searchQuery: any }) => {
           params: { page: page - 1, size: pageSize, query: searchQuery },
         });
         const { content, totalPages } = response.data;
-        const transformedData = content.map((info: any) => ({
-          ...info,
-          id: info.routineId,
-          likes: info.likes, // 좋아요 수 포함
+        const transformedData = content.map((routine: any) => ({
+          ...routine,
+          id: routine.routineId,
+          likes: routine.likes,
+          shares: routine.shareCount,
         }));
         setRoutines(transformedData);
         setTotalPages(totalPages);
-      } catch (error) {}
+      } catch (error) {
+        console.error('Error fetching my routines:', error);
+      }
     };
 
     fetchRoutines();

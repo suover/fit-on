@@ -9,6 +9,8 @@ const CardWrapper = styled.div`
   }
 
   img {
+    width: 100%;
+    height: 100%;
     transform: scale(1);
     transition: all 0.4s;
   }
@@ -40,10 +42,14 @@ const TextBox = styled.div`
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    svg {
-      color: crimson;
-      position: relative;
-      top: 3px;
+    span {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+
+      svg:nth-of-type(1) {
+        color: crimson;
+      }
     }
   }
 

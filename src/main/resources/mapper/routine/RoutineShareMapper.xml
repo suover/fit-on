@@ -10,16 +10,27 @@
     </resultMap>
 
     <insert id="insertShare" parameterType="com.spring.myapp.routineBoard.model.RoutineShare">
-        INSERT INTO routine_shares (share_id, routine_id, user_id, shared_at)
-        VALUES (#{shareId}, #{routineId}, #{userId}, #{sharedAt})
+        INSERT INTO routine_shares (routine_id, user_id, shared_at)
+        VALUES (#{routineId}, #{userId}, #{sharedAt})
     </insert>
 
-    <select id="findByShareId" parameterType="long" resultMap="RoutineShareResultMap">
-        SELECT * FROM routine_shares WHERE share_id = #{shareId}
+    <select id="findSharedRoutinesByUserId" resultType="com.spring.myapp.routineBoard.model.RoutineBoard">
+        SELECT rb.*
+        FROM routine_shares rs
+        JOIN routines rb ON rs.routine_id = rb.routine_id
+        WHERE rs.user_id = #{userId}
     </select>
 
-    <select id="findByUserId" parameterType="long" resultMap="RoutineShareResultMap">
-        SELECT * FROM routine_shares WHERE user_id = #{userId}
+    <delete id="deleteShare" parameterType="map">
+        DELETE FROM routine_shares WHERE routine_id = #{routineId} AND user_id = #{userId}
+    </delete>
+
+    <select id="isShared" resultType="boolean">
+        SELECT COUNT(*) > 0 FROM routine_shares WHERE routine_id = #{routineId} AND user_id = #{userId}
+    </select>
+
+    <select id="countByRoutineId" resultType="int">
+        SELECT COUNT(*) FROM routine_shares WHERE routine_id = #{routineId}
     </select>
 
 </mapper>

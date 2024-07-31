@@ -94,9 +94,16 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageChange }) => {
 };
 
 const NewRoutine = () => {
-  const { userId, nickname } = useContext(AuthContext);
+  const { isAuthenticated, userId, nickname } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      alert('로그인 이용후 가능 합니다.');
+      navigate('/sign-in');
+    }
+  }, [isAuthenticated, navigate]);
 
   const [title, setTitle] = useState('');
   const [purpose, setPurpose] = useState<string | null>('');
@@ -110,15 +117,9 @@ const NewRoutine = () => {
   const [image, setImage] = useState<File | null>(null);
 
   // 게시글 공개/비공개 상태를 관리하는 상태 변수
-  const [isPublic, setIsPublic] = useState(true);
+  // const [isPublic, setIsPublic] = useState(true);
 
   useEffect(() => {
-    if (!userId) {
-      alert('로그인 후 게시글 작성이 가능합니다.');
-      navigate('/sign-in');
-      return;
-    }
-
     if (location.state && location.state.routine) {
       const {
         title,
@@ -128,8 +129,9 @@ const NewRoutine = () => {
         partId,
         routineId,
         routineItems,
-        isPublic,
+        // isPublic,
       } = location.state.routine;
+      console.log('Received routine data:', location.state.routine);
       setTitle(title);
       setContent(content);
       setPurpose(String(goalId));
@@ -137,14 +139,14 @@ const NewRoutine = () => {
       setTarget(String(partId));
       setRoutineId(routineId);
       setLists(routineItems || []);
-      setIsPublic(isPublic);
+      // setIsPublic(isPublic);
     }
   }, [location.state]);
 
   // 스위치 토글 이벤트 핸들러
-  const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsPublic(event.target.checked);
-  };
+  // const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setIsPublic(event.target.checked);
+  // };
 
   // 루틴 목록을 추가하는 함수
   const handleAddRoutineItem = () => {
@@ -185,14 +187,14 @@ const NewRoutine = () => {
       formData.append('goalId', purpose!.toString());
       formData.append('levelId', level!.toString());
       formData.append('partId', target!.toString());
-      formData.append('isPublic', isPublic.toString());
+      // formData.append('isPublic', isPublic.toString());
       formData.append('userId', userId!.toString());
       formData.append('nickname', nickname!);
 
       if (routineId) {
         // 기존 게시글 수정
         const response = await axios.put(
-          `/api/routine/${routineId}`,
+          `/api/routine/update/${routineId}`,
           formData,
           {
             headers: {
@@ -244,10 +246,10 @@ const NewRoutine = () => {
             <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
               {routineId ? '루틴 수정' : '새 루틴 작성'}
             </Typography>
-            <FormControlLabel
+            {/* <FormControlLabel
               control={<Switch checked={isPublic} onChange={handleToggle} />}
               label={isPublic ? 'Public' : 'Private'}
-            />
+            /> */}
           </Box>
           <Box
             sx={{

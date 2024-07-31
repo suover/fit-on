@@ -1,21 +1,42 @@
-import React from 'react';
-
-import { routines } from '../../../types/MainDummyData';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import RoutineLists from './MainRoutines.styles';
 import RoutineList from './RoutineList';
-import routineImg1 from '../../../assets/img/main/routine1.jpg';
-import routineImg2 from '../../../assets/img/main/routine2.jpg';
-import routineImg3 from '../../../assets/img/main/routine3.jpg';
+import axios from '../../../api/axiosConfig';
 
 const MainRoutines: React.FC = () => {
+  const [routines, setRoutines] = useState<any[]>([]);
+  const limit = 3;
+
+  useEffect(() => {
+    const fetchTopRoutines = async () => {
+      try {
+        const response = await axios.get('/api/routine/best', {
+          params: { limit },
+        });
+        const transformedData = response.data.map((routine: any) => ({
+          ...routine,
+          id: routine.routineId,
+          likes: routine.likes,
+          views: routine.viewCount,
+          imageUrl: routine.imageUrl,
+        }));
+        setRoutines(transformedData);
+      } catch (error) {
+        console.error('Failed to fetch top routines:', error);
+      }
+    };
+
+    fetchTopRoutines();
+  }, []);
+
   return (
     <RoutineLists>
-      {/* {routines.map((routine) => (
-        <RoutineList key={routine.id} routine={routine} />
-      ))} */}
-      <RoutineList routine={routines[0]} img={routineImg1} />
-      <RoutineList routine={routines[1]} img={routineImg2} />
-      <RoutineList routine={routines[2]} img={routineImg3} />
+      {routines.map((routine) => (
+        <Link key={routine.id} to={`/routine/${routine.id}`}>
+          <RoutineList routine={routine} />
+        </Link>
+      ))}
     </RoutineLists>
   );
 };

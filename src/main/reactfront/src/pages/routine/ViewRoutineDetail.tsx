@@ -5,8 +5,8 @@ import { Container } from '@mui/material';
 import PostDetail from '../../components/postDetail/PostDetail';
 
 const ViewRoutineDetail = () => {
-  const { routineNo } = useParams<{ routineNo: string }>(); // useParams를 통해 route parameter를 가져옵니다.
-  const [routineData, setRoutineData] = useState<any>(null); // 초기 상태를 null로 설정합니다.
+  const { routineNo } = useParams<{ routineNo: string }>();
+  const [routineData, setRoutineData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any>(null);
 
@@ -17,12 +17,9 @@ const ViewRoutineDetail = () => {
         setRoutineData(response.data);
 
         const visitedKey = `visited_${routineNo}`;
-        const isVisited = localStorage.getItem(visitedKey);
 
-        if (!isVisited) {
-          // 조회수 증가 API 호출
+        if (!visitedKey) {
           await axios.put(`/api/routine/increment-view/${routineNo}`);
-          localStorage.setItem(visitedKey, 'true');
         }
       } catch (error) {
         setError(error);
@@ -47,12 +44,12 @@ const ViewRoutineDetail = () => {
           height: '500px',
         }}
       >
-        로딩중🔥🔥🔥🔥🔥🔥
+        Loading...
       </div>
     );
   }
 
-  if (!routineData) {
+  if (error || !routineData) {
     return (
       <div
         style={{

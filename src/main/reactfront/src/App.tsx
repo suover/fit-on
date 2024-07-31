@@ -99,7 +99,9 @@ const App = () => {
             />
             <Route path="routine" element={<RoutineMain />} />
             <Route path="routine/:routineNo" element={<ViewRoutineDetail />} />
-            <Route path="routine/new-routine" element={<NewRoutine />} />
+            <Route element={<PrivateRoute />}>
+              <Route path="routine/new-routine" element={<NewRoutine />} />
+            </Route>
             <Route path="info/search" element={<Info />} />
             <Route path="info/:infoId" element={<InfoDetail />} />
             <Route path="info/update/:infoId" element={<PostRegisterPage />} />
@@ -124,6 +126,7 @@ const App = () => {
                     path="shared-routine"
                     element={<SharedRoutinePage />}
                   />
+                  <Route path=":routineNo" element={<ViewRoutineDetail />} />
                 </Route>
                 <Route
                   path="post-management"
