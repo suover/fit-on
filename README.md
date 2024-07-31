@@ -40,7 +40,7 @@
 
 ### 💡개발 환경
 
-<img width="470" alt="스크린샷 2024-07-31 오후 6 38 56" src="https://github.com/user-attachments/assets/7e478c92-6a48-4623-8a66-1d6ac661db0a">
+<img width="100%" alt="스크린샷 2024-07-31 오후 6 38 56" src="https://github.com/user-attachments/assets/7e478c92-6a48-4623-8a66-1d6ac661db0a">
 
 
 - **Front-End** : React / TypeScript / Styled-Component / React-MUI / React-Quill
