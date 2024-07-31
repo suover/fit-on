@@ -10,6 +10,7 @@ import { AdminContainer } from '../../styles/administrator/AdminPage.styles';
 import SideNavbar from '../../components/layout/sideNavBar/SideNavbar';
 import SidebarWrapper from '../../components/common/sidebar/SidebarWrapper';
 import { Container } from '@mui/material';
+import ListAltOutlined from "@mui/icons-material/ListAltOutlined";
 
 const AdminPage: React.FC = () => {
   const menuItems = [
@@ -23,6 +24,12 @@ const AdminPage: React.FC = () => {
       menuName: '상품 관리',
       route: '/administrator/item-list',
       icon: ShoppingCartIcon,
+      badge: 0,
+    },
+    {
+      menuName: '주문 관리',
+      route: '/administrator/order-list',
+      icon: ListAltOutlined,
       badge: 0,
       divider: true,
     },
