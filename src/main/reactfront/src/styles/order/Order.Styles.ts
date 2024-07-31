@@ -139,3 +139,29 @@ export const Btn = styled.button`
   height: 29px; // Input의 높이와 동일하게 설정
   box-sizing: border-box; // padding과 border를 높이에 포함
 `;
+
+export const AddressItem = styled.li`
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #ccc;
+      cursor: pointer;
+    }
+  `;
+
+export const AddressBox = styled.div`
+    flex: none;
+    width: 70px;
+    white-space: nowrap;
+`;
+
+export const AddressContent = styled.div`
+  flex: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;

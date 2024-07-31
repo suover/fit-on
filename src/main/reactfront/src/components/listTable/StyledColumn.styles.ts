@@ -9,6 +9,9 @@ const Column = styled.span<{
   width: ${(props) => props.$width}px;
   margin-right: ${(props) => props.$marginRight || 0}px;
   text-align: ${(props) => props.$align || 'center'};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export default Column;

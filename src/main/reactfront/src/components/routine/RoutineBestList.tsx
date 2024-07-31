@@ -12,11 +12,11 @@ const RoutineBestList: React.FC = () => {
         const response = await axios.get('/api/routine/best', {
           params: { limit },
         });
-        const transformedData = response.data.map((info: any) => ({
-          ...info,
-          id: info.routineId,
-          views: info.viewCount,
-          likes: info.likes, // 좋아요 수 포함
+        const transformedData = response.data.map((routine: any) => ({
+          ...routine,
+          id: routine.routineId,
+          views: routine.viewCount,
+          likes: routine.likes,
         }));
         setRoutines(transformedData);
       } catch (error) {}

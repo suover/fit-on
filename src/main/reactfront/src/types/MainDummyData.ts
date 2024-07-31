@@ -32,6 +32,7 @@ export interface RoutineData {
   hours: number;
   targetArea: string;
   likes: number;
+  nickname: string;
 }
 
 export interface Product {
@@ -278,40 +279,6 @@ export const InfoPosts: InfoPost[] = [
     imageUrl: thumbnail,
   },
   // 더 많은 글을 추가할 수 있습니다.
-];
-
-export const routines: RoutineData[] = [
-  {
-    id: 1,
-    title: '저탄고지랑 웨이트!',
-    userId: 'user123',
-    diet: '저탄고지',
-    exerciseType: '웨이트 트레이닝',
-    hours: 2,
-    targetArea: '상체',
-    likes: 1500,
-  },
-  {
-    id: 2,
-    title: '단백하게 크로스핏',
-    userId: 'fitnessPro',
-    diet: '고단백',
-    exerciseType: '크로스핏',
-    hours: 1.5,
-    targetArea: '전신',
-    likes: 1200,
-  },
-  {
-    id: 3,
-    userId: 'fitnessPro',
-    title: '단백하게 크로스핏 제목이 길다면 제목이 길다면 제목이 길다면',
-    diet: '고단백',
-    exerciseType: '크로스핏',
-    hours: 1.5,
-    targetArea: '전신',
-    likes: 1200,
-  },
-  // 추가 루틴 데이터
 ];
 
 export const products: { [key: string]: Product[] } = {

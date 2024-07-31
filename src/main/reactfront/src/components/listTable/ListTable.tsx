@@ -12,6 +12,7 @@ type DataType = {
   createDate: string;
   views: number;
   likes?: number;
+  contentNum?: number;
 };
 
 interface ColumnInfo {
@@ -50,7 +51,10 @@ const ListTable = <T extends DataType>({
           ))}
         </li>
         {data.map((eachData, idx) => (
-          <Link to={`/${pageUrl}/${eachData.id}`} key={idx}>
+          <Link
+            to={`/${pageUrl}/${eachData.contentNum ? eachData.contentNum : eachData.id}`}
+            key={idx}
+          >
             <li>
               {columnData.map((column, idx) => (
                 <StyledColumn

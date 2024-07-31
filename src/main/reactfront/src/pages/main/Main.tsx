@@ -16,15 +16,19 @@ import BestItems from '../../components/main/bestItems/BestItems';
 
 import { Container } from '@mui/material';
 
-const categories = ['운동용품', '보충제', '영양제'];
+const itemCategories: { [key: string]: string } = {
+  운동용품: 'goodsList',
+  보충제: 'SupplementsList',
+  식품: 'foodsList',
+};
 
 const Main: React.FC = () => {
   const [selectedCategory, setSelectedCategoty] = useState<string>(
-    categories[0],
+    itemCategories['운동용품'],
   );
 
   const handleSelect = (selectedBtn: string): void => {
-    setSelectedCategoty(selectedBtn);
+    setSelectedCategoty(itemCategories[selectedBtn]);
   };
 
   return (
@@ -61,7 +65,7 @@ const Main: React.FC = () => {
             <p>핏온몰의 베스트 아이템을 만나보세요!</p>
           </TitleBox>
           <Btns>
-            {categories.map((category, idx) => (
+            {Object.keys(itemCategories).map((category, idx) => (
               <TabBtn
                 key={idx}
                 selected={selectedCategory}
