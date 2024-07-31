@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, Pagination } from '@mui/material';
 import { Container, Table, TableHead } from './GenericTable.styles';
 
 interface Column {
@@ -24,12 +23,10 @@ interface TableProps<T> {
 const GenericTable = <T extends { id: string }>({
   data,
   columns,
-  rowsPerPage = 10,
   includeCheckboxes = false,
   checkboxColumnWidth = '50px',
   renderRow,
 }: TableProps<T>) => {
-  const [page, setPage] = useState(1);
   const [selectAll, setSelectAll] = useState(false);
   const [selected, setSelected] = useState<{ [key: string]: boolean }>({});
   const checkboxRef = useRef<HTMLInputElement>(null);
@@ -39,23 +36,14 @@ const GenericTable = <T extends { id: string }>({
       setSelected({});
       setSelectAll(false);
     }
-  }, [data, page, includeCheckboxes]);
-
-  const handleChangePage = (
-    event: React.ChangeEvent<unknown>,
-    newPage: number,
-  ) => {
-    setPage(newPage);
-  };
+  }, [data, includeCheckboxes]);
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = event.target.checked;
-    const newSelected = data
-      .slice((page - 1) * rowsPerPage, page * rowsPerPage)
-      .reduce<{ [key: string]: boolean }>((acc, item) => {
-        acc[item.id] = isChecked;
-        return acc;
-      }, {});
+    const newSelected = data.reduce<{ [key: string]: boolean }>((acc, item) => {
+      acc[item.id] = isChecked;
+      return acc;
+    }, {});
     setSelected(newSelected);
     setSelectAll(isChecked);
   };
@@ -64,17 +52,10 @@ const GenericTable = <T extends { id: string }>({
     const newSelected = { ...selected, [id]: checked };
     setSelected(newSelected);
     setSelectAll(
-      Object.values(newSelected).length ===
-        data.slice((page - 1) * rowsPerPage, page * rowsPerPage).length &&
+      Object.values(newSelected).length === data.length &&
         Object.values(newSelected).every(Boolean),
     );
   };
-
-  const count = Math.ceil(data.length / rowsPerPage);
-  const displayedData = data.slice(
-    (page - 1) * rowsPerPage,
-    page * rowsPerPage,
-  );
 
   return (
     <Container>
@@ -99,21 +80,11 @@ const GenericTable = <T extends { id: string }>({
           </tr>
         </TableHead>
         <tbody>
-          {displayedData.map((item) =>
+          {data.map((item) =>
             renderRow(item, selected[item.id] || false, handleSelectClick),
           )}
         </tbody>
       </Table>
-      <Box display="flex" justifyContent="center" marginTop={2}>
-        <Pagination
-          count={count}
-          page={page}
-          onChange={handleChangePage}
-          color="primary"
-          showFirstButton
-          showLastButton
-        />
-      </Box>
     </Container>
   );
 };
