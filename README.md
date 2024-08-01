@@ -1,6 +1,6 @@
 # FitOn
 
-**운동 및 건강 관련 쇼핑몰 및 종합 커뮤니티 웹 서비스**
+**운동과 건강 관련 쇼핑몰 및 종합 커뮤니티 웹 서비스**
 
 쇼핑몰, 커뮤니티, 운동 루틴, 정보 게시판을 통해 다양한 운동 및 건강 정보를 제공
 
@@ -23,7 +23,7 @@
 
 ### FitOn
 
-운동 및 건강 관련 쇼핑몰 및 종합 커뮤니티 웹 서비스
+운동과 건강 관련 쇼핑몰 및 종합 커뮤니티 웹 서비스
 
 ### 💡개발 동기
 
@@ -40,6 +40,7 @@
 
 ### 💡개발 환경
 
+<img width="100%"  alt="스크린샷 2024-07-31 오후 6 38 56" src="https://github.com/user-attachments/assets/7e478c92-6a48-4623-8a66-1d6ac661db0a">
 
 
 - **Front-End** : React / TypeScript / Styled-Component / React-MUI / React-Quill
