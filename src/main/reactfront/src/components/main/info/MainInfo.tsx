@@ -45,6 +45,9 @@ const MainInfo = () => {
 
   return (
     <MainInfoWrapper>
+      {!loading && infoList.length === 0 && (
+        <p className="text">등록된 컨텐츠가 없습니다.</p>
+      )}
       {loading ? (
         <p className="text">Loading...</p>
       ) : (

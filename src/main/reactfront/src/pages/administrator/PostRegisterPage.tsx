@@ -170,7 +170,7 @@ const PostRegisterPage: React.FC = () => {
         console.log('Response : ' + res.data);
       }
 
-      navigate('/info');
+      navigate('/info/search');
     } catch (error) {
       console.error('Error submitting form:', error);
     }
