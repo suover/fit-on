@@ -187,7 +187,7 @@ const InfoDetail: React.FC = () => {
           </span>
           <h2>{info?.title}</h2>
           <div>
-            <ProfileImage />
+            <ProfileImage userId={info?.userId} />
             <span>{info?.nickname}</span>
             <span>조회수 {info?.viewCount}</span>
             <span>작성일 {createdDate}</span>
