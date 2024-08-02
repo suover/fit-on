@@ -116,6 +116,12 @@ public class UserInfoService {
 	public String handleProfileImage(int userId, MultipartFile file) {
 		UserInfo userInfo = userInfoRepository.getUserInfoById(userId);
 
+		// 추가 정보가 없는 경우 삽입
+		int exists = userInfoRepository.checkAdditionalInfoExists(userId);
+		if (exists == 0) {
+			userInfoRepository.insertAdditionalInfo(userId, null, null, 0, 0, 0);
+		}
+
 		// 기존 이미지 삭제
 		if (userInfo.getProfilePictureUrl() != null && !userInfo.getProfilePictureUrl().isEmpty()) {
 			deleteProfileImage(userInfo.getProfilePictureUrl());

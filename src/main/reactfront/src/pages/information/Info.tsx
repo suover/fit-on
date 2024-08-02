@@ -17,6 +17,7 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
 export interface Information {
   id: number;
+  userId: number;
   nickname: string;
   categoryName: string;
   categoryId: number;
