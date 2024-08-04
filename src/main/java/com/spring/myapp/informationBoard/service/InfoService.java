@@ -75,8 +75,14 @@ public class InfoService {
 	}
 
 	public boolean deleteInfo(Long infoId) {
-		int deleteResult = infoMapper.deleteInfo(infoId);
-		return deleteResult > 0;
+		int deleteInfo = infoMapper.deleteInfo(infoId);
+		int deleteComments = infoMapper.deleteComments(infoId);
+
+		if (deleteInfo <= 0 || deleteComments <= 0) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 }
