@@ -23,22 +23,24 @@ const StyledProfileImage = styled('div')<{
 `;
 
 interface ProfileImageProps {
+  userId?: number | string;
   size?: number;
 }
 
-const ProfileImage: React.FC<ProfileImageProps> = ({ size = 40 }) => {
-  const { userId } = useContext(AuthContext);
+const ProfileImage: React.FC<ProfileImageProps> = ({ userId, size = 40 }) => {
+  const { userId: contextUserId } = useContext(AuthContext);
+  const effectiveUserId = userId ?? contextUserId;
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!userId) return;
+    if (!effectiveUserId) return;
 
     const fetchProfileImage = async () => {
       try {
         const response = await axios.get(
           `/api/mypage/userinfo/get-profile-image`,
           {
-            params: { userId },
+            params: { userId: effectiveUserId },
           },
         );
         setProfileImageUrl(response.data);
@@ -48,7 +50,7 @@ const ProfileImage: React.FC<ProfileImageProps> = ({ size = 40 }) => {
     };
 
     fetchProfileImage();
-  }, [userId]);
+  }, [effectiveUserId]);
 
   return profileImageUrl ? (
     <StyledProfileImage

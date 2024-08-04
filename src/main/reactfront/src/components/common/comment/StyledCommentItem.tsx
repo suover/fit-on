@@ -54,7 +54,7 @@ const StyledCommentItem: React.FC<{
     <CommentItem $isReply={isReply} $isExpand={isExpand}>
       <div className="commentInfo">
         <span>
-          <ProfileImage />
+          <ProfileImage userId={comment.userId} />
         </span>
         <span>{comment.nickname}</span>
         <span>{createdDate}</span>
