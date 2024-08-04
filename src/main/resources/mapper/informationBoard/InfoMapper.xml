@@ -126,6 +126,12 @@
         WHERE info_id = #{infoId}
     </update>
 
+    <update id="deleteComments" parameterType="Long">
+        UPDATE info_comments
+        SET is_deleted = 1
+        WHERE info_id = #{infoId}
+    </update>
+
     <update id="updateViewCount">
         UPDATE info
         SET view_count = view_count + 1
