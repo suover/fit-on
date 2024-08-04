@@ -40,15 +40,15 @@ const StyledTypographyWithWidth = styled(StyledTypography)({
 
 const columns = [
   { id: 'id', label: '글 번호', width: 50 },
-  { id: 'title', label: '제목', width: 300 },
-  { id: 'views', label: '조회수', width: 100 },
-  { id: 'comments', label: '댓글수', width: 100 },
-  { id: 'date', label: '작성일', width: 150 },
-  { id: 'modifyDelete', label: '수정 / 삭제', width: 150 },
+  { id: 'title', label: '제목', width: 500 },
+  { id: 'views', label: '조회수', width: 50 },
+  { id: 'comments', label: '댓글수', width: 50 },
+  { id: 'date', label: '작성일', width: 130 },
+  { id: 'modifyDelete', label: '수정 / 삭제', width: 80 },
 ];
 
 function PostManagementPage() {
-  const [currentTab, setCurrentTab] = useState(0);
+  const [currentTab, setCurrentTab] = useState<number | null>(null);
   const [searchText, setSearchText] = useState('');
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
@@ -62,11 +62,13 @@ function PostManagementPage() {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const savedPage = parseInt(params.get('page') || '0', 10);
+    const savedTab = parseInt(params.get('tab') || '0', 10);
     setPage(savedPage);
+    setCurrentTab(savedTab);
   }, [location.search]);
 
   useEffect(() => {
-    if (userId !== null) {
+    if (userId !== null && currentTab !== null) {
       fetchPosts();
     }
   }, [currentTab, userId, searchText, page, pageSize]);
@@ -86,21 +88,29 @@ function PostManagementPage() {
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);
     setPage(0); // 탭 변경 시 페이지 초기화
+    navigate({
+      pathname: location.pathname,
+      search: `?tab=${newValue}&page=0`,
+    });
   };
 
   const handleSearch = (query: string) => {
     setSearchText(query);
     setPage(0); // 검색 시 페이지 초기화
+    navigate({
+      pathname: location.pathname,
+      search: `?tab=${currentTab}&page=0`,
+    });
   };
 
   const handleRowClick = (post: Post) => {
     const postType = currentTab === 0 ? 'community' : 'routine';
-    navigate(`/${postType}/${post.id}?page=${page}`);
+    navigate(`/${postType}/${post.id}?tab=${currentTab}&page=${page}`);
   };
 
   const handleEditClick = (post: Post) => {
     const postType = 'community';
-    navigate(`/${postType}/edit/${post.id}?page=${page}`);
+    navigate(`/${postType}/edit/${post.id}?tab=${currentTab}&page=${page}`);
   };
 
   const handleDeleteClick = (post: Post) => {
@@ -134,7 +144,7 @@ function PostManagementPage() {
     setPage(newPage - 1);
     navigate({
       pathname: location.pathname,
-      search: `?page=${newPage - 1}`,
+      search: `?tab=${currentTab}&page=${newPage - 1}`,
     });
   };
 
@@ -187,10 +197,12 @@ function PostManagementPage() {
         marginTop={2}
       >
         <StyledTypographyWithWidth>게시글 관리</StyledTypographyWithWidth>
-        <Tabs value={currentTab} onChange={handleTabChange} centered>
-          <Tab label="커뮤니티 게시판" />
-          <Tab label="루틴 게시판" />
-        </Tabs>
+        {currentTab !== null && (
+          <Tabs value={currentTab} onChange={handleTabChange} centered>
+            <Tab label="커뮤니티 게시판" />
+            <Tab label="루틴 게시판" />
+          </Tabs>
+        )}
         <Box
           sx={{
             width: '25ch',
@@ -200,20 +212,24 @@ function PostManagementPage() {
           <SearchBox onSearch={handleSearch} styleProps={{ width: '100%' }} />
         </Box>
       </Box>
-      <GenericTable<Post>
-        data={posts}
-        columns={columns}
-        includeCheckboxes={false}
-        renderRow={renderRow}
-      />
-      <Box display="flex" justifyContent="center" marginTop={2}>
-        <Pagination
-          count={Math.ceil(totalPosts / pageSize)}
-          page={page + 1}
-          onChange={handlePageChange}
-          sx={{ marginTop: 2 }}
-        />
-      </Box>
+      {currentTab !== null && (
+        <>
+          <GenericTable<Post>
+            data={posts}
+            columns={columns}
+            includeCheckboxes={false}
+            renderRow={renderRow}
+          />
+          <Box display="flex" justifyContent="center" marginTop={2}>
+            <Pagination
+              count={Math.ceil(totalPosts / pageSize)}
+              page={page + 1}
+              onChange={handlePageChange}
+              sx={{ marginTop: 2 }}
+            />
+          </Box>
+        </>
+      )}
       <Dialog open={Boolean(selectedPost)} onClose={handleCancelDelete}>
         <DialogTitle>게시글 삭제</DialogTitle>
         <DialogContent>
