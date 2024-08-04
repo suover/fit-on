@@ -59,6 +59,80 @@
 
 ### 💡프로젝트 구성
 
-**📃 메인페이지**
+**📃 메인 페이지**
+- 조회수 순위에 따른 인기상품 및 인기글 상위 노출
+- 각 게시판 페이지 이동 및 로그인/회원가입 페이지 이동
 
+![main](https://github.com/user-attachments/assets/6061b3c9-123a-4d8b-a6f4-679dd044655a)
+
+
+**:ledger: 운동 정보 페이지**
+- 운동 관련 정보 게시글 CRUD (관리자만 가능) / 댓글 및 대댓글 CRUD
+
+![info](https://github.com/user-attachments/assets/903bc719-d500-49ca-b2a0-724c755e4363)
+
+
+**:credit_card: 운동용품 쇼핑 페이지**
+- 운동 관련 상품 판매 쇼핑몰 쇼핑리스트
+  
+![mall](https://github.com/user-attachments/assets/4ab5715d-bdc1-46b2-a00b-587b809c01ef)
+
+
+- 상품 상세 페이지
+  
+![mallDetail](https://github.com/user-attachments/assets/244501ee-e069-4c58-b506-8e78e99ce52a)
+
+
+- 장바구니 페이지 : 상품 수량 설정, 구매할 상품 선택 기능, 선택 상품 삭제 기능, 선택 상품 주문
+  
+![cart](https://github.com/user-attachments/assets/0bf2ca35-889e-43db-a67c-a245e2cae797)
+
+
+- 상품 주문 페이지 : 카카오 주소 API, 주소지 저장, 결제 페이지 이동
+  
+![상품주문](https://github.com/user-attachments/assets/3c871137-0a2f-41b2-8c6c-433b9becabd8)
+
+
+- 결제 기능 : KG 이니시스 결제 API
+  
+![결제기능](https://github.com/user-attachments/assets/d9bcf28b-af4c-4d0f-a2ce-997c5ab0a146)
+
+
+**:muscle: 운동 관련 커뮤니티 페이지**
+- 글 목록, 카테고리별 조회 및 조회수에 따른 인기글 조회
+  
+![communityboard](https://github.com/user-attachments/assets/02083eb8-0cf8-43e6-ba74-c58044b3264f)
+
+
+**:runner: 운동 루틴 페이지**
+- 운동 루틴 게시판 리스트
+  
+![루틴게시판](https://github.com/user-attachments/assets/d90506b4-8bb4-429d-a8d8-7291ed6f8fbe)
+
+
+- 운동 루틴 게시글 작성 기능
+  
+![routine글쓰기](https://github.com/user-attachments/assets/18cae518-c08b-4862-b3f0-abd44cda9784)
+
+
+**📃 마이 페이지**
+- 작성한 글 수, 댓글 수, 받은 좋아요 수 조회 및 주문한 내역 조회
+  
+![maypage](https://github.com/user-attachments/assets/37980e6b-e0b3-4dd3-9bb7-d820aa2598bf)
+
+
+- 프로필 이미지 추가 및 변경
+  
+![profileImg](https://github.com/user-attachments/assets/a2f7ece9-e24c-4dd6-b696-5c6e131dbf80)
+
+
+**:bust_in_silhouette: 회원가입/로그인 페이지**
+- 일반 로그인 및 카카오톡/네이버/구글 소셜 계정 연동 로그인
+  
+![login](https://github.com/user-attachments/assets/472cec42-0832-4bb2-8bb1-8e0eebf99447)
+
+
+- 이메일/닉네임 중복 확인 및 유효성 검사, 비밀번호 조건 및 확인 기능
+  
+![signin2](https://github.com/user-attachments/assets/8702c65a-243a-476c-8251-a2dfc5a71ef9)
 ---
