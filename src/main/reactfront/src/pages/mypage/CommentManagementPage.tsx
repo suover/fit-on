@@ -1,7 +1,21 @@
-import React, { useState, useMemo } from 'react';
-import { Box, Tab, Tabs, IconButton, styled } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
+import React, { useState, useEffect, useContext } from 'react';
+import {
+  Box,
+  Tab,
+  Tabs,
+  IconButton,
+  styled,
+  Pagination,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
+import { useNavigate, useLocation } from 'react-router-dom';
 import GenericTable from '../../components/genericTable/GenericTable';
 import {
   TableData,
@@ -9,97 +23,156 @@ import {
 } from '../../components/genericTable/GenericTable.styles';
 import SearchBox from '../../components/common/search/SearchBox';
 import StyledTypography from '../../styles/mypage/StyledTypography';
+import axios from '../../api/axiosConfig';
+import AuthContext from '../../context/AuthContext';
 
-interface Post {
+interface Comment {
   id: string;
-  title: string;
-  views: number;
-  comments: number;
+  postId: string;
+  postTitle: string;
+  content: string;
   date: string;
+  parentId: string | null;
 }
 
 const StyledTypographyWithWidth = styled(StyledTypography)({
   width: '200px',
 });
 
-const communityPosts: Post[] = Array.from({ length: 15 }, (_, index) => ({
-  id: (index + 1).toString(),
-  title: `커뮤니티 댓글 ${index + 1}`,
-  views: Math.floor(Math.random() * 200) + 1,
-  comments: Math.floor(Math.random() * 50) + 1,
-  date: `2023-04-${String(index + 1).padStart(2, '0')}`,
-}));
-
-const routinePosts: Post[] = Array.from({ length: 15 }, (_, index) => ({
-  id: (index + 1).toString(),
-  title: `루틴 댓글 ${index + 1}`,
-  views: Math.floor(Math.random() * 200) + 1,
-  comments: Math.floor(Math.random() * 50) + 1,
-  date: `2023-04-${String(index + 1).padStart(2, '0')}`,
-}));
-
 const columns = [
-  { id: 'id', label: '번호', width: 50 },
-  { id: 'title', label: '제목', width: 300 },
-  { id: 'views', label: '조회수', width: 100 },
-  { id: 'comments', label: '댓글수', width: 100 },
-  { id: 'date', label: '작성일', width: 150 },
-  { id: 'modifyDelete', label: '수정 / 삭제', width: 150 },
+  { id: 'postId', label: '글 번호', width: 50 },
+  { id: 'postTitle', label: '글 제목', width: 300 },
+  { id: 'content', label: '내용', width: 300 },
+  { id: 'date', label: '작성일', width: 130 },
+  { id: 'modifyDelete', label: '삭제', width: 30 },
 ];
 
 function CommentManagementPage() {
-  const [currentTab, setCurrentTab] = useState(0);
+  const [currentTab, setCurrentTab] = useState<number | null>(null);
   const [searchText, setSearchText] = useState('');
-  const [selected, setSelected] = useState<{ [key: string]: boolean }>({});
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
+  const { userId } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [page, setPage] = useState<number>(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalComments, setTotalComments] = useState(0);
 
-  const allPosts = currentTab === 0 ? communityPosts : routinePosts;
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const savedPage = parseInt(params.get('page') || '0', 10);
+    const savedTab = parseInt(params.get('tab') || '0', 10);
+    setPage(savedPage);
+    setCurrentTab(savedTab);
+  }, [location.search]);
 
-  const filteredPosts = useMemo(
-    () =>
-      allPosts.filter((post) =>
-        post.title.toLowerCase().includes(searchText.toLowerCase()),
-      ),
-    [allPosts, searchText],
-  );
+  useEffect(() => {
+    if (userId !== null && currentTab !== null) {
+      fetchComments();
+    }
+  }, [currentTab, userId, searchText, page, pageSize]);
+
+  const fetchComments = async () => {
+    try {
+      const response = await axios.get(
+        `/api/mypage/comment-management/comments?type=${currentTab === 0 ? 'community' : currentTab === 1 ? 'routine' : 'info'}&userId=${userId}&query=${searchText}&page=${page}&size=${pageSize}`,
+      );
+      setComments(response.data.content);
+      setTotalComments(response.data.totalElements);
+    } catch (error) {
+      console.error('Failed to fetch comments:', error);
+    }
+  };
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);
-    setSelected({});
+    setPage(0);
+    navigate({
+      pathname: location.pathname,
+      search: `?tab=${newValue}&page=0`,
+    });
   };
 
   const handleSearch = (query: string) => {
     setSearchText(query);
+    setPage(0);
+    navigate({
+      pathname: location.pathname,
+      search: `?tab=${currentTab}&page=0`,
+    });
   };
 
-  const handleRowSelect = (id: string, isSelected: boolean) => {
-    setSelected((prev) => ({ ...prev, [id]: isSelected }));
+  const handleDeleteClick = (comment: Comment) => {
+    setSelectedComment(comment);
   };
 
-  const renderRow = (
-    post: Post,
-    isSelected: boolean,
-    onSelect: (id: string, isSelected: boolean) => void,
+  const handleConfirmDelete = async () => {
+    if (selectedComment) {
+      try {
+        let deleteUrl = '';
+        if (currentTab === 0) {
+          deleteUrl = `/api/community/${selectedComment.postId}/${selectedComment.id}/delete`;
+        } else if (currentTab === 1) {
+          deleteUrl = `/api/routine/${selectedComment.postId}/${selectedComment.id}/delete`;
+        } else {
+          deleteUrl = `/api/info/${selectedComment.postId}/${selectedComment.id}/delete`;
+        }
+
+        await axios.put(deleteUrl);
+        alert('댓글이 삭제되었습니다.');
+        setSelectedComment(null);
+        fetchComments();
+      } catch (error) {
+        console.error('Failed to delete comment:', error);
+        alert('댓글 삭제에 실패했습니다.');
+      }
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setSelectedComment(null);
+  };
+
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    newPage: number,
   ) => {
+    setPage(newPage - 1);
+    navigate({
+      pathname: location.pathname,
+      search: `?tab=${currentTab}&page=${newPage - 1}`,
+    });
+  };
+
+  const handleRowClick = (comment: Comment) => {
+    const baseUrl =
+      currentTab === 0 ? '/community' : currentTab === 1 ? '/routine' : '/info';
+    navigate(`${baseUrl}/${comment.postId}?tab=${currentTab}&page=${page}`);
+  };
+
+  const renderRow = (comment: Comment) => {
+    const isReply = comment.parentId !== null;
     return (
-      <TableRow key={post.id}>
-        <TableData>{post.id}</TableData>
-        <TableData>{post.title}</TableData>
-        <TableData>{post.views}</TableData>
-        <TableData>{post.comments}</TableData>
-        <TableData>{post.date}</TableData>
+      <TableRow
+        key={comment.id}
+        onClick={() => handleRowClick(comment)}
+        style={{ cursor: 'pointer', paddingLeft: isReply ? '20px' : '0px' }}
+      >
+        <TableData>{comment.postId}</TableData>
+        <TableData>{comment.postTitle}</TableData>
+        <TableData>
+          {isReply && <SubdirectoryArrowRightIcon fontSize="small" />}{' '}
+          {comment.content}
+        </TableData>
+        <TableData>{comment.date}</TableData>
         <TableData>
           <IconButton
-            onClick={() => alert(`글 ${post.id} 수정`)}
-            sx={{
-              cursor: 'pointer',
-              color: 'rgba(0, 0, 0, 0.54)',
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDeleteClick(comment);
             }}
-          >
-            <EditIcon />
-          </IconButton>
-          <IconButton
-            onClick={() => alert(`글 ${post.id} 삭제`)}
-            sx={{ cursor: 'pointer', color: 'rgba(0, 0, 0, 0.54)' }}
+            style={{ cursor: 'pointer', color: 'rgba(0, 0, 0, 0.54)' }}
           >
             <DeleteIcon />
           </IconButton>
@@ -118,10 +191,13 @@ function CommentManagementPage() {
         marginTop={2}
       >
         <StyledTypographyWithWidth>댓글 관리</StyledTypographyWithWidth>
-        <Tabs value={currentTab} onChange={handleTabChange} centered>
-          <Tab label="커뮤니티 게시판" />
-          <Tab label="루틴 게시판" />
-        </Tabs>
+        {currentTab !== null && (
+          <Tabs value={currentTab} onChange={handleTabChange} centered>
+            <Tab label="커뮤니티 게시판" />
+            <Tab label="루틴 게시판" />
+            <Tab label="정보 게시판" />
+          </Tabs>
+        )}
         <Box
           sx={{
             width: '25ch',
@@ -131,14 +207,38 @@ function CommentManagementPage() {
           <SearchBox onSearch={handleSearch} styleProps={{ width: '100%' }} />
         </Box>
       </Box>
-      <GenericTable<Post>
-        data={filteredPosts}
-        columns={columns}
-        includeCheckboxes={false}
-        renderRow={(post) =>
-          renderRow(post, !!selected[post.id], handleRowSelect)
-        }
-      />
+      {currentTab !== null && (
+        <>
+          <GenericTable<Comment>
+            data={comments}
+            columns={columns}
+            includeCheckboxes={false}
+            renderRow={renderRow}
+          />
+          <Box display="flex" justifyContent="center" marginTop={2}>
+            <Pagination
+              count={Math.ceil(totalComments / pageSize)}
+              page={page + 1}
+              onChange={handlePageChange}
+              sx={{ marginTop: 2 }}
+            />
+          </Box>
+        </>
+      )}
+      <Dialog open={Boolean(selectedComment)} onClose={handleCancelDelete}>
+        <DialogTitle>댓글 삭제</DialogTitle>
+        <DialogContent>
+          <DialogContentText>정말 댓글을 삭제하시겠습니까?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelDelete} color="primary">
+            취소
+          </Button>
+          <Button onClick={handleConfirmDelete} color="primary" autoFocus>
+            삭제
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

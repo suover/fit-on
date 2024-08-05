@@ -2,7 +2,7 @@ import React, { useState, ChangeEvent, useContext, useEffect } from 'react';
 
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 
 import { Information } from '../information/Info';
 import AuthContext from '../../context/AuthContext';
@@ -39,9 +39,7 @@ const PostRegisterPage: React.FC = () => {
       setLoading(true);
       const fetchPost = async () => {
         try {
-          const res = await axios.get<Information>(
-            `http://localhost:8080/api/info/${infoId}`,
-          );
+          const res = await axios.get<Information>(`/api/info/${infoId}`);
           const infoData = res.data;
 
           setInfoValues({
@@ -147,30 +145,20 @@ const PostRegisterPage: React.FC = () => {
 
     try {
       if (infoId !== undefined) {
-        const res = await axios.put(
-          `http://localhost:8080/api/info/update/${infoId}`,
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
+        await axios.put(`/api/info/update/${infoId}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
           },
-        );
-        console.log('Response : ' + res.data);
+        });
       } else {
-        const res = await axios.post(
-          'http://localhost:8080/api/newInfo',
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
+        await axios.post('/api/newInfo', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
           },
-        );
-        console.log('Response : ' + res.data);
+        });
       }
-
-      navigate('/info');
+      alert('등록되었습니다.');
+      navigate('/info/search');
     } catch (error) {
       console.error('Error submitting form:', error);
     }

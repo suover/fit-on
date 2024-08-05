@@ -135,7 +135,7 @@ public class InfoBoardController {
 		return new ResponseEntity<>(infoDetail, HttpStatus.OK);
 	}
 
-	@PutMapping("/info/delete/{infoId}") // 정보글 삭제
+	@PutMapping("/info/delete/{infoId}") // 정보글 삭제, 해당 글에 등록된 댓글 삭제
 	public ResponseEntity<?> deleteInfo(@PathVariable("infoId") Long infoId) {
 		try {
 			boolean isDeleted = infoService.deleteInfo(infoId);

@@ -26,4 +26,6 @@ public interface InfoMapper {
 	void updateViewCount(Long infoId);
 
 	int deleteInfo(Long infoId);
+
+	int deleteComments(Long infoId);
 }

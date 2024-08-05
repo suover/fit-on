@@ -133,7 +133,7 @@ const InfoDetail: React.FC = () => {
         const res = await axios.put(`/api/info/delete/${infoId}`);
         console.log('Response:', res.data);
         alert('삭제 되었습니다.');
-        navigate('/info'); // 삭제 후 이동할 경로
+        navigate('/info/search'); // 삭제 후 이동할 경로
       } catch (error) {
         console.error('Error deleting info:', error);
       }
@@ -187,7 +187,7 @@ const InfoDetail: React.FC = () => {
           </span>
           <h2>{info?.title}</h2>
           <div>
-            <ProfileImage />
+            <ProfileImage userId={info?.userId} />
             <span>{info?.nickname}</span>
             <span>조회수 {info?.viewCount}</span>
             <span>작성일 {createdDate}</span>
