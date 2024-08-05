@@ -55,7 +55,7 @@ const ViewPostDetail = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const { isAuthenticated } = useContext(AuthContext);
-  const { userId } = useContext(AuthContext);
+  const { userRole, userId } = useContext(AuthContext);
 
   // 글 조회
   useEffect(() => {
@@ -132,8 +132,6 @@ const ViewPostDetail = () => {
       );
 
       if (res.data === 'Liked') {
-        console.log(res.data);
-
         setLikes((prevState) => prevState + 1);
       } else {
         setLikes((prevState) => Math.max(prevState - 1, 0)); // 음수로 내려가지 않도록 설정
@@ -234,11 +232,9 @@ const ViewPostDetail = () => {
 
   return (
     <PostDetailWrapper>
-      <Container
-        maxWidth="lg"
-        sx={{ minHeight: '700px', padding: '50px 0 100px' }}
-      >
+      <Container maxWidth="lg" sx={{ minHeight: '700px' }}>
         <PostWrapper>
+          <h2>{post.title || '제목 없음'}</h2>
           {post.categoryName ? (
             <span>
               <ArrowForwardIosIcon />
@@ -247,14 +243,15 @@ const ViewPostDetail = () => {
           ) : (
             ''
           )}
-          <h2>{post.title || '제목 없음'}</h2>
           <div className="postInfo">
-            <span>
+            <span className="icon">
               <PersonIcon />
             </span>
             <span>{post.nickname}</span>
-            <span>{formatDate(post.createdAt)}</span>
-            <span>{`조회수: ${post.viewCount || 1}`}</span>
+            <div className="post-meta">
+              <span>{formatDate(post.createdAt)}</span>
+              <span>{`조회수: ${post.viewCount}`}</span>
+            </div>
           </div>
           <div className="content">
             <Box dangerouslySetInnerHTML={{ __html: post.content }} />
@@ -265,7 +262,7 @@ const ViewPostDetail = () => {
               justifyContent: 'center',
               alignItems: 'center',
               gap: 1,
-              marginBottom: '50px',
+              marginBottom: '30px',
             }}
           >
             <Button
@@ -292,47 +289,48 @@ const ViewPostDetail = () => {
             gap: 1,
           }}
         >
-          {isAuthenticated && (
-            <>
-              <BackBtn onClick={handleEditClick}>수정</BackBtn>
-              <RedBtn onClick={handleClickOpen}>삭제</RedBtn>
-            </>
-          )}
+          {isAuthenticated &&
+            (post.userId === userId || userRole === 'admin') && (
+              <>
+                {post.userId === userId && (
+                  <BackBtn onClick={handleEditClick}>수정</BackBtn>
+                )}
+                <RedBtn onClick={handleClickOpen}>삭제</RedBtn>
+              </>
+            )}
           <BackBtn onClick={() => navigate('/community')}>목록</BackBtn>
         </Box>
-        <Container sx={{ padding: '20px 0', position: 'relative' }}>
-          <CommentList
-            comments={comments}
-            route={`/api/community/${postId}`}
-            postId={postId ? postId : ''}
-            idName="communityId"
-            addComment={addComment}
-            deleteComment={deleteComment}
-            updateComment={updateComment}
-          />
-        </Container>
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{'삭제 확인'}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              정말 게시글을 삭제하시겠습니까?
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="primary">
-              취소
-            </Button>
-            <Button onClick={handleDeleteClick} color="secondary" autoFocus>
-              삭제
-            </Button>
-          </DialogActions>
-        </Dialog>
+        <CommentList
+          comments={comments}
+          route={`/api/community/${postId}`}
+          postId={postId ? postId : ''}
+          idName="communityId"
+          addComment={addComment}
+          deleteComment={deleteComment}
+          updateComment={updateComment}
+        />
       </Container>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{'삭제 확인'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            정말 게시글을 삭제하시겠습니까?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            취소
+          </Button>
+          <Button onClick={handleDeleteClick} color="secondary" autoFocus>
+            삭제
+          </Button>
+        </DialogActions>
+      </Dialog>
     </PostDetailWrapper>
   );
 };

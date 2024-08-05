@@ -24,6 +24,7 @@ const PostWrapper = styled.div`
     padding-bottom: 10px;
     border-bottom: 1px solid #999;
     margin-bottom: 10px;
+    margin-top: 15px;
 
     .icon {
       display: inline-block;
@@ -33,7 +34,7 @@ const PostWrapper = styled.div`
       text-align: center;
       background: #f1f1f1;
       margin-right: 10px;
-      margin-top: 15px;
+
       svg {
         font-size: 2.25rem;
       }
@@ -44,6 +45,11 @@ const PostWrapper = styled.div`
     margin-left: auto;
     font-weight: bold;
     gap: 15px;
+  }
+  .post-meta {
+    display: flex;
+    margin-left: auto;
+    gap: 20px;
   }
   div.content {
     padding: 10px;

@@ -93,4 +93,12 @@
     </update>
 
 
+    <!-- 상위 10위 인기글 필터  -->
+    <select id="selectTop10PopularPosts" parameterType="int" resultType="com.spring.myapp.community.dto.CommunityBoardDTO">
+        SELECT *
+        FROM community
+        WHERE is_deleted = 0
+        ORDER BY view_count DESC
+        LIMIT #{limit}
+    </select>
 </mapper>

@@ -67,6 +67,7 @@ import NotFound from './pages/notFound/NotFound';
 
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/common/PrivateRoute';
+import PopularPosts from './components/community/PopularPosts';
 
 const App = () => {
   return (
@@ -92,6 +93,7 @@ const App = () => {
               element={<ProductDetail />}
             />
             <Route path="community" element={<Community />} />
+            <Route path="/community/popular" element={<PopularPosts />} />
             <Route path="community/:postId" element={<ViewPostDetail />} />
             <Route element={<PrivateRoute />}>
               <Route path="community/new-post" element={<NewPost />} />

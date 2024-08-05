@@ -7,55 +7,28 @@ import { TableData, TableRow } from '../genericTable/GenericTable.styles';
 import ButtonNewPost from '../common/button/ButtonNewPost';
 import axios from '../../api/axiosConfig';
 
-interface BoardProps {
-  selectedCategory: string | number | null;
-}
-
-const Board: React.FC<BoardProps> = ({ selectedCategory }) => {
+const PopularPosts: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [posts, setPosts] = useState<Post[]>([]);
   const navigate = useNavigate();
 
-  // const fetchPosts = () => {
-  //   axios
-  //     .get('/api/community/posts')
-  //     .then((response) => {
-  //       const transformedData = response.data.map((post: any) => ({
-  //         ...post,
-  //         id: post.communityId.toString(), // GenericTable 형식 이슈로 id를 communityId로 설정
-  //       }));
-  //       setPosts(transformedData);
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error fetching posts:', error);
-  //     });
-  // };
-
-  // useEffect(() => {
-  //   fetchPosts();
-  // }, []);
-
-  const fetchPosts = async (category: string | number | null) => {
+  const fetchPopularPosts = async () => {
     try {
-      const response =
-        category === 1 // '인기글'의 categoryId
-          ? await axios.get('/api/community/posts/popular', {
-              params: { limit: 10 },
-            })
-          : await axios.get('/api/community/posts', {
-              params: { categoryId: category },
-            });
+      const response = await axios.get('/api/community/posts/popular', {
+        params: { limit: 10 },
+      });
 
       console.log('Fetched data:', response.data); // 응답 데이터 확인
 
       const transformedData = response.data.map((post: any) => ({
         ...post,
         id: post.communityId.toString(), // GenericTable 형식 이슈로 id를 communityId로 설정
-        // categoryName: post.categoryName, // 카테고리 이름 추가
-        // nickname: post.nickname, // 닉네임 추가
-        // createdAt: new Date(post.createdAt), // 작성일 변환
-        // viewCount: post.viewCount, // 조회수 추가
+        categoryName: post.categoryName,
+        nickname: post.nickname,
+        createdAt: new Date(post.createdAt),
+        viewCount: post.viewCount,
       }));
+
       console.log('Transformed data:', transformedData); // 변환된 데이터 확인
 
       setPosts(transformedData);
@@ -65,47 +38,13 @@ const Board: React.FC<BoardProps> = ({ selectedCategory }) => {
   };
 
   useEffect(() => {
-    fetchPosts(selectedCategory);
-  }, [selectedCategory]);
+    fetchPopularPosts();
+  }, []);
 
-  const handleNewPost = (newPost: {
-    categoryId: number;
-    title: string;
-    content: string;
-    userId: number;
-  }) => {
-    axios
-      .post('/api/community/posts', newPost)
-      .then(() => {
-        fetchPosts(selectedCategory);
-      })
-      .catch((error) => {
-        console.error('Error creating post:', error);
-      });
-  };
-
-  // 게시글 필터링 로직 (검색 + 카테고리)
   const filteredPosts = React.useMemo(() => {
-    let filtered = posts;
-    if (selectedCategory) {
-      filtered = filtered.filter((post) =>
-        selectedCategory === '베스트'
-          ? post.title.toLowerCase().includes(searchTerm.toLowerCase()) // 베스트 로직 추가
-          : post.categoryId === selectedCategory &&
-            post.title.toLowerCase().includes(searchTerm.toLowerCase()),
-      );
-    } else {
-      filtered = filtered.filter((post) =>
-        post.title.toLowerCase().includes(searchTerm.toLowerCase()),
-      );
-    }
-    return filtered;
-    // const filteredPosts = React.useMemo(() => {
-    //   const filtered = posts.filter((post) =>
-    //     post.title.toLowerCase().includes(searchTerm.toLowerCase()),
-    //   );
-    //   console.log('Filtered posts:', filtered); // 필터링된 데이터 확인
-    //   return filtered;
+    return posts.filter((post) =>
+      post.title.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
   }, [searchTerm, posts]);
 
   const handleRowClick = (id: string) => {
@@ -143,8 +82,7 @@ const Board: React.FC<BoardProps> = ({ selectedCategory }) => {
         {post.nickname}
       </TableData>
       <TableData style={{ textAlign: 'center', width: 30 }}>
-        {new Date(post.createdAt).toLocaleDateString()}
-        {/* {post.createdAt.toLocaleDateString()} */}
+        {post.createdAt.toLocaleDateString()}
       </TableData>
       <TableData style={{ textAlign: 'center', width: 30 }}>
         {post.viewCount}
@@ -171,7 +109,7 @@ const Board: React.FC<BoardProps> = ({ selectedCategory }) => {
             lineHeight: '0',
           }}
         >
-          커뮤니티
+          인기글
         </Typography>
         <SearchBox onSearch={setSearchTerm} styleProps={{ width: '300px' }} />
       </Box>
@@ -190,9 +128,9 @@ const Board: React.FC<BoardProps> = ({ selectedCategory }) => {
   );
 };
 
-export default Board;
+export default PopularPosts;
 
-export type Post = {
+type Post = {
   id: string;
   communityId: string;
   userId: string;
@@ -205,5 +143,5 @@ export type Post = {
   updatedAt: Date;
   viewCount: number;
   like: number;
-  // comments: Comment[];
+  comments: Comment[];
 };

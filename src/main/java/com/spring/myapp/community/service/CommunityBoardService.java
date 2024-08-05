@@ -101,4 +101,8 @@ public class CommunityBoardService {
 				communityMapper.deletePost(id);
 		}
 
+
+		public List<CommunityBoardDTO> getTop10PopularPosts(int limit) {
+				return communityMapper.selectTop10PopularPosts(limit);
+		}
 }

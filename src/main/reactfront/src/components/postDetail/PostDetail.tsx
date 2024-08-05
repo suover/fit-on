@@ -238,7 +238,7 @@ const PostDetail = <T extends DataType>({
       <PostWrapper>
         <h2>{title || '제목 없음'}</h2>
         {routineNo ? (
-          <span>
+          <span className="category">
             <ArrowForwardIosIcon />
             운동목적 : {goalName} / 난이도 : {levelName} / 운동부위 : {partName}
           </span>

@@ -14,4 +14,7 @@ public interface CommunityBoardMapper {
 		void deletePost(Long id);
 		void incrementViewCount(@Param("id") Long id);
 
+		// 조회수 상위 10개의 게시물 가져오기
+		List<CommunityBoardDTO> selectTop10PopularPosts(@Param("limit") int limit);
+
 }
