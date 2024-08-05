@@ -55,7 +55,7 @@ const ViewPostDetail = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const { isAuthenticated } = useContext(AuthContext);
-  const { userId } = useContext(AuthContext);
+  const { userRole, userId } = useContext(AuthContext);
 
   // 글 조회
   useEffect(() => {
@@ -289,15 +289,17 @@ const ViewPostDetail = () => {
             gap: 1,
           }}
         >
-          {isAuthenticated && post.userId === userId && (
-            <>
-              <BackBtn onClick={handleEditClick}>수정</BackBtn>
-              <RedBtn onClick={handleClickOpen}>삭제</RedBtn>
-            </>
-          )}
+          {isAuthenticated &&
+            (post.userId === userId || userRole === 'admin') && (
+              <>
+                {post.userId === userId && (
+                  <BackBtn onClick={handleEditClick}>수정</BackBtn>
+                )}
+                <RedBtn onClick={handleClickOpen}>삭제</RedBtn>
+              </>
+            )}
           <BackBtn onClick={() => navigate('/community')}>목록</BackBtn>
         </Box>
-        {/* <Container sx={{ position: 'relative' }}> */}
         <CommentList
           comments={comments}
           route={`/api/community/${postId}`}
@@ -307,7 +309,6 @@ const ViewPostDetail = () => {
           deleteComment={deleteComment}
           updateComment={updateComment}
         />
-        {/* </Container> */}
       </Container>
       <Dialog
         open={open}
