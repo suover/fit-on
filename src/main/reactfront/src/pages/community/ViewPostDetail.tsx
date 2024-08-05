@@ -232,10 +232,7 @@ const ViewPostDetail = () => {
 
   return (
     <PostDetailWrapper>
-      <Container
-        maxWidth="lg"
-        sx={{ minHeight: '700px', padding: '50px 0 100px' }}
-      >
+      <Container maxWidth="lg" sx={{ minHeight: '700px' }}>
         <PostWrapper>
           <h2>{post.title || '제목 없음'}</h2>
           {post.categoryName ? (
@@ -265,7 +262,7 @@ const ViewPostDetail = () => {
               justifyContent: 'center',
               alignItems: 'center',
               gap: 1,
-              marginBottom: '50px',
+              marginBottom: '30px',
             }}
           >
             <Button
@@ -300,39 +297,39 @@ const ViewPostDetail = () => {
           )}
           <BackBtn onClick={() => navigate('/community')}>목록</BackBtn>
         </Box>
-        <Container sx={{ position: 'relative' }}>
-          <CommentList
-            comments={comments}
-            route={`/api/community/${postId}`}
-            postId={postId ? postId : ''}
-            idName="communityId"
-            addComment={addComment}
-            deleteComment={deleteComment}
-            updateComment={updateComment}
-          />
-        </Container>
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{'삭제 확인'}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              정말 게시글을 삭제하시겠습니까?
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="primary">
-              취소
-            </Button>
-            <Button onClick={handleDeleteClick} color="secondary" autoFocus>
-              삭제
-            </Button>
-          </DialogActions>
-        </Dialog>
+        {/* <Container sx={{ position: 'relative' }}> */}
+        <CommentList
+          comments={comments}
+          route={`/api/community/${postId}`}
+          postId={postId ? postId : ''}
+          idName="communityId"
+          addComment={addComment}
+          deleteComment={deleteComment}
+          updateComment={updateComment}
+        />
+        {/* </Container> */}
       </Container>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{'삭제 확인'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            정말 게시글을 삭제하시겠습니까?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            취소
+          </Button>
+          <Button onClick={handleDeleteClick} color="secondary" autoFocus>
+            삭제
+          </Button>
+        </DialogActions>
+      </Dialog>
     </PostDetailWrapper>
   );
 };
