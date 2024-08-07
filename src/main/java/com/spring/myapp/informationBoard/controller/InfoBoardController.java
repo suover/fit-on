@@ -95,7 +95,7 @@ public class InfoBoardController {
 	@PutMapping("/info/update/{infoId}") // 새 정보글 수정
 	public ResponseEntity<?> updateInfoPost(@RequestPart("information") String informationStr,
 		@RequestPart(value = "file", required = false) MultipartFile file,
-		@PathVariable(value = "existingImageUrl", required = false) String existingImageUrl,
+		@RequestPart(value = "existingImageUrl", required = false) String existingImageUrl,
 		@PathVariable("infoId") Long infoId) throws IOException {
 
 		Information info = objectMapper.readValue(informationStr, Information.class); // json으로 받은 데이터 객체화
