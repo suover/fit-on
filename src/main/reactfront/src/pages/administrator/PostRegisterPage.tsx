@@ -130,8 +130,6 @@ const PostRegisterPage: React.FC = () => {
       userId: userId,
     };
 
-    console.log(infoData);
-
     const formData = new FormData();
     formData.append('information', JSON.stringify(infoData));
     // if (imageFile) {
@@ -143,6 +141,8 @@ const PostRegisterPage: React.FC = () => {
       formData.append('existingImageUrl', imageFile);
     }
 
+    console.log(imageFile);
+
     try {
       if (infoId !== undefined) {
         await axios.put(`/api/info/update/${infoId}`, formData, {
@@ -150,15 +150,17 @@ const PostRegisterPage: React.FC = () => {
             'Content-Type': 'multipart/form-data',
           },
         });
+        alert('등록되었습니다.');
+        navigate(`/info/${infoId}`);
       } else {
         await axios.post('/api/newInfo', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
+        alert('등록되었습니다.');
+        navigate('/info/search');
       }
-      alert('등록되었습니다.');
-      navigate('/info/search');
     } catch (error) {
       console.error('Error submitting form:', error);
     }
@@ -278,7 +280,11 @@ const PostRegisterPage: React.FC = () => {
               }}
             >
               <Link
-                to={infoId !== undefined ? '/info' : '/administrator/post-list'}
+                to={
+                  infoId !== undefined
+                    ? '/info/search'
+                    : '/administrator/post-list'
+                }
               >
                 <GenericButton
                   style={{
