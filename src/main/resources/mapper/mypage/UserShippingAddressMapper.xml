@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.myapp.mypage.repository.UserShippingAddressRepository">
+
+    <select id="findAllByUserId" resultType="com.spring.myapp.mypage.dto.UserShippingAddressDTO">
+        SELECT *
+        FROM shipping_addresses
+        WHERE user_id = #{userId}
+        LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
+    </select>
+
+    <select id="countByUserId" resultType="int">
+        SELECT COUNT(*)
+        FROM shipping_addresses
+        WHERE user_id = #{userId}
+    </select>
+
+    <insert id="insertAddress" useGeneratedKeys="true" keyProperty="addressId">
+        INSERT INTO shipping_addresses (user_id, recipient_name, contact, postcode, address, address_detail,
+        address_name, is_default, created_at)
+        VALUES (#{userId}, #{recipientName}, #{contact}, #{postcode}, #{address}, #{addressDetail}, #{addressName},
+        #{isDefault}, #{createdAt})
+    </insert>
+
+    <update id="updateAddress">
+        UPDATE shipping_addresses
+        SET recipient_name = #{recipientName},
+        contact = #{contact},
+        postcode = #{postcode},
+        address = #{address},
+        address_detail = #{addressDetail},
+        address_name = #{addressName},
+        is_default = #{isDefault},
+        updated_at = #{updatedAt}
+        WHERE address_id = #{addressId}
+    </update>
+
+    <update id="resetDefaultAddress">
+        UPDATE shipping_addresses
+        SET is_default = FALSE
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="setDefaultAddress">
+        UPDATE shipping_addresses
+        SET is_default = TRUE
+        WHERE address_id = #{addressId}
+    </update>
+
+    <delete id="deleteAddress">
+        DELETE FROM shipping_addresses
+        WHERE address_id = #{addressId}
+    </delete>
+
+</mapper>

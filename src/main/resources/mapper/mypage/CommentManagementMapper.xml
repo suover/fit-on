@@ -5,7 +5,7 @@
 
 <mapper namespace="com.spring.myapp.mypage.repository.CommentManagementRepository">
 
-    <select id="findCommunityCommentsByUser" resultType="com.spring.myapp.mypage.dto.CommentManagementDto">
+    <select id="findCommunityCommentsByUser" resultType="com.spring.myapp.mypage.dto.CommentManagementDTO">
         SELECT
         comment_id AS id,
         community_id AS postId,
@@ -23,7 +23,7 @@
         LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
     </select>
 
-    <select id="findRoutineCommentsByUser" resultType="com.spring.myapp.mypage.dto.CommentManagementDto">
+    <select id="findRoutineCommentsByUser" resultType="com.spring.myapp.mypage.dto.CommentManagementDTO">
         SELECT
         comment_id AS id,
         routine_id AS postId,
@@ -41,7 +41,7 @@
         LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
     </select>
 
-    <select id="findInfoCommentsByUser" resultType="com.spring.myapp.mypage.dto.CommentManagementDto">
+    <select id="findInfoCommentsByUser" resultType="com.spring.myapp.mypage.dto.CommentManagementDTO">
         SELECT
         comment_id AS id,
         info_id AS postId,

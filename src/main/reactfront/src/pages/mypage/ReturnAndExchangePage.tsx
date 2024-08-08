@@ -46,26 +46,6 @@ export interface ReturnExchange {
   [key: string]: any;
 }
 
-const initialData: ReturnExchange[] = Array.from(
-  { length: 15 },
-  (_, index) => ({
-    id: (index + 1).toString(),
-    name: `상품 ${index + 1}`,
-    amount: Math.floor(Math.random() * 50000) + 10000,
-    quantity: Math.floor(Math.random() * 5) + 1,
-    paymentAmount: Math.floor(Math.random() * 50000) + 10000,
-    type: ['취소', '반품', '교환'][Math.floor(Math.random() * 3)] as
-      | '취소'
-      | '반품'
-      | '교환',
-    status: ['완료', '처리중', '접수'][Math.floor(Math.random() * 3)],
-    category: ['운동기구', '건강', '전자제품', '여행', '가정용품'][
-      Math.floor(Math.random() * 5)
-    ],
-    photoUrl: `https://source.unsplash.com/random?product-${index + 1}`,
-  }),
-);
-
 const getStatusStyles = (status: string) => {
   switch (status.toLowerCase()) {
     case '접수':
@@ -80,7 +60,7 @@ const getStatusStyles = (status: string) => {
 };
 
 function ReturnAndExchangePage() {
-  const [data, setData] = useState<ReturnExchange[]>(initialData);
+  const [data, setData] = useState<ReturnExchange[]>([]);
   const [searchText, setSearchText] = useState('');
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);

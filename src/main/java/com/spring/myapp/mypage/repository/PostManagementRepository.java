@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
 
-import com.spring.myapp.mypage.dto.PostManagementDto;
+import com.spring.myapp.mypage.dto.PostManagementDTO;
 
 /**
  * 게시글 관리 관련 매퍼
@@ -21,7 +21,7 @@ public interface PostManagementRepository {
 	 * @param pageable 페이징 정보
 	 * @return 게시글 리스트
 	 */
-	List<PostManagementDto> findCommunityPostsByUser(@Param("userId") int userId, @Param("search") String search,
+	List<PostManagementDTO> findCommunityPostsByUser(@Param("userId") int userId, @Param("search") String search,
 		@Param("pageable") Pageable pageable);
 
 	/**
@@ -32,7 +32,7 @@ public interface PostManagementRepository {
 	 * @param pageable 페이징 정보
 	 * @return 게시글 리스트
 	 */
-	List<PostManagementDto> findRoutinePostsByUser(@Param("userId") int userId, @Param("search") String search,
+	List<PostManagementDTO> findRoutinePostsByUser(@Param("userId") int userId, @Param("search") String search,
 		@Param("pageable") Pageable pageable);
 
 	/**

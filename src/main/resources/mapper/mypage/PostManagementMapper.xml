@@ -5,7 +5,7 @@
 
 <mapper namespace="com.spring.myapp.mypage.repository.PostManagementRepository">
 
-    <select id="findCommunityPostsByUser" resultType="com.spring.myapp.mypage.dto.PostManagementDto">
+    <select id="findCommunityPostsByUser" resultType="com.spring.myapp.mypage.dto.PostManagementDTO">
         SELECT
         community_id AS id,
         title,
@@ -25,7 +25,7 @@
         LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
     </select>
 
-    <select id="findRoutinePostsByUser" resultType="com.spring.myapp.mypage.dto.PostManagementDto">
+    <select id="findRoutinePostsByUser" resultType="com.spring.myapp.mypage.dto.PostManagementDTO">
         SELECT
         routine_id AS id,
         title,

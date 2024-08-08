@@ -40,17 +40,8 @@ export interface Review {
   [key: string]: any;
 }
 
-const initialReviews: Review[] = Array.from({ length: 15 }, (_, index) => ({
-  id: (index + 1).toString(),
-  productName: `상품 ${index + 1}`,
-  purchaseDate: `2024-05-${String(index + 1).padStart(2, '0')}`,
-  rating: Math.floor(Math.random() * 5) + 1,
-  review: `이것은 테스트 리뷰 ${index + 1}입니다.`,
-  photoUrl: 'https://source.unsplash.com/random',
-}));
-
 function ProductReviewPage() {
-  const [reviews, setReviews] = useState<Review[]>(initialReviews);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [searchText, setSearchText] = useState('');
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);

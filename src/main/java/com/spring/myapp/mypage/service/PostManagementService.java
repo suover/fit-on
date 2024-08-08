@@ -9,7 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.spring.myapp.mypage.dto.PostManagementDto;
+import com.spring.myapp.mypage.dto.PostManagementDTO;
 import com.spring.myapp.mypage.repository.PostManagementRepository;
 
 /**
@@ -41,9 +41,9 @@ public class PostManagementService {
 	 * @return 페이징된 게시글 리스트와 총 게시글 수를 포함한 페이징 객체
 	 * @throws IllegalArgumentException 잘못된 게시글 타입일 경우 예외 발생
 	 */
-	public Page<PostManagementDto> getUserPosts(String type, int userId, String search, int page, int size) {
+	public Page<PostManagementDTO> getUserPosts(String type, int userId, String search, int page, int size) {
 		Pageable pageable = PageRequest.of(page, size);
-		List<PostManagementDto> posts;
+		List<PostManagementDTO> posts;
 		int totalPosts;
 
 		if ("community".equals(type)) {
