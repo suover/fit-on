@@ -41,15 +41,6 @@ export interface Inquiry {
   [key: string]: any;
 }
 
-const initialInquiries: Inquiry[] = Array.from({ length: 15 }, (_, index) => ({
-  id: (index + 1).toString(),
-  productName: `상품 ${index + 1}`,
-  title: `상품 ${index + 1}의 사용법 문의`,
-  inquiryDate: `2024-05-${String(index + 1).padStart(2, '0')}`,
-  status: ['답변 완료', '답변 대기'][Math.floor(Math.random() * 2)],
-  photoUrl: `https://source.unsplash.com/random?product-${index + 1}`,
-}));
-
 const getStatusStyles = (status: string) => {
   switch (status) {
     case '답변 완료':
@@ -62,7 +53,7 @@ const getStatusStyles = (status: string) => {
 };
 
 function ProductInquiryPage() {
-  const [inquiries, setInquiries] = useState<Inquiry[]>(initialInquiries);
+  const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [searchText, setSearchText] = useState('');
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);

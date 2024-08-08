@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spring.myapp.mypage.dto.CommentManagementDto;
+import com.spring.myapp.mypage.dto.CommentManagementDTO;
 import com.spring.myapp.mypage.service.CommentManagementService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,7 +43,7 @@ public class CommentManagementController {
 	 */
 	@Operation(summary = "사용자가 작성한 댓글 조회", description = "사용자가 작성한 커뮤니티, 루틴, 정보 댓글을 조회합니다.")
 	@GetMapping("/comments")
-	public ResponseEntity<Page<CommentManagementDto>> getUserComments(
+	public ResponseEntity<Page<CommentManagementDTO>> getUserComments(
 		@Parameter(description = "댓글 타입 (community, routine, info)", required = true)
 		@RequestParam("type") String type,
 		@Parameter(description = "사용자 ID", required = true)
@@ -51,7 +51,7 @@ public class CommentManagementController {
 		@Parameter(description = "검색어") @RequestParam(value = "query", required = false) String query,
 		@Parameter(description = "페이지 번호") @RequestParam(value = "page", defaultValue = "0") int page,
 		@Parameter(description = "페이지 크기") @RequestParam(value = "size", defaultValue = "10") int size) {
-		Page<CommentManagementDto> comments = commentManagementService.getUserComments(type, userId, query, page, size);
+		Page<CommentManagementDTO> comments = commentManagementService.getUserComments(type, userId, query, page, size);
 		return ResponseEntity.ok(comments);
 	}
 }

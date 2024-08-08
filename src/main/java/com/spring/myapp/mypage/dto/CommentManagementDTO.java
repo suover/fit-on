@@ -4,11 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * CommentManagementDto는 댓글 관리를 위한 데이터 전송 객체입니다.
+ * CommentManagementDTO는 댓글 관리를 위한 데이터 전송 객체입니다.
  */
 @Getter
 @Setter
-public class CommentManagementDto {
+public class CommentManagementDTO {
 	private String id;
 	private String postId;
 	private String postTitle;

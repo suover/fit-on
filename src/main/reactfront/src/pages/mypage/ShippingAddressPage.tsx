@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Box,
   Typography,
@@ -14,36 +14,29 @@ import {
   DialogTitle,
   TextField,
   Checkbox,
+  Pagination,
   styled,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import StyledTypography from '../../styles/mypage/StyledTypography';
+import DaumPostcode from 'react-daum-postcode';
+import Modal from '@mui/material/Modal';
+import axios from '../../api/axiosConfig';
+import AuthContext from '../../context/AuthContext';
 
 interface Address {
-  id: string;
-  name: string;
+  addressId: string;
+  recipientName: string;
+  addressName: string;
   address: string;
+  addressDetail: string;
+  postcode: string;
   contact: string;
   isDefault: boolean;
 }
 
-const initialAddresses: Address[] = [
-  {
-    id: '1',
-    name: '청와대',
-    address: '서울특별시 종로구 청와대로 1',
-    contact: '010-1111-1111',
-    isDefault: true,
-  },
-  {
-    id: '2',
-    name: '경복궁',
-    address: '서울 종로구 사직로 161 경복궁',
-    contact: '010-1234-5678',
-    isDefault: false,
-  },
-];
+const initialAddresses: Address[] = [];
 
 const DefaultLabel = styled('span')({
   marginLeft: 8,
@@ -62,34 +55,109 @@ const StyledButton = styled(Button)({
   maxWidth: '150px',
 });
 
+const ReadOnlyTextField = styled(TextField)({
+  '& .MuiInputBase-input.Mui-disabled': {
+    color: 'black',
+  },
+  '& .MuiInputBase-root.Mui-disabled': {
+    backgroundColor: '#f5f5f5',
+  },
+});
+
+const ErrorText = styled(Typography)({
+  color: 'red',
+  fontSize: '12px',
+  position: 'absolute',
+  marginTop: '-5px',
+});
+
+const FormControl = styled('div')({
+  marginBottom: '10px',
+  position: 'relative',
+});
+
+interface FormValues {
+  recipientName: string;
+  addressName: string;
+  address: string;
+  addressDetail: string;
+  postcode: string;
+  contact: string;
+  isDefault: boolean;
+}
+
+const initialFormValues: FormValues = {
+  recipientName: '',
+  addressName: '',
+  address: '',
+  addressDetail: '',
+  postcode: '',
+  contact: '',
+  isDefault: false,
+};
+
 function ShippingAddressPage() {
+  const { userId } = useContext(AuthContext);
   const [addresses, setAddresses] = useState<Address[]>(initialAddresses);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const [currentAddress, setCurrentAddress] = useState<Address | null>(null);
   const [addressToDelete, setAddressToDelete] = useState<string | null>(null);
-  const [formValues, setFormValues] = useState({
-    name: '',
+  const [formValues, setFormValues] = useState<FormValues>(initialFormValues);
+  const [errors, setErrors] = useState<FormValues>({
+    recipientName: '',
+    addressName: '',
     address: '',
+    addressDetail: '',
+    postcode: '',
     contact: '',
     isDefault: false,
   });
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const fetchAddresses = async () => {
+    try {
+      const response = await axios.get('/api/mypage/shipping-addresses', {
+        params: { userId, page, size: 5 },
+      });
+      setAddresses(response.data.content);
+      setTotalPages(response.data.totalPages);
+
+      if (page >= response.data.totalPages) {
+        setPage(Math.max(response.data.totalPages - 1, 0));
+      }
+    } catch (error) {
+      console.error('Error fetching addresses:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (userId) {
+      fetchAddresses();
+    }
+  }, [userId, page]);
 
   const openDialog = (address: Address | null = null) => {
     if (address) {
       setIsEditMode(true);
       setCurrentAddress(address);
       setFormValues({
-        name: address.name,
+        recipientName: address.recipientName,
+        addressName: address.addressName,
         address: address.address,
+        addressDetail: address.addressDetail,
+        postcode: address.postcode,
         contact: address.contact,
         isDefault: address.isDefault,
       });
     } else {
       setIsEditMode(false);
-      setFormValues({ name: '', address: '', contact: '', isDefault: false });
+      setFormValues(initialFormValues);
     }
+    setErrors(initialFormValues);
     setIsDialogOpen(true);
   };
 
@@ -108,49 +176,130 @@ function ShippingAddressPage() {
     setAddressToDelete(null);
   };
 
-  const handleSave = () => {
-    let updatedAddresses = addresses;
+  const validateForm = () => {
+    const newErrors = {
+      recipientName: formValues.recipientName
+        ? ''
+        : '수령인 이름을 입력해주세요.',
+      addressName: formValues.addressName ? '' : '배송지 이름을 입력해주세요.',
+      address: formValues.address ? '' : '주소를 입력해주세요.',
+      postcode: formValues.postcode ? '' : '우편번호를 입력해주세요.',
+      contact: /^\d+$/.test(formValues.contact)
+        ? ''
+        : '연락처를 숫자로만 입력해주세요.',
+      addressDetail: '',
+      isDefault: false,
+    };
 
-    if (formValues.isDefault) {
-      updatedAddresses = addresses.map((address) => ({
-        ...address,
-        isDefault: false,
-      }));
-    }
+    setErrors(newErrors);
 
-    if (isEditMode && currentAddress) {
-      updatedAddresses = updatedAddresses.map((address) =>
-        address.id === currentAddress.id
-          ? { ...address, ...formValues }
-          : address,
-      );
-    } else {
-      const newAddress: Address = {
-        id: (addresses.length + 1).toString(),
-        ...formValues,
-      };
-      updatedAddresses = [...updatedAddresses, newAddress];
-    }
-
-    setAddresses(updatedAddresses);
-    closeDialog();
+    return Object.values(newErrors).every((error) => !error);
   };
 
-  const handleDelete = () => {
-    if (addressToDelete) {
-      setAddresses(
-        addresses.filter((address) => address.id !== addressToDelete),
-      );
+  const handleSave = async () => {
+    if (!validateForm()) {
+      alert('유효한 정보를 입력하세요.');
+      return;
     }
-    closeDeleteDialog();
+
+    try {
+      const addressData = { ...formValues, userId };
+
+      if (isEditMode && currentAddress) {
+        await axios.put(
+          `/api/mypage/shipping-addresses/${currentAddress.addressId}`,
+          addressData,
+        );
+      } else {
+        await axios.post('/api/mypage/shipping-addresses', addressData);
+        setPage(totalPages);
+      }
+
+      fetchAddresses();
+      closeDialog();
+    } catch (error) {
+      console.error('Error saving address:', error);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (addressToDelete) {
+      try {
+        await axios.delete(`/api/mypage/shipping-addresses/${addressToDelete}`);
+
+        fetchAddresses();
+        closeDeleteDialog();
+      } catch (error) {
+        console.error('Error deleting address:', error);
+      }
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormValues({ ...formValues, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === 'contact') {
+      const cleanedValue = value.replace(/[^0-9]/g, '');
+      setFormValues((prevValues) => ({
+        ...prevValues,
+        contact: cleanedValue,
+      }));
+      validateField(name as keyof FormValues, cleanedValue);
+    } else {
+      setFormValues((prevValues) => {
+        const newValues = { ...prevValues, [name]: value };
+        validateField(name as keyof FormValues, value);
+        return newValues;
+      });
+    }
   };
 
-  const handleDefaultChange = () => {
-    setFormValues({ ...formValues, isDefault: !formValues.isDefault });
+  const handleDefaultChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormValues({ ...formValues, isDefault: e.target.checked });
+  };
+
+  const validateField = (name: keyof FormValues, value: string) => {
+    let error = '';
+    switch (name) {
+      case 'recipientName':
+        error = value ? '' : '수령인 이름을 입력해주세요.';
+        break;
+      case 'addressName':
+        error = value ? '' : '배송지 이름을 입력해주세요.';
+        break;
+      case 'address':
+        error = value ? '' : '주소를 입력해주세요.';
+        break;
+      case 'postcode':
+        error = value ? '' : '우편번호를 입력해주세요.';
+        break;
+      case 'contact':
+        error = /^\d+$/.test(value) ? '' : '연락처를 숫자로만 입력해주세요.';
+        break;
+      default:
+        break;
+    }
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: error }));
+  };
+
+  const completeHandler = (data: any) => {
+    setFormValues({
+      ...formValues,
+      postcode: data.zonecode,
+      address: data.address,
+    });
+    setErrors((prevErrors) => ({ ...prevErrors, postcode: '', address: '' }));
+    setIsAddressModalOpen(false);
+  };
+
+  const openAddressModal = () => {
+    setIsAddressModalOpen(true);
+  };
+
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number,
+  ) => {
+    setPage(value - 1);
   };
 
   return (
@@ -168,27 +317,43 @@ function ShippingAddressPage() {
       </Box>
       <List>
         {addresses.map((address) => (
-          <ListItem key={address.id}>
+          <ListItem key={address.addressId}>
             <ListItemText
               primary={
                 <Box display="flex" alignItems="center">
-                  <Typography>{address.name}</Typography>
+                  <Typography>{address.addressName}</Typography>
                   {address.isDefault && <DefaultLabel>기본</DefaultLabel>}
                 </Box>
               }
-              secondary={`${address.address}, ${address.contact}`}
+              secondary={
+                <Box>
+                  <Typography variant="body2">
+                    {address.recipientName}
+                  </Typography>
+                  <Typography variant="body2">{address.contact}</Typography>
+                  <Typography variant="body2">{`${address.postcode} ${address.address} ${address.addressDetail}`}</Typography>
+                </Box>
+              }
             />
             <IconButton onClick={() => openDialog(address)}>
               <EditIcon />
             </IconButton>
-            <IconButton onClick={() => openDeleteDialog(address.id)}>
+            <IconButton onClick={() => openDeleteDialog(address.addressId)}>
               <DeleteIcon />
             </IconButton>
           </ListItem>
         ))}
       </List>
 
-      <Dialog open={isDialogOpen} onClose={closeDialog}>
+      <Pagination
+        count={totalPages}
+        page={page + 1}
+        onChange={handlePageChange}
+        color="primary"
+        sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}
+      />
+
+      <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth="sm" fullWidth>
         <DialogTitle>
           {isEditMode ? '배송지 수정' : '새 배송지 추가'}
         </DialogTitle>
@@ -198,30 +363,93 @@ function ShippingAddressPage() {
               ? '배송지 정보를 수정하십시오.'
               : '새 배송지 정보를 입력하십시오.'}
           </DialogContentText>
-          <TextField
-            label="이름"
-            name="name"
-            value={formValues.name}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="주소"
-            name="address"
-            value={formValues.address}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="연락처"
-            name="contact"
-            value={formValues.contact}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-          />
+          <FormControl>
+            <TextField
+              label="배송지 이름"
+              name="addressName"
+              value={formValues.addressName}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+            />
+            {errors.addressName && <ErrorText>{errors.addressName}</ErrorText>}
+          </FormControl>
+          <FormControl>
+            <TextField
+              label="수령인 이름"
+              name="recipientName"
+              value={formValues.recipientName}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+            />
+            {errors.recipientName && (
+              <ErrorText>{errors.recipientName}</ErrorText>
+            )}
+          </FormControl>
+          <FormControl>
+            <TextField
+              label="연락처"
+              name="contact"
+              value={formValues.contact}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+            />
+            {errors.contact && <ErrorText>{errors.contact}</ErrorText>}
+          </FormControl>
+          <FormControl>
+            <Box display="flex" alignItems="center">
+              <ReadOnlyTextField
+                label={
+                  formValues.postcode
+                    ? '우편번호'
+                    : '우편번호 (주소 검색을 통해 입력됩니다.)'
+                }
+                name="postcode"
+                value={formValues.postcode}
+                onChange={handleChange}
+                margin="normal"
+                style={{ flexGrow: 1 }}
+                disabled
+              />
+              <Button
+                variant="contained"
+                onClick={openAddressModal}
+                style={{ marginLeft: 8, height: '56px', marginTop: '7px' }}
+              >
+                주소 검색
+              </Button>
+            </Box>
+            {errors.postcode && <ErrorText>{errors.postcode}</ErrorText>}
+          </FormControl>
+          <FormControl>
+            <ReadOnlyTextField
+              label={
+                formValues.address
+                  ? '주소'
+                  : '주소 (주소 검색을 통해 입력됩니다.)'
+              }
+              name="address"
+              value={formValues.address}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              disabled
+            />
+            {errors.address && <ErrorText>{errors.address}</ErrorText>}
+          </FormControl>
+          <FormControl>
+            <TextField
+              label="상세 주소"
+              name="addressDetail"
+              value={formValues.addressDetail}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+            />
+          </FormControl>
           <Box display="flex" alignItems="center" marginTop={2}>
             <Checkbox
               checked={formValues.isDefault}
@@ -254,6 +482,27 @@ function ShippingAddressPage() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Modal
+        open={isAddressModalOpen}
+        onClose={() => setIsAddressModalOpen(false)}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+        <Box
+          sx={{
+            width: '400px',
+            height: '500px',
+            margin: 'auto',
+            marginTop: '10%',
+            backgroundColor: 'white',
+            padding: '20px',
+            boxShadow: 24,
+          }}
+        >
+          <DaumPostcode onComplete={completeHandler} />
+        </Box>
+      </Modal>
     </Box>
   );
 }

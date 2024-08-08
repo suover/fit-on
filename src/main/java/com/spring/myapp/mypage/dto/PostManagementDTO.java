@@ -4,11 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * PostManagementDto는 게시글 관리를 위한 데이터 전송 객체입니다.
+ * PostManagementDTO는 게시글 관리를 위한 데이터 전송 객체입니다.
  */
 @Getter
 @Setter
-public class PostManagementDto {
+public class PostManagementDTO {
 	private String id;
 	private String title;
 	private int views;

@@ -9,7 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.spring.myapp.mypage.dto.CommentManagementDto;
+import com.spring.myapp.mypage.dto.CommentManagementDTO;
 import com.spring.myapp.mypage.repository.CommentManagementRepository;
 
 /**
@@ -41,9 +41,9 @@ public class CommentManagementService {
 	 * @return 페이징된 댓글 리스트와 총 댓글 수를 포함한 페이징 객체
 	 * @throws IllegalArgumentException 잘못된 댓글 타입일 경우 예외 발생
 	 */
-	public Page<CommentManagementDto> getUserComments(String type, int userId, String search, int page, int size) {
+	public Page<CommentManagementDTO> getUserComments(String type, int userId, String search, int page, int size) {
 		Pageable pageable = PageRequest.of(page, size);
-		List<CommentManagementDto> comments;
+		List<CommentManagementDTO> comments;
 		int totalComments;
 
 		if ("community".equals(type)) {

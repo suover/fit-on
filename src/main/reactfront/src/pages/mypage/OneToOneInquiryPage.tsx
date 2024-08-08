@@ -38,17 +38,6 @@ export interface OneToOneInquiry {
   [key: string]: any;
 }
 
-const initialInquiries: OneToOneInquiry[] = Array.from(
-  { length: 15 },
-  (_, index) => ({
-    id: (index + 1).toString(),
-    title: `문의 제목 ${index + 1}`,
-    inquiryType: ['배송', '사용법', '기타'][Math.floor(Math.random() * 3)],
-    inquiryDate: `2024-05-${String(index + 1).padStart(2, '0')}`,
-    status: ['답변 완료', '답변 대기'][Math.floor(Math.random() * 2)],
-  }),
-);
-
 const getStatusStyles = (status: string) => {
   switch (status) {
     case '답변 완료':
@@ -61,8 +50,7 @@ const getStatusStyles = (status: string) => {
 };
 
 function OneToOneInquiryPage() {
-  const [inquiries, setInquiries] =
-    useState<OneToOneInquiry[]>(initialInquiries);
+  const [inquiries, setInquiries] = useState<OneToOneInquiry[]>([]);
   const [searchText, setSearchText] = useState('');
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);

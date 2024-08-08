@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spring.myapp.mypage.dto.PostManagementDto;
+import com.spring.myapp.mypage.dto.PostManagementDTO;
 import com.spring.myapp.mypage.service.PostManagementService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,7 +43,7 @@ public class PostManagementController {
 	 */
 	@Operation(summary = "사용자가 작성한 게시글 조회", description = "사용자가 작성한 커뮤니티 게시글 또는 루틴 게시글을 조회합니다.")
 	@GetMapping("/posts")
-	public ResponseEntity<Page<PostManagementDto>> getUserPosts(
+	public ResponseEntity<Page<PostManagementDTO>> getUserPosts(
 		@Parameter(description = "게시글 타입 (community 또는 routine)", required = true)
 		@RequestParam("type") String type,
 		@Parameter(description = "사용자 ID", required = true)
@@ -51,7 +51,7 @@ public class PostManagementController {
 		@Parameter(description = "검색어") @RequestParam(value = "query", required = false) String query,
 		@Parameter(description = "페이지 번호") @RequestParam(value = "page", defaultValue = "0") int page,
 		@Parameter(description = "페이지 크기") @RequestParam(value = "size", defaultValue = "10") int size) {
-		Page<PostManagementDto> posts = postManagementService.getUserPosts(type, userId, query, page, size);
+		Page<PostManagementDTO> posts = postManagementService.getUserPosts(type, userId, query, page, size);
 		return ResponseEntity.ok(posts);
 	}
 }

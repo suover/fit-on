@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
 
-import com.spring.myapp.mypage.dto.CommentManagementDto;
+import com.spring.myapp.mypage.dto.CommentManagementDTO;
 
 /**
  * 댓글 관리 관련 매퍼
@@ -21,7 +21,7 @@ public interface CommentManagementRepository {
 	 * @param pageable 페이징 정보
 	 * @return 댓글 리스트
 	 */
-	List<CommentManagementDto> findCommunityCommentsByUser(@Param("userId") int userId, @Param("search") String search,
+	List<CommentManagementDTO> findCommunityCommentsByUser(@Param("userId") int userId, @Param("search") String search,
 		@Param("pageable") Pageable pageable);
 
 	/**
@@ -32,7 +32,7 @@ public interface CommentManagementRepository {
 	 * @param pageable 페이징 정보
 	 * @return 댓글 리스트
 	 */
-	List<CommentManagementDto> findRoutineCommentsByUser(@Param("userId") int userId, @Param("search") String search,
+	List<CommentManagementDTO> findRoutineCommentsByUser(@Param("userId") int userId, @Param("search") String search,
 		@Param("pageable") Pageable pageable);
 
 	/**
@@ -43,7 +43,7 @@ public interface CommentManagementRepository {
 	 * @param pageable 페이징 정보
 	 * @return 댓글 리스트
 	 */
-	List<CommentManagementDto> findInfoCommentsByUser(@Param("userId") int userId, @Param("search") String search,
+	List<CommentManagementDTO> findInfoCommentsByUser(@Param("userId") int userId, @Param("search") String search,
 		@Param("pageable") Pageable pageable);
 
 	/**
