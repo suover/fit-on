@@ -30,7 +30,5 @@ module.exports = {
   rules: {
     "prettier/prettier": ["error"],
     "no-param-reassign": ["error", { props: false }],
-    "@typescript-eslint/no-unused-vars": "warn",
-    "react-hooks/exhaustive-deps": "warn", 
   },
 };
