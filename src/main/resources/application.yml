@@ -95,6 +95,9 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+  resources:
+    static-locations: classpath:/static/
+
 # mybatis
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml
