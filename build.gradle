@@ -19,7 +19,6 @@ configurations {
 
 repositories {
     mavenCentral()
-    maven { url "https://jitpack.io" }
 }
 
 dependencies {
@@ -46,7 +45,6 @@ dependencies {
     implementation 'com.google.http-client:google-http-client-jackson2:1.39.2'
     implementation 'org.springframework.data:spring-data-commons:2.5.4'
     implementation 'com.github.iamport:iamport-rest-client-java:0.2.21'
-    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.15.4'
 }
 
 tasks.named('test') {
@@ -63,7 +61,34 @@ sourceSets {
     }
 }
 
-processResources {
+processResources { dependsOn "copyReactBuildFiles" }
+
+task installReact(type: Exec) {
+    workingDir "$frontendDir"
+    inputs.dir "$frontendDir"
+    group = BasePlugin.BUILD_GROUP
+    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+        commandLine "npm.cmd", "audit", "fix"
+        commandLine 'npm.cmd', 'install'
+    } else {
+        commandLine "npm", "audit", "fix" commandLine 'npm', 'install'
+    }
+}
+
+task buildReact(type: Exec) {
+    dependsOn "installReact"
+    workingDir "$frontendDir"
+    inputs.dir "$frontendDir"
+    group = BasePlugin.BUILD_GROUP
+    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+        commandLine "npm.cmd", "run-script", "build"
+    } else {
+        commandLine "npm", "run-script", "build"
+    }
+}
+
+task copyReactBuildFiles(type: Copy) {
+    dependsOn "buildReact"
     from "$frontendDir/build"
     into "$projectDir/src/main/resources/static"
 }
