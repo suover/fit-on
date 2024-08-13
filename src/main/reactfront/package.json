@@ -39,6 +39,7 @@
     "swiper": "^11.1.8",
     "web-vitals": "^2.1.4"
   },
+  "proxy": "http://localhost:8080",
   "scripts": {
     "start": "react-scripts start",
     "build": "CI=false react-scripts build",
