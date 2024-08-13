@@ -30,7 +30,5 @@ module.exports = {
   rules: {
     "prettier/prettier": ["error"],
     "no-param-reassign": ["error", { props: false }],
-    "no-unused-vars": "off",
-    "react-hooks/exhaustive-deps": "off",
   },
 };
