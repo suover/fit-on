@@ -50,6 +50,15 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Set environment variables
+        run: |
+          echo "REACT_APP_API_BASE_URL=https://fiton.kr" >> $GITHUB_ENV
+          echo "REACT_APP_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "REACT_APP_NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "REACT_APP_GOOGLE_CALLBACK_URL=https://fiton.kr/login/oauth2/code/google" >> $GITHUB_ENV
+          echo "REACT_APP_NAVER_CALLBACK_URL=https://fiton.kr/api/auth/naver/callback" >> $GITHUB_ENV
+          echo "REACT_APP_KAKAO_JS_KEY=${{ secrets.KAKAO_JS_KEY }}" >> $GITHUB_ENV
+
       - name: Set target IP
         run: |
           STATUS=$(curl -o /dev/null -w "%{http_code}" "http://${{ secrets.LIVE_SERVER_IP }}/env")
