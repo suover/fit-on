@@ -69,6 +69,7 @@ public class SecurityConfig {
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션을 상태 비저장으로 설정
 			)
 			.authorizeHttpRequests(authorize -> authorize
+				.requestMatchers("/", "/index.html", "/static/**").permitAll()
 				.requestMatchers(publicEndpoints).permitAll() // 공용 엔드포인트 허용
 				.requestMatchers(adminEndpoint).hasRole("ADMIN") // 관리자 경로 설정
 				.requestMatchers(authenticatedEndpoint).authenticated() // 인증된 사용자만 접근
