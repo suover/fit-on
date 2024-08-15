@@ -98,46 +98,26 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  const updateAuthState = useCallback(async () => {
+  const updateAuthState = useCallback(() => {
     const accessToken = localStorage.getItem('accessToken');
     const storedLoginType = localStorage.getItem('loginType');
 
     if (accessToken && storedLoginType) {
       try {
         const decodedToken = jwtDecode<DecodedToken>(accessToken);
-        if (decodedToken.exp * 1000 < Date.now()) {
-          // Access Token이 만료되었을 경우, 갱신 시도
-          const refreshTokenResponse = await axios.post('/api/auth/refresh');
-          const newAccessToken = refreshTokenResponse.data.accessToken;
-          localStorage.setItem('accessToken', newAccessToken);
-          customAxios.defaults.headers.common['Authorization'] =
-            `Bearer ${newAccessToken}`;
-          const newDecodedToken = jwtDecode<DecodedToken>(newAccessToken);
-          setIsAuthenticated(true);
-          setUserRole(
-            newDecodedToken.roles.includes('ROLE_admin') ? 'admin' : 'user',
-          );
-          setNickname(newDecodedToken.nickname);
-          setLoginType(storedLoginType);
-          setUserId(newDecodedToken.userId);
-          setName(newDecodedToken.name);
-          setEmail(newDecodedToken.sub);
-        } else {
-          // Token이 유효할 경우 상태 업데이트
-          setIsAuthenticated(true);
-          setUserRole(
-            decodedToken.roles.includes('ROLE_admin') ? 'admin' : 'user',
-          );
-          setNickname(decodedToken.nickname);
-          setLoginType(storedLoginType);
-          setUserId(decodedToken.userId);
-          setName(decodedToken.name);
-          setEmail(decodedToken.sub);
-          customAxios.defaults.headers.common['Authorization'] =
-            `Bearer ${accessToken}`;
-        }
+        setIsAuthenticated(true);
+        setUserRole(
+          decodedToken.roles.includes('ROLE_admin') ? 'admin' : 'user',
+        );
+        setNickname(decodedToken.nickname);
+        setLoginType(storedLoginType);
+        setUserId(decodedToken.userId);
+        setName(decodedToken.name);
+        setEmail(decodedToken.sub);
+        customAxios.defaults.headers.common['Authorization'] =
+          `Bearer ${accessToken}`;
       } catch (error) {
-        console.error('Failed to decode or refresh token', error);
+        console.error('Failed to decode token', error);
         logout();
       }
     } else {
