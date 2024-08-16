@@ -53,8 +53,8 @@ public class NaverAuthController {
 			JwtAuthenticationResponse jwtResponse = naverAuthService.processNaverLogin(code, state, response);
 
 			String redirectUrl = uriComponentsBuilder
-				.scheme("http")
-				.host("localhost".equals(serverAddress) ? "localhost" : serverAddress)
+				.scheme("localhost".equals(serverAddress) ? "http" : "https")
+				.host("localhost".equals(serverAddress) ? "localhost" : "fiton.kr")
 				.port("localhost".equals(serverAddress) ? 3000 : -1)
 				.path("/login-success")
 				.queryParam("accessToken", jwtResponse.getAccessToken())
