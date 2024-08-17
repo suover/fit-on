@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.myapp.informationBoard.repository.InfoLikesMapper">
+    <insert id="increaseLike">
+        INSERT INTO info_likes (info_id, user_id, created_at)
+        VALUES (#{infoId}, #{userId}, #{createdAt})
+    </insert>
+
+    <delete id="decreaseLike">
+        DELETE FROM info_likes
+        WHERE info_id = #{infoId} AND user_id = #{userId}
+    </delete>
+
+    <select id="checkLikes" parameterType="Long" resultType="Integer">
+        SELECT user_Id
+        FROM info_likes
+        WHERE info_id = #{infoId} AND user_id = #{userId}
+    </select>
+
+    <select id="countLikes" resultType="Integer">
+        SELECT COUNT(user_id)
+        FROM info_likes
+        WHERE info_id = #{infoId}
+    </select>
+
+</mapper>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.myapp.user.repository.UserMapper">
+    <resultMap id="UserResultMap" type="com.spring.myapp.user.model.User">
+        <id property="userId" column="user_id"/>
+        <result property="email" column="email"/>
+        <result property="name" column="name"/>
+        <result property="password" column="password"/>
+        <result property="nickname" column="nickname"/>
+        <result property="phone" column="phone"/>
+        <result property="birthDate" column="birth_date"/>
+        <result property="joinDate" column="join_date"/>
+        <result property="isActive" column="is_active"/>
+    </resultMap>
+
+    <select id="findByEmail" resultMap="UserResultMap">
+        SELECT * FROM users WHERE email = #{email}
+    </select>
+
+    <select id="findById" resultMap="UserResultMap">
+        SELECT * FROM users WHERE user_id = #{userId}
+    </select>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="userId">
+        INSERT INTO users (email, name, password, nickname, phone, birth_date, join_date, is_active)
+        VALUES (#{email}, #{name}, #{password}, #{nickname}, #{phone}, #{birthDate}, #{joinDate}, #{isActive})
+    </insert>
+
+    <insert id="saveUserRole">
+        INSERT INTO user_roles (user_id, role_id)
+        VALUES (#{userId}, (SELECT role_id FROM roles WHERE role_name = #{roleName}))
+    </insert>
+
+    <select id="getUserRoles" resultType="java.lang.String">
+        SELECT role_name FROM user_roles ur
+        JOIN roles r ON ur.role_id = r.role_id
+        WHERE ur.user_id = #{userId}
+    </select>
+
+    <select id="existsByEmail" resultType="boolean">
+        SELECT COUNT(*) > 0 FROM users WHERE email = #{email}
+    </select>
+
+    <select id="existsByNickname" resultType="boolean">
+        SELECT COUNT(*) > 0 FROM users WHERE nickname = #{nickname}
+    </select>
+</mapper>

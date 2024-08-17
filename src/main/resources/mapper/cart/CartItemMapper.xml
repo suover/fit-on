@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.myapp.cart.repository.CartItemMapper">
+
+
+    <insert id="insertCartItem" useGeneratedKeys="true" keyProperty="cartItemId">
+        INSERT INTO cart_items (cart_id, product_id, quantity, created_at)
+        VALUES (#{cartId}, #{productId}, #{quantity}, NOW())
+    </insert>
+
+    <select id="findCartItemsByCartId" resultType="com.spring.myapp.cart.model.CartItem">
+        SELECT
+        ci.cart_item_id AS cartItemId,
+        ci.cart_id AS cartId,
+        ci.product_id AS productId,
+        ci.quantity,
+        ci.created_at AS createdAt,
+        ci.updated_at AS updatedAt,
+        p.price,
+        p.discount_rate AS discountRate,
+        p.name,
+        pi.image_url AS imageUrl,
+        c.user_id AS userId
+        FROM
+        cart_items ci
+        JOIN
+        cart c ON ci.cart_id = c.cart_id
+        JOIN
+        products p ON ci.product_id = p.product_id
+        LEFT JOIN
+        product_images pi ON p.product_id = pi.product_id AND pi.is_main_image = 1
+        WHERE
+        ci.cart_id = #{cartId}
+    </select>
+
+    <select id="findByUserIdAndProductId" resultType="com.spring.myapp.cart.model.CartItem">
+        SELECT
+            ci.cart_item_id AS cartItemId,
+            ci.cart_id AS cartId,
+            ci.product_id AS productId,
+            ci.quantity,
+            ci.created_at AS createdAt,
+            ci.updated_at AS updatedAt,
+            p.price,
+            p.discount_rate AS discountRate,
+            p.name,
+            pi.image_url AS imageUrl,
+            c.user_id AS userId
+        FROM
+            cart_items ci
+                JOIN
+            cart c ON ci.cart_id = c.cart_id
+                JOIN
+            products p ON ci.product_id = p.product_id
+                LEFT JOIN
+            product_images pi ON p.product_id = pi.product_id AND pi.is_main_image = 1
+        WHERE
+            c.user_id = #{userId} AND ci.product_id = #{productId}
+    </select>
+
+    <select id="findCartItemByCartIdAndProductId" resultType="com.spring.myapp.cart.model.CartItem">
+        SELECT
+            ci.cart_item_id AS cartItemId,
+            ci.cart_id AS cartId,
+            ci.product_id AS productId,
+            ci.quantity,
+            ci.created_at AS createdAt,
+            ci.updated_at AS updatedAt,
+            p.price,
+            p.discount_rate AS discountRate,
+            p.name,
+            pi.image_url AS imageUrl,
+            c.user_id AS userId
+        FROM
+            cart_items ci
+                JOIN
+            cart c ON ci.cart_id = c.cart_id
+                JOIN
+            products p ON ci.product_id = p.product_id
+                LEFT JOIN
+            product_images pi ON p.product_id = pi.product_id AND pi.is_main_image = 1
+        WHERE
+            ci.cart_id = #{cartId} AND ci.product_id = #{productId}
+    </select>
+
+    <update id="updateCartItem">
+        UPDATE cart_items
+        SET quantity = #{quantity}, updated_at = NOW()
+        WHERE cart_item_id = #{cartItemId}
+    </update>
+
+    <delete id="deleteCartItemByProductId">
+        DELETE FROM cart_items WHERE product_id = #{productId} AND cart_id=#{cartId}
+    </delete>
+
+
+
+
+</mapper>

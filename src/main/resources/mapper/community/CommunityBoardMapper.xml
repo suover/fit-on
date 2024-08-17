@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.myapp.community.repository.CommunityBoardMapper">
+
+    <resultMap id="CommunityBoardMap" type="com.spring.myapp.community.dto.CommunityBoardDTO">
+        <id property="communityId" column="community_id" />
+        <result property="userId" column="user_id"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="nickname" column="nickname"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="likes" column="likes"/>
+    </resultMap>
+
+
+    <insert id="insert" parameterType="com.spring.myapp.community.dto.CommunityBoardDTO">
+        INSERT INTO community (user_id, category_id, title, content, created_at, updated_at, is_deleted, view_count)
+        VALUES (#{userId}, #{categoryId}, #{title}, #{content},NOW(), NOW(), #{isDeleted}, #{viewCount});
+    </insert>
+
+    <select id="findAllPosts" resultType="com.spring.myapp.community.dto.CommunityBoardDTO">
+        SELECT
+        c.community_id,
+        c.user_id,
+        c.category_id,
+        c.title,
+        c.content,
+        c.created_at,
+        c.updated_at,
+        c.view_count,
+        c.is_deleted,
+        u.nickname,
+        cc.category_name
+        FROM
+        community c
+        JOIN
+        community_categories cc ON c.category_id = cc.category_id
+        JOIN
+        users u ON c.user_id = u.user_id
+        WHERE
+        c.is_deleted = false
+        ORDER BY
+        c.created_at DESC;
+    </select>
+
+    <select id="findPostById" parameterType="long" resultType="com.spring.myapp.community.dto.CommunityBoardDTO">
+        SELECT
+        c.community_id,
+        c.user_id,
+        c.category_id,
+        c.title,
+        c.content,
+        c.created_at,
+        c.updated_at,
+        c.view_count,
+        c.is_deleted,
+        u.nickname,
+        cc.category_name
+        FROM
+        community c
+        JOIN
+        community_categories cc ON c.category_id = cc.category_id
+        JOIN
+        users u ON c.user_id = u.user_id
+        WHERE
+        c.community_id = #{id} AND c.is_deleted = false;
+    </select>
+
+    <update id="updatePost" parameterType="com.spring.myapp.community.dto.CommunityBoardDTO">
+        UPDATE community
+        SET user_id = #{userId}, category_id = #{categoryId}, title = #{title}, content = #{content}, created_at = #{createdAt}, updated_at = #{updatedAt}
+        WHERE community_id = #{communityId};
+    </update>
+
+    <update id="deletePost" parameterType="long">
+        UPDATE community
+        SET is_deleted = 1
+        WHERE community_id = #{id};
+    </update>
+
+    <!-- 조회수 증가 -->
+    <update id="incrementViewCount">
+        UPDATE community
+        SET view_count = view_count + 1
+        WHERE community_id = #{id}
+    </update>
+
+
+    <!-- 상위 10위 인기글 필터  -->
+    <select id="selectTop10PopularPosts" parameterType="int" resultType="com.spring.myapp.community.dto.CommunityBoardDTO">
+        SELECT *
+        FROM community
+        WHERE is_deleted = 0
+        ORDER BY view_count DESC
+        LIMIT #{limit}
+    </select>
+</mapper>

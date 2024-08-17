@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.myapp.routineBoard.repository.RoutineBoardMapper">
+
+    <resultMap id="RoutineBoardResultMap" type="com.spring.myapp.routineBoard.model.RoutineBoard">
+        <id column="routine_id" property="routineId"/>
+        <result column="user_id" property="userId"/>
+        <result column="nickname" property="nickname"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="view_count" property="viewCount"/>
+        <result column="share_count" property="shareCount"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="is_public" property="isPublic"/>
+        <result column="goal_id" property="goalId"/>
+        <result column="level_id" property="levelId"/>
+        <result column="part_id" property="partId"/>
+        <result column="image_url" property="imageUrl"/>
+    </resultMap>
+
+    <select id="countRoutines" resultType="long">
+        SELECT COUNT(*) FROM routines WHERE is_deleted = 0
+    </select>
+
+    <select id="findById" parameterType="long" resultMap="RoutineBoardResultMap">
+        SELECT r.*, u.nickname
+        FROM routines r
+        JOIN users u ON r.user_id = u.user_id
+        WHERE r.routine_id = #{routineId} AND r.is_deleted = 0
+    </select>
+
+    <update id="updateIsDeletedById" parameterType="long">
+        UPDATE routines SET is_deleted = 1 WHERE routine_id = #{routineId}
+    </update>
+
+
+    <select id="findBestRoutines" parameterType="int" resultMap="RoutineBoardResultMap">
+        SELECT r.*, u.nickname
+        FROM routines r
+        JOIN users u ON r.user_id = u.user_id
+        WHERE r.is_deleted = 0
+        ORDER BY r.view_count DESC
+        LIMIT #{limit}
+    </select>
+
+    <insert id="insertRoutineBoard" parameterType="com.spring.myapp.routineBoard.model.RoutineBoard">
+        INSERT INTO routines (user_id, title, content, created_at, updated_at, view_count, share_count,
+        is_deleted, is_public, goal_id, level_id, part_id, image_url)
+        VALUES (#{userId}, #{title}, #{content}, NOW(), NOW(), 0, 0, #{isDeleted}, true,
+        #{goalId}, #{levelId}, #{partId}, #{imageUrl})
+    </insert>
+    
+    <update id="updateRoutineBoard" parameterType="com.spring.myapp.routineBoard.model.RoutineBoard">
+        UPDATE routines
+        SET title = #{title}, content = #{content}, updated_at = NOW(),
+        view_count = #{viewCount}, share_count = #{shareCount}, is_deleted = #{isDeleted},
+        is_public = true, goal_id = #{goalId}, level_id = #{levelId}, part_id = #{partId}, image_url =
+        #{imageUrl}
+        WHERE routine_id = #{routineId}
+    </update>
+
+    <update id="incrementViewCount" parameterType="long">
+        UPDATE routines
+        SET view_count = view_count + 1
+        WHERE routine_id = #{routineId}
+    </update>
+
+    <select id="findGoalNameById" parameterType="int" resultType="String">
+        SELECT goal_name FROM routine_goals WHERE goal_id = #{goalId}
+    </select>
+
+    <select id="findLevelNameById" parameterType="int" resultType="String">
+        SELECT level_name FROM routine_levels WHERE level_id = #{levelId}
+    </select>
+
+    <select id="findPartNameById" parameterType="int" resultType="String">
+        SELECT part_name FROM routine_parts WHERE part_id = #{partId}
+    </select>
+
+    <select id="findAllWithPaging" resultMap="RoutineBoardResultMap">
+        SELECT r.*, u.nickname
+        FROM routines r
+        JOIN users u ON r.user_id = u.user_id
+        WHERE r.is_deleted = 0
+        ORDER BY r.created_at DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="findAllWithPagingAndSearch" resultMap="RoutineBoardResultMap">
+        SELECT r.*, u.nickname
+        FROM routines r
+        JOIN users u ON r.user_id = u.user_id
+        WHERE r.is_deleted = 0 AND r.title LIKE CONCAT('%', #{query}, '%')
+        ORDER BY r.created_at DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+
+    <select id="countRoutinesWithSearch" resultType="long">
+        SELECT COUNT(*) FROM routines WHERE is_deleted = 0 AND title LIKE CONCAT('%', #{query}, '%')
+    </select>
+
+    <select id="findByUserId" parameterType="long" resultType="com.spring.myapp.routineBoard.model.RoutineBoard">
+        SELECT * FROM routines WHERE user_id = #{userId} AND is_deleted = false
+    </select>
+
+
+</mapper>

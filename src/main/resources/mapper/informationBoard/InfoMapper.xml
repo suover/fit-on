@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.myapp.informationBoard.repository.InfoMapper">
+    <resultMap id="infoResultMap" type="com.spring.myapp.informationBoard.model.Information">
+        <id property="infoId" column="info_id"/>
+        <id property="userId" column="user_id"/>
+        <id property="categoryId" column="category_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <association property="categoryName" column="category_id"
+                     select="findCategoryForInfo"
+        />
+        <association property="nickname" column="user_id"
+                     select="findUserForInfo"/>
+        <association property="likes" column="info_id"
+                     select="findLikesForInfo"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="infoResultMap">
+        SELECT info_id, user_id, category_id, title, content, image_url, created_at, updated_at, view_count, is_deleted
+        FROM info
+        WHERE is_deleted = 0
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="keywordInfoList" parameterType="com.spring.myapp.informationBoard.model.InfoPaging"
+            resultMap="infoResultMap">
+        <![CDATA[
+            SELECT i.*
+            FROM info i JOIN info_categories c ON i.category_id = c.category_id
+        ]]>
+        <where>
+            <if test="infoData.filterKeyword != null and infoData.filterKeyword != '전체' and infoData.searchKeyword == ''">
+                c.category_name = #{infoData.filterKeyword}
+            </if>
+            <if test="infoData.filterKeyword != null and infoData.filterKeyword != '전체' and infoData.searchKeyword != ''">
+                c.category_name = #{infoData.filterKeyword}
+                AND i.title LIKE CONCAT('%', #{infoData.searchKeyword}, '%')
+            </if>
+            <if test="infoData.filterKeyword == '전체' and infoData.searchKeyword != ''">
+                i.title LIKE CONCAT('%', #{infoData.searchKeyword}, '%')
+            </if>
+            AND is_deleted = 0
+        </where>
+        <if test="pageable.sort != null and !pageable.sort.isEmpty()">
+            ORDER BY
+            <foreach collection="pageable.sort" item="order" separator=",">
+                ${order.property} ${order.direction}
+            </foreach>
+        </if>
+        <![CDATA[
+            LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
+        ]]>
+    </select>
+
+    <select id="countKeywordInfoList" parameterType="String" resultType="Integer">
+        <![CDATA[
+            SELECT COUNT(*)
+            FROM info i JOIN info_categories c ON i.category_id = c.category_id
+        ]]>
+        <where>
+            <if test="filterKeyword != null and filterKeyword != '전체' and searchKeyword == ''">
+                c.category_name = #{filterKeyword}
+            </if>
+            <if test="filterKeyword != null and filterKeyword != '전체' and searchKeyword != ''">
+                c.category_name = #{filterKeyword}
+                AND i.title LIKE CONCAT('%', #{searchKeyword}, '%')
+            </if>
+            <if test="filterKeyword == '전체' and searchKeyword != ''">
+                i.title LIKE CONCAT('%', #{searchKeyword}, '%')
+            </if>
+            AND is_deleted = 0
+        </where>
+    </select>
+
+    <select id="findCategoryForInfo" resultType="string">
+        SELECT ic.category_name
+        FROM info_categories ic
+        WHERE ic.category_id = #{category_id}
+    </select>
+
+    <select id="findUserForInfo" resultType="string">
+        SELECT u.nickname
+        FROM users u
+        WHERE u.user_id = #{user_id}
+    </select>
+
+    <select id="findLikesForInfo" resultType="Integer">
+        SELECT COUNT(user_id)
+        FROM info_likes
+        WHERE info_id = #{info_id}
+    </select>
+
+    <select id="findByInfoId" parameterType="Long" resultMap="infoResultMap">
+        SELECT info_id, user_id, category_id, title, content, image_url, created_at, updated_at, view_count,
+        is_deleted
+        FROM info
+        WHERE info_id = #{infoId}
+    </select>
+
+    <insert id="writeNewInfo" parameterType="com.spring.myapp.informationBoard.model.Information">
+        INSERT INTO info (info_id, user_id, category_id, title, content, image_url, created_at, updated_at, view_count,
+        is_deleted)
+        VALUES (#{infoId}, #{userId}, #{categoryId}, #{title}, #{content}, #{imageUrl}, #{createdAt}, #{updatedAt},
+        #{viewCount}, #{isDeleted})
+    </insert>
+
+    <update id="updateInfo" parameterType="com.spring.myapp.informationBoard.model.Information">
+        UPDATE info
+        SET category_id = #{categoryId}, title = #{title}, content = #{content}, image_url = #{imageUrl}, updated_at =
+        #{updatedAt}
+        WHERE info_id = #{infoId}
+    </update>
+
+    <update id="deleteInfo" parameterType="Long">
+        UPDATE info
+        SET is_deleted = 1
+        WHERE info_id = #{infoId}
+    </update>
+
+    <update id="deleteComments" parameterType="Long">
+        UPDATE info_comments
+        SET is_deleted = 1
+        WHERE info_id = #{infoId}
+    </update>
+
+    <update id="updateViewCount">
+        UPDATE info
+        SET view_count = view_count + 1
+        WHERE info_id = #{infoId}
+    </update>
+
+</mapper>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.myapp.mypage.repository.CommentManagementRepository">
+
+    <select id="findCommunityCommentsByUser" resultType="com.spring.myapp.mypage.dto.CommentManagementDTO">
+        SELECT
+        comment_id AS id,
+        community_id AS postId,
+        (SELECT title FROM community WHERE community_id = community_comments.community_id) AS postTitle,
+        content,
+        created_at AS date,
+        parent_comment_id AS parentId
+        FROM community_comments
+        WHERE user_id = #{userId}
+        AND is_deleted = FALSE
+        <if test="search != null and search != ''">
+            AND content LIKE CONCAT('%', #{search}, '%')
+        </if>
+        ORDER BY created_at DESC
+        LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
+    </select>
+
+    <select id="findRoutineCommentsByUser" resultType="com.spring.myapp.mypage.dto.CommentManagementDTO">
+        SELECT
+        comment_id AS id,
+        routine_id AS postId,
+        (SELECT title FROM routines WHERE routine_id = routine_comments.routine_id) AS postTitle,
+        content,
+        created_at AS date,
+        parent_comment_id AS parentId
+        FROM routine_comments
+        WHERE user_id = #{userId}
+        AND is_deleted = FALSE
+        <if test="search != null and search != ''">
+            AND content LIKE CONCAT('%', #{search}, '%')
+        </if>
+        ORDER BY created_at DESC
+        LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
+    </select>
+
+    <select id="findInfoCommentsByUser" resultType="com.spring.myapp.mypage.dto.CommentManagementDTO">
+        SELECT
+        comment_id AS id,
+        info_id AS postId,
+        (SELECT title FROM info WHERE info_id = info_comments.info_id) AS postTitle,
+        content,
+        created_at AS date,
+        parent_comment_id AS parentId
+        FROM info_comments
+        WHERE user_id = #{userId}
+        AND is_deleted = FALSE
+        <if test="search != null and search != ''">
+            AND content LIKE CONCAT('%', #{search}, '%')
+        </if>
+        ORDER BY created_at DESC
+        LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
+    </select>
+
+    <select id="countCommunityCommentsByUser" resultType="int">
+        SELECT COUNT(*)
+        FROM community_comments
+        WHERE user_id = #{userId}
+        AND is_deleted = FALSE
+        <if test="search != null and search != ''">
+            AND content LIKE CONCAT('%', #{search}, '%')
+        </if>
+    </select>
+
+    <select id="countRoutineCommentsByUser" resultType="int">
+        SELECT COUNT(*)
+        FROM routine_comments
+        WHERE user_id = #{userId}
+        AND is_deleted = FALSE
+        <if test="search != null and search != ''">
+            AND content LIKE CONCAT('%', #{search}, '%')
+        </if>
+    </select>
+
+    <select id="countInfoCommentsByUser" resultType="int">
+        SELECT COUNT(*)
+        FROM info_comments
+        WHERE user_id = #{userId}
+        AND is_deleted = FALSE
+        <if test="search != null and search != ''">
+            AND content LIKE CONCAT('%', #{search}, '%')
+        </if>
+    </select>
+
+</mapper>

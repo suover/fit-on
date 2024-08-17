@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.myapp.routineBoard.repository.RoutineLikesMapper">
+    <insert id="increaseLike">
+        INSERT INTO routine_likes (routine_id, user_id, created_at)
+        VALUES (#{routineId}, #{userId}, #{createdAt})
+    </insert>
+
+    <delete id="decreaseLike">
+        DELETE FROM routine_likes
+        WHERE routine_id = #{routineId} AND user_id = #{userId}
+    </delete>
+
+    <select id="checkLike" resultType="Integer">
+        SELECT user_Id
+        FROM routine_likes
+        WHERE routine_id = #{routineId} AND user_id = #{userId}
+    </select>
+
+    <select id="countLikes" resultType="Integer">
+        SELECT COUNT(user_id)
+        FROM routine_likes
+        WHERE routine_id = #{routineId}
+    </select>
+</mapper>
