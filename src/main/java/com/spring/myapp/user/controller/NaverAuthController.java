@@ -3,6 +3,7 @@ package com.spring.myapp.user.controller;
 import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,9 @@ import jakarta.servlet.http.HttpServletResponse;
 @Tag(name = "Naver Auth Controller", description = "Naver 인증 관련 API")
 public class NaverAuthController {
 
+	@Value("${server.serverAddress}")
+	private String serverAddress;
+
 	@Autowired
 	private NaverAuthService naverAuthService;
 
@@ -48,7 +52,11 @@ public class NaverAuthController {
 		try {
 			JwtAuthenticationResponse jwtResponse = naverAuthService.processNaverLogin(code, state, response);
 
-			String redirectUrl = uriComponentsBuilder.scheme("http").host("localhost").port(3000).path("/login-success")
+			String redirectUrl = uriComponentsBuilder
+				.scheme("localhost".equals(serverAddress) ? "http" : "https")
+				.host("localhost".equals(serverAddress) ? "localhost" : "fiton.kr")
+				.port("localhost".equals(serverAddress) ? 3000 : -1)
+				.path("/login-success")
 				.queryParam("accessToken", jwtResponse.getAccessToken())
 				.build().toUriString();
 

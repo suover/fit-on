@@ -178,9 +178,9 @@ const MyHome: React.FC = () => {
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
                     <TableCell align="center">0 건</TableCell>
-                    <TableCell align="center">1 건</TableCell>
                     <TableCell align="center">0 건</TableCell>
-                    <TableCell align="center">2 건</TableCell>
+                    <TableCell align="center">0 건</TableCell>
+                    <TableCell align="center">0 건</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

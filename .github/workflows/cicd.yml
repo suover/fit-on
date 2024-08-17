@@ -2,9 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ "feature/deploy-setup" ]
-  pull_request:
-    branches: [ "feature/deploy-setup" ]
+    branches: [ "main" ]
 
 permissions:
   contents: read
@@ -25,19 +23,21 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
-      
+
+      - name: Set environment variables for React
+        run: |
+          echo "REACT_APP_API_BASE_URL=https://fiton.kr" >> $GITHUB_ENV
+          echo "REACT_APP_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "REACT_APP_NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "REACT_APP_GOOGLE_CALLBACK_URL=https://fiton.kr/login/oauth2/code/google" >> $GITHUB_ENV
+          echo "REACT_APP_NAVER_CALLBACK_URL=https://fiton.kr/api/auth/naver/callback" >> $GITHUB_ENV
+          echo "REACT_APP_KAKAO_JS_KEY=${{ secrets.KAKAO_JS_KEY }}" >> $GITHUB_ENV
+
       - name: Set executable permissions for Gradle Wrapper
         run: chmod +x ./gradlew
 
-      - name: Build React
-        run: |
-          cd src/main/reactfront
-          npm install
-          CI=false npm run build
-          cd ../..
-      
       - name: Build with Gradle
-        run: | 
+        run: |
           echo ${{secrets.APPLICATION_SECRET}} | base64 --decode > ./src/main/resources/application-secret.yml
           ./gradlew clean build -x test
 
@@ -52,7 +52,7 @@ jobs:
 
       - name: Push Docker
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/fiton_server:latest
-        
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -76,7 +76,7 @@ jobs:
             echo "STOPPED_PORT=8080" >> $GITHUB_ENV
             echo "TARGET_UPSTREAM=blue" >> $GITHUB_ENV
           fi
-          
+
       - name: Docker compose
         uses: appleboy/ssh-action@master
         with:
@@ -87,7 +87,7 @@ jobs:
           script: |
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/fiton_server:latest
             sudo docker-compose -f docker-compose-${{env.TARGET_UPSTREAM}}.yml up -d
-      
+
       - name: Check deploy server URL
         uses: jtalk/url-health-check-action@v3
         with:
