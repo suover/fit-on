@@ -52,7 +52,7 @@ import MyRoutinesPage from './pages/mypage/MyRoutinesPage';
 import AdminPage from './pages/administrator/AdminPage'; // 관리자 페이지
 import MemberListPage from './pages/administrator/MemberListPage';
 import ItemListPage from './pages/administrator/ItemListPage';
-import OrderManagementPage from "./pages/administrator/OrderManagementPage";
+import OrderManagementPage from './pages/administrator/OrderManagementPage';
 import CommunityListPage from './pages/administrator/CommunityListPage';
 import PostListPage from './pages/administrator/PostListPage';
 import ReviewListPage from './pages/administrator/ReviewListPage';
