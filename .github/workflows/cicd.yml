@@ -2,9 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ "feature/deploy-setup" ]
-  pull_request:
-    branches: [ "feature/deploy-setup" ]
+    branches: [ "main" ]
 
 permissions:
   contents: read
