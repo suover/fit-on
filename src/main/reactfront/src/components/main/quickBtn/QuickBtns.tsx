@@ -19,7 +19,7 @@ const QuickBtns: React.FC = () => {
           <MedicalInformationIcon />
         </QuickBtn>
       </Link>
-      <Link to="/mall">
+      <Link to="/mall/main">
         <QuickBtn btnName={'핏온몰'}>
           <LocalMallIcon />
         </QuickBtn>
