@@ -137,46 +137,47 @@
 
 ### 📃메인페이지
 
-![main_g.gif](..%2F..%2Fedit%2Fedit%2Fmain_g.gif)
+![main_g](https://github.com/user-attachments/assets/8ecfe423-d8e8-46b4-b7a4-d2100bd40de8)
 
 ---
 
 ### 🔑 로그인
 
-![login_g.gif](..%2F..%2Fedit%2Fedit%2Flogin_g.gif)
+![login_g](https://github.com/user-attachments/assets/ee7a1355-44d8-4387-98b1-c572cbe7a6c2)
 
 ---
 
 ### 💳 쇼핑몰
 
-![mall_g.gif](..%2F..%2Fedit%2Fedit%2Fmall_g.gif)
+![mall_g](https://github.com/user-attachments/assets/522775a0-3af9-485f-a1a6-e83ba63d0aeb)
 
 ---
 
 ### 👩🏻‍🤝‍👩🏻 커뮤니티 게시판
 
-![community_g.gif](..%2F..%2Fedit%2Fedit%2Fcommunity_g.gif)
+![community_g](https://github.com/user-attachments/assets/5e953485-0291-4345-963b-b4bd347e7fc7)
 
 ---
 
 ### 💪 루틴 게시판
 
-![routine_g.gif](..%2F..%2Fedit%2Fedit%2Froutine_g.gif)
+![routine_g](https://github.com/user-attachments/assets/44c285ac-f568-4d3c-aca6-1d535f791068)
 
 ---
 
 ### 📰 운동 정보 게시판
 
-![info_g.gif](..%2F..%2Fedit%2Fedit%2Finfo_g.gif)
+![info_g](https://github.com/user-attachments/assets/02b20c31-54ca-45ea-a29c-ef0f00084118)
 
 ---
 
 ### 📔 마이페이지
 
-![mypage_g.gif](..%2F..%2Fedit%2Fedit%2Fmypage_g.gif)
+![mypage_g](https://github.com/user-attachments/assets/b727da33-89c6-4388-af48-6337baaba785)
 
 ---
 
 ### ⌨ 댓글 & 대댓글 기능
 
-![comment_g.gif](..%2F..%2Fedit%2Fedit%2Fcomment_g.gif)
+![comment_g](https://github.com/user-attachments/assets/8bf3fbfd-3b3e-4931-8519-d4ac5e381988)
+
